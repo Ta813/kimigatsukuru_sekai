@@ -1,66 +1,130 @@
 import 'package:flutter/material.dart';
 import 'timer_screen.dart';
+import '../../helpers/shared_prefs_helper.dart';
 
-final List<Map<String, String>> dummyPromises = [
-  {'time': '7:00〜', 'title': 'あさごはん', 'points': '10'},
-  {'time': '7:30〜', 'title': 'ようちえんのじゅんび', 'points': '20'},
-  {'time': '16:30〜', 'title': 'おふろ', 'points': '10'},
-  {'time': '18:30〜', 'title': 'よるごはん', 'points': '10'},
-];
-
-class PromiseBoardScreen extends StatelessWidget {
+class PromiseBoardScreen extends StatefulWidget {
+  // StatefulWidgetに変更
   const PromiseBoardScreen({super.key});
+
+  @override
+  State<PromiseBoardScreen> createState() => _PromiseBoardScreenState();
+}
+
+class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
+  // 表示用のリストを管理する変数
+  List<Map<String, dynamic>> _promises = [];
+  // 今日の達成済みやくそくリストを管理する変数
+  List<String> _todaysCompletedTitles = [];
+
+  // 最初にデータを読み込む
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  // 画面が表示されるたびに、やくそくと達成記録の両方を読み込む
+  Future<void> _loadData() async {
+    final loadedPromises = await SharedPrefsHelper.loadRegularPromises();
+    final completedTitles =
+        await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+    if (!mounted) return;
+    setState(() {
+      _promises = loadedPromises;
+      _todaysCompletedTitles = completedTitles;
+    });
+  }
+
+  // 「はじめる」ボタンが押された時の処理
+  void _startPromise(Map<String, dynamic> promise) async {
+    final pointsAwarded = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TimerScreen(promise: promise, isEmergency: false),
+      ),
+    );
+
+    if (pointsAwarded != null && pointsAwarded > 0) {
+      // 達成記録を保存する処理を追加！
+      await SharedPrefsHelper.addCompletionRecord(promise['title']);
+
+      if (mounted) {
+        // ポイントを持ってホーム画面に戻る
+        Navigator.pop(context, pointsAwarded);
+      }
+    }
+  }
+
+  void _skipPromiseOnBoard(String promiseTitle) async {
+    // 達成記録を保存します
+    await SharedPrefsHelper.addCompletionRecord(promiseTitle);
+    // リストの表示を最新の状態に更新します
+    _loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 画面上部のバー
       appBar: AppBar(title: const Text('やくそくボード')),
-      // 画面の中央
-      body: ListView.builder(
-        // リストに何個の項目があるかを教えます
-        itemCount: dummyPromises.length,
-        // 各項目をどのように表示するかを決めます
-        itemBuilder: (context, index) {
-          final promise = dummyPromises[index];
-          return Card(
-            // 各項目をカード風のUIにします
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              // 左側に表示する時間
-              leading: Text(
-                promise['time']!,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              // 中央に表示するやくそくの名前
-              title: Text(promise['title']!),
-              // 右側に表示する「はじめる」ボタン
-              trailing: ElevatedButton(
-                onPressed: () async {
-                  // タイマー画面から戻ってくるのを「await」で待ち、結果を受け取る
-                  final pointsAwarded = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TimerScreen(promise: promise),
-                    ),
-                  );
+      body: _promises.isEmpty
+          ? const Center(child: Text('定例のやくそくがまだありません'))
+          : ListView.builder(
+              itemCount: _promises.length,
+              itemBuilder: (context, index) {
+                final promise = _promises[index];
+                // このやくそくが、今日達成済みかどうかをチェック
+                final bool isCompleted = _todaysCompletedTitles.contains(
+                  promise['title'],
+                );
 
-                  // もし、ポイント（結果）を持って戻ってきたら
-                  if (pointsAwarded != null && context.mounted) {
-                    // やくそくボード画面も閉じて、ホーム画面にポイントを渡す
-                    Navigator.pop(context, pointsAwarded);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  // main.dartで設定したアクセントカラーが自動で適用される
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                ),
-                child: const Text('はじめる'),
-              ),
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: ListTile(
+                    leading: Text(
+                      promise['time'] ?? '',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    title: Text(promise['title'] ?? '名称未設定'),
+                    trailing: isCompleted
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 40,
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.min, // Rowが必要な分だけ幅をとる
+                            children: [
+                              // 「やらなかった」ボタン
+                              IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  color: Colors.grey[400],
+                                ),
+                                onPressed: () {
+                                  _skipPromiseOnBoard(promise['title']);
+                                },
+                              ),
+                              // 「はじめる」ボタン
+                              ElevatedButton(
+                                onPressed: () {
+                                  _startPromise(promise);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
+                                ),
+                                child: const Text('はじめる'),
+                              ),
+                            ],
+                          ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }

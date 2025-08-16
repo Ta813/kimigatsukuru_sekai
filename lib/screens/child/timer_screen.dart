@@ -2,12 +2,18 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../helpers/shared_prefs_helper.dart';
 
 class TimerScreen extends StatefulWidget {
   // StatefulWidgetに変更
-  final Map<String, String> promise;
+  final Map<String, dynamic> promise;
+  final bool isEmergency;
 
-  const TimerScreen({super.key, required this.promise});
+  const TimerScreen({
+    super.key,
+    required this.promise,
+    required this.isEmergency,
+  });
 
   @override
   State<TimerScreen> createState() => _TimerScreenState();
@@ -21,7 +27,8 @@ class _TimerScreenState extends State<TimerScreen> {
   @override
   void initState() {
     super.initState();
-    _remainingSeconds = 20 * 60;
+    final durationInMinutes = widget.promise['duration'] as int? ?? 20;
+    _remainingSeconds = durationInMinutes * 60;
     _startTimer();
   }
 
@@ -58,6 +65,7 @@ class _TimerScreenState extends State<TimerScreen> {
     return Scaffold(
       appBar: AppBar(
         // もらった情報を使って、タイトルを表示します
+        backgroundColor: widget.isEmergency ? Colors.red[400] : null,
         title: Text('${widget.promise['title']} に挑戦中！'),
       ),
       body: Center(
@@ -101,14 +109,25 @@ class _TimerScreenState extends State<TimerScreen> {
                         // 「OK」ボタン
                         ElevatedButton(
                           child: const Text('おわったよ！'),
-                          onPressed: () {
-                            // 獲得するポイント数を準備（Stringをintに変換）
+                          onPressed: () async {
+                            // ★もし、このやくそくが「緊急」だったら
+                            if (widget.isEmergency) {
+                              // SharedPreferencesから緊急のやくそくを削除する
+                              // (nullを保存することで、データが削除されます)
+                              await SharedPrefsHelper.saveEmergencyPromise(
+                                null,
+                              );
+                            }
+
+                            // ポイントを獲得する処理（変更なし）
                             final pointsAwarded =
-                                int.tryParse(widget.promise['points'] ?? '0') ??
-                                0;
+                                widget.promise['points'] as int? ?? 0;
+
                             // ダイアログを閉じる
+                            if (!mounted) return;
                             Navigator.of(dialogContext).pop();
-                            // さらに、タイマー画面を閉じつつ、"結果"としてポイント数を渡す
+
+                            // ポイントを持って前の画面に戻る
                             Navigator.of(context).pop(pointsAwarded);
                           },
                         ),
