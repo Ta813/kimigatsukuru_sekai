@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final List<Map<String, dynamic>> defaultPromises = [
-  {'title': 'あさごはん', 'time': '07:00', 'duration': 30, 'points': 10},
+  {'title': 'あさごはん', 'time': '07:00', 'duration': 30, 'points': 20},
   {'title': 'ようちえんのじゅんび', 'time': '07:30', 'duration': 10, 'points': 10},
   {'title': 'おふろじゅんび', 'time': '18:00', 'duration': 10, 'points': 10},
-  {'title': 'よるごはん', 'time': '19:00', 'duration': 30, 'points': 10},
+  {'title': 'よるごはん', 'time': '19:00', 'duration': 30, 'points': 20},
   {'title': 'はみがき', 'time': '19:30', 'duration': 10, 'points': 10},
   {'title': 'ねるじゅんび', 'time': '20:00', 'duration': 10, 'points': 10},
 ];

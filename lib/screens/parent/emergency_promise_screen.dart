@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../helpers/shared_prefs_helper.dart';
+import '../../managers/sfx_manager.dart';
 
 class EmergencyPromiseScreen extends StatefulWidget {
   const EmergencyPromiseScreen({super.key});
@@ -26,6 +27,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
   }
 
   void _savePromise() async {
+    SfxManager.instance.playTapSound();
     if (_formKey.currentState!.validate()) {
       final emergencyPromise = {
         'title': _titleController.text,

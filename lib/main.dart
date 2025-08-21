@@ -3,14 +3,16 @@ import 'package:flutter/services.dart';
 import 'screens/child/child_home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
+
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeLeft, // 横向き左
     DeviceOrientation.landscapeRight, // 横向き右
-  ]).then((_) {
-    runApp(const MyApp());
-  });
+  ]);
+
+  // すべての準備が終わってから、アプリを起動します
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

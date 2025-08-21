@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'timer_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
+import '../../managers/bgm_manager.dart';
+import '../../managers/sfx_manager.dart';
 
 class PromiseBoardScreen extends StatefulWidget {
   // StatefulWidgetに変更
@@ -37,12 +39,20 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
 
   // 「はじめる」ボタンが押された時の処理
   void _startPromise(Map<String, dynamic> promise) async {
+    // ★タイマー画面に行く前に、集中BGMを再生
+    BgmManager.instance.play(BgmTrack.focus);
+
+    SfxManager.instance.playStartSound();
+
     final pointsAwarded = await Navigator.push<int>(
       context,
       MaterialPageRoute(
         builder: (context) => TimerScreen(promise: promise, isEmergency: false),
       ),
     );
+
+    // ★タイマー画面から戻ってきたら、メインBGMを再生
+    BgmManager.instance.play(BgmTrack.main);
 
     if (pointsAwarded != null && pointsAwarded > 0) {
       // 達成記録を保存する処理を追加！
@@ -104,6 +114,7 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                                   color: Colors.grey[400],
                                 ),
                                 onPressed: () {
+                                  SfxManager.instance.playTapSound();
                                   _skipPromiseOnBoard(promise['title']);
                                 },
                               ),

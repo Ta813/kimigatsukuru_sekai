@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
+import '../../managers/sfx_manager.dart';
 
 class CharacterCustomizeScreen extends StatefulWidget {
   const CharacterCustomizeScreen({super.key});
@@ -39,6 +40,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   void _equipItem(ShopItem item) async {
+    SfxManager.instance.playTapSound();
     await SharedPrefsHelper.saveEquippedItem(item.type, item.imagePath);
     _loadData(); // データを再読み込みして画面を更新
   }
@@ -86,7 +88,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
+        crossAxisCount: 5,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),

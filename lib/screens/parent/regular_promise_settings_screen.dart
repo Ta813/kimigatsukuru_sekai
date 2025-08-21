@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
+import '../../managers/sfx_manager.dart';
 
 class RegularPromiseSettingsScreen extends StatefulWidget {
   const RegularPromiseSettingsScreen({super.key});
@@ -58,6 +59,7 @@ class _RegularPromiseSettingsScreenState
 
   // 「＋」ボタンが押された時の処理
   void _navigateToAddScreen() async {
+    SfxManager.instance.playTapSound();
     // まず、追加画面のファイルをインポートするのを忘れないようにしましょう
     // import 'add_edit_promise_screen.dart';
 
@@ -135,6 +137,7 @@ class _RegularPromiseSettingsScreenState
                   IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () {
+                      SfxManager.instance.playTapSound();
                       _navigateToEditScreen(index);
                     },
                   ),
@@ -142,6 +145,7 @@ class _RegularPromiseSettingsScreenState
                   IconButton(
                     icon: Icon(Icons.delete, color: Colors.red[400]),
                     onPressed: () {
+                      SfxManager.instance.playTapSound();
                       _deletePromise(index);
                     },
                   ),

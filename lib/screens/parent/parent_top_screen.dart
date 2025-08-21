@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'regular_promise_settings_screen.dart';
 import 'emergency_promise_screen.dart';
+import '../../managers/sfx_manager.dart';
 
 class ParentTopScreen extends StatelessWidget {
   const ParentTopScreen({super.key});
@@ -21,6 +22,7 @@ class ParentTopScreen extends StatelessWidget {
             // 「定例のやくそく設定」ボタン
             ElevatedButton(
               onPressed: () {
+                SfxManager.instance.playTapSound();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -39,6 +41,7 @@ class ParentTopScreen extends StatelessWidget {
             // 「緊急のやくそく設定」ボタン
             ElevatedButton(
               onPressed: () {
+                SfxManager.instance.playTapSound();
                 Navigator.push(
                   context,
                   MaterialPageRoute(

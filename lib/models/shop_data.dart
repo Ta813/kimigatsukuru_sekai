@@ -19,19 +19,19 @@ class ShopItem {
 final List<ShopItem> shopItems = [
   ShopItem(
     name: 'あおいふく',
-    imagePath: 'assets/images/clothes_blue.png',
+    imagePath: 'assets/images/clothes_blue.gif',
     price: 50,
     type: 'clothes',
   ),
   ShopItem(
     name: 'あかいふく',
-    imagePath: 'assets/images/clothes_red.png',
+    imagePath: 'assets/images/clothes_red.gif',
     price: 50,
     type: 'clothes',
   ),
   ShopItem(
     name: 'みどりのふく',
-    imagePath: 'assets/images/clothes_green.png',
+    imagePath: 'assets/images/clothes_green.gif',
     price: 50,
     type: 'clothes',
   ),

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../managers/sfx_manager.dart';
 
 class AddEditPromiseScreen extends StatefulWidget {
   final Map<String, dynamic>? initialPromise;
@@ -50,6 +51,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
 
   // 保存ボタンが押された時の処理
   void _savePromise() {
+    SfxManager.instance.playTapSound();
     // バリデーション（入力チェック）を実行
     if (_formKey.currentState!.validate()) {
       // 全ての入力が正しければ、入力されたデータをMapにまとめる

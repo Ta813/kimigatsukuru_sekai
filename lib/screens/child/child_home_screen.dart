@@ -5,6 +5,8 @@ import 'shop_screen.dart';
 import '../parent/parent_top_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'character_customize_screen.dart';
+import '../../managers/bgm_manager.dart';
+import '../../managers/sfx_manager.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -13,7 +15,10 @@ class ChildHomeScreen extends StatefulWidget {
   State<ChildHomeScreen> createState() => _ChildHomeScreenState();
 }
 
-class _ChildHomeScreenState extends State<ChildHomeScreen> {
+class _ChildHomeScreenState extends State<ChildHomeScreen>
+    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
   String _equippedClothesPath = 'assets/images/avatar.png'; // デフォルト画像
   String _equippedHousePath = 'assets/images/house.png'; // デフォルト画像
   // ポイント数の状態を管理するための変数
@@ -25,7 +30,60 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    // 1. リモコンの準備（アニメーション全体の長さを少し長くする）
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    // 2. アニメーションの動きを「3回弾む」ように変更
+    _scaleAnimation =
+        TweenSequence<double>([
+          // 1回目のポヨン
+          TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 1),
+          TweenSequenceItem(tween: Tween(begin: 1.3, end: 1.0), weight: 1),
+          // 2回目のポヨン
+          TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 1),
+          TweenSequenceItem(tween: Tween(begin: 1.3, end: 1.0), weight: 1),
+          // 3回目のポヨン
+          TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 1),
+          TweenSequenceItem(tween: Tween(begin: 1.3, end: 1.0), weight: 1),
+        ]).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        );
+
     _loadAndDetermineDisplayPromise(); // 定例のやくそくを読み込む（既存の処理）
+    // ★アプリの状態変化の監視を開始
+    WidgetsBinding.instance.addObserver(this);
+    // ★BGMの再生を開始
+    BgmManager.instance.play(BgmTrack.main);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    // ★アプリの状態変化の監視を終了
+    WidgetsBinding.instance.removeObserver(this);
+    // ★BGMマネージャーのリソースを解放
+    BgmManager.instance.dispose();
+    super.dispose();
+  }
+
+  // ★アプリの状態が変化した時に呼ばれるメソッド
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // アプリが前面に戻ってきたら、BGMを再生
+      BgmManager.instance.play(BgmTrack.main);
+    } else {
+      // アプリがバックグラウンドに回ったら、BGMを停止
+      BgmManager.instance.stopBgm();
+    }
   }
 
   // データを読み込み、表示するやくそくを決定する
@@ -80,6 +138,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
   void _startPromise() async {
     if (_displayPromise == null) return;
 
+    // ★タイマー画面に行く前に、集中BGMを再生
+    BgmManager.instance.play(BgmTrack.focus);
+    SfxManager.instance.playStartSound();
+
     // タイマー画面に遷移し、結果（獲得ポイント）を待つ
     final pointsAwarded = await Navigator.push<int>(
       context,
@@ -92,12 +154,22 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
       ),
     );
 
+    // ★タイマー画面から戻ってきたら、メインBGMを再生
+    BgmManager.instance.play(BgmTrack.main);
+
     if (pointsAwarded != null && pointsAwarded > 0) {
+      _animationController.forward(from: 0.0);
+      if (!_isDisplayPromiseEmergency) {
+        await SharedPrefsHelper.addCompletionRecord(_displayPromise!['title']);
+      }
       // 新しいポイントを計算
       final newTotalPoints = _points + pointsAwarded;
 
       // SharedPreferencesに新しいポイントを保存
       await SharedPrefsHelper.savePoints(newTotalPoints);
+
+      // ポイント追加の効果音出す
+      SfxManager.instance.playSuccessSound();
 
       // 画面の状態を更新して、再読み込み
       _loadAndDetermineDisplayPromise();
@@ -106,6 +178,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
 
   // このメソッドを新しく追加します
   void _skipPromise() async {
+    SfxManager.instance.playTapSound();
     if (_displayPromise == null) return;
 
     // 「やらなかった」やくそくも、達成済みとして記録します
@@ -157,8 +230,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
                         size: 40,
                         color: Colors.white,
                       ),
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        SfxManager.instance.playTapSound();
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const ParentTopScreen(),
@@ -175,36 +249,39 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
                 Positioned(
                   top: 10,
                   right: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        // 少し影をつけて立体感を出す
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 1,
-                          blurRadius: 3,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 24),
-                        const SizedBox(width: 8),
-                        Text(
-                          '$_points', // ポイント数を表示
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          // 少し影をつけて立体感を出す
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 2),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 24),
+                          const SizedBox(width: 8),
+                          Text(
+                            '$_points', // ポイント数を表示
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -231,6 +308,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
                               color: Colors.white,
                             ),
                             onPressed: () async {
+                              SfxManager.instance.playTapSound();
                               // やくそくボード画面から戻ってくるのを「await」で待ち、結果を受け取る
                               final pointsFromBoard = await Navigator.push(
                                 context,
@@ -242,6 +320,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
 
                               // もし、ポイントを持って戻ってきたら
                               if (pointsFromBoard != null) {
+                                // ポイント追加の効果音出す
+                                SfxManager.instance.playSuccessSound();
+
                                 // setStateを使って、ポイントを加算し、画面を更新！
                                 setState(() {
                                   _points += (pointsFromBoard as int);
@@ -269,6 +350,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
                               color: Colors.white,
                             ),
                             onPressed: () {
+                              SfxManager.instance.playTapSound();
                               // キャラクター設定画面へ遷移
                               Navigator.push(
                                 context,
@@ -297,6 +379,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen> {
                               color: Colors.white,
                             ),
                             onPressed: () {
+                              SfxManager.instance.playTapSound();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

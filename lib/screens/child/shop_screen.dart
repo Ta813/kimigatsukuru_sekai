@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
+import '../../managers/sfx_manager.dart';
 
 // ショップに並べるアイテムのデータ構造を定義
 class ShopItem {
@@ -22,19 +23,19 @@ class ShopItem {
 final List<ShopItem> shopItems = [
   ShopItem(
     name: 'あおいふく',
-    imagePath: 'assets/images/clothes_blue.png',
+    imagePath: 'assets/images/clothes_blue.gif',
     price: 50,
     type: 'clothes',
   ),
   ShopItem(
     name: 'あかいふく',
-    imagePath: 'assets/images/clothes_red.png',
+    imagePath: 'assets/images/clothes_red.gif',
     price: 50,
     type: 'clothes',
   ),
   ShopItem(
     name: 'みどりのふく',
-    imagePath: 'assets/images/clothes_green.png',
+    imagePath: 'assets/images/clothes_green.gif',
     price: 50,
     type: 'clothes',
   ),
@@ -69,6 +70,7 @@ class _ShopScreenState extends State<ShopScreen> {
   @override
   void initState() {
     super.initState();
+    SfxManager.instance.playShopInitSound();
     _points = widget.currentPoints;
     _loadPurchasedItems();
   }
@@ -91,11 +93,15 @@ class _ShopScreenState extends State<ShopScreen> {
           content: Text('${item.price}ポイントつかって、こうかんしますか？'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                SfxManager.instance.playTapSound();
+                Navigator.pop(context);
+              },
               child: const Text('やめる'),
             ),
             ElevatedButton(
               onPressed: () async {
+                SfxManager.instance.playShopBuySound();
                 final newPoints = _points - item.price;
                 await SharedPrefsHelper.savePoints(newPoints);
 
@@ -244,7 +250,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 physics:
                     const NeverScrollableScrollPhysics(), // GridView自体はスクロールしない
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // 服は1行に3つ
+                  crossAxisCount: 5, // 服は1行に5つ
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
@@ -275,7 +281,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // 家は1行に2つ
+                  crossAxisCount: 5, // 家は1行に5つ
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   childAspectRatio: 0.9,
