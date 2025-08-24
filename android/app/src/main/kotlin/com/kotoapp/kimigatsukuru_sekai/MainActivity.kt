@@ -1,4 +1,4 @@
-package com.example.kimigatsukuru_sekai
+package com.kotoapp.kimigatsukuru_sekai
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine

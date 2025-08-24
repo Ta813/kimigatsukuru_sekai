@@ -38,7 +38,7 @@ class SfxManager {
 
       // プレイリストをプレイヤーにセットして再生
       await _sfxPlayer.setAudioSource(playlist);
-      _sfxPlayer.play();
+      await _sfxPlayer.play();
     } catch (e) {
       print("連続再生エラー: $e");
     }

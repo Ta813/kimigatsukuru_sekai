@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1059611862340",
+    "project_id": "kimigatsukuru-sekai",
+    "storage_bucket": "kimigatsukuru-sekai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1059611862340:android:1c3f36abfbb8bc546de311",
+        "android_client_info": {
+          "package_name": "com.kotoapp.kimigatsukuru_sekai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDraNJ9juRmdBDgwAt1Tkv62yo2Q8_RPX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
+import '../../widgets/ad_banner.dart';
 
 class RegularPromiseSettingsScreen extends StatefulWidget {
   const RegularPromiseSettingsScreen({super.key});
@@ -160,6 +161,8 @@ class _RegularPromiseSettingsScreenState
         onPressed: _navigateToAddScreen,
         child: const Icon(Icons.add),
       ),
+      // 画面下部にバナーを設置
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

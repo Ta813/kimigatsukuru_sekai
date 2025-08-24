@@ -42,6 +42,14 @@ class BgmManager {
     }
   }
 
+  Future<void> pause() async {
+    await _bgmPlayer.pause();
+  }
+
+  Future<void> resume() async {
+    _bgmPlayer.play();
+  }
+
   Future<void> stopBgm() async {
     await _bgmPlayer.stop();
     _currentTrack = null;

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'regular_promise_settings_screen.dart';
 import 'emergency_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
+import '../../widgets/ad_banner.dart';
 
 class ParentTopScreen extends StatelessWidget {
   const ParentTopScreen({super.key});
@@ -58,6 +59,8 @@ class ParentTopScreen extends StatelessWidget {
           ],
         ),
       ),
+      // 画面下部にバナーを設置
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

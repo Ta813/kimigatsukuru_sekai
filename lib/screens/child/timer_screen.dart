@@ -6,6 +6,8 @@ import '../../helpers/shared_prefs_helper.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'roulette_dialog.dart';
 import '../../managers/sfx_manager.dart';
+import '../../managers/bgm_manager.dart';
+import '../../widgets/ad_banner.dart';
 
 class TimerScreen extends StatefulWidget {
   // StatefulWidgetに変更
@@ -85,7 +87,7 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       _updateRemainingSeconds();
 
       // --- 音声再生ロジックをここにまとめる ---
@@ -141,7 +143,13 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
 
       // もし再生すべき音があれば、SfxManagerの新しいメソッドを呼び出す
       if (soundsToPlay.isNotEmpty) {
-        SfxManager.instance.playSequentialSounds(soundsToPlay);
+        // 1. BGMを一時停止
+        BgmManager.instance.pause();
+        // 2. 効果音の再生が「終わるのを待つ」
+        await SfxManager.instance.playSequentialSounds(soundsToPlay);
+        await Future.delayed(const Duration(seconds: 3));
+        // 3. BGMを再開
+        BgmManager.instance.resume();
       }
     });
   }
@@ -198,7 +206,7 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
   // ★ルーレットを表示して、その結果で終了処理を呼ぶメソッド
   void _showRouletteAndFinish() async {
     //効果音の後ちょっとだけ待つ
-    Timer(const Duration(milliseconds: 2000), () {});
+    await Future.delayed(const Duration(seconds: 2));
 
     final multiplier = await showDialog<int>(
       context: context,
@@ -236,22 +244,22 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
             Text(
               _formatDuration(_remainingSeconds), // タイマー表示
               style: TextStyle(
-                fontSize: 80,
+                fontSize: 50,
                 fontWeight: FontWeight.bold,
                 color: _isTimeUp ? Colors.red : Colors.black,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             _isTimeUp
                 ? Text(
-                    'おしい！ポイントははんぶんになるよ！',
+                    'おしい！ポイントは${widget.promise['points'] / 2}になるよ！',
                     style: TextStyle(fontSize: 20, color: Colors.red[700]),
                   )
                 : Text(
                     '${widget.promise['points']}ポイント ゲットのチャンス！',
                     style: const TextStyle(fontSize: 20),
                   ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
             ElevatedButton(
               // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
               onPressed: () {
@@ -273,6 +281,8 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
           ],
         ),
       ),
+      // 画面下部にバナーを設置
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
+import '../../widgets/ad_banner.dart';
 
 class EmergencyPromiseScreen extends StatefulWidget {
   const EmergencyPromiseScreen({super.key});
@@ -95,6 +96,8 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
           ),
         ),
       ),
+      // 画面下部にバナーを設置
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

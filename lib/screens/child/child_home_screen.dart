@@ -7,6 +7,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import 'character_customize_screen.dart';
 import '../../managers/bgm_manager.dart';
 import '../../managers/sfx_manager.dart';
+import 'math_lock_dialog.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -221,25 +222,34 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   left: 10,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.2), // 半透明の黒い背景
+                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
                       shape: BoxShape.circle, // 形を円にする
                     ),
                     child: IconButton(
                       icon: const Icon(
                         Icons.settings,
                         size: 40,
-                        color: Colors.white,
+                        color: Color(0xFFFFCA28),
                       ),
                       onPressed: () async {
                         SfxManager.instance.playTapSound();
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ParentTopScreen(),
-                          ),
+                        final bool? isCorrect = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => const MathLockDialog(),
                         );
-                        // ★親モード画面から戻ってきたら、必ずデータを再読み込みする！
-                        _loadAndDetermineDisplayPromise();
+
+                        // ★もし、結果がtrue（正解）だったら、親モード画面へ
+                        if (isCorrect == true) {
+                          if (!mounted) return;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ParentTopScreen(),
+                            ),
+                          ).then((_) {
+                            _loadAndDetermineDisplayPromise();
+                          });
+                        }
                       },
                     ),
                   ),
@@ -298,14 +308,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         // やくそくボードボタン
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2), // 半透明の黒い背景
+                            color: Color(
+                              0xFFFF7043,
+                            ).withOpacity(0.9), // 半透明の黒い背景
                             shape: BoxShape.circle, // 形を円にする
                           ),
                           child: IconButton(
                             icon: const Icon(
                               Icons.article_rounded,
                               size: 40,
-                              color: Colors.white,
+                              color: Color(0xFFFFCA28),
                             ),
                             onPressed: () async {
                               SfxManager.instance.playTapSound();
@@ -340,14 +352,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         // キャラクター選択ボタン
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2), // 半透明の黒い背景
+                            color: Color(
+                              0xFFFF7043,
+                            ).withOpacity(0.9), // 半透明の黒い背景
                             shape: BoxShape.circle, // 形を円にする
                           ),
                           child: IconButton(
                             icon: const Icon(
                               Icons.face,
                               size: 40,
-                              color: Colors.white,
+                              color: Color(0xFFFFCA28),
                             ),
                             onPressed: () {
                               SfxManager.instance.playTapSound();
@@ -369,14 +383,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         // ごほうびショップボタン
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2), // 半透明の黒い背景
+                            color: Color(
+                              0xFFFF7043,
+                            ).withOpacity(0.9), // 半透明の黒い背景
                             shape: BoxShape.circle, // 形を円にする
                           ),
                           child: IconButton(
                             icon: const Icon(
                               Icons.store,
                               size: 40,
-                              color: Colors.white,
+                              color: Color(0xFFFFCA28),
                             ),
                             onPressed: () {
                               SfxManager.instance.playTapSound();

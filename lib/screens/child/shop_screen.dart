@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
+import '../../widgets/ad_banner.dart';
 
 // ショップに並べるアイテムのデータ構造を定義
 class ShopItem {
@@ -296,6 +297,8 @@ class _ShopScreenState extends State<ShopScreen> {
           ],
         ),
       ),
+      // 画面下部にバナーを設置
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }
