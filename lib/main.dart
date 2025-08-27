@@ -10,6 +10,7 @@ import 'dart:async';
 import 'dart:ui';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   // Firebaseを初期化
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -23,8 +24,6 @@ Future<void> main() async {
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
-
-  WidgetsFlutterBinding.ensureInitialized();
 
   // ★広告SDKを初期化する
   await MobileAds.instance.initialize();

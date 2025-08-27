@@ -177,4 +177,19 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_equippedHouseKey);
   }
+
+  // ガイド表示済みフラグのキー
+  static const String _guideShownKey = 'guide_shown';
+
+  // ガイドがすでに表示されたかチェックする
+  static Future<bool> isGuideShown() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_guideShownKey) ?? false;
+  }
+
+  // ガイドを表示済みにセットする
+  static Future<void> setGuideShown() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_guideShownKey, true);
+  }
 }

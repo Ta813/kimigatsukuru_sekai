@@ -62,6 +62,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     WidgetsBinding.instance.addObserver(this);
     // ★BGMの再生を開始
     BgmManager.instance.play(BgmTrack.main);
+
+    _showGuideIfNeeded(); // 必要ならガイドを表示
   }
 
   @override
@@ -85,6 +87,85 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       // アプリがバックグラウンドに回ったら、BGMを停止
       BgmManager.instance.stopBgm();
     }
+  }
+
+  void _showTutorial() async {
+    await _showGuideDialog(
+      title: 'ようこそ！',
+      content: 'これから「きみがつくる世界」の遊び方を説明するね！',
+    );
+    // 親モード設定のガイド
+    await _showGuideDialog(
+      title: '① おうちのひと設定「左上の⚙マーク」',
+      content:
+          'やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！',
+    );
+    // つぎのやくそくのガイド
+    await _showGuideDialog(
+      title: '② つぎのやくそく「下のボード」',
+      content: '次にやるべきやくそくが表示されるよ。\n「はじめる」を押して挑戦しよう！',
+    );
+    // やくそくボードのガイド
+    await _showGuideDialog(
+      title: '③ やくそくボード「右の📄マーク」',
+      content: '今日のやくそくの一覧が見れるよ。\n「できた！」マークを集めるのが目標だ！',
+    );
+    // ポイントのガイド
+    await _showGuideDialog(
+      title: '④ ポイント「右上の★」',
+      content: 'ここにやくそくを達成すると、ポイントがもらえるよ！\nたくさん集めて、ごほうびと交換しよう。',
+    );
+    // ショップのガイド
+    await _showGuideDialog(
+      title: '⑤ ごほうびショップ「右の🏠マーク」',
+      content: '貯めたポイントで、新しい服やおうちと交換できる場所だよ！',
+    );
+    // キャラクター選択のガイド
+    await _showGuideDialog(
+      title: '⑥ きせかえ・もようがえ「右の☺マーク」',
+      content: '買ったアイテムで、アバターの服やおうちを変えられるよ！\n自分だけの世界をつくろう。',
+    );
+    // ヘルプボタンのガイド
+    await _showGuideDialog(
+      title: '⑦ ヘルプ「左の？マーク」',
+      content: 'わからなくなったら、このボタンを押して、\nもう一度この説明を見れるよ。',
+    );
+  }
+
+  void _showGuideIfNeeded() async {
+    bool isShown = await SharedPrefsHelper.isGuideShown();
+    if (!isShown && mounted) {
+      // 画面の描画が終わってから、最初のダイアログを表示
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        //ガイド表示
+        _showTutorial();
+        // 全ての説明が終わったら、表示済みフラグを立てる
+        await SharedPrefsHelper.setGuideShown();
+      });
+    }
+  }
+
+  // 説明ダイアログを表示するための共通メソッド
+  Future<void> _showGuideDialog({
+    required String title,
+    required String content,
+  }) async {
+    return showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () {
+              SfxManager.instance.playTapSound();
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   // データを読み込み、表示するやくそくを決定する
@@ -220,37 +301,65 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 Positioned(
                   top: 10,
                   left: 10,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.settings,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () async {
-                        SfxManager.instance.playTapSound();
-                        final bool? isCorrect = await showDialog<bool>(
-                          context: context,
-                          builder: (context) => const MathLockDialog(),
-                        );
-
-                        // ★もし、結果がtrue（正解）だったら、親モード画面へ
-                        if (isCorrect == true) {
-                          if (!mounted) return;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ParentTopScreen(),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color(
+                              0xFFFF7043,
+                            ).withOpacity(0.9), // 半透明の黒い背景
+                            shape: BoxShape.circle, // 形を円にする
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.settings,
+                              size: 40,
+                              color: Color(0xFFFFCA28),
                             ),
-                          ).then((_) {
-                            _loadAndDetermineDisplayPromise();
-                          });
-                        }
-                      },
+                            onPressed: () async {
+                              SfxManager.instance.playTapSound();
+                              final bool? isCorrect = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => const MathLockDialog(),
+                              );
+
+                              // ★もし、結果がtrue（正解）だったら、親モード画面へ
+                              if (isCorrect == true) {
+                                if (!mounted) return;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ParentTopScreen(),
+                                  ),
+                                ).then((_) {
+                                  _loadAndDetermineDisplayPromise();
+                                });
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10), // ボタンの間に少し隙間をあける
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xFFFF7043).withOpacity(0.9),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.question_mark,
+                              size: 40,
+                              color: Color(0xFFFFCA28),
+                            ),
+                            onPressed: () {
+                              SfxManager.instance.playTapSound();
+                              _showTutorial();
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

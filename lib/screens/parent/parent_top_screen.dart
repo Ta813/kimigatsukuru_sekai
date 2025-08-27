@@ -5,6 +5,7 @@ import 'regular_promise_settings_screen.dart';
 import 'emergency_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
+import 'advice_screen.dart';
 
 class ParentTopScreen extends StatelessWidget {
   const ParentTopScreen({super.key});
@@ -19,7 +20,23 @@ class ParentTopScreen extends StatelessWidget {
           // 画面いっぱいに広げる
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 20),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.lightbulb_outline),
+              label: const Text('最初にお読みください'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdviceScreen()),
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                textStyle: const TextStyle(fontSize: 16),
+                foregroundColor: Theme.of(context).primaryColor,
+                side: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+            ),
+            const SizedBox(height: 10),
             // 「定例のやくそく設定」ボタン
             ElevatedButton(
               onPressed: () {
@@ -33,12 +50,12 @@ class ParentTopScreen extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 // main.dartで設定したテーマカラーが適用されます
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 textStyle: const TextStyle(fontSize: 18),
               ),
               child: const Text('定例のやくそく設定'),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             // 「緊急のやくそく設定」ボタン
             ElevatedButton(
               onPressed: () {
@@ -51,7 +68,7 @@ class ParentTopScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 textStyle: const TextStyle(fontSize: 18),
               ),
               child: const Text('緊急のやくそく設定'),
