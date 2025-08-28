@@ -205,9 +205,6 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
 
   // ★ルーレットを表示して、その結果で終了処理を呼ぶメソッド
   void _showRouletteAndFinish() async {
-    //効果音の後ちょっとだけ待つ
-    await Future.delayed(const Duration(seconds: 2));
-
     final multiplier = await showDialog<int>(
       context: context,
       barrierDismissible: false,
