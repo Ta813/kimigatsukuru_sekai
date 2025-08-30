@@ -22,6 +22,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   late Animation<double> _scaleAnimation;
   String _equippedClothesPath = 'assets/images/avatar.png'; // デフォルト画像
   String _equippedHousePath = 'assets/images/house.png'; // デフォルト画像
+  String _equippedCharacterPath = 'assets/images/character_usagi.gif';
   // ポイント数の状態を管理するための変数
   int _points = 0;
 
@@ -205,6 +206,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
     final house = await SharedPrefsHelper.loadEquippedHouse();
+    final character = await SharedPrefsHelper.loadEquippedCharacter();
 
     // 最後に、画面の状態を更新
     setState(() {
@@ -213,6 +215,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       _isDisplayPromiseEmergency = isEmergency;
       _equippedClothesPath = clothes ?? 'assets/images/avatar.png';
       _equippedHousePath = house ?? 'assets/images/house.png';
+      _equippedCharacterPath = character ?? 'assets/images/character_usagi.gif';
     });
   }
 
@@ -531,7 +534,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           Align(
             alignment: Alignment.bottomCenter, // 画面下の中央を基準に配置
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 90.0), // 下から少し浮かせる
+              padding: const EdgeInsets.only(bottom: 100.0), // 下から少し浮かせる
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center, // 中央揃え
                 crossAxisAlignment: CrossAxisAlignment.end, // アバターと家の底を揃える
@@ -550,6 +553,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 ],
               ),
             ),
+          ),
+          Positioned(
+            bottom: 100,
+            right: MediaQuery.of(context).size.width * 0.24, // 画面サイズに応じて位置を調整
+            child: Image.asset(_equippedCharacterPath, height: 80),
           ),
 
           // 下のバー（つぎのやくそく）

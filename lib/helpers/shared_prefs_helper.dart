@@ -155,6 +155,7 @@ class SharedPrefsHelper {
   // --- ここから装備中アイテム関連を追加 ---
   static const String _equippedClothesKey = 'equipped_clothes';
   static const String _equippedHouseKey = 'equipped_house';
+  static const String _equippedCharacterKey = 'equipped_character';
 
   // 装備中のアイテムを保存する
   static Future<void> saveEquippedItem(String type, String imagePath) async {
@@ -163,6 +164,8 @@ class SharedPrefsHelper {
       await prefs.setString(_equippedClothesKey, imagePath);
     } else if (type == 'house') {
       await prefs.setString(_equippedHouseKey, imagePath);
+    } else if (type == 'character') {
+      await prefs.setString(_equippedCharacterKey, imagePath);
     }
   }
 
@@ -191,5 +194,10 @@ class SharedPrefsHelper {
   static Future<void> setGuideShown() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_guideShownKey, true);
+  }
+
+  static Future<String?> loadEquippedCharacter() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_equippedCharacterKey);
   }
 }

@@ -30,6 +30,8 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
   int _remainingSeconds = 0; // 残り時間を秒で管理
   bool _isTimeUp = false;
 
+  String _characterPath = 'assets/images/character_usagi.gif'; // デフォルト
+
   // この画面が表示された瞬間に、一度だけ呼ばれる初期化処理
   @override
   void initState() {
@@ -43,6 +45,8 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     _endTime = DateTime.now().add(Duration(minutes: durationInMinutes));
 
     _startTimer();
+
+    _loadCharacter();
   }
 
   // この画面が閉じられる時に、一度だけ呼ばれるお片付け処理
@@ -70,6 +74,15 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     } else {
       // アプリが裏に回ったら、UI更新用のタイマーは一旦停止
       _timer?.cancel();
+    }
+  }
+
+  Future<void> _loadCharacter() async {
+    final character = await SharedPrefsHelper.loadEquippedCharacter();
+    if (mounted) {
+      setState(() {
+        _characterPath = character ?? 'assets/images/character_usagi.gif';
+      });
     }
   }
 
@@ -234,49 +247,58 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
         backgroundColor: widget.isEmergency ? Colors.red[400] : null,
         title: Text('${widget.promise['title']} に挑戦中！'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _formatDuration(_remainingSeconds), // タイマー表示
-              style: TextStyle(
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-                color: _isTimeUp ? Colors.red : Colors.black,
-              ),
-            ),
-            const SizedBox(height: 10),
-            _isTimeUp
-                ? Text(
-                    'おしい！ポイントは${widget.promise['points'] / 2}になるよ！',
-                    style: TextStyle(fontSize: 20, color: Colors.red[700]),
-                  )
-                : Text(
-                    '${widget.promise['points']}ポイント ゲットのチャンス！',
-                    style: const TextStyle(fontSize: 20),
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  _formatDuration(_remainingSeconds), // タイマー表示
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: _isTimeUp ? Colors.red : Colors.black,
                   ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
-              onPressed: () {
-                _timer?.cancel();
-                _showApprovalDialog();
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 20,
                 ),
-                textStyle: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                const SizedBox(height: 10),
+                _isTimeUp
+                    ? Text(
+                        'おしい！ポイントは${widget.promise['points'] / 2}になるよ！',
+                        style: TextStyle(fontSize: 20, color: Colors.red[700]),
+                      )
+                    : Text(
+                        '${widget.promise['points']}ポイント ゲットのチャンス！',
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
+                  onPressed: () {
+                    _timer?.cancel();
+                    _showApprovalDialog();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 20,
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: const Text('おわった！'),
                 ),
-              ),
-              child: const Text('おわった！'),
+              ],
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            right: 50,
+            bottom: 50,
+            child: Image.asset(_characterPath, height: 180),
+          ),
+        ],
       ),
       // 画面下部にバナーを設置
       bottomNavigationBar: const AdBanner(),

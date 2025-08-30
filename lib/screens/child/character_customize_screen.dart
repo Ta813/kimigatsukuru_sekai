@@ -18,6 +18,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   List<String> _purchasedItemNames = [];
   String? _equippedClothes;
   String? _equippedHouse;
+  String? _equippedCharacter;
 
   @override
   void initState() {
@@ -29,14 +30,17 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     final purchased = await SharedPrefsHelper.loadPurchasedItems();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
     final house = await SharedPrefsHelper.loadEquippedHouse();
+    final character = await SharedPrefsHelper.loadEquippedCharacter();
     // デフォルトのアイテムも「購入済み」として扱えるように追加
     if (!purchased.contains('いつものふく')) purchased.add('いつものふく');
     if (!purchased.contains('さいしょのおうち')) purchased.add('さいしょのおうち');
+    if (!purchased.contains('ウサギ')) purchased.add('ウサギ');
 
     setState(() {
       _purchasedItemNames = purchased;
       _equippedClothes = clothes ?? 'assets/images/avatar.png'; // デフォルトを設定
       _equippedHouse = house ?? 'assets/images/house.png'; // デフォルトを設定
+      _equippedCharacter = character ?? 'assets/images/character_usagi.gif';
     });
   }
 
@@ -60,9 +64,16 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               item.type == 'house' && _purchasedItemNames.contains(item.name),
         )
         .toList();
+    final ownedCharacters = shopItems
+        .where(
+          (item) =>
+              item.type == 'character' &&
+              _purchasedItemNames.contains(item.name),
+        )
+        .toList();
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('きせかえ・もようがえ'),
@@ -70,6 +81,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             tabs: [
               Tab(text: 'きせかえ', icon: Icon(Icons.checkroom)),
               Tab(text: 'おうち', icon: Icon(Icons.house)),
+              Tab(text: '応援キャラ', icon: Icon(Icons.support_agent)),
             ],
           ),
         ),
@@ -79,6 +91,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             _buildItemGrid(ownedClothes, _equippedClothes),
             // 家の選択グリッド
             _buildItemGrid(ownedHouses, _equippedHouse),
+            // キャラクターの選択グリッド
+            _buildItemGrid(ownedCharacters, _equippedCharacter),
           ],
         ),
         // 画面下部にバナーを設置

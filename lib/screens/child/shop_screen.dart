@@ -4,55 +4,7 @@ import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
-
-// ショップに並べるアイテムのデータ構造を定義
-class ShopItem {
-  final String name;
-  final String imagePath;
-  final int price;
-  final String type; // 'clothes' or 'house'
-
-  ShopItem({
-    required this.name,
-    required this.imagePath,
-    required this.price,
-    required this.type,
-  });
-}
-
-// ショップのカタログデータ（仮）
-final List<ShopItem> shopItems = [
-  ShopItem(
-    name: 'あおいふく',
-    imagePath: 'assets/images/clothes_blue.gif',
-    price: 50,
-    type: 'clothes',
-  ),
-  ShopItem(
-    name: 'あかいふく',
-    imagePath: 'assets/images/clothes_red.gif',
-    price: 50,
-    type: 'clothes',
-  ),
-  ShopItem(
-    name: 'みどりのふく',
-    imagePath: 'assets/images/clothes_green.gif',
-    price: 50,
-    type: 'clothes',
-  ),
-  ShopItem(
-    name: 'ふつうのおうち',
-    imagePath: 'assets/images/house_normal.png',
-    price: 500,
-    type: 'house',
-  ),
-  ShopItem(
-    name: 'りっぱなおうち',
-    imagePath: 'assets/images/house_rich.png',
-    price: 1500,
-    type: 'house',
-  ),
-];
+import '../../models/shop_data.dart';
 
 class ShopScreen extends StatefulWidget {
   final int currentPoints;
@@ -205,9 +157,14 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget build(BuildContext context) {
     // まず、アイテムをカテゴリ別に分けます
     final clothesItems = shopItems
-        .where((item) => item.type == 'clothes')
+        .where((item) => item.type == 'clothes' && item.name != 'いつものふく')
         .toList();
-    final houseItems = shopItems.where((item) => item.type == 'house').toList();
+    final houseItems = shopItems
+        .where((item) => item.type == 'house' && item.name != 'さいしょのおうち')
+        .toList();
+    final characterItems = shopItems
+        .where((item) => item.type == 'character' && item.name != 'ウサギ')
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -290,6 +247,31 @@ class _ShopScreenState extends State<ShopScreen> {
                 itemCount: houseItems.length,
                 itemBuilder: (context, index) {
                   final item = houseItems[index];
+                  return _buildShopItemCard(item);
+                },
+              ),
+            ),
+            const Text(
+              '応援キャラ',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 5, // 1行に5つ
+                ),
+                itemCount: characterItems.length,
+                itemBuilder: (context, index) {
+                  final item = characterItems[index];
                   return _buildShopItemCard(item);
                 },
               ),
