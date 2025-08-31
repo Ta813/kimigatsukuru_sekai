@@ -67,6 +67,7 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       // アプリが前面に戻ってきたら、タイマーの表示を更新
       _updateRemainingSeconds();
+      BgmManager.instance.play(BgmTrack.focus);
       // もしタイマーが止まっていたら再開
       if (_timer == null || !_timer!.isActive) {
         _startTimer();
@@ -74,6 +75,7 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     } else {
       // アプリが裏に回ったら、UI更新用のタイマーは一旦停止
       _timer?.cancel();
+      BgmManager.instance.stopBgm();
     }
   }
 
