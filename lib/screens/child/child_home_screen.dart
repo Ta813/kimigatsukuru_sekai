@@ -29,6 +29,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   Map<String, dynamic>? _displayPromise; // 実際に下のバーに表示するやくそく
   bool _isDisplayPromiseEmergency = false; // 表示しているのが緊急かどうか
 
+  Offset _avatarPosition = const Offset(100, 400);
+  Offset _characterPosition = const Offset(220, 420);
+
   @override
   void initState() {
     super.initState();
@@ -177,6 +180,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final emergency = await SharedPrefsHelper.loadEmergencyPromise();
     final todaysCompletedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+    final loadedAvatarPos = await SharedPrefsHelper.loadCharacterPosition(
+      'avatar',
+    );
+    final loadedCharPos = await SharedPrefsHelper.loadCharacterPosition(
+      'character',
+    );
 
     Map<String, dynamic>? nextPromise;
     bool isEmergency = false;
@@ -216,6 +225,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       _equippedClothesPath = clothes ?? 'assets/images/avatar.png';
       _equippedHousePath = house ?? 'assets/images/house.png';
       _equippedCharacterPath = character ?? 'assets/images/character_usagi.gif';
+      _avatarPosition = loadedAvatarPos ?? Offset(205, 190);
+      _characterPosition = loadedCharPos ?? Offset(460, 190);
     });
   }
 
@@ -539,12 +550,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center, // 中央揃え
                 crossAxisAlignment: CrossAxisAlignment.end, // アバターと家の底を揃える
                 children: [
-                  // アバター画像
-                  Image.asset(
-                    _equippedClothesPath, // あなたが用意した画像ファイル名
-                    height: 80, // 高さを指定
-                  ),
-                  const SizedBox(width: 30), // アバターと家の間に隙間をあける
                   // 家の画像
                   Image.asset(
                     _equippedHousePath, // あなたが用意した画像ファイル名
@@ -554,10 +559,47 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               ),
             ),
           ),
+
+          // ★アバターの表示と操作
           Positioned(
-            bottom: 100,
-            right: MediaQuery.of(context).size.width * 0.24, // 画面サイズに応じて位置を調整
-            child: Image.asset(_equippedCharacterPath, height: 80),
+            left: _avatarPosition.dx,
+            top: _avatarPosition.dy,
+            child: GestureDetector(
+              // ドラッグ操作を検知
+              onPanUpdate: (details) {
+                setState(() {
+                  _avatarPosition += details.delta; // 指の動きに合わせて位置を更新
+                });
+              },
+              // ドラッグが終わったら位置を保存
+              onPanEnd: (_) {
+                SharedPrefsHelper.saveCharacterPosition(
+                  'avatar',
+                  _avatarPosition,
+                );
+              },
+              child: Image.asset(_equippedClothesPath, height: 80),
+            ),
+          ),
+
+          // ★応援キャラクターの表示と操作
+          Positioned(
+            left: _characterPosition.dx,
+            top: _characterPosition.dy,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  _characterPosition += details.delta;
+                });
+              },
+              onPanEnd: (_) {
+                SharedPrefsHelper.saveCharacterPosition(
+                  'character',
+                  _characterPosition,
+                );
+              },
+              child: Image.asset(_equippedCharacterPath, height: 80),
+            ),
           ),
 
           // 下のバー（つぎのやくそく）

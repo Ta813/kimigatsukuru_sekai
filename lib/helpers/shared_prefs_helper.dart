@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 final List<Map<String, dynamic>> defaultPromises = [
   {'title': 'あさごはん', 'time': '07:00', 'duration': 30, 'points': 20},
@@ -199,5 +200,28 @@ class SharedPrefsHelper {
   static Future<String?> loadEquippedCharacter() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_equippedCharacterKey);
+  }
+
+  // キャラクターの位置を保存する
+  static Future<void> saveCharacterPosition(
+    String charId,
+    Offset position,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    // Offsetは直接保存できないので、X座標とY座標を別々に保存
+    await prefs.setDouble('${charId}_dx', position.dx);
+    await prefs.setDouble('${charId}_dy', position.dy);
+  }
+
+  // キャラクターの位置を読み込む
+  static Future<Offset?> loadCharacterPosition(String charId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final dx = prefs.getDouble('${charId}_dx');
+    final dy = prefs.getDouble('${charId}_dy');
+
+    if (dx != null && dy != null) {
+      return Offset(dx, dy);
+    }
+    return null; // 保存された位置がなければnullを返す
   }
 }
