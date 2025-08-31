@@ -180,10 +180,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final emergency = await SharedPrefsHelper.loadEmergencyPromise();
     final todaysCompletedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
-    final loadedAvatarPos = await SharedPrefsHelper.loadCharacterPosition(
+
+    Offset? loadedAvatarPos = await SharedPrefsHelper.loadCharacterPosition(
       'avatar',
     );
-    final loadedCharPos = await SharedPrefsHelper.loadCharacterPosition(
+    Offset? loadedCharPos = await SharedPrefsHelper.loadCharacterPosition(
       'character',
     );
 
@@ -217,6 +218,23 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final house = await SharedPrefsHelper.loadEquippedHouse();
     final character = await SharedPrefsHelper.loadEquippedCharacter();
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    if (loadedAvatarPos != null &&
+        (loadedAvatarPos.dx > screenWidth ||
+            loadedAvatarPos.dy > screenHeight ||
+            loadedAvatarPos.dx < 0 ||
+            loadedAvatarPos.dy < 0)) {
+      loadedAvatarPos = null; // 範囲外ならリセット
+    }
+    if (loadedCharPos != null &&
+        (loadedCharPos.dx > screenWidth ||
+            loadedCharPos.dy > screenHeight ||
+            loadedCharPos.dx < 0 ||
+            loadedCharPos.dy < 0)) {
+      loadedCharPos = null; // 範囲外ならリセット
+    }
     // 最後に、画面の状態を更新
     setState(() {
       _points = loadedPoints;
