@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/draggable_character.dart';
 import 'promise_board_screen.dart';
 import 'timer_screen.dart';
 import 'shop_screen.dart';
@@ -17,20 +18,34 @@ class ChildHomeScreen extends StatefulWidget {
 }
 
 class _ChildHomeScreenState extends State<ChildHomeScreen>
-    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+    with WidgetsBindingObserver, TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+  late AnimationController _pointsAddedAnimationController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+  int? _pointsAdded;
+
   String _equippedClothesPath = 'assets/images/avatar.png'; // デフォルト画像
   String _equippedHousePath = 'assets/images/house.png'; // デフォルト画像
-  String _equippedCharacterPath = 'assets/images/character_usagi.gif';
+  List<String> _equippedCharacters = [
+    'assets/images/character_usagi.gif',
+  ]; // デフォルト画像
+
+  List<String> _equippedItems = [];
+  Map<String, Offset> _itemPositionsMap = {};
+
   // ポイント数の状態を管理するための変数
   int _points = 0;
 
   Map<String, dynamic>? _displayPromise; // 実際に下のバーに表示するやくそく
   bool _isDisplayPromiseEmergency = false; // 表示しているのが緊急かどうか
 
-  Offset _avatarPosition = const Offset(100, 400);
-  Offset _characterPosition = const Offset(220, 420);
+  Offset _avatarPosition = const Offset(205, 190);
+
+  // 各応援キャラの位置を管理するためのMap
+  // キーはキャラクターのパス、値はOffset
+  Map<String, Offset> _characterPositionsMap = {};
 
   @override
   void initState() {
@@ -61,6 +76,28 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           ),
         );
 
+    _pointsAddedAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3000),
+    );
+    // 下から上に移動しながら消えるアニメーション
+    _slideAnimation =
+        Tween<Offset>(
+          begin: const Offset(0, 0),
+          end: const Offset(0, -1.5),
+        ).animate(
+          CurvedAnimation(
+            parent: _pointsAddedAnimationController,
+            curve: Curves.easeOut,
+          ),
+        );
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _pointsAddedAnimationController,
+        curve: const Interval(0.5, 1.0),
+      ),
+    );
+
     _loadAndDetermineDisplayPromise(); // 定例のやくそくを読み込む（既存の処理）
     // ★アプリの状態変化の監視を開始
     WidgetsBinding.instance.addObserver(this);
@@ -73,6 +110,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   @override
   void dispose() {
     _animationController.dispose();
+    _pointsAddedAnimationController.dispose();
     // ★アプリの状態変化の監視を終了
     WidgetsBinding.instance.removeObserver(this);
     // ★BGMマネージャーのリソースを解放
@@ -184,9 +222,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     Offset? loadedAvatarPos = await SharedPrefsHelper.loadCharacterPosition(
       'avatar',
     );
-    Offset? loadedCharPos = await SharedPrefsHelper.loadCharacterPosition(
-      'character',
-    );
 
     Map<String, dynamic>? nextPromise;
     bool isEmergency = false;
@@ -216,7 +251,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
     final house = await SharedPrefsHelper.loadEquippedHouse();
-    final character = await SharedPrefsHelper.loadEquippedCharacter();
+    final characters = await SharedPrefsHelper.loadEquippedCharacters();
+    final items = await SharedPrefsHelper.loadEquippedItems();
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -228,12 +264,22 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             loadedAvatarPos.dy < 0)) {
       loadedAvatarPos = null; // 範囲外ならリセット
     }
-    if (loadedCharPos != null &&
-        (loadedCharPos.dx > screenWidth ||
-            loadedCharPos.dy > screenHeight ||
-            loadedCharPos.dx < 0 ||
-            loadedCharPos.dy < 0)) {
-      loadedCharPos = null; // 範囲外ならリセット
+
+    final loadedPositions = {};
+    final charactersToLoad = characters.isEmpty
+        ? ['assets/images/character_usagi.gif']
+        : characters;
+
+    for (var charPath in charactersToLoad) {
+      final loadedPos = await SharedPrefsHelper.loadCharacterPosition(charPath);
+      loadedPositions[charPath] = loadedPos ?? Offset(490, 190);
+    }
+
+    final itemsToLoad = items.isEmpty ? [] : items;
+
+    for (var itemPath in itemsToLoad) {
+      final loadedPos = await SharedPrefsHelper.loadCharacterPosition(itemPath);
+      loadedPositions[itemPath] = loadedPos ?? Offset(100, 190);
     }
     // 最後に、画面の状態を更新
     setState(() {
@@ -242,9 +288,35 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       _isDisplayPromiseEmergency = isEmergency;
       _equippedClothesPath = clothes ?? 'assets/images/avatar.png';
       _equippedHousePath = house ?? 'assets/images/house.png';
-      _equippedCharacterPath = character ?? 'assets/images/character_usagi.gif';
+      _equippedCharacters = characters.isEmpty
+          ? ['assets/images/character_usagi.gif'] // デフォルトキャラ
+          : characters;
+      _equippedItems = items;
       _avatarPosition = loadedAvatarPos ?? Offset(205, 190);
-      _characterPosition = loadedCharPos ?? Offset(460, 190);
+      _characterPositionsMap = {}; // 一旦クリア
+      for (var charPath in _equippedCharacters) {
+        if (loadedPositions[charPath] != null &&
+            (loadedPositions[charPath].dx > screenWidth ||
+                loadedPositions[charPath].dy > screenHeight ||
+                loadedPositions[charPath].dx < 0 ||
+                loadedPositions[charPath].dy < 0)) {
+          loadedPositions[charPath] = null; // 範囲外ならリセット
+        }
+        _characterPositionsMap[charPath] =
+            loadedPositions[charPath] ?? Offset(490, 190); // 読み込んだ位置を保存
+      }
+      _itemPositionsMap = {};
+      for (var itemPath in _equippedItems) {
+        if (loadedPositions[itemPath] != null &&
+            (loadedPositions[itemPath].dx > screenWidth ||
+                loadedPositions[itemPath].dy > screenHeight ||
+                loadedPositions[itemPath].dx < 0 ||
+                loadedPositions[itemPath].dy < 0)) {
+          loadedPositions[itemPath] = null; // 範囲外ならリセット
+        }
+        _itemPositionsMap[itemPath] =
+            loadedPositions[itemPath] ?? Offset(100, 190); // 読み込んだ位置を保存
+      }
     });
   }
 
@@ -272,7 +344,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     BgmManager.instance.play(BgmTrack.main);
 
     if (pointsAwarded != null && pointsAwarded > 0) {
-      _animationController.forward(from: 0.0);
       if (!_isDisplayPromiseEmergency) {
         await SharedPrefsHelper.addCompletionRecord(_displayPromise!['title']);
       }
@@ -285,6 +356,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       // ポイント追加の効果音出す
       SfxManager.instance.playSuccessSound();
 
+      setState(() {
+        _pointsAdded = pointsAwarded;
+      });
+      // 追加されたポイント数を一時的に保存して、アニメーションで表示
+      _animationController.forward(from: 0.0);
+      _pointsAddedAnimationController.forward(from: 0.0);
       // 画面の状態を更新して、再読み込み
       _loadAndDetermineDisplayPromise();
     }
@@ -300,6 +377,21 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     // ホーム画面の表示を最新の状態に更新します
     _loadAndDetermineDisplayPromise();
+  }
+
+  double _getItemSize(String itemPath) {
+    if (itemPath.contains('assets/images/item_kuruma.png')) {
+      return 100.0;
+    } else if (itemPath.contains('assets/images/item_jitensya.png')) {
+      return 70.0;
+    } else if (itemPath.contains('assets/images/item_jouro.png')) {
+      return 35.0;
+    } else if (itemPath.contains('assets/images/item_ki.png')) {
+      return 150.0;
+    } else if (itemPath.contains('assets/images/item_happa1.png')) {
+      return 30.0;
+    }
+    return 50.0;
   }
 
   @override
@@ -400,40 +492,68 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 Positioned(
                   top: 10,
                   right: 10,
-                  child: ScaleTransition(
-                    scale: _scaleAnimation,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          // 少し影をつけて立体感を出す
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 1,
-                            blurRadius: 3,
-                            offset: const Offset(0, 2),
+                  child: Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      ScaleTransition(
+                        scale: _scaleAnimation,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
-                        ],
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              // 少し影をつけて立体感を出す
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                                size: 24,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '$_points', // ポイント数を表示
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 24),
-                          const SizedBox(width: 8),
-                          Text(
-                            '$_points', // ポイント数を表示
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                      // ★「+〇〇」のアニメーション表示
+                      if (_pointsAdded != null)
+                        SlideTransition(
+                          position: _slideAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Text(
+                              '+$_pointsAdded',
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.redAccent,
+                                shadows: [
+                                  Shadow(blurRadius: 2, color: Colors.white),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                    ],
                   ),
                 ),
 
@@ -479,7 +599,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 // setStateを使って、ポイントを加算し、画面を更新！
                                 setState(() {
                                   _points += (pointsFromBoard as int);
+                                  _pointsAdded = pointsFromBoard;
                                 });
+
+                                _animationController.forward(from: 0.0);
+                                _pointsAddedAnimationController.forward(
+                                  from: 0.0,
+                                );
                               }
                               // SharedPreferencesに新しいポイントを保存
                               await SharedPrefsHelper.savePoints(_points);
@@ -575,48 +701,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   ),
                 ],
               ),
-            ),
-          ),
-
-          // ★アバターの表示と操作
-          Positioned(
-            left: _avatarPosition.dx,
-            top: _avatarPosition.dy,
-            child: GestureDetector(
-              // ドラッグ操作を検知
-              onPanUpdate: (details) {
-                setState(() {
-                  _avatarPosition += details.delta; // 指の動きに合わせて位置を更新
-                });
-              },
-              // ドラッグが終わったら位置を保存
-              onPanEnd: (_) {
-                SharedPrefsHelper.saveCharacterPosition(
-                  'avatar',
-                  _avatarPosition,
-                );
-              },
-              child: Image.asset(_equippedClothesPath, height: 80),
-            ),
-          ),
-
-          // ★応援キャラクターの表示と操作
-          Positioned(
-            left: _characterPosition.dx,
-            top: _characterPosition.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _characterPosition += details.delta;
-                });
-              },
-              onPanEnd: (_) {
-                SharedPrefsHelper.saveCharacterPosition(
-                  'character',
-                  _characterPosition,
-                );
-              },
-              child: Image.asset(_equippedCharacterPath, height: 80),
             ),
           ),
 
@@ -758,6 +842,55 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     ),
                   ),
                 ),
+
+          // ★アバターの表示と操作
+          DraggableCharacter(
+            id: 'avatar',
+            imagePath: _equippedClothesPath,
+            position: _avatarPosition,
+            size: 80,
+            onPositionChanged: (delta) {
+              setState(() {
+                _avatarPosition += delta; // ★位置の更新
+              });
+            },
+          ),
+
+          // ★応援キャラクターの表示と操作
+          ..._equippedCharacters.map((charPath) {
+            return DraggableCharacter(
+              id: charPath, // IDとして画像パスを使う
+              imagePath: charPath,
+              position: _characterPositionsMap[charPath] ?? Offset(490, 190),
+              size: 80,
+              onPositionChanged: (delta) {
+                setState(() {
+                  // ★位置の更新
+                  _characterPositionsMap[charPath] =
+                      (_characterPositionsMap[charPath] ??
+                          const Offset(490, 190)) +
+                      delta;
+                });
+              },
+            );
+          }).toList(),
+
+          // ★アイテムの表示と操作
+          ..._equippedItems.map((itemPath) {
+            return DraggableCharacter(
+              id: itemPath,
+              imagePath: itemPath,
+              position: _itemPositionsMap[itemPath] ?? const Offset(100, 190),
+              size: _getItemSize(itemPath), // アイテムは少し小さめに
+              onPositionChanged: (delta) {
+                setState(() {
+                  _itemPositionsMap[itemPath] =
+                      (_itemPositionsMap[itemPath] ?? const Offset(100, 190)) +
+                      delta;
+                });
+              },
+            );
+          }).toList(),
         ],
       ),
     );

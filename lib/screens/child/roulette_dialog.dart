@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import '../../managers/sfx_manager.dart';
 
 class RouletteDialog extends StatefulWidget {
-  const RouletteDialog({super.key});
+  final int basePoints;
+
+  const RouletteDialog({super.key, required this.basePoints});
 
   @override
   State<RouletteDialog> createState() => _RouletteDialogState();
@@ -61,7 +63,7 @@ class _RouletteDialogState extends State<RouletteDialog> {
     return AlertDialog(
       title: const Text('ポイントアップチャンス！'),
       content: SizedBox(
-        height: 120,
+        height: 150,
         child: Center(
           child: _isSpinning
               ? const CircularProgressIndicator() // 回転中のアニメーション
@@ -81,6 +83,31 @@ class _RouletteDialogState extends State<RouletteDialog> {
                   children: [
                     const Text('ルーレットをまわす？'),
                     const SizedBox(height: 20),
+                    Text.rich(
+                      TextSpan(
+                        style: TextStyle(color: Colors.grey[600]),
+                        children: [
+                          const TextSpan(text: 'あたり → '),
+                          TextSpan(
+                            text: '${widget.basePoints * 2} ポイント',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.redAccent,
+                            ),
+                          ),
+                          const TextSpan(text: '\nはずれ → '),
+                          TextSpan(
+                            text: '${widget.basePoints} ポイント',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
                     ElevatedButton(onPressed: _spin, child: const Text('まわす！')),
                   ],
                 ),

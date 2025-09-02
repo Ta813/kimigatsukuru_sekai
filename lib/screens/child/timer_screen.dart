@@ -1,6 +1,7 @@
 // lib/screens/timer/timer_screen.dart
 
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -30,7 +31,8 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
   int _remainingSeconds = 0; // 残り時間を秒で管理
   bool _isTimeUp = false;
 
-  String _characterPath = 'assets/images/character_usagi.gif'; // デフォルト
+  String? _randomSupportCharacterPath; // ★ランダムで表示するキャラのパス
+  String _avatarPath = 'assets/images/avatar.png';
 
   // この画面が表示された瞬間に、一度だけ呼ばれる初期化処理
   @override
@@ -46,7 +48,7 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
 
     _startTimer();
 
-    _loadCharacter();
+    _loadAndSetRandomCharacter();
   }
 
   // この画面が閉じられる時に、一度だけ呼ばれるお片付け処理
@@ -79,11 +81,22 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _loadCharacter() async {
-    final character = await SharedPrefsHelper.loadEquippedCharacter();
-    if (mounted) {
+  Future<void> _loadAndSetRandomCharacter() async {
+    final equippedChars = await SharedPrefsHelper.loadEquippedCharacters();
+    final clothes = await SharedPrefsHelper.loadEquippedClothes();
+
+    if (equippedChars.isNotEmpty) {
+      // ランダムに1体を選ぶ
+      final randomIndex = Random().nextInt(equippedChars.length);
       setState(() {
-        _characterPath = character ?? 'assets/images/character_usagi.gif';
+        _randomSupportCharacterPath = equippedChars[randomIndex];
+        _avatarPath = clothes ?? 'assets/images/avatar.png';
+      });
+    } else {
+      // 設定されているキャラがいなければ、デフォルトのキャラを設定
+      setState(() {
+        _randomSupportCharacterPath = 'assets/images/character_usagi.gif';
+        _avatarPath = clothes ?? 'assets/images/avatar.png';
       });
     }
   }
@@ -220,10 +233,12 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
 
   // ★ルーレットを表示して、その結果で終了処理を呼ぶメソッド
   void _showRouletteAndFinish() async {
+    final basePoints = widget.promise['points'] as int? ?? 0;
+
     final multiplier = await showDialog<int>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const RouletteDialog(),
+      builder: (context) => RouletteDialog(basePoints: basePoints),
     );
     // ルーレットの結果（1倍か2倍か）で終了処理を呼ぶ
     _finishPromise(pointMultiplier: multiplier ?? 1);
@@ -251,6 +266,11 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
       ),
       body: Stack(
         children: [
+          Positioned(
+            left: 50,
+            bottom: 50,
+            child: Image.asset(_avatarPath, height: 180),
+          ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -295,11 +315,12 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
               ],
             ),
           ),
-          Positioned(
-            right: 50,
-            bottom: 50,
-            child: Image.asset(_characterPath, height: 180),
-          ),
+          if (_randomSupportCharacterPath != null)
+            Positioned(
+              right: 50,
+              bottom: 50,
+              child: Image.asset(_randomSupportCharacterPath!, height: 180),
+            ),
         ],
       ),
       // 画面下部にバナーを設置

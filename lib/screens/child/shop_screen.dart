@@ -153,11 +153,36 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
+  Widget _buildCategoryGrid(
+    List<ShopItem> items, {
+    required int crossAxisCount,
+  }) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16.0),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount, // 1行に表示する数
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 0.9, // アイテムの縦横比
+      ),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return _buildShopItemCard(item); // 既存のアイテムカードウィジェットを再利用
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // まず、アイテムをカテゴリ別に分けます
     final clothesItems = shopItems
-        .where((item) => item.type == 'clothes' && item.name != 'いつものふく')
+        .where(
+          (item) =>
+              item.type == 'clothes' &&
+              item.name != 'いつものふく' &&
+              item.name != 'おとこのこ',
+        )
         .toList();
     final houseItems = shopItems
         .where((item) => item.type == 'house' && item.name != 'さいしょのおうち')
@@ -165,122 +190,50 @@ class _ShopScreenState extends State<ShopScreen> {
     final characterItems = shopItems
         .where((item) => item.type == 'character' && item.name != 'ウサギ')
         .toList();
+    final itemItems = shopItems.where((item) => item.type == 'item').toList();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('ごほうびショップ'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: Center(
-              child: Text(
-                '$_points ポイント',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+    return DefaultTabController(
+      length: 4, // ★タブの数
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('ごほうびショップ'),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: Center(
+                child: Text(
+                  '$_points ポイント',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      // 画面全体をスクロールできるようにします
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // --- 服のカテゴリ ---
-            const Text(
-              'きせかえ',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: GridView.builder(
-                shrinkWrap: true, // 他のウィジェットの中で使うためのおまじない
-                physics:
-                    const NeverScrollableScrollPhysics(), // GridView自体はスクロールしない
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5, // 服は1行に5つ
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: clothesItems.length,
-                itemBuilder: (context, index) {
-                  final item = clothesItems[index];
-                  // ★アイテム表示部分は共通なので、別のウィジェットに切り出します（後述）
-                  return _buildShopItemCard(item);
-                },
-              ),
-            ),
-
-            const SizedBox(height: 24), // カテゴリ間のスペース
-            // --- 家のカテゴリ ---
-            const Text(
-              'おうち',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5, // 家は1行に5つ
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 0.9,
-                ),
-                itemCount: houseItems.length,
-                itemBuilder: (context, index) {
-                  final item = houseItems[index];
-                  return _buildShopItemCard(item);
-                },
-              ),
-            ),
-            const Text(
-              '応援キャラ',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5, // 1行に5つ
-                ),
-                itemCount: characterItems.length,
-                itemBuilder: (context, index) {
-                  final item = characterItems[index];
-                  return _buildShopItemCard(item);
-                },
               ),
             ),
           ],
+          // ★AppBarの下にTabBarを設置します
+          bottom: const TabBar(
+            isScrollable: true, // タブが多くなってもスクロールできるようにする
+            tabs: [
+              Tab(text: 'きせかえ', icon: Icon(Icons.checkroom)),
+              Tab(text: 'おうち', icon: Icon(Icons.house)),
+              Tab(text: '応援キャラ', icon: Icon(Icons.support_agent)),
+              Tab(text: 'アイテム', icon: Icon(Icons.star)),
+            ],
+          ),
         ),
+        // ★bodyをTabBarViewに変更します
+        body: TabBarView(
+          children: [
+            // 各タブの中身となるGridViewを、共通メソッドで生成します
+            _buildCategoryGrid(clothesItems, crossAxisCount: 5),
+            _buildCategoryGrid(houseItems, crossAxisCount: 5),
+            _buildCategoryGrid(characterItems, crossAxisCount: 5),
+            _buildCategoryGrid(itemItems, crossAxisCount: 6),
+          ],
+        ),
+        bottomNavigationBar: const AdBanner(),
       ),
-      // 画面下部にバナーを設置
-      bottomNavigationBar: const AdBanner(),
     );
   }
 }

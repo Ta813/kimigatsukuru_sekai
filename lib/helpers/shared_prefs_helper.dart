@@ -156,7 +156,9 @@ class SharedPrefsHelper {
   // --- ここから装備中アイテム関連を追加 ---
   static const String _equippedClothesKey = 'equipped_clothes';
   static const String _equippedHouseKey = 'equipped_house';
-  static const String _equippedCharacterKey = 'equipped_character';
+  static const String _equippedCharactersKey = 'equippedCharacters';
+  static const String _characterPositionsKey = 'characterPositions';
+  static const String _equippedItemsKey = 'equipped_items';
 
   // 装備中のアイテムを保存する
   static Future<void> saveEquippedItem(String type, String imagePath) async {
@@ -165,8 +167,6 @@ class SharedPrefsHelper {
       await prefs.setString(_equippedClothesKey, imagePath);
     } else if (type == 'house') {
       await prefs.setString(_equippedHouseKey, imagePath);
-    } else if (type == 'character') {
-      await prefs.setString(_equippedCharacterKey, imagePath);
     }
   }
 
@@ -180,6 +180,39 @@ class SharedPrefsHelper {
   static Future<String?> loadEquippedHouse() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_equippedHouseKey);
+  }
+
+  // ★複数応援キャラのパスを保存するメソッド
+  static Future<void> saveEquippedCharacters(List<String> paths) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_equippedCharactersKey, paths);
+  }
+
+  // ★複数応援キャラのパスを読み込むメソッド
+  static Future<List<String>> loadEquippedCharacters() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_equippedCharactersKey) ??
+        ['assets/images/character_usagi.gif'];
+  }
+
+  // キャラクターの位置情報 (avatarと、各応援キャラのIDで管理できるように修正)
+  static Future<void> saveCharacterPosition(String id, Offset position) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = '$_characterPositionsKey:$id';
+    await prefs.setString(key, '${position.dx},${position.dy}');
+  }
+
+  static Future<Offset?> loadCharacterPosition(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = '$_characterPositionsKey:$id';
+    final positionString = prefs.getString(key);
+    if (positionString != null) {
+      final parts = positionString.split(',');
+      if (parts.length == 2) {
+        return Offset(double.parse(parts[0]), double.parse(parts[1]));
+      }
+    }
+    return null;
   }
 
   // ガイド表示済みフラグのキー
@@ -197,31 +230,15 @@ class SharedPrefsHelper {
     await prefs.setBool(_guideShownKey, true);
   }
 
-  static Future<String?> loadEquippedCharacter() async {
+  // 配置するアイテムのリストを保存するメソッド
+  static Future<void> saveEquippedItems(List<String> paths) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_equippedCharacterKey);
+    await prefs.setStringList(_equippedItemsKey, paths);
   }
 
-  // キャラクターの位置を保存する
-  static Future<void> saveCharacterPosition(
-    String charId,
-    Offset position,
-  ) async {
+  // 配置するアイテムのリストを読み込むメソッド
+  static Future<List<String>> loadEquippedItems() async {
     final prefs = await SharedPreferences.getInstance();
-    // Offsetは直接保存できないので、X座標とY座標を別々に保存
-    await prefs.setDouble('${charId}_dx', position.dx);
-    await prefs.setDouble('${charId}_dy', position.dy);
-  }
-
-  // キャラクターの位置を読み込む
-  static Future<Offset?> loadCharacterPosition(String charId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final dx = prefs.getDouble('${charId}_dx');
-    final dy = prefs.getDouble('${charId}_dy');
-
-    if (dx != null && dy != null) {
-      return Offset(dx, dy);
-    }
-    return null; // 保存された位置がなければnullを返す
+    return prefs.getStringList(_equippedItemsKey) ?? [];
   }
 }
