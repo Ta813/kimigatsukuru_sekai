@@ -254,8 +254,19 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
     final items = await SharedPrefsHelper.loadEquippedItems();
 
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final orientation = MediaQuery.of(context).orientation;
+
+    late double screenWidth;
+    late double screenHeight;
+
+    // 画面の向きに応じて幅と高さを設定
+    if (orientation == Orientation.landscape) {
+      screenWidth = MediaQuery.of(context).size.width;
+      screenHeight = MediaQuery.of(context).size.height;
+    } else {
+      screenWidth = MediaQuery.of(context).size.height;
+      screenHeight = MediaQuery.of(context).size.width;
+    }
 
     if (loadedAvatarPos != null &&
         (loadedAvatarPos.dx > screenWidth ||

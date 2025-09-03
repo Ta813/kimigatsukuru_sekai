@@ -31,6 +31,13 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
     final loadedPromises = await SharedPrefsHelper.loadRegularPromises();
     final completedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+
+    loadedPromises.sort((a, b) {
+      final timeA = a['startTime'] ?? '00:00';
+      final timeB = b['startTime'] ?? '00:00';
+      return timeA.compareTo(timeB);
+    });
+
     if (!mounted) return;
     setState(() {
       _promises = loadedPromises;
