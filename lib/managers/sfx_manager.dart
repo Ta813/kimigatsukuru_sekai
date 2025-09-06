@@ -27,7 +27,10 @@ class SfxManager {
   }
 
   // 複数の効果音を順番に再生するためのメソッド
-  Future<void> playSequentialSounds(List<String> assetPaths) async {
+  Future<void> playSequentialSounds(
+    List<String> assetPaths, {
+    double speed = 1.0,
+  }) async {
     try {
       // プレイリストを作成
       final playlist = ConcatenatingAudioSource(
@@ -38,6 +41,7 @@ class SfxManager {
 
       // プレイリストをプレイヤーにセットして再生
       await _sfxPlayer.setAudioSource(playlist);
+      await _sfxPlayer.setSpeed(speed);
       await _sfxPlayer.play();
     } catch (e) {
       print("連続再生エラー: $e");
@@ -50,28 +54,27 @@ class SfxManager {
   void playTapSound() => _playSound('se/ボタン.mp3');
   void playSuccessSound() => _playSound('se/ポイントが入る音.mp3');
   void playStartSound() => _playSound('se/「スタート」.mp3');
+  void playStartSoundEnglish() => _playSound('se/english/lets_go.mp3');
   void playRouletteMessageSound() => _playSound('se/「ボタンをタッチしてね」.mp3');
+  void playRouletteMessageSoundEnglish() =>
+      _playSound('se/english/please_touch_the_button.mp3');
   void playRouletteWinSound() => _playSound('se/「大当たり～」.mp3');
+  void playRouletteWinSoundEnglish() => _playSound('se/english/jackpot.mp3');
   void playRouletteLoseSound() => _playSound('se/「惜っしーい」.mp3');
+  void playRouletteLoseSoundEnglish() =>
+      _playSound('se/english/thats_a_shame.mp3');
   void playTimerLoseSound() => _playSound('se/「頑張ったね」.mp3');
+  void playTimerLoseSoundEnglish() =>
+      _playSound('se/english/you_did_your_best.mp3');
   void playTimerWinSound() => _playSound('se/ラッパのファンファーレ.mp3');
   void playShopInitSound() => _playSound('se/「いらっしゃいませ！」.mp3');
+  void playShopInitSoundEnglish() => _playSound('se/english/welcome.mp3');
   void playShopBuySound() => _playSound('se/「ありがとうございます！」.mp3');
-  void playTimer1Sound() => _playSound('se/「1」.mp3');
-  void playTimer2Sound() => _playSound('se/「2」.mp3');
-  void playTimer3Sound() => _playSound('se/「3」.mp3');
-  void playTimer4Sound() => _playSound('se/「4（よん）」.mp3');
-  void playTimer5Sound() => _playSound('se/「5」.mp3');
-  void playTimer10Sound() => _playSound('se/「10（じゅう↓）」.mp3');
-  void playTimer1XSound() => _playSound('se/「10（じゅう↑）」.mp3');
-  void playTimer20Sound() => _playSound('se/「20」.mp3');
-  void playTimer2XSound() => _playSound('se/「20（に↑じゅう↓）」.mp3');
-  void playTimer30Sound() => _playSound('se/「30」.mp3');
-  void playTimerCountDownSound() =>
-      _playSound('se/「10、9、8、7、6、5、4、3、2、1、0」.mp3');
+  void playShopBuySoundEnglish() =>
+      _playSound('se/english/thank_you_very_much.mp3');
   void playTimerTimeUpSound() => _playSound('se/「タイムアップ」.mp3');
+  void playTimerTimeUpSoundEnglish() => _playSound('se/english/times_up.mp3');
   void playTimeAtoSound() => _playSound('se/「あと」.mp3');
-  void playTimeMinuteSound() => _playSound('se/「分（ふん）」.mp3');
 
   // アプリ終了時にリソースを解放する
   void dispose() {

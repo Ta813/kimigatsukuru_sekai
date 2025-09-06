@@ -4,6 +4,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/bgm_manager.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
+import '../../l10n/app_localizations.dart';
 
 class PromiseBoardScreen extends StatefulWidget {
   // StatefulWidgetに変更
@@ -28,13 +29,13 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
 
   // 画面が表示されるたびに、やくそくと達成記録の両方を読み込む
   Future<void> _loadData() async {
-    final loadedPromises = await SharedPrefsHelper.loadRegularPromises();
+    final loadedPromises = await SharedPrefsHelper.loadRegularPromises(context);
     final completedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
 
     loadedPromises.sort((a, b) {
-      final timeA = a['startTime'] ?? '00:00';
-      final timeB = b['startTime'] ?? '00:00';
+      final timeA = a['time'] ?? '00:00';
+      final timeB = b['time'] ?? '00:00';
       return timeA.compareTo(timeB);
     });
 
@@ -49,8 +50,6 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   void _startPromise(Map<String, dynamic> promise) async {
     // ★タイマー画面に行く前に、集中BGMを再生
     BgmManager.instance.play(BgmTrack.focus);
-
-    SfxManager.instance.playStartSound();
 
     final pointsAwarded = await Navigator.push<int>(
       context,
@@ -83,9 +82,9 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('やくそくボード')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.promiseBoard)),
       body: _promises.isEmpty
-          ? const Center(child: Text('定例のやくそくがまだありません'))
+          ? Center(child: Text(AppLocalizations.of(context)!.noRegularPromises))
           : ListView.builder(
               itemCount: _promises.length,
               itemBuilder: (context, index) {
@@ -105,7 +104,10 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                       promise['time'] ?? '',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    title: Text(promise['title'] ?? '名称未設定'),
+                    title: Text(
+                      promise['title'] ??
+                          AppLocalizations.of(context)!.untitled,
+                    ),
                     trailing: isCompleted
                         ? const Icon(
                             Icons.check_circle,
@@ -136,7 +138,9 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                                     context,
                                   ).colorScheme.secondary,
                                 ),
-                                child: const Text('はじめる'),
+                                child: Text(
+                                  AppLocalizations.of(context)!.startPromise,
+                                ),
                               ),
                             ],
                           ),

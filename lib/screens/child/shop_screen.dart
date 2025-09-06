@@ -5,6 +5,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
+import '../../l10n/app_localizations.dart';
 
 class ShopScreen extends StatefulWidget {
   final int currentPoints;
@@ -23,9 +24,27 @@ class _ShopScreenState extends State<ShopScreen> {
   @override
   void initState() {
     super.initState();
-    SfxManager.instance.playShopInitSound();
     _points = widget.currentPoints;
     _loadPurchasedItems();
+  }
+
+  bool _hasPlayedInitialSound = false;
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    // ★サウンドがまだ再生されていなければ
+    if (!_hasPlayedInitialSound) {
+      final lang = AppLocalizations.of(context)!.localeName;
+      if (lang == 'ja') {
+        SfxManager.instance.playShopInitSound();
+      } else {
+        final List<String> soundsToPlay = [];
+        soundsToPlay.addAll(['se/english/welcome.mp3']);
+        SfxManager.instance.playSequentialSounds(soundsToPlay);
+      }
+      _hasPlayedInitialSound = true; // ★再生済みの旗を立てる
+    }
   }
 
   Future<void> _loadPurchasedItems() async {
@@ -42,19 +61,28 @@ class _ShopScreenState extends State<ShopScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(item.name),
-          content: Text('${item.price}ポイントつかって、こうかんしますか？'),
+          title: Text(item.getDisplayName(context)),
+          content: Text(
+            AppLocalizations.of(context)!.shopConfirmExchange(item.price),
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 SfxManager.instance.playTapSound();
                 Navigator.pop(context);
               },
-              child: const Text('やめる'),
+              child: Text(AppLocalizations.of(context)!.quitAction),
             ),
             ElevatedButton(
               onPressed: () async {
-                SfxManager.instance.playShopBuySound();
+                final lang = AppLocalizations.of(context)!.localeName;
+                if (lang == 'ja') {
+                  SfxManager.instance.playShopBuySound();
+                } else {
+                  final List<String> soundsToPlay = [];
+                  soundsToPlay.addAll(['se/english/thank_you_very_much.mp3']);
+                  SfxManager.instance.playSequentialSounds(soundsToPlay);
+                }
                 final newPoints = _points - item.price;
                 await SharedPrefsHelper.savePoints(newPoints);
 
@@ -72,20 +100,28 @@ class _ShopScreenState extends State<ShopScreen> {
                 Navigator.pop(context); // ダイアログを閉じる
 
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${item.name}とこうかんしたよ！')),
+                  SnackBar(
+                    content: Text(
+                      AppLocalizations.of(
+                        context,
+                      )!.shopExchangeSuccess(item.getDisplayName(context)),
+                    ),
+                  ),
                 );
               },
 
-              child: const Text('こうかんする'),
+              child: Text(AppLocalizations.of(context)!.exchange),
             ),
           ],
         ),
       );
     } else {
       // ポイントが足りない場合
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('ポイントがたりないみたい…')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.shopNotEnoughPoints),
+        ),
+      );
     }
   }
 
@@ -118,11 +154,14 @@ class _ShopScreenState extends State<ShopScreen> {
                   ),
                 ),
                 Text(
-                  item.name,
+                  item.getDisplayName(context),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                Text('${item.price} ポイント', textAlign: TextAlign.center),
+                Text(
+                  '${item.price} ${AppLocalizations.of(context)!.points}',
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 10),
               ],
             ),
@@ -138,8 +177,8 @@ class _ShopScreenState extends State<ShopScreen> {
                     color: Colors.black.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Text(
-                    'こうかんずみ',
+                  child: Text(
+                    AppLocalizations.of(context)!.itemPurchased,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -196,13 +235,13 @@ class _ShopScreenState extends State<ShopScreen> {
       length: 4, // ★タブの数
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('ごほうびショップ'),
+          title: Text(AppLocalizations.of(context)!.shopTitle),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
               child: Center(
                 child: Text(
-                  '$_points ポイント',
+                  '$_points ${AppLocalizations.of(context)!.points}',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -212,13 +251,25 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
           ],
           // ★AppBarの下にTabBarを設置します
-          bottom: const TabBar(
+          bottom: TabBar(
             isScrollable: true, // タブが多くなってもスクロールできるようにする
             tabs: [
-              Tab(text: 'きせかえ', icon: Icon(Icons.checkroom)),
-              Tab(text: 'おうち', icon: Icon(Icons.house)),
-              Tab(text: '応援キャラ', icon: Icon(Icons.support_agent)),
-              Tab(text: 'アイテム', icon: Icon(Icons.star)),
+              Tab(
+                text: AppLocalizations.of(context)!.customizeTabClothes,
+                icon: Icon(Icons.checkroom),
+              ),
+              Tab(
+                text: AppLocalizations.of(context)!.customizeTabHouse,
+                icon: Icon(Icons.house),
+              ),
+              Tab(
+                text: AppLocalizations.of(context)!.customizeTabCharacter,
+                icon: Icon(Icons.support_agent),
+              ),
+              Tab(
+                text: AppLocalizations.of(context)!.customizeTabItem,
+                icon: Icon(Icons.star),
+              ),
             ],
           ),
         ),

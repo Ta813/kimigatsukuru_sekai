@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../managers/sfx_manager.dart';
+import '../../l10n/app_localizations.dart';
 
 class AddEditPromiseScreen extends StatefulWidget {
   final Map<String, dynamic>? initialPromise;
@@ -31,7 +32,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
     if (widget.initialPromise != null) {
       // 各コントローラーに初期値を設定する
       _titleController.text = widget.initialPromise!['title'] ?? '';
-      _startTimeController.text = widget.initialPromise!['startTime'] ?? '';
+      _startTimeController.text = widget.initialPromise!['time'] ?? '';
       _durationController.text =
           widget.initialPromise!['duration']?.toString() ?? '';
       _pointsController.text =
@@ -90,7 +91,11 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.initialPromise == null ? 'あたらしい定例やくそく' : 'やくそくを編集'),
+        title: Text(
+          widget.initialPromise == null
+              ? AppLocalizations.of(context)!.addRegularPromiseTitle
+              : AppLocalizations.of(context)!.editRegularPromiseTitle,
+        ),
       ),
       body: SingleChildScrollView(
         // キーボード表示で画面がはみ出ないようにする
@@ -102,10 +107,12 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
             children: <Widget>[
               TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(labelText: 'やくそくの名前'),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.promiseNameLabel,
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'やくそくの名前を入力してください';
+                    return AppLocalizations.of(context)!.promiseNameHint;
                   }
                   return null;
                 },
@@ -114,8 +121,8 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
               TextFormField(
                 controller: _startTimeController,
                 readOnly: true, // テキストの手入力を不可にする
-                decoration: const InputDecoration(
-                  labelText: '開始時間',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.startTimeLabel,
                   suffixIcon: Icon(Icons.access_time), // 時計アイコンを追加
                 ),
                 onTap: () {
@@ -126,7 +133,9 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _durationController,
-                decoration: const InputDecoration(labelText: '時間（分）'),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.durationLabel,
+                ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
@@ -135,7 +144,9 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _pointsController,
-                decoration: const InputDecoration(labelText: 'ポイント'),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.points,
+                ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -145,7 +156,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text('とうろくする'),
+                child: Text(AppLocalizations.of(context)!.registerButton),
               ),
             ],
           ),

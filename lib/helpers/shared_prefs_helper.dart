@@ -3,19 +3,69 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-
-final List<Map<String, dynamic>> defaultPromises = [
-  {'title': 'あさごはん', 'time': '07:00', 'duration': 30, 'points': 20},
-  {'title': 'ようちえんのじゅんび', 'time': '07:30', 'duration': 10, 'points': 10},
-  {'title': 'おふろじゅんび', 'time': '18:00', 'duration': 10, 'points': 10},
-  {'title': 'よるごはん', 'time': '19:00', 'duration': 30, 'points': 20},
-  {'title': 'はみがき', 'time': '19:30', 'duration': 10, 'points': 10},
-  {'title': 'ねるじゅんび', 'time': '20:00', 'duration': 10, 'points': 10},
-];
+import '../l10n/app_localizations.dart';
 
 class SharedPrefsHelper {
   // SharedPreferencesのインスタンスを取得するためのキー
   static const String _regularPromisesKey = 'regular_promises';
+
+  static Future<List<Map<String, dynamic>>> checkAndSaveDefaultPromises(
+    BuildContext context,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? stringList = prefs.getStringList(_regularPromisesKey);
+
+    // もし何も保存されていなかったら（初回起動時など）
+    if (stringList == null || stringList.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
+      final defaultPromises = [
+        {
+          'title': l10n.promiseDefault1Title,
+          'time': '07:00',
+          'duration': 30,
+          'points': 20,
+        },
+        {
+          'title': l10n.promiseDefault2Title,
+          'time': '07:30',
+          'duration': 10,
+          'points': 10,
+        },
+        {
+          'title': l10n.promiseDefault3Title,
+          'time': '18:00',
+          'duration': 10,
+          'points': 10,
+        },
+        {
+          'title': l10n.promiseDefault4Title,
+          'time': '19:00',
+          'duration': 30,
+          'points': 20,
+        },
+        {
+          'title': l10n.promiseDefault5Title,
+          'time': '19:30',
+          'duration': 10,
+          'points': 10,
+        },
+        {
+          'title': l10n.promiseDefault6Title,
+          'time': '20:00',
+          'duration': 10,
+          'points': 10,
+        },
+      ];
+      // デフォルトのサンプルやくそくをSharedPreferencesに保存
+      await saveRegularPromises(defaultPromises);
+      return defaultPromises;
+    }
+
+    // すでにデータがあれば、それを読み込んで返す
+    return stringList
+        .map((string) => json.decode(string) as Map<String, dynamic>)
+        .toList();
+  }
 
   // やくそくリストを保存する
   static Future<void> saveRegularPromises(
@@ -30,14 +80,15 @@ class SharedPrefsHelper {
   }
 
   // やくそくリストを読み込む
-  static Future<List<Map<String, dynamic>>> loadRegularPromises() async {
+  static Future<List<Map<String, dynamic>>> loadRegularPromises(
+    BuildContext context,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     final List<String>? stringList = prefs.getStringList(_regularPromisesKey);
 
     if (stringList == null || stringList.isEmpty) {
       // デフォルトのサンプルやくそくをSharedPreferencesに保存しつつ、それを返す
-      await saveRegularPromises(defaultPromises);
-      return defaultPromises;
+      return checkAndSaveDefaultPromises(context);
     }
 
     // 文字列のリストを、元の List<Map> に戻します

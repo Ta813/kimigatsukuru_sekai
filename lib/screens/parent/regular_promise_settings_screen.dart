@@ -5,6 +5,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
+import '../../l10n/app_localizations.dart';
 
 class RegularPromiseSettingsScreen extends StatefulWidget {
   const RegularPromiseSettingsScreen({super.key});
@@ -27,7 +28,12 @@ class _RegularPromiseSettingsScreenState
   }
 
   Future<void> _loadPromises() async {
-    final loadedPromises = await SharedPrefsHelper.loadRegularPromises();
+    final loadedPromises = await SharedPrefsHelper.loadRegularPromises(context);
+    loadedPromises.sort((a, b) {
+      final timeA = a['time'] ?? '00:00';
+      final timeB = b['time'] ?? '00:00';
+      return timeA.compareTo(timeB);
+    });
     setState(() {
       _regularPromises = loadedPromises;
     });
@@ -51,7 +57,9 @@ class _RegularPromiseSettingsScreenState
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         // 表示するメッセージ
-        content: Text('「$deletedPromiseTitle」を削除しました。'),
+        content: Text(
+          AppLocalizations.of(context)!.promiseDeleted(deletedPromiseTitle),
+        ),
         // メッセージの表示時間
         duration: const Duration(seconds: 2),
       ),
@@ -73,6 +81,12 @@ class _RegularPromiseSettingsScreenState
     if (newPromise != null) {
       setState(() {
         _regularPromises.add(newPromise);
+
+        _regularPromises.sort((a, b) {
+          final timeA = a['time'] ?? '00:00';
+          final timeB = b['time'] ?? '00:00';
+          return timeA.compareTo(timeB);
+        });
       });
       // 変更後のリストを保存
       SharedPrefsHelper.saveRegularPromises(_regularPromises);
@@ -80,7 +94,9 @@ class _RegularPromiseSettingsScreenState
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('「${newPromise['title']}」を追加しました。'),
+          content: Text(
+            AppLocalizations.of(context)!.promiseAdded(newPromise['title']),
+          ),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -111,7 +127,13 @@ class _RegularPromiseSettingsScreenState
       // ユーザーに知らせるメッセージ
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('「${updatedPromise['title']}」を更新しました。')),
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(
+              context,
+            )!.promiseUpdated(updatedPromise['title']),
+          ),
+        ),
       );
     }
   }
@@ -119,7 +141,9 @@ class _RegularPromiseSettingsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('定例のやくそく設定')),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.regularPromiseSettingsTitle),
+      ),
       body: ListView.builder(
         itemCount: _regularPromises.length,
         itemBuilder: (context, index) {
@@ -129,7 +153,7 @@ class _RegularPromiseSettingsScreenState
             child: ListTile(
               title: Text(promise['title']),
               subtitle: Text(
-                '時間: ${promise['time']} / ${promise['duration']}分 / ${promise['points']}ポイント',
+                '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}分 / ${promise['points']}${AppLocalizations.of(context)!.points}',
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min, // Rowが必要な分だけ幅をとるようにする

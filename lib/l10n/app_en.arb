@@ -1,0 +1,202 @@
+{
+  "@@locale": "en",
+  "appName": "The World You Create",
+  "customizeTitle": "Customize",
+  "customizeTabClothes": "Clothes",
+  "customizeTabHouse": "House",
+  "customizeTabCharacter": "Supporter",
+  "customizeTabItem": "Items",
+  "guideWelcomeTitle": "Welcome!",
+  "guideWelcomeDesc": "Let's explain how to play 'The World You Create'!",
+  "guideSettingsTitle": "① Parent Settings (Top-left ⚙️ icon)",
+  "guideSettingsDesc": "This is where parents can add or edit promises.\nTry deciding on the promises together with your child first!",
+  "guideNextPromiseTitle": "② Next Promise (Bottom bar)",
+  "guideNextPromiseDesc": "The next promise you need to do is displayed here.\nPress 'Start' to begin the challenge!",
+  "guidePromiseBoardTitle": "③ Promise Board (Right 📄 icon)",
+  "guidePromiseBoardDesc": "You can see a list of today's promises here.\nYour goal is to collect the 'Done!' check marks!",
+  "guidePointsTitle": "④ Points (Top-right ★)",
+  "guidePointsDesc": "When you complete a promise, you get points here!\nCollect a lot and exchange them for rewards.",
+  "guideShopTitle": "⑤ Reward Shop (Right 🏠 icon)",
+  "guideShopDesc": "This is where you can exchange the points you've saved for new clothes and houses!",
+  "guideCustomizeTitle": "⑥ Customize (Right ☺ icon)",
+  "guideCustomizeDesc": "You can change your avatar's clothes and house with the items you've bought.\nCreate your very own world!",
+  "guideHelpTitle": "⑦ Help (Left ? icon)",
+  "guideHelpDesc": "If you get stuck, you can press this button\nto see this explanation again.",
+  "emergency": "EMERGENCY!",
+  "nextPromise": "Next Promise",
+  "points": "Points",
+  "didNotDo": "Didn't Do",
+  "startNow": "Start Now",
+  "allPromisesDone": "All of today's promises are done! ✨",
+  "startPromise": "Start",
+  "lockIncorrectAnswer": "Sorry, that's not right",
+  "cancel": "Cancel",
+  "promiseBoard": "Promise Board",
+  "noRegularPromises": "No regular promises yet",
+  "untitled": "Untitled",
+  "rouletteCongrats": "Congratulations!\n2x Points!",
+  "rouletteTryAgain": "Try Again Next Time",
+  "rouletteTitle": "Point Up Chance!",
+  "rouletteQuestion": "Spin the roulette?",
+  "rouletteWin": "Win → ",
+  "rouletteLose": "\nLose → ",
+  "rouletteSpin": "Spin!",
+  "shopConfirmExchange": "Exchange for {itemPrice} points?",
+  "@shopConfirmExchange": {
+    "placeholders": {
+      "itemPrice": {
+        "type": "int"
+      }
+    }
+  },
+  "quitAction": "Cancel",
+  "shopExchangeSuccess": "You got the {itemName}!",
+  "@shopExchangeSuccess": {
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  },
+  "exchange": "Exchange",
+  "shopNotEnoughPoints": "Not enough points...",
+  "shopTitle": "Reward Shop",
+  "itemPurchased": "Purchased",
+  "confirmation": "Confirmation",
+  "askIfFinished": "Are you really done with {promiseTitle}?",
+  "@askIfFinished": {
+    "placeholders": {
+      "promiseTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "notYet": "Not Yet",
+  "yesFinished": "All Done!",
+  "challengingPromise": "Challenging {promiseTitle}!",
+  "@challengingPromise": {
+    "placeholders": {
+      "promiseTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "pointsHalf": "So close! You get {points} points!",
+  "@pointsHalf": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "pointsChance": "Chance to get {points} points!",
+  "@pointsChance": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "finished": "Finished!",
+  "addRegularPromiseTitle": "New Regular Promise",
+  "editRegularPromiseTitle": "Edit Promise",
+  "promiseNameLabel": "Promise Name",
+  "promiseNameHint": "Please enter a name for the promise",
+  "startTimeLabel": "Start Time",
+  "durationLabel": "Duration (minutes)",
+  "registerButton": "Register",
+  "adviceScreenTitle": "Tips for Promise Settings",
+  "adviceMainTitle": "Tips for Increasing \"I did it!\" Moments 💡",
+  "advice1Title": "Decide on Promises Together with Your Child",
+  "advice1Desc": "Try deciding \"what,\" \"by when,\" and \"for how many points\" together with your child. Having rules they helped create sparks their motivation to take on the challenge.",
+  "advice2Title": "Start with \"Easy\" Tasks First",
+  "advice2Desc": "Begin with simple promises your child can definitely complete. Building up successful experiences of \"I did it!\" leads to confidence.",
+  "advice3Title": "Set the Time a \"Little Generously\"",
+  "advice3Desc": "Instead of making them rush, the key is to set the challenge time a little longer at first so they can feel the accomplishment of \"I did it within the time!\"",
+  "advice4Title": "Treat Points as Something \"Special\"",
+  "advice4Desc": "For more difficult promises, try setting the points a little higher. Feeling that \"this mission is special!\" will boost your child's motivation to try.",
+  "advice5Title": "The Best Reward is \"Praise\"",
+  "advice5Desc": "While points in the app are important, when your child completes a promise, please praise them directly with words like \"Well done!\" or \"Amazing!\". That will be their greatest source of energy.",
+  "emergencyPromiseSet": "Set \"{promiseTitle}\" as the emergency promise.",
+  "@emergencyPromiseSet": {
+    "placeholders": {
+      "promiseTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "emergencyPromiseSettingsTitle": "Emergency Promise Settings",
+  "promiseNameExampleHint": "Promise Name (e.g., Tidy up toys)",
+  "setThisPromiseButton": "Set This Promise",
+  "parentScreenTitle": "Parent Mode",
+  "readFirstButton": "Read Me First",
+  "regularPromiseSettingsButton": "Regular Promise Settings",
+  "emergencyPromiseSettingsButton": "Emergency Promise Settings",
+  "promiseDeleted": "Deleted \"{promiseTitle}\".",
+  "@promiseDeleted": {
+    "placeholders": {
+      "promiseTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseAdded": "Added \"{promiseTitle}\".",
+  "@promiseAdded": {
+    "placeholders": {
+      "promiseTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseUpdated": "Updated \"{promiseTitle}\".",
+  "@promiseUpdated": {
+    "placeholders": {
+      "promiseTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "regularPromiseSettingsTitle": "Regular Promise Settings",
+  "timeLabel": "Time",
+  "itemClothesBlue": "Blue Clothes",
+  "itemClothesRed": "Red Clothes",
+  "itemClothesGreen": "Green Clothes",
+  "itemClothesLightBlue": "Light Blue Clothes",
+  "itemHouseNormal": "Normal House",
+  "itemHouseGrand": "Grand House",
+  "itemClothesDefault": "Default Clothes",
+  "itemHouseDefault": "First House",
+  "itemAvatarBoy": "Boy",
+  "charRabbit": "Rabbit",
+  "charCat": "Cat",
+  "charGiraffe": "Giraffe",
+  "charElephant": "Elephant",
+  "charBear": "Bear",
+  "charPanda": "Panda",
+  "charMonkey": "Monkey",
+  "itemFlower1": "Flower 1",
+  "itemFlower2": "Flower 2",
+  "itemLeaf1": "Leaf 1",
+  "itemLeaf2": "Leaf 2",
+  "itemPotPlant": "Potted Plant",
+  "itemGrass1": "Grass 1",
+  "itemGrass2": "Grass 2",
+  "itemTree": "Tree",
+  "itemWateringCan": "Watering Can",
+  "itemCoin": "Coin",
+  "itemTreasureChest": "Treasure Chest",
+  "itemBall": "Ball",
+  "itemSun": "Sun",
+  "itemMoon": "Moon",
+  "itemStar": "Star",
+  "itemBicycle": "Bicycle",
+  "itemCar": "Car",
+  "promiseDefault1Title": "Breakfast",
+  "promiseDefault2Title": "Get Ready for School",
+  "promiseDefault3Title": "Get Ready for Bath",
+  "promiseDefault4Title": "Dinner",
+  "promiseDefault5Title": "Brush Teeth",
+  "promiseDefault6Title": "Get Ready for Bed",
+  "settingsTitle": "Settings",
+  "languageSetting": "Language"
+}

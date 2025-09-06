@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../managers/sfx_manager.dart';
+import '../../l10n/app_localizations.dart';
 
 class RouletteDialog extends StatefulWidget {
   final int basePoints;
@@ -18,7 +19,25 @@ class _RouletteDialogState extends State<RouletteDialog> {
   @override
   void initState() {
     super.initState();
-    SfxManager.instance.playRouletteMessageSound();
+  }
+
+  bool _hasPlayedInitialSound = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // ★サウンドがまだ再生されていなければ
+    if (!_hasPlayedInitialSound) {
+      final lang = AppLocalizations.of(context)!.localeName;
+      if (lang == 'ja') {
+        SfxManager.instance.playRouletteMessageSound();
+      } else {
+        final List<String> soundsToPlay = [];
+        soundsToPlay.addAll(['se/english/please_touch_the_button.mp3']);
+        SfxManager.instance.playSequentialSounds(soundsToPlay);
+      }
+      _hasPlayedInitialSound = true; // ★再生済みの旗を立てる
+    }
   }
 
   bool _isSpinning = false;
@@ -38,12 +57,26 @@ class _RouletteDialogState extends State<RouletteDialog> {
       setState(() {
         _isSpinning = false;
         if (isWin) {
-          SfxManager.instance.playRouletteWinSound();
-          _resultText = 'おめでとう！\nポイント2ばい！';
+          final lang = AppLocalizations.of(context)!.localeName;
+          if (lang == 'ja') {
+            SfxManager.instance.playRouletteWinSound();
+          } else {
+            final List<String> soundsToPlay = [];
+            soundsToPlay.addAll(['se/english/jackpot.mp3']);
+            SfxManager.instance.playSequentialSounds(soundsToPlay);
+          }
+          _resultText = AppLocalizations.of(context)!.rouletteCongrats;
           _pointMultiplier = 2; // あたりなら2倍
         } else {
-          SfxManager.instance.playRouletteLoseSound();
-          _resultText = 'またチャレンジしてね';
+          final lang = AppLocalizations.of(context)!.localeName;
+          if (lang == 'ja') {
+            SfxManager.instance.playRouletteLoseSound();
+          } else {
+            final List<String> soundsToPlay = [];
+            soundsToPlay.addAll(['se/english/thats_a_shame.mp3']);
+            SfxManager.instance.playSequentialSounds(soundsToPlay);
+          }
+          _resultText = AppLocalizations.of(context)!.rouletteTryAgain;
           _pointMultiplier = 1; // はずれなら1倍
         }
       });
@@ -61,7 +94,7 @@ class _RouletteDialogState extends State<RouletteDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('ポイントアップチャンス！'),
+      title: Text(AppLocalizations.of(context)!.rouletteTitle),
       content: SizedBox(
         height: 150,
         child: Center(
@@ -81,23 +114,29 @@ class _RouletteDialogState extends State<RouletteDialog> {
                   // 最初の表示
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('ルーレットをまわす？'),
+                    Text(AppLocalizations.of(context)!.rouletteQuestion),
                     const SizedBox(height: 20),
                     Text.rich(
                       TextSpan(
                         style: TextStyle(color: Colors.grey[600]),
                         children: [
-                          const TextSpan(text: 'あたり → '),
                           TextSpan(
-                            text: '${widget.basePoints * 2} ポイント',
+                            text: AppLocalizations.of(context)!.rouletteWin,
+                          ),
+                          TextSpan(
+                            text:
+                                '${widget.basePoints * 2} ${AppLocalizations.of(context)!.points}',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.redAccent,
                             ),
                           ),
-                          const TextSpan(text: '\nはずれ → '),
                           TextSpan(
-                            text: '${widget.basePoints} ポイント',
+                            text: AppLocalizations.of(context)!.rouletteLose,
+                          ),
+                          TextSpan(
+                            text:
+                                '${widget.basePoints} ${AppLocalizations.of(context)!.points}',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
@@ -108,7 +147,10 @@ class _RouletteDialogState extends State<RouletteDialog> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton(onPressed: _spin, child: const Text('まわす！')),
+                    ElevatedButton(
+                      onPressed: _spin,
+                      child: Text(AppLocalizations.of(context)!.rouletteSpin),
+                    ),
                   ],
                 ),
         ),

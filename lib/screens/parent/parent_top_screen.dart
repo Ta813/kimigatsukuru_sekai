@@ -6,6 +6,8 @@ import 'emergency_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
 import 'advice_screen.dart';
+import '../../l10n/app_localizations.dart';
+import 'settings_screen.dart';
 
 class ParentTopScreen extends StatelessWidget {
   const ParentTopScreen({super.key});
@@ -13,7 +15,20 @@ class ParentTopScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('おやが見る画面')),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.parentScreenTitle),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -22,7 +37,7 @@ class ParentTopScreen extends StatelessWidget {
           children: [
             OutlinedButton.icon(
               icon: const Icon(Icons.lightbulb_outline),
-              label: const Text('最初にお読みください'),
+              label: Text(AppLocalizations.of(context)!.readFirstButton),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -53,7 +68,9 @@ class ParentTopScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 textStyle: const TextStyle(fontSize: 18),
               ),
-              child: const Text('定例のやくそく設定'),
+              child: Text(
+                AppLocalizations.of(context)!.regularPromiseSettingsButton,
+              ),
             ),
             const SizedBox(height: 10),
             // 「緊急のやくそく設定」ボタン
@@ -71,7 +88,9 @@ class ParentTopScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 textStyle: const TextStyle(fontSize: 18),
               ),
-              child: const Text('緊急のやくそく設定'),
+              child: Text(
+                AppLocalizations.of(context)!.emergencyPromiseSettingsButton,
+              ),
             ),
           ],
         ),

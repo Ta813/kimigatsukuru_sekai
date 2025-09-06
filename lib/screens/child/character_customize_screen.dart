@@ -5,6 +5,7 @@ import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
+import '../../l10n/app_localizations.dart';
 
 class CharacterCustomizeScreen extends StatefulWidget {
   const CharacterCustomizeScreen({super.key});
@@ -153,13 +154,25 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('きせかえ・もようがえ'),
-          bottom: const TabBar(
+          title: Text(AppLocalizations.of(context)!.customizeTitle),
+          bottom: TabBar(
             tabs: [
-              Tab(text: 'きせかえ', icon: Icon(Icons.checkroom)),
-              Tab(text: 'おうち', icon: Icon(Icons.house)),
-              Tab(text: '応援キャラ', icon: Icon(Icons.support_agent)),
-              Tab(text: 'アイテム', icon: Icon(Icons.star)),
+              Tab(
+                text: AppLocalizations.of(context)!.customizeTabClothes,
+                icon: Icon(Icons.checkroom),
+              ),
+              Tab(
+                text: AppLocalizations.of(context)!.customizeTabHouse,
+                icon: Icon(Icons.house),
+              ),
+              Tab(
+                text: AppLocalizations.of(context)!.customizeTabCharacter,
+                icon: Icon(Icons.support_agent),
+              ),
+              Tab(
+                text: AppLocalizations.of(context)!.customizeTabItem,
+                icon: Icon(Icons.star),
+              ),
             ],
           ),
         ),
@@ -214,8 +227,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               children: [
                 Expanded(child: Image.asset(item.imagePath)),
                 Text(
-                  item.name,
+                  item.getDisplayName(context),
                   style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
               ],

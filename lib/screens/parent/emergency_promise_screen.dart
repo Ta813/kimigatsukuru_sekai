@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
+import '../../l10n/app_localizations.dart';
 
 class EmergencyPromiseScreen extends StatefulWidget {
   const EmergencyPromiseScreen({super.key});
@@ -40,7 +41,13 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('「${_titleController.text}」を緊急やくそくに設定しました。')),
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(
+                context,
+              )!.emergencyPromiseSet(_titleController.text),
+            ),
+          ),
         );
         Navigator.of(context).pop();
       }
@@ -50,7 +57,11 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('緊急のやくそく設定')),
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.emergencyPromiseSettingsTitle,
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -60,12 +71,14 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
             children: <Widget>[
               TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(
-                  labelText: 'やくそくの名前（例: おもちゃのかたづけ）',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(
+                    context,
+                  )!.promiseNameExampleHint,
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'やくそくの名前を入力してください';
+                    return AppLocalizations.of(context)!.promiseNameHint;
                   }
                   return null;
                 },
@@ -73,14 +86,18 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _durationController,
-                decoration: const InputDecoration(labelText: '時間（分）'),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.durationLabel,
+                ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _pointsController,
-                decoration: const InputDecoration(labelText: 'ポイント'),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.points,
+                ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
@@ -90,7 +107,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text('このやくそくをセットする'),
+                child: Text(AppLocalizations.of(context)!.setThisPromiseButton),
               ),
             ],
           ),

@@ -2,6 +2,7 @@
 
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 
 class MathLockDialog extends StatefulWidget {
   const MathLockDialog({super.key});
@@ -37,7 +38,7 @@ class _MathLockDialogState extends State<MathLockDialog> {
       Navigator.of(context).pop(true);
     } else {
       setState(() {
-        _errorMessage = 'ざんねん、ちがうみたい';
+        _errorMessage = AppLocalizations.of(context)!.lockIncorrectAnswer;
         _answerController.clear();
         _generateQuestion();
       });
@@ -158,7 +159,7 @@ class _MathLockDialogState extends State<MathLockDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('やめる'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         ElevatedButton(onPressed: _checkAnswer, child: const Text('OK')),
       ],

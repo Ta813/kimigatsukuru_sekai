@@ -1,5 +1,8 @@
 // lib/models/shop_data.dart
 
+import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
+
 // ショップに並べるアイテムのデータ構造を定義
 class ShopItem {
   final String name;
@@ -13,6 +16,81 @@ class ShopItem {
     required this.price,
     required this.type,
   });
+
+  String getDisplayName(BuildContext context) {
+    // AppLocalizationsを使って、翻訳された文字列を返します
+    final l10n = AppLocalizations.of(context)!;
+    switch (name) {
+      case 'あおいふく':
+        return l10n.itemClothesBlue;
+      case 'あかいふく':
+        return l10n.itemClothesRed;
+      case 'みどりのふく':
+        return l10n.itemClothesGreen;
+      case 'みずいろのふく':
+        return l10n.itemClothesLightBlue;
+      case 'ふつうのおうち':
+        return l10n.itemHouseNormal;
+      case 'りっぱなおうち':
+        return l10n.itemHouseGrand;
+      case 'いつものふく':
+        return l10n.itemClothesDefault;
+      case 'さいしょのおうち':
+        return l10n.itemHouseDefault;
+      case 'おとこのこ':
+        return l10n.itemAvatarBoy;
+      case 'ウサギ':
+        return l10n.charRabbit;
+      case 'ネコ':
+        return l10n.charCat;
+      case 'キリン':
+        return l10n.charGiraffe;
+      case 'ゾウ':
+        return l10n.charElephant;
+      case 'クマ':
+        return l10n.charBear;
+      case 'パンダ':
+        return l10n.charPanda;
+      case 'サル':
+        return l10n.charMonkey;
+      case 'はな１':
+        return l10n.itemFlower1;
+      case 'はな２':
+        return l10n.itemFlower2;
+      case 'はっぱ１':
+        return l10n.itemLeaf1;
+      case 'はっぱ２':
+        return l10n.itemLeaf2;
+      case 'はちうえ':
+        return l10n.itemPotPlant;
+      case 'くさ1':
+        return l10n.itemGrass1;
+      case 'くさ2':
+        return l10n.itemGrass2;
+      case 'き':
+        return l10n.itemTree;
+      case 'じょうろ':
+        return l10n.itemWateringCan;
+      case 'コイン':
+        return l10n.itemCoin;
+      case 'たからばこ':
+        return l10n.itemTreasureChest;
+      case 'ボール':
+        return l10n.itemBall;
+      case 'たいよう':
+        return l10n.itemSun;
+      case 'つき':
+        return l10n.itemMoon;
+      case 'ほし':
+        return l10n.itemStar;
+      case 'じてんしゃ':
+        return l10n.itemBicycle;
+      case 'くるま':
+        return l10n.itemCar;
+      default:
+        return name;
+    }
+  }
 }
 
 // ショップのカタログデータ

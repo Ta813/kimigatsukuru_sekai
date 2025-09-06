@@ -9,6 +9,7 @@ import 'character_customize_screen.dart';
 import '../../managers/bgm_manager.dart';
 import '../../managers/sfx_manager.dart';
 import 'math_lock_dialog.dart';
+import '../../l10n/app_localizations.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -133,44 +134,43 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   void _showTutorial() async {
     await _showGuideDialog(
-      title: 'ようこそ！',
-      content: 'これから「きみがつくる世界」の遊び方を説明するね！',
+      title: AppLocalizations.of(context)!.guideWelcomeTitle,
+      content: AppLocalizations.of(context)!.guideWelcomeDesc,
     );
     // 親モード設定のガイド
     await _showGuideDialog(
-      title: '① おうちのひと設定「左上の⚙マーク」',
-      content:
-          'やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！',
+      title: AppLocalizations.of(context)!.guideSettingsTitle,
+      content: AppLocalizations.of(context)!.guideSettingsDesc,
     );
     // つぎのやくそくのガイド
     await _showGuideDialog(
-      title: '② つぎのやくそく「下のボード」',
-      content: '次にやるべきやくそくが表示されるよ。\n「はじめる」を押して挑戦しよう！',
+      title: AppLocalizations.of(context)!.guideNextPromiseTitle,
+      content: AppLocalizations.of(context)!.guideNextPromiseDesc,
     );
     // やくそくボードのガイド
     await _showGuideDialog(
-      title: '③ やくそくボード「右の📄マーク」',
-      content: '今日のやくそくの一覧が見れるよ。\n「できた！」マークを集めるのが目標だ！',
+      title: AppLocalizations.of(context)!.guidePromiseBoardTitle,
+      content: AppLocalizations.of(context)!.guidePromiseBoardDesc,
     );
     // ポイントのガイド
     await _showGuideDialog(
-      title: '④ ポイント「右上の★」',
-      content: 'ここにやくそくを達成すると、ポイントがもらえるよ！\nたくさん集めて、ごほうびと交換しよう。',
+      title: AppLocalizations.of(context)!.guidePointsTitle,
+      content: AppLocalizations.of(context)!.guidePointsDesc,
     );
     // ショップのガイド
     await _showGuideDialog(
-      title: '⑤ ごほうびショップ「右の🏠マーク」',
-      content: '貯めたポイントで、新しい服やおうちと交換できる場所だよ！',
+      title: AppLocalizations.of(context)!.guideShopTitle,
+      content: AppLocalizations.of(context)!.guideShopDesc,
     );
     // キャラクター選択のガイド
     await _showGuideDialog(
-      title: '⑥ きせかえ・もようがえ「右の☺マーク」',
-      content: '買ったアイテムで、アバターの服やおうちを変えられるよ！\n自分だけの世界をつくろう。',
+      title: AppLocalizations.of(context)!.guideCustomizeTitle,
+      content: AppLocalizations.of(context)!.guideCustomizeDesc,
     );
     // ヘルプボタンのガイド
     await _showGuideDialog(
-      title: '⑦ ヘルプ「左の？マーク」',
-      content: 'わからなくなったら、このボタンを押して、\nもう一度この説明を見れるよ。',
+      title: AppLocalizations.of(context)!.guideHelpTitle,
+      content: AppLocalizations.of(context)!.guideHelpDesc,
     );
   }
 
@@ -214,7 +214,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   Future<void> _loadAndDetermineDisplayPromise() async {
     // まず、SharedPreferencesから両方のデータを読み込む
     final loadedPoints = await SharedPrefsHelper.loadPoints();
-    final regular = await SharedPrefsHelper.loadRegularPromises();
+    final regular = await SharedPrefsHelper.loadRegularPromises(context);
     final emergency = await SharedPrefsHelper.loadEmergencyPromise();
     final todaysCompletedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
@@ -337,7 +337,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     // ★タイマー画面に行く前に、集中BGMを再生
     BgmManager.instance.play(BgmTrack.focus);
-    SfxManager.instance.playStartSound();
 
     // タイマー画面に遷移し、結果（獲得ポイント）を待つ
     final pointsAwarded = await Navigator.push<int>(
@@ -673,7 +672,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               color: Color(0xFFFFCA28),
                             ),
                             onPressed: () {
-                              SfxManager.instance.playTapSound();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -749,8 +747,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             children: [
                               // 緊急の場合のみ「きんきゅう！」と表示
                               if (_isDisplayPromiseEmergency)
-                                const Text(
-                                  'きんきゅう！',
+                                Text(
+                                  AppLocalizations.of(context)!.emergency,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.white70,
@@ -759,7 +757,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               // 定例の場合は「つぎのやくそく」と表示
                               if (!_isDisplayPromiseEmergency)
                                 Text(
-                                  'つぎのやくそく',
+                                  AppLocalizations.of(context)!.nextPromise,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey[700],
@@ -771,8 +769,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               // やくそくの名前とポイントを表示
                               Text(
                                 _isDisplayPromiseEmergency
-                                    ? '${_displayPromise!['title']} / ${_displayPromise!['points']}ポイント'
-                                    : '${_displayPromise!['time']}〜 ${_displayPromise!['title']} / ${_displayPromise!['points']}ポイント',
+                                    ? '${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}'
+                                    : '${_displayPromise!['time']}〜 ${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -793,7 +791,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         TextButton(
                           onPressed: _skipPromise,
                           child: Text(
-                            'やらなかった',
+                            AppLocalizations.of(context)!.didNotDo,
                             style: TextStyle(
                               color: _isDisplayPromiseEmergency
                                   ? Colors.white70
@@ -813,7 +811,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             ),
                           ),
                           child: Text(
-                            _isDisplayPromiseEmergency ? 'すぐにはじめる' : 'はじめる',
+                            _isDisplayPromiseEmergency
+                                ? AppLocalizations.of(context)!.startNow
+                                : AppLocalizations.of(context)!.startPromise,
                             style: TextStyle(
                               color: _isDisplayPromiseEmergency
                                   ? Colors.red[400]
@@ -841,9 +841,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       color: Colors.green.withOpacity(0.85),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        '今日のやくそくは、すべておわりました！✨',
+                        AppLocalizations.of(context)!.allPromisesDone,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

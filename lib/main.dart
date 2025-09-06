@@ -8,6 +8,10 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'firebase_options.dart'; // flutterfire configureで生成されたファイル
 import 'dart:async';
 import 'dart:ui';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'providers/locale_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +38,12 @@ Future<void> main() async {
   ]);
 
   // すべての準備が終わってから、アプリを起動します
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => LocaleProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -42,8 +51,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localeProvider = Provider.of<LocaleProvider>(context);
+
     return MaterialApp(
-      title: 'きみがつくる世界',
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appName,
+      locale: localeProvider.locale,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''), // 英語
+        Locale('ja', ''), // 日本語
+      ],
+
       // アプリのテーマカラーなどを後で設定できます
       theme: ThemeData(
         fontFamily: GoogleFonts.mochiyPopOne().fontFamily,

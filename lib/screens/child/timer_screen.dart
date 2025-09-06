@@ -9,6 +9,7 @@ import 'roulette_dialog.dart';
 import '../../managers/sfx_manager.dart';
 import '../../managers/bgm_manager.dart';
 import '../../widgets/ad_banner.dart';
+import '../../l10n/app_localizations.dart';
 
 class TimerScreen extends StatefulWidget {
   // StatefulWidgetに変更
@@ -49,6 +50,25 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     _startTimer();
 
     _loadAndSetRandomCharacter();
+  }
+
+  bool _hasPlayedInitialSound = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // ★サウンドがまだ再生されていなければ
+    if (!_hasPlayedInitialSound) {
+      final lang = AppLocalizations.of(context)!.localeName;
+      if (lang == 'ja') {
+        SfxManager.instance.playStartSound();
+      } else {
+        final List<String> soundsToPlay = [];
+        soundsToPlay.addAll(['se/english/lets_go.mp3']);
+        SfxManager.instance.playSequentialSounds(soundsToPlay);
+      }
+      _hasPlayedInitialSound = true; // ★再生済みの旗を立てる
+    }
   }
 
   // この画面が閉じられる時に、一度だけ呼ばれるお片付け処理
@@ -118,55 +138,131 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       _updateRemainingSeconds();
 
+      final lang = AppLocalizations.of(context)!.localeName;
+
       // --- 音声再生ロジックをここにまとめる ---
       final List<String> soundsToPlay = [];
 
       if (_remainingSeconds <= 0) {
         if (!_isTimeUp) {
-          soundsToPlay.add('se/「タイムアップ」.mp3'); // タイムアップ音
+          if (lang == 'ja') {
+            soundsToPlay.add('se/「タイムアップ」.mp3'); // タイムアップ音
+          } else {
+            soundsToPlay.add('se/english/times_up.mp3');
+          }
           setState(() => _isTimeUp = true);
         }
         _timer?.cancel();
       } else if (_remainingSeconds == 10) {
-        soundsToPlay.add('se/「10、9、8、7、6、5、4、3、2、1、0」.mp3'); // 10秒カウントダウン
+        if (lang == 'ja') {
+          soundsToPlay.add('se/「10、9、8、7、6、5、4、3、2、1、0」.mp3'); // 10秒カウントダウン
+        } else {
+          soundsToPlay.addAll([
+            'se/english/ten.mp3',
+            'se/english/nine.mp3',
+            'se/english/eight.mp3',
+            'se/english/seven.mp3',
+            'se/english/six.mp3',
+            'se/english/five.mp3',
+            'se/english/four.mp3',
+            'se/english/three.mp3',
+            'se/english/two.mp3',
+            'se/english/one.mp3',
+          ]);
+        }
       } else if (_remainingSeconds == 1 * 60) {
-        soundsToPlay.addAll(['se/「あと」.mp3', 'se/「1」.mp3', 'se/「分（ふん）」.mp3']);
+        if (lang == 'ja') {
+          soundsToPlay.addAll(['se/「あと」.mp3', 'se/「1」.mp3', 'se/「分（ふん）」.mp3']);
+        } else {
+          soundsToPlay.addAll(['se/english/one.mp3', 'se/english/minute.mp3']);
+        }
       } else if (_remainingSeconds == 2 * 60) {
-        soundsToPlay.addAll(['se/「あと」.mp3', 'se/「2」.mp3', 'se/「分（ふん）」.mp3']);
+        if (lang == 'ja') {
+          soundsToPlay.addAll(['se/「あと」.mp3', 'se/「2」.mp3', 'se/「分（ふん）」.mp3']);
+        } else {
+          soundsToPlay.addAll(['se/english/two.mp3', 'se/english/minute.mp3']);
+        }
       } else if (_remainingSeconds == 3 * 60) {
-        soundsToPlay.addAll(['se/「あと」.mp3', 'se/「3」.mp3', 'se/「分（ふん）」.mp3']);
+        if (lang == 'ja') {
+          soundsToPlay.addAll(['se/「あと」.mp3', 'se/「3」.mp3', 'se/「分（ふん）」.mp3']);
+        } else {
+          soundsToPlay.addAll([
+            'se/english/three.mp3',
+            'se/english/minute.mp3',
+          ]);
+        }
       } else if (_remainingSeconds == 4 * 60) {
-        soundsToPlay.addAll([
-          'se/「あと」.mp3',
-          'se/「4（よん）」.mp3',
-          'se/「分（ふん）」.mp3',
-        ]);
+        if (lang == 'ja') {
+          soundsToPlay.addAll([
+            'se/「あと」.mp3',
+            'se/「4（よん）」.mp3',
+            'se/「分（ふん）」.mp3',
+          ]);
+        } else {
+          soundsToPlay.addAll(['se/english/four.mp3', 'se/english/minute.mp3']);
+        }
       } else if (_remainingSeconds == 5 * 60) {
-        soundsToPlay.addAll(['se/「あと」.mp3', 'se/「5」.mp3', 'se/「分（ふん）」.mp3']);
+        if (lang == 'ja') {
+          soundsToPlay.addAll(['se/「あと」.mp3', 'se/「5」.mp3', 'se/「分（ふん）」.mp3']);
+        } else {
+          soundsToPlay.addAll(['se/english/five.mp3', 'se/english/minute.mp3']);
+        }
       } else if (_remainingSeconds == 10 * 60) {
-        soundsToPlay.addAll([
-          'se/「あと」.mp3',
-          'se/「10（じゅう↑）」.mp3',
-          'se/「分（ふん）」.mp3',
-        ]);
+        if (lang == 'ja') {
+          soundsToPlay.addAll([
+            'se/「あと」.mp3',
+            'se/「10（じゅう↑）」.mp3',
+            'se/「分（ふん）」.mp3',
+          ]);
+        } else {
+          soundsToPlay.addAll(['se/english/ten.mp3', 'se/english/minute.mp3']);
+        }
       } else if (_remainingSeconds == 15 * 60) {
-        soundsToPlay.addAll([
-          'se/「あと」.mp3',
-          'se/「10（じゅう↓）」.mp3',
-          'se/「5」.mp3',
-          'se/「分（ふん）」.mp3',
-        ]);
+        if (lang == 'ja') {
+          soundsToPlay.addAll([
+            'se/「あと」.mp3',
+            'se/「10（じゅう↓）」.mp3',
+            'se/「5」.mp3',
+            'se/「分（ふん）」.mp3',
+          ]);
+        } else {
+          soundsToPlay.addAll([
+            'se/english/fifteen.mp3',
+            'se/english/minute.mp3',
+          ]);
+        }
       } else if (_remainingSeconds == 20 * 60) {
-        soundsToPlay.addAll(['se/「あと」.mp3', 'se/「20」.mp3', 'se/「分（ふん）」.mp3']);
+        if (lang == 'ja') {
+          soundsToPlay.addAll(['se/「あと」.mp3', 'se/「20」.mp3', 'se/「分（ふん）」.mp3']);
+        } else {
+          soundsToPlay.addAll([
+            'se/english/twenty.mp3',
+            'se/english/minute.mp3',
+          ]);
+        }
       } else if (_remainingSeconds == 25 * 60) {
-        soundsToPlay.addAll([
-          'se/「あと」.mp3',
-          'se/「20（に↑じゅう↓）」.mp3',
-          'se/「5」.mp3',
-          'se/「分（ふん）」.mp3',
-        ]);
+        if (lang == 'ja') {
+          soundsToPlay.addAll([
+            'se/「あと」.mp3',
+            'se/「20（に↑じゅう↓）」.mp3',
+            'se/「5」.mp3',
+            'se/「分（ふん）」.mp3',
+          ]);
+        } else {
+          soundsToPlay.addAll([
+            'se/english/twenty_five.mp3',
+            'se/english/minute.mp3',
+          ]);
+        }
       } else if (_remainingSeconds == 30 * 60) {
-        soundsToPlay.addAll(['se/「あと」.mp3', 'se/「30」.mp3', 'se/「分（ふん）」.mp3']);
+        if (lang == 'ja') {
+          soundsToPlay.addAll(['se/「あと」.mp3', 'se/「30」.mp3', 'se/「分（ふん）」.mp3']);
+        } else {
+          soundsToPlay.addAll([
+            'se/english/thirty.mp3',
+            'se/english/minute.mp3',
+          ]);
+        }
       }
 
       // もし再生すべき音があれば、SfxManagerの新しいメソッドを呼び出す
@@ -174,7 +270,14 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
         // 1. BGMを一時停止
         BgmManager.instance.pause();
         // 2. 効果音の再生が「終わるのを待つ」
-        await SfxManager.instance.playSequentialSounds(soundsToPlay);
+        if (soundsToPlay.length == 10) {
+          await SfxManager.instance.playSequentialSounds(
+            soundsToPlay,
+            speed: 1.2,
+          );
+        } else {
+          await SfxManager.instance.playSequentialSounds(soundsToPlay);
+        }
         await Future.delayed(const Duration(seconds: 3));
         // 3. BGMを再開
         BgmManager.instance.resume();
@@ -196,11 +299,15 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
       barrierDismissible: false,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('かくにん'),
-          content: Text('${widget.promise['title']} は、ちゃんとおわったかな？'),
+          title: Text(AppLocalizations.of(context)!.confirmation),
+          content: Text(
+            AppLocalizations.of(
+              context,
+            )!.askIfFinished(widget.promise['title']),
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('まだだよ'),
+              child: Text(AppLocalizations.of(context)!.notYet),
               onPressed: () {
                 SfxManager.instance.playTapSound();
                 Navigator.of(dialogContext).pop();
@@ -208,7 +315,7 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
               },
             ),
             ElevatedButton(
-              child: const Text('おわったよ！'),
+              child: Text(AppLocalizations.of(context)!.yesFinished),
               // ★「おわったよ！」ボタンが押されたら、ここから処理が始まる
               onPressed: () {
                 // まず承認ダイアログを閉じる
@@ -219,7 +326,14 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
                   // 時間内なら -> ルーレットへ
                   _showRouletteAndFinish();
                 } else {
-                  SfxManager.instance.playTimerLoseSound();
+                  final lang = AppLocalizations.of(context)!.localeName;
+                  if (lang == 'ja') {
+                    SfxManager.instance.playTimerLoseSound();
+                  } else {
+                    final List<String> soundsToPlay = [];
+                    soundsToPlay.addAll(['se/english/you_did_your_best.mp3']);
+                    SfxManager.instance.playSequentialSounds(soundsToPlay);
+                  }
                   // 時間切れなら -> ポイント半分で終了
                   _finishPromise(pointMultiplier: 0.5);
                 }
@@ -262,7 +376,11 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
       appBar: AppBar(
         // もらった情報を使って、タイトルを表示します
         backgroundColor: widget.isEmergency ? Colors.red[400] : null,
-        title: Text('${widget.promise['title']} に挑戦中！'),
+        title: Text(
+          AppLocalizations.of(
+            context,
+          )!.challengingPromise(widget.promise['title']),
+        ),
       ),
       body: Stack(
         children: [
@@ -286,11 +404,15 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
                 const SizedBox(height: 10),
                 _isTimeUp
                     ? Text(
-                        'おしい！ポイントは${widget.promise['points'] / 2}になるよ！',
+                        AppLocalizations.of(context)!.pointsHalf(
+                          (widget.promise['points'] / 2).floor().toString(),
+                        ),
                         style: TextStyle(fontSize: 20, color: Colors.red[700]),
                       )
                     : Text(
-                        '${widget.promise['points']}ポイント ゲットのチャンス！',
+                        AppLocalizations.of(
+                          context,
+                        )!.pointsChance(widget.promise['points']),
                         style: const TextStyle(fontSize: 20),
                       ),
                 const SizedBox(height: 20),
@@ -310,7 +432,7 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  child: const Text('おわった！'),
+                  child: Text(AppLocalizations.of(context)!.finished),
                 ),
               ],
             ),
