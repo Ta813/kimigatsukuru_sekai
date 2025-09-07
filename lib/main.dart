@@ -15,6 +15,9 @@ import 'providers/locale_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final localeProvider = LocaleProvider();
+  await localeProvider.init();
   // Firebaseを初期化
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
@@ -39,10 +42,7 @@ Future<void> main() async {
 
   // すべての準備が終わってから、アプリを起動します
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => LocaleProvider(),
-      child: const MyApp(),
-    ),
+    ChangeNotifierProvider.value(value: localeProvider, child: const MyApp()),
   );
 }
 
@@ -56,6 +56,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appName,
       locale: localeProvider.locale,
+      localeResolutionCallback: (deviceLocale, supportedLocales) {
+        // 端末の言語設定が日本語だったら、日本語を選択
+        if (deviceLocale != null && deviceLocale.languageCode == 'ja') {
+          return const Locale('ja');
+        }
+        // それ以外の場合は、すべて英語をデフォルトにする
+        return const Locale('en');
+      },
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

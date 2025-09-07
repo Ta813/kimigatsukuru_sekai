@@ -292,4 +292,23 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList(_equippedItemsKey) ?? [];
   }
+
+  // ★言語設定用のキーを追加
+  static const String _localeKey = 'locale';
+
+  // ★言語設定を保存するメソッドを追加
+  static Future<void> saveLocale(String? languageCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (languageCode == null) {
+      await prefs.remove(_localeKey);
+    } else {
+      await prefs.setString(_localeKey, languageCode);
+    }
+  }
+
+  // ★保存された言語設定を読み込むメソッドを追加
+  static Future<String?> loadLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_localeKey);
+  }
 }
