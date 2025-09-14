@@ -6,6 +6,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
+import 'package:flutter/foundation.dart';
 
 class EmergencyPromiseScreen extends StatefulWidget {
   const EmergencyPromiseScreen({super.key});
@@ -99,7 +100,11 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                   labelText: AppLocalizations.of(context)!.points,
                 ),
                 keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                maxLength: kDebugMode ? null : 2,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(kDebugMode ? 10 : 2),
+                ],
               ),
               const SizedBox(height: 32),
               ElevatedButton(

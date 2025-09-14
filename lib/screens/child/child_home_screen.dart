@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../widgets/draggable_character.dart';
 import 'promise_board_screen.dart';
@@ -10,6 +12,7 @@ import '../../managers/bgm_manager.dart';
 import '../../managers/sfx_manager.dart';
 import 'math_lock_dialog.dart';
 import '../../l10n/app_localizations.dart';
+import 'house_interior_screen.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -48,9 +51,21 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   // キーはキャラクターのパス、値はOffset
   Map<String, Offset> _characterPositionsMap = {};
 
+  bool _showHouseHint = false; // 吹き出しを表示するかどうかの旗
+  Timer? _hintTimer; // 吹き出しを自動で消すためのタイマー
+
+  bool _hasEnteredHouse = false; // 家に入ったことがあるかのローカルな旗
+  late AnimationController _hintAnimationController; // 吹き出しアニメーション用
+
   @override
   void initState() {
     super.initState();
+
+    // ★ 吹き出し用のヒントアニメーションコントローラーを初期化
+    _hintAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    )..repeat(reverse: true); // 繰り返し再生（ポワンポワンさせる）
 
     // 1. リモコンの準備（アニメーション全体の長さを少し長くする）
     _animationController = AnimationController(
@@ -110,6 +125,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   @override
   void dispose() {
+    _hintAnimationController.dispose();
     _animationController.dispose();
     _pointsAddedAnimationController.dispose();
     // ★アプリの状態変化の監視を終了
@@ -222,6 +238,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     Offset? loadedAvatarPos = await SharedPrefsHelper.loadCharacterPosition(
       'avatar',
     );
+    final entered = await SharedPrefsHelper.getHasEnteredHouse();
 
     Map<String, dynamic>? nextPromise;
     bool isEmergency = false;
@@ -294,6 +311,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     }
     // 最後に、画面の状態を更新
     setState(() {
+      _hasEnteredHouse = entered;
       _points = loadedPoints;
       _displayPromise = nextPromise;
       _isDisplayPromiseEmergency = isEmergency;
@@ -676,8 +694,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 context,
                                 MaterialPageRoute(
                                   // ★現在のポイント数を渡してショップ画面を開く
-                                  builder: (context) =>
-                                      ShopScreen(currentPoints: _points),
+                                  builder: (context) => ShopScreen(
+                                    currentPoints: _points,
+                                    mode: ShopMode.forGeneral,
+                                  ),
                                 ),
                               ).then((_) {
                                 // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
@@ -697,21 +717,139 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           // 真ん中のエリア（アバターと家）
           Align(
             alignment: Alignment.bottomCenter, // 画面下の中央を基準に配置
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 100.0), // 下から少し浮かせる
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, // 中央揃え
-                crossAxisAlignment: CrossAxisAlignment.end, // アバターと家の底を揃える
-                children: [
-                  // 家の画像
-                  Image.asset(
-                    _equippedHousePath, // あなたが用意した画像ファイル名
-                    height: 200, // 高さを指定
+            child: GestureDetector(
+              onTap: () {
+                // もしすでにタイマーが動いていたら、一度キャンセルする
+                _hintTimer?.cancel();
+
+                // 吹き出しを表示するようにStateを更新
+                setState(() {
+                  _showHouseHint = true;
+                });
+
+                // 3秒後に、吹き出しを非表示にするタイマーをセット
+                _hintTimer = Timer(const Duration(seconds: 3), () {
+                  setState(() {
+                    _showHouseHint = false;
+                  });
+                });
+              },
+
+              onLongPress: () async {
+                // 家を長押しした時の処理
+                SfxManager.instance.playSuccessSound(); // 音を鳴らす
+
+                if (!_hasEnteredHouse) {
+                  await SharedPrefsHelper.setHasEnteredHouse(true);
+                  setState(() {
+                    _hasEnteredHouse = true;
+                  });
+                }
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HouseInteriorScreen(
+                      equippedHousePath: _equippedHousePath,
+                      currentPoints: _points, // ★この行を追加
+                    ),
                   ),
-                ],
+                ).then((_) {
+                  // ★家の中画面から戻ってきたら、必ずデータを再読み込みする
+                  _loadAndDetermineDisplayPromise();
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 100.0), // 下から少し浮かせる
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center, // 中央揃え
+                  crossAxisAlignment: CrossAxisAlignment.end, // アバターと家の底を揃える
+                  children: [
+                    // 家の画像
+                    Image.asset(
+                      _equippedHousePath, // あなたが用意した画像ファイル名
+                      height: 200, // 高さを指定
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
+
+          // ★ まだ家に入ったことがない場合のみ表示
+          if (!_hasEnteredHouse)
+            Positioned(
+              // ★ 家の画像の上あたりに位置を調整
+              top: MediaQuery.of(context).size.height * 0.45,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(
+                child: Column(
+                  children: [
+                    // 吹き出し
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.longPressToEnter, // 'おうちを ながおし してみてね！'
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    // ポワンポワンする指アイコン
+                    ScaleTransition(
+                      scale: Tween<double>(begin: 1.0, end: 1.3).animate(
+                        CurvedAnimation(
+                          parent: _hintAnimationController,
+                          curve: Curves.easeInOut,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.touch_app,
+                        color: Colors.white,
+                        size: 40,
+                        shadows: [Shadow(blurRadius: 8, color: Colors.black54)],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          if (_showHouseHint)
+            Positioned(
+              // ★家の位置に合わせて、吹き出しの位置を微調整してください
+              top: MediaQuery.of(context).size.height * 0.45,
+              left: MediaQuery.of(context).size.width * 0.4,
+              child: IgnorePointer(
+                // 吹き出し自体はタップできないようにする
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.longPressToEnter,
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
 
           // 下のバー（つぎのやくそく）
           _displayPromise != null

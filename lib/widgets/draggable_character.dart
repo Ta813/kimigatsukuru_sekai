@@ -30,6 +30,7 @@ class _DraggableCharacterState extends State<DraggableCharacter> {
       left: widget.position.dx,
       top: widget.position.dy,
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onPanUpdate: (details) {
           setState(() {
             widget.onPositionChanged(details.delta);

@@ -57,6 +57,14 @@ android {
     }
 }
 
+dependencies {
+    // Kotlinの標準ライブラリ（念のため追加）
+    implementation(kotlin("stdlib-jdk7"))
+
+    // AdMob Unity Ads メディエーションアダプタ
+    implementation("com.google.ads.mediation:unity:4.9.3.0")
+}
+
 flutter {
     source = "../.."
 }

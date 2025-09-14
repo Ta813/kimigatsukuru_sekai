@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
+import 'package:flutter/foundation.dart';
 
 class AddEditPromiseScreen extends StatefulWidget {
   final Map<String, dynamic>? initialPromise;
@@ -148,7 +149,11 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                   labelText: AppLocalizations.of(context)!.points,
                 ),
                 keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                maxLength: kDebugMode ? null : 2,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(kDebugMode ? 10 : 2),
+                ],
               ),
               const SizedBox(height: 32),
               ElevatedButton(

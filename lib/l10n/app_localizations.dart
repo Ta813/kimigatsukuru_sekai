@@ -868,6 +868,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Language'**
   String get languageSetting;
+
+  /// No description provided for @longPressToEnter.
+  ///
+  /// In en, this message translates to:
+  /// **'Long press to enter!'**
+  String get longPressToEnter;
+
+  /// No description provided for @insideTheHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Inside the House'**
+  String get insideTheHouse;
+
+  /// No description provided for @roomIsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks like there\'s nothing here yet...\nWhat kind of room should we make?'**
+  String get roomIsEmpty;
+
+  /// No description provided for @furniture.
+  ///
+  /// In en, this message translates to:
+  /// **'Furniture'**
+  String get furniture;
+
+  /// No description provided for @houseItems.
+  ///
+  /// In en, this message translates to:
+  /// **'House Items'**
+  String get houseItems;
+
+  /// No description provided for @itemBed.
+  ///
+  /// In en, this message translates to:
+  /// **'Bed'**
+  String get itemBed;
+
+  /// No description provided for @itemChair1.
+  ///
+  /// In en, this message translates to:
+  /// **'Chair 1'**
+  String get itemChair1;
+
+  /// No description provided for @itemChair2.
+  ///
+  /// In en, this message translates to:
+  /// **'Chair 2'**
+  String get itemChair2;
+
+  /// No description provided for @itemChair3.
+  ///
+  /// In en, this message translates to:
+  /// **'Chair 3'**
+  String get itemChair3;
+
+  /// No description provided for @itemKitchen.
+  ///
+  /// In en, this message translates to:
+  /// **'Kitchen'**
+  String get itemKitchen;
+
+  /// No description provided for @itemLantern.
+  ///
+  /// In en, this message translates to:
+  /// **'Lantern'**
+  String get itemLantern;
+
+  /// No description provided for @itemCupboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Cupboard'**
+  String get itemCupboard;
+
+  /// No description provided for @itemTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Table'**
+  String get itemTable;
+
+  /// No description provided for @itemShelf.
+  ///
+  /// In en, this message translates to:
+  /// **'Shelf'**
+  String get itemShelf;
+
+  /// No description provided for @itemBanana.
+  ///
+  /// In en, this message translates to:
+  /// **'Banana'**
+  String get itemBanana;
+
+  /// No description provided for @itemGrapes.
+  ///
+  /// In en, this message translates to:
+  /// **'Grapes'**
+  String get itemGrapes;
+
+  /// No description provided for @itemPineapple.
+  ///
+  /// In en, this message translates to:
+  /// **'Pineapple'**
+  String get itemPineapple;
+
+  /// No description provided for @itemApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Apple'**
+  String get itemApple;
+
+  /// No description provided for @itemBottle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottle'**
+  String get itemBottle;
+
+  /// No description provided for @itemMilk.
+  ///
+  /// In en, this message translates to:
+  /// **'Milk'**
+  String get itemMilk;
+
+  /// No description provided for @itemCup.
+  ///
+  /// In en, this message translates to:
+  /// **'Cup'**
+  String get itemCup;
+
+  /// No description provided for @itemPot.
+  ///
+  /// In en, this message translates to:
+  /// **'Pot'**
+  String get itemPot;
+
+  /// No description provided for @itemBowl.
+  ///
+  /// In en, this message translates to:
+  /// **'Bowl'**
+  String get itemBowl;
+
+  /// No description provided for @itemBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get itemBook;
+
+  /// No description provided for @itemVase.
+  ///
+  /// In en, this message translates to:
+  /// **'Vase'**
+  String get itemVase;
+
+  /// No description provided for @itemStuffedAnimal.
+  ///
+  /// In en, this message translates to:
+  /// **'Stuffed Animal'**
+  String get itemStuffedAnimal;
+
+  /// No description provided for @itemRockingHorse.
+  ///
+  /// In en, this message translates to:
+  /// **'Rocking Horse'**
+  String get itemRockingHorse;
+
+  /// No description provided for @itemToy.
+  ///
+  /// In en, this message translates to:
+  /// **'Toy'**
+  String get itemToy;
+
+  /// No description provided for @itemTablet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tablet'**
+  String get itemTablet;
+
+  /// No description provided for @itemBlocks.
+  ///
+  /// In en, this message translates to:
+  /// **'Building Blocks'**
+  String get itemBlocks;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -87,6 +87,54 @@ class ShopItem {
         return l10n.itemBicycle;
       case 'くるま':
         return l10n.itemCar;
+      case 'ベット':
+        return l10n.itemBed;
+      case 'いす１':
+        return l10n.itemChair1;
+      case 'いす２':
+        return l10n.itemChair2;
+      case 'いす３':
+        return l10n.itemChair3;
+      case 'キッチン':
+        return l10n.itemKitchen;
+      case 'ランタン':
+        return l10n.itemLantern;
+      case 'しょっきだな':
+        return l10n.itemCupboard;
+      case 'テーブル':
+        return l10n.itemTable;
+      case 'たな':
+        return l10n.itemShelf;
+      case 'バナナ':
+        return l10n.itemBanana;
+      case 'ぶどう':
+        return l10n.itemGrapes;
+      case 'パイナップル':
+        return l10n.itemPineapple;
+      case 'リンゴ':
+        return l10n.itemApple;
+      case 'びん':
+        return l10n.itemBottle;
+      case 'ぎゅうにゅう':
+        return l10n.itemMilk;
+      case 'コップ':
+        return l10n.itemCup;
+      case 'なべ':
+        return l10n.itemPot;
+      case 'ほん':
+        return l10n.itemBook;
+      case 'かびん':
+        return l10n.itemVase;
+      case 'ぬいぐるみ':
+        return l10n.itemStuffedAnimal;
+      case 'もくば':
+        return l10n.itemRockingHorse;
+      case 'おもちゃ':
+        return l10n.itemToy;
+      case 'タブレット':
+        return l10n.itemTablet;
+      case 'つみき':
+        return l10n.itemBlocks;
       default:
         return name;
     }
@@ -305,5 +353,161 @@ final List<ShopItem> shopItems = [
     imagePath: 'assets/images/item_kuruma.png',
     price: 100,
     type: 'item',
+  ),
+  ShopItem(
+    name: 'ベット',
+    type: 'furniture',
+    price: 150,
+    imagePath: 'assets/images/house_interior_furniture/bet.png',
+  ),
+  ShopItem(
+    name: 'いす１',
+    type: 'furniture',
+    price: 150,
+    imagePath: 'assets/images/house_interior_furniture/isu1.png',
+  ),
+  ShopItem(
+    name: 'いす２',
+    type: 'furniture',
+    price: 150,
+    imagePath: 'assets/images/house_interior_furniture/isu2.png',
+  ),
+  ShopItem(
+    name: 'いす３',
+    type: 'furniture',
+    price: 150,
+    imagePath: 'assets/images/house_interior_furniture/isu3.png',
+  ),
+  ShopItem(
+    name: 'キッチン',
+    type: 'furniture',
+    price: 150,
+    imagePath: 'assets/images/house_interior_furniture/kicchin.png',
+  ),
+  ShopItem(
+    name: 'ランタン',
+    type: 'furniture',
+    price: 150,
+    imagePath: 'assets/images/house_interior_furniture/rantan.png',
+  ),
+  ShopItem(
+    name: 'しょっきだな',
+    type: 'furniture',
+    price: 150,
+    imagePath: 'assets/images/house_interior_furniture/syokkidana.png',
+  ),
+  ShopItem(
+    name: 'テーブル',
+    type: 'furniture',
+    price: 150,
+    imagePath: 'assets/images/house_interior_furniture/table.png',
+  ),
+  ShopItem(
+    name: 'たな',
+    type: 'furniture',
+    price: 150,
+    imagePath: 'assets/images/house_interior_furniture/tana.png',
+  ),
+  ShopItem(
+    name: 'バナナ',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/banana.png',
+  ),
+  ShopItem(
+    name: 'ぶどう',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/budou.png',
+  ),
+  ShopItem(
+    name: 'パイナップル',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/painappuru.png',
+  ),
+  ShopItem(
+    name: 'リンゴ',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/ringo.png',
+  ),
+  ShopItem(
+    name: 'びん',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/bin.png',
+  ),
+  ShopItem(
+    name: 'ぎゅうにゅう',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/gyunyubin.png',
+  ),
+  ShopItem(
+    name: 'コップ',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/koppu.png',
+  ),
+  ShopItem(
+    name: 'なべ',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/nabe.png',
+  ),
+  ShopItem(
+    name: 'ボール',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/bool.png',
+  ),
+  ShopItem(
+    name: 'ほん',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/hon.png',
+  ),
+  ShopItem(
+    name: 'かびん',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/kabin.png',
+  ),
+  ShopItem(
+    name: 'ぬいぐるみ',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/kumanonuigurumi.png',
+  ),
+  ShopItem(
+    name: 'もくば',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/mokuba.png',
+  ),
+  ShopItem(
+    name: 'おもちゃ',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/omotya1.png',
+  ),
+  ShopItem(
+    name: 'タブレット',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/taburetto.png',
+  ),
+  ShopItem(
+    name: 'たからばこ',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/takarabako.png',
+  ),
+  ShopItem(
+    name: 'つみき',
+    type: 'house_item',
+    price: 50,
+    imagePath: 'assets/images/house_interior_items/tumiki.png',
   ),
 ];

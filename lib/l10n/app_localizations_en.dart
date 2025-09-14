@@ -414,4 +414,94 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageSetting => 'Language';
+
+  @override
+  String get longPressToEnter => 'Long press to enter!';
+
+  @override
+  String get insideTheHouse => 'Inside the House';
+
+  @override
+  String get roomIsEmpty => 'Looks like there\'s nothing here yet...\nWhat kind of room should we make?';
+
+  @override
+  String get furniture => 'Furniture';
+
+  @override
+  String get houseItems => 'House Items';
+
+  @override
+  String get itemBed => 'Bed';
+
+  @override
+  String get itemChair1 => 'Chair 1';
+
+  @override
+  String get itemChair2 => 'Chair 2';
+
+  @override
+  String get itemChair3 => 'Chair 3';
+
+  @override
+  String get itemKitchen => 'Kitchen';
+
+  @override
+  String get itemLantern => 'Lantern';
+
+  @override
+  String get itemCupboard => 'Cupboard';
+
+  @override
+  String get itemTable => 'Table';
+
+  @override
+  String get itemShelf => 'Shelf';
+
+  @override
+  String get itemBanana => 'Banana';
+
+  @override
+  String get itemGrapes => 'Grapes';
+
+  @override
+  String get itemPineapple => 'Pineapple';
+
+  @override
+  String get itemApple => 'Apple';
+
+  @override
+  String get itemBottle => 'Bottle';
+
+  @override
+  String get itemMilk => 'Milk';
+
+  @override
+  String get itemCup => 'Cup';
+
+  @override
+  String get itemPot => 'Pot';
+
+  @override
+  String get itemBowl => 'Bowl';
+
+  @override
+  String get itemBook => 'Book';
+
+  @override
+  String get itemVase => 'Vase';
+
+  @override
+  String get itemStuffedAnimal => 'Stuffed Animal';
+
+  @override
+  String get itemRockingHorse => 'Rocking Horse';
+
+  @override
+  String get itemToy => 'Toy';
+
+  @override
+  String get itemTablet => 'Tablet';
+
+  @override
+  String get itemBlocks => 'Building Blocks';
 }

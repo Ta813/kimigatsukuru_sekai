@@ -414,4 +414,94 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get languageSetting => '言語設定';
+
+  @override
+  String get longPressToEnter => '長押しで入れるよ！';
+
+  @override
+  String get insideTheHouse => 'おうちの中';
+
+  @override
+  String get roomIsEmpty => 'まだ何もないみたい…\nこれからどんなお部屋にしようかな？';
+
+  @override
+  String get furniture => 'かぐ';
+
+  @override
+  String get houseItems => 'いえのアイテム';
+
+  @override
+  String get itemBed => 'ベット';
+
+  @override
+  String get itemChair1 => 'いす１';
+
+  @override
+  String get itemChair2 => 'いす２';
+
+  @override
+  String get itemChair3 => 'いす３';
+
+  @override
+  String get itemKitchen => 'キッチン';
+
+  @override
+  String get itemLantern => 'ランタン';
+
+  @override
+  String get itemCupboard => 'しょっきだな';
+
+  @override
+  String get itemTable => 'テーブル';
+
+  @override
+  String get itemShelf => 'たな';
+
+  @override
+  String get itemBanana => 'バナナ';
+
+  @override
+  String get itemGrapes => 'ぶどう';
+
+  @override
+  String get itemPineapple => 'パイナップル';
+
+  @override
+  String get itemApple => 'リンゴ';
+
+  @override
+  String get itemBottle => 'びん';
+
+  @override
+  String get itemMilk => 'ぎゅうにゅう';
+
+  @override
+  String get itemCup => 'コップ';
+
+  @override
+  String get itemPot => 'なべ';
+
+  @override
+  String get itemBowl => 'ボール';
+
+  @override
+  String get itemBook => 'ほん';
+
+  @override
+  String get itemVase => 'かびん';
+
+  @override
+  String get itemStuffedAnimal => 'ぬいぐるみ';
+
+  @override
+  String get itemRockingHorse => 'もくば';
+
+  @override
+  String get itemToy => 'おもちゃ';
+
+  @override
+  String get itemTablet => 'タブレット';
+
+  @override
+  String get itemBlocks => 'つみき';
 }

@@ -7,10 +7,20 @@ import '../../widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../l10n/app_localizations.dart';
 
+enum ShopMode {
+  forGeneral, // ホーム画面からの通常表示
+  forHouse, // 家の中からの家具・アイテム表示
+}
+
 class ShopScreen extends StatefulWidget {
   final int currentPoints;
+  final ShopMode mode;
 
-  const ShopScreen({super.key, required this.currentPoints});
+  const ShopScreen({
+    super.key,
+    required this.mode,
+    required this.currentPoints,
+  });
 
   @override
   State<ShopScreen> createState() => _ShopScreenState();
@@ -158,10 +168,7 @@ class _ShopScreenState extends State<ShopScreen> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                Text(
-                  '${item.price} ${AppLocalizations.of(context)!.points}',
-                  textAlign: TextAlign.center,
-                ),
+                Text('${item.price}P', textAlign: TextAlign.center),
                 const SizedBox(height: 10),
               ],
             ),
@@ -200,8 +207,8 @@ class _ShopScreenState extends State<ShopScreen> {
       padding: const EdgeInsets.all(16.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount, // 1行に表示する数
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
+        crossAxisSpacing: 1,
+        mainAxisSpacing: 1,
         childAspectRatio: 0.9, // アイテムの縦横比
       ),
       itemCount: items.length,
@@ -214,25 +221,116 @@ class _ShopScreenState extends State<ShopScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // まず、アイテムをカテゴリ別に分けます
-    final clothesItems = shopItems
-        .where(
-          (item) =>
-              item.type == 'clothes' &&
-              item.name != 'いつものふく' &&
-              item.name != 'おとこのこ',
-        )
-        .toList();
-    final houseItems = shopItems
-        .where((item) => item.type == 'house' && item.name != 'さいしょのおうち')
-        .toList();
-    final characterItems = shopItems
-        .where((item) => item.type == 'character' && item.name != 'ウサギ')
-        .toList();
-    final itemItems = shopItems.where((item) => item.type == 'item').toList();
+    final List<Tab> tabs;
+    final List<Widget> tabViews;
+
+    if (widget.mode == ShopMode.forHouse) {
+      // --- 🏠 家の中モードの時の表示 ---
+      final furnitureItems = shopItems
+          .where((item) => item.type == 'furniture')
+          .toList();
+      final houseItems = shopItems
+          .where((item) => item.type == 'house_item')
+          .toList();
+
+      tabs = [
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.chair),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.furniture),
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.widgets),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.houseItems),
+            ],
+          ),
+        ),
+      ];
+
+      tabViews = [
+        _buildCategoryGrid(furnitureItems, crossAxisCount: 7),
+        _buildCategoryGrid(houseItems, crossAxisCount: 7),
+      ];
+    } else {
+      // まず、アイテムをカテゴリ別に分けます
+      final clothesItems = shopItems
+          .where(
+            (item) =>
+                item.type == 'clothes' &&
+                item.name != 'いつものふく' &&
+                item.name != 'おとこのこ',
+          )
+          .toList();
+      final houseItems = shopItems
+          .where((item) => item.type == 'house' && item.name != 'さいしょのおうち')
+          .toList();
+      final characterItems = shopItems
+          .where((item) => item.type == 'character' && item.name != 'ウサギ')
+          .toList();
+      final itemItems = shopItems.where((item) => item.type == 'item').toList();
+
+      tabs = [
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.checkroom),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.customizeTabClothes),
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.house),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.customizeTabHouse),
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.support_agent),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.customizeTabCharacter),
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.star),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.customizeTabItem),
+            ],
+          ),
+        ),
+      ];
+
+      tabViews = [
+        _buildCategoryGrid(clothesItems, crossAxisCount: 6),
+        _buildCategoryGrid(houseItems, crossAxisCount: 5),
+        _buildCategoryGrid(characterItems, crossAxisCount: 6),
+        _buildCategoryGrid(itemItems, crossAxisCount: 7),
+      ];
+    }
 
     return DefaultTabController(
-      length: 4, // ★タブの数
+      length: widget.mode == ShopMode.forHouse ? 2 : 4, // ★タブの数
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.shopTitle),
@@ -253,35 +351,14 @@ class _ShopScreenState extends State<ShopScreen> {
           // ★AppBarの下にTabBarを設置します
           bottom: TabBar(
             isScrollable: true, // タブが多くなってもスクロールできるようにする
-            tabs: [
-              Tab(
-                text: AppLocalizations.of(context)!.customizeTabClothes,
-                icon: Icon(Icons.checkroom),
-              ),
-              Tab(
-                text: AppLocalizations.of(context)!.customizeTabHouse,
-                icon: Icon(Icons.house),
-              ),
-              Tab(
-                text: AppLocalizations.of(context)!.customizeTabCharacter,
-                icon: Icon(Icons.support_agent),
-              ),
-              Tab(
-                text: AppLocalizations.of(context)!.customizeTabItem,
-                icon: Icon(Icons.star),
-              ),
-            ],
+            tabs: tabs,
           ),
         ),
         // ★bodyをTabBarViewに変更します
         body: TabBarView(
-          children: [
-            // 各タブの中身となるGridViewを、共通メソッドで生成します
-            _buildCategoryGrid(clothesItems, crossAxisCount: 5),
-            _buildCategoryGrid(houseItems, crossAxisCount: 5),
-            _buildCategoryGrid(characterItems, crossAxisCount: 5),
-            _buildCategoryGrid(itemItems, crossAxisCount: 6),
-          ],
+          children: tabViews,
+
+          // 各タブの中身となるGridViewを、共通メソッドで生成します
         ),
         bottomNavigationBar: const AdBanner(),
       ),

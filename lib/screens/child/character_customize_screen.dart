@@ -158,20 +158,44 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           bottom: TabBar(
             tabs: [
               Tab(
-                text: AppLocalizations.of(context)!.customizeTabClothes,
-                icon: Icon(Icons.checkroom),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.checkroom),
+                    SizedBox(width: 8), // アイコンとテキストの間のスペース
+                    Text(AppLocalizations.of(context)!.customizeTabClothes),
+                  ],
+                ),
               ),
               Tab(
-                text: AppLocalizations.of(context)!.customizeTabHouse,
-                icon: Icon(Icons.house),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.house),
+                    SizedBox(width: 8), // アイコンとテキストの間のスペース
+                    Text(AppLocalizations.of(context)!.customizeTabHouse),
+                  ],
+                ),
               ),
               Tab(
-                text: AppLocalizations.of(context)!.customizeTabCharacter,
-                icon: Icon(Icons.support_agent),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.support_agent),
+                    SizedBox(width: 8), // アイコンとテキストの間のスペース
+                    Text(AppLocalizations.of(context)!.customizeTabCharacter),
+                  ],
+                ),
               ),
               Tab(
-                text: AppLocalizations.of(context)!.customizeTabItem,
-                icon: Icon(Icons.star),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.star),
+                    SizedBox(width: 8), // アイコンとテキストの間のスペース
+                    Text(AppLocalizations.of(context)!.customizeTabItem),
+                  ],
+                ),
               ),
             ],
           ),

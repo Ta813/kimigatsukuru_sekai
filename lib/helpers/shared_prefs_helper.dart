@@ -311,4 +311,40 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_localeKey);
   }
+
+  // 家具の装備情報を保存
+  static Future<void> saveEquippedFurniture(List<String> furniture) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_furniture', furniture);
+  }
+
+  // 家具の装備情報を読み込み
+  static Future<List<String>> loadEquippedFurniture() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_furniture') ?? [];
+  }
+
+  // 家のアイテムの装備情報を保存
+  static Future<void> saveEquippedHouseItems(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_house_items', items);
+  }
+
+  // 家のアイテムの装備情報を読み込み
+  static Future<List<String>> loadEquippedHouseItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_house_items') ?? [];
+  }
+
+  // 「家に入ったことがあるか」を保存する
+  static Future<void> setHasEnteredHouse(bool hasEntered) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('has_entered_house', hasEntered);
+  }
+
+  // 「家に入ったことがあるか」を読み込む
+  static Future<bool> getHasEnteredHouse() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('has_entered_house') ?? false; // デフォルトはfalse
+  }
 }
