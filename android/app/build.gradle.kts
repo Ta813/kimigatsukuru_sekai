@@ -53,6 +53,9 @@ android {
     buildTypes {
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
+
+            isMinifyEnabled = true // R8を有効にする（すでにある場合はそのままでOK）
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }
@@ -63,6 +66,9 @@ dependencies {
 
     // AdMob Unity Ads メディエーションアダプタ
     implementation("com.google.ads.mediation:unity:4.9.3.0")
+
+    // Unity Ads SDK本体を明示的に追加する
+    implementation("com.unity3d.ads:unity-ads:4.9.3")
 }
 
 flutter {

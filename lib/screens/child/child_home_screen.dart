@@ -751,7 +751,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   MaterialPageRoute(
                     builder: (context) => HouseInteriorScreen(
                       equippedHousePath: _equippedHousePath,
-                      currentPoints: _points, // ★この行を追加
                     ),
                   ),
                 ).then((_) {

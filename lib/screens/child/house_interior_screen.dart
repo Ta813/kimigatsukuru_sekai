@@ -10,13 +10,8 @@ import 'shop_screen.dart';
 class HouseInteriorScreen extends StatefulWidget {
   // ★ホーム画面から、現在装備中の家の画像パスを受け取る
   final String equippedHousePath;
-  final int currentPoints;
 
-  const HouseInteriorScreen({
-    super.key,
-    required this.equippedHousePath,
-    required this.currentPoints,
-  });
+  const HouseInteriorScreen({super.key, required this.equippedHousePath});
 
   @override
   State<HouseInteriorScreen> createState() => _HouseInteriorScreenState();
@@ -31,6 +26,10 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
   // 装備中の家パスに基づいて、家の中の背景画像を決定するヘルパーメソッド
   String _equippedClothesPath = 'assets/images/avatar.png'; // デフォルトの服
   Offset _avatarPosition = const Offset(100, 150); // デフォルトの位置
+
+  // ポイント数の状態を管理するための変数
+  int _points = 0;
+
   String _getInteriorBackgroundImage(String houseAssetPath) {
     switch (houseAssetPath) {
       case 'assets/images/house.png': // さいしょのおうち
@@ -53,6 +52,7 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
 
   // ★ アイテムと位置情報を読み込むメソッド
   Future<void> _loadItemsAndPositions() async {
+    final loadedPoints = await SharedPrefsHelper.loadPoints();
     final furniture = await SharedPrefsHelper.loadEquippedFurniture();
     final houseItems = await SharedPrefsHelper.loadEquippedHouseItems();
     // アバターの服を読み込む
@@ -89,6 +89,7 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
     }
 
     setState(() {
+      _points = loadedPoints;
       _equippedFurniture = furniture;
       _equippedHouseItems = houseItems;
       _itemPositionsMap = {};
@@ -210,7 +211,7 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                       const Icon(Icons.star, color: Colors.amber, size: 24),
                       const SizedBox(width: 8),
                       Text(
-                        '${widget.currentPoints}', // ポイント数を表示
+                        '$_points', // ポイント数を表示
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -322,7 +323,7 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ShopScreen(
-                            currentPoints: widget.currentPoints, // ユーザーの所持ポイント
+                            currentPoints: _points, // ユーザーの所持ポイント
                             mode: ShopMode.forHouse, // ★家の中モードを指定
                           ),
                         ),
