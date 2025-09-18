@@ -504,4 +504,49 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get itemBlocks => 'つみき';
+
+  @override
+  String get bgmMain => 'いつものBGM';
+
+  @override
+  String get bgmFun => 'たのしいBGM';
+
+  @override
+  String get bgmCute => 'かわいいBGM';
+
+  @override
+  String get bgmRelaxing => 'ゆったりなBGM';
+
+  @override
+  String get bgmEnergetic => 'げんきなBGM';
+
+  @override
+  String get bgmSparkly => 'キラキラなBGM';
+
+  @override
+  String get bgmNone => 'BGMなし';
+
+  @override
+  String get focusBgmDefault => 'デフォルト';
+
+  @override
+  String get focusBgmCute => '可愛いBGM';
+
+  @override
+  String get focusBgmCool => 'カッコいいBGM';
+
+  @override
+  String get focusBgmHurry => '急ぐBGM';
+
+  @override
+  String get focusBgmNature => '自然のBGM';
+
+  @override
+  String get focusBgmRelaxing => '心地よいBGM';
+
+  @override
+  String get selectBgmTitle => 'BGMをえらぶ';
+
+  @override
+  String get focusBgmSettingTitle => 'タイマーの音楽（集中BGM）';
 }

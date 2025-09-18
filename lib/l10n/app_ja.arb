@@ -228,5 +228,20 @@
   "itemRockingHorse": "もくば",
   "itemToy": "おもちゃ",
   "itemTablet": "タブレット",
-  "itemBlocks": "つみき"
+  "itemBlocks": "つみき",
+  "bgmMain": "いつものBGM",
+  "bgmFun": "たのしいBGM",
+  "bgmCute": "かわいいBGM",
+  "bgmRelaxing": "ゆったりなBGM",
+  "bgmEnergetic": "げんきなBGM",
+  "bgmSparkly": "キラキラなBGM",
+  "bgmNone": "BGMなし",
+  "focusBgmDefault": "デフォルト",
+  "focusBgmCute": "可愛いBGM",
+  "focusBgmCool": "カッコいいBGM",
+  "focusBgmHurry": "急ぐBGM",
+  "focusBgmNature": "自然のBGM",
+  "focusBgmRelaxing": "心地よいBGM",
+  "selectBgmTitle": "BGMをえらぶ",
+  "focusBgmSettingTitle": "タイマーの音楽（集中BGM）"
 }

@@ -84,12 +84,21 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
 
   // ★アプリの状態が変化した時に呼ばれる
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
       // アプリが前面に戻ってきたら、タイマーの表示を更新
       _updateRemainingSeconds();
-      BgmManager.instance.play(BgmTrack.focus);
+
+      final trackName = await SharedPrefsHelper.loadSelectedFocusBgm();
+      final focusTrack = BgmTrack.values.firstWhere(
+        (e) => e.name == trackName,
+        orElse: () => BgmTrack.focus_original, // 保存されていなければデフォルト
+      );
+
+      // ★ タイマー画面に行く前に、"選択された"集中BGMを再生
+      BgmManager.instance.play(focusTrack);
+
       // もしタイマーが止まっていたら再開
       if (_timer == null || !_timer!.isActive) {
         _startTimer();

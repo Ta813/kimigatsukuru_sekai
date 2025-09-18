@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../../widgets/draggable_character.dart';
+import 'bgm_selection_screen.dart';
 import 'promise_board_screen.dart';
 import 'timer_screen.dart';
 import 'shop_screen.dart';
@@ -117,10 +118,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     _loadAndDetermineDisplayPromise(); // 定例のやくそくを読み込む（既存の処理）
     // ★アプリの状態変化の監視を開始
     WidgetsBinding.instance.addObserver(this);
-    // ★BGMの再生を開始
-    BgmManager.instance.play(BgmTrack.main);
 
     _showGuideIfNeeded(); // 必要ならガイドを表示
+
+    _playSavedBgm(); // 保存されたBGMを再生
   }
 
   @override
@@ -141,11 +142,20 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
       // アプリが前面に戻ってきたら、BGMを再生
-      BgmManager.instance.play(BgmTrack.main);
+      _playSavedBgm();
     } else {
       // アプリがバックグラウンドに回ったら、BGMを停止
       BgmManager.instance.stopBgm();
     }
+  }
+
+  Future<void> _playSavedBgm() async {
+    final trackName = await SharedPrefsHelper.loadSelectedBgm();
+    final track = BgmTrack.values.firstWhere(
+      (e) => e.name == trackName,
+      orElse: () => BgmTrack.main, // デフォルトはmain
+    );
+    BgmManager.instance.play(track);
   }
 
   void _showTutorial() async {
@@ -354,7 +364,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (_displayPromise == null) return;
 
     // ★タイマー画面に行く前に、集中BGMを再生
-    BgmManager.instance.play(BgmTrack.focus);
+    // ★ 保存されている集中BGM設定を読み込む
+    final trackName = await SharedPrefsHelper.loadSelectedFocusBgm();
+    final focusTrack = BgmTrack.values.firstWhere(
+      (e) => e.name == trackName,
+      orElse: () => BgmTrack.focus_original, // 保存されていなければデフォルト
+    );
+
+    // ★ タイマー画面に行く前に、"選択された"集中BGMを再生
+    BgmManager.instance.play(focusTrack);
 
     // タイマー画面に遷移し、結果（獲得ポイント）を待つ
     final pointsAwarded = await Navigator.push<int>(
@@ -369,7 +387,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     );
 
     // ★タイマー画面から戻ってきたら、メインBGMを再生
-    BgmManager.instance.play(BgmTrack.main);
+    _playSavedBgm();
 
     if (pointsAwarded != null && pointsAwarded > 0) {
       if (!_isDisplayPromiseEmergency) {
@@ -589,7 +607,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 Positioned(
                   top: 0,
                   bottom: 0,
-                  right: 10,
+                  right: 75,
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -703,6 +721,44 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
                                 _loadAndDetermineDisplayPromise();
                               });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  right: 10,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // ★ BGM変更ボタンを一番上に追加
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color(
+                              0xFFFF7043,
+                            ).withOpacity(0.9), // 半透明の黒い背景
+                            shape: BoxShape.circle, // 形を円にする
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.music_note,
+                              size: 40,
+                              color: Color(0xFFFFCA28),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BgmSelectionScreen(),
+                                ),
+                              );
                             },
                           ),
                         ),

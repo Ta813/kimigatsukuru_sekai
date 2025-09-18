@@ -347,4 +347,24 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('has_entered_house') ?? false; // デフォルトはfalse
   }
+
+  static Future<void> saveSelectedBgm(String trackName) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selected_bgm', trackName);
+  }
+
+  static Future<String?> loadSelectedBgm() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('selected_bgm');
+  }
+
+  static Future<void> saveSelectedFocusBgm(String trackName) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selected_focus_bgm', trackName);
+  }
+
+  static Future<String?> loadSelectedFocusBgm() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('selected_focus_bgm');
+  }
 }

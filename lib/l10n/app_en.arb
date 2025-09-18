@@ -228,5 +228,20 @@
   "itemRockingHorse": "Rocking Horse",
   "itemToy": "Toy",
   "itemTablet": "Tablet",
-  "itemBlocks": "Building Blocks"
+  "itemBlocks": "Building Blocks",
+  "bgmMain": "Default BGM",
+  "bgmFun": "Fun BGM",
+  "bgmCute": "Cute BGM",
+  "bgmRelaxing": "Relaxing BGM",
+  "bgmEnergetic": "Energetic BGM",
+  "bgmSparkly": "Sparkly BGM",
+  "bgmNone": "No BGM",
+  "focusBgmDefault": "Default",
+  "focusBgmCute": "Cute BGM",
+  "focusBgmCool": "Cool BGM",
+  "focusBgmHurry": "Hurry BGM",
+  "focusBgmNature": "Nature BGM",
+  "focusBgmRelaxing": "Comfortable BGM",
+  "selectBgmTitle": "Select BGM",
+  "focusBgmSettingTitle": "Timer Music (Focus BGM)"
 }

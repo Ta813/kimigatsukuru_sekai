@@ -504,4 +504,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itemBlocks => 'Building Blocks';
+
+  @override
+  String get bgmMain => 'Default BGM';
+
+  @override
+  String get bgmFun => 'Fun BGM';
+
+  @override
+  String get bgmCute => 'Cute BGM';
+
+  @override
+  String get bgmRelaxing => 'Relaxing BGM';
+
+  @override
+  String get bgmEnergetic => 'Energetic BGM';
+
+  @override
+  String get bgmSparkly => 'Sparkly BGM';
+
+  @override
+  String get bgmNone => 'No BGM';
+
+  @override
+  String get focusBgmDefault => 'Default';
+
+  @override
+  String get focusBgmCute => 'Cute BGM';
+
+  @override
+  String get focusBgmCool => 'Cool BGM';
+
+  @override
+  String get focusBgmHurry => 'Hurry BGM';
+
+  @override
+  String get focusBgmNature => 'Nature BGM';
+
+  @override
+  String get focusBgmRelaxing => 'Comfortable BGM';
+
+  @override
+  String get selectBgmTitle => 'Select BGM';
+
+  @override
+  String get focusBgmSettingTitle => 'Timer Music (Focus BGM)';
 }

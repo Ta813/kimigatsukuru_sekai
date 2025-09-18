@@ -49,7 +49,15 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   // 「はじめる」ボタンが押された時の処理
   void _startPromise(Map<String, dynamic> promise) async {
     // ★タイマー画面に行く前に、集中BGMを再生
-    BgmManager.instance.play(BgmTrack.focus);
+    // ★ 保存されている集中BGM設定を読み込む
+    final trackName = await SharedPrefsHelper.loadSelectedFocusBgm();
+    final focusTrack = BgmTrack.values.firstWhere(
+      (e) => e.name == trackName,
+      orElse: () => BgmTrack.focus_original, // 保存されていなければデフォルト
+    );
+
+    // ★ タイマー画面に行く前に、"選択された"集中BGMを再生
+    BgmManager.instance.play(focusTrack);
 
     final pointsAwarded = await Navigator.push<int>(
       context,
@@ -59,7 +67,7 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
     );
 
     // ★タイマー画面から戻ってきたら、メインBGMを再生
-    BgmManager.instance.play(BgmTrack.main);
+    _playSavedBgm();
 
     if (pointsAwarded != null && pointsAwarded > 0) {
       // 達成記録を保存する処理を追加！
@@ -70,6 +78,15 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
         Navigator.pop(context, pointsAwarded);
       }
     }
+  }
+
+  Future<void> _playSavedBgm() async {
+    final trackName = await SharedPrefsHelper.loadSelectedBgm();
+    final track = BgmTrack.values.firstWhere(
+      (e) => e.name == trackName,
+      orElse: () => BgmTrack.main, // デフォルトはmain
+    );
+    BgmManager.instance.play(track);
   }
 
   void _skipPromiseOnBoard(String promiseTitle) async {

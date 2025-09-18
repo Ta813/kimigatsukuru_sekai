@@ -1048,6 +1048,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Building Blocks'**
   String get itemBlocks;
+
+  /// No description provided for @bgmMain.
+  ///
+  /// In en, this message translates to:
+  /// **'Default BGM'**
+  String get bgmMain;
+
+  /// No description provided for @bgmFun.
+  ///
+  /// In en, this message translates to:
+  /// **'Fun BGM'**
+  String get bgmFun;
+
+  /// No description provided for @bgmCute.
+  ///
+  /// In en, this message translates to:
+  /// **'Cute BGM'**
+  String get bgmCute;
+
+  /// No description provided for @bgmRelaxing.
+  ///
+  /// In en, this message translates to:
+  /// **'Relaxing BGM'**
+  String get bgmRelaxing;
+
+  /// No description provided for @bgmEnergetic.
+  ///
+  /// In en, this message translates to:
+  /// **'Energetic BGM'**
+  String get bgmEnergetic;
+
+  /// No description provided for @bgmSparkly.
+  ///
+  /// In en, this message translates to:
+  /// **'Sparkly BGM'**
+  String get bgmSparkly;
+
+  /// No description provided for @bgmNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No BGM'**
+  String get bgmNone;
+
+  /// No description provided for @focusBgmDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get focusBgmDefault;
+
+  /// No description provided for @focusBgmCute.
+  ///
+  /// In en, this message translates to:
+  /// **'Cute BGM'**
+  String get focusBgmCute;
+
+  /// No description provided for @focusBgmCool.
+  ///
+  /// In en, this message translates to:
+  /// **'Cool BGM'**
+  String get focusBgmCool;
+
+  /// No description provided for @focusBgmHurry.
+  ///
+  /// In en, this message translates to:
+  /// **'Hurry BGM'**
+  String get focusBgmHurry;
+
+  /// No description provided for @focusBgmNature.
+  ///
+  /// In en, this message translates to:
+  /// **'Nature BGM'**
+  String get focusBgmNature;
+
+  /// No description provided for @focusBgmRelaxing.
+  ///
+  /// In en, this message translates to:
+  /// **'Comfortable BGM'**
+  String get focusBgmRelaxing;
+
+  /// No description provided for @selectBgmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select BGM'**
+  String get selectBgmTitle;
+
+  /// No description provided for @focusBgmSettingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer Music (Focus BGM)'**
+  String get focusBgmSettingTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
