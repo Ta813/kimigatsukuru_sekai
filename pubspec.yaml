@@ -114,7 +114,7 @@ flutter:
 
 flutter_launcher_icons:
   android: true # Android用アイコンを生成
-  ios: false # iOS用アイコンを生成
+  ios: true # iOS用アイコンを生成
   image_path: "assets/images/icon.png"
   adaptive_icon_background: "#FFFFFF" # 背景色
   adaptive_icon_foreground: "assets/images/icon.png" # 前景画像
