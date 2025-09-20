@@ -549,4 +549,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get focusBgmSettingTitle => 'Timer Music (Focus BGM)';
+
+  @override
+  String get normalBgm => 'Normal BGM';
+
+  @override
+  String get focusBgm => 'Focus BGM';
 }

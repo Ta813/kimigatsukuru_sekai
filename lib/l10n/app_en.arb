@@ -243,5 +243,7 @@
   "focusBgmNature": "Nature BGM",
   "focusBgmRelaxing": "Comfortable BGM",
   "selectBgmTitle": "Select BGM",
-  "focusBgmSettingTitle": "Timer Music (Focus BGM)"
+  "focusBgmSettingTitle": "Timer Music (Focus BGM)",
+  "normalBgm": "Normal BGM",
+  "focusBgm": "Focus BGM"
 }

@@ -1138,6 +1138,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Timer Music (Focus BGM)'**
   String get focusBgmSettingTitle;
+
+  /// No description provided for @normalBgm.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal BGM'**
+  String get normalBgm;
+
+  /// No description provided for @focusBgm.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus BGM'**
+  String get focusBgm;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

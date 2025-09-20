@@ -549,4 +549,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get focusBgmSettingTitle => 'タイマーの音楽（集中BGM）';
+
+  @override
+  String get normalBgm => 'ふだんのBGM';
+
+  @override
+  String get focusBgm => 'しゅうちゅうBGM';
 }

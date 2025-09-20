@@ -243,5 +243,7 @@
   "focusBgmNature": "自然のBGM",
   "focusBgmRelaxing": "心地よいBGM",
   "selectBgmTitle": "BGMをえらぶ",
-  "focusBgmSettingTitle": "タイマーの音楽（集中BGM）"
+  "focusBgmSettingTitle": "タイマーの音楽（集中BGM）",
+  "normalBgm": "ふだんのBGM",
+  "focusBgm": "しゅうちゅうBGM"
 }

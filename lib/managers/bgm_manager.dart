@@ -9,6 +9,7 @@ enum BgmTrack {
   relaxing,
   energetic,
   sparkly,
+  none,
   focus_original,
   focus_cute,
   focus_cool,
@@ -16,7 +17,6 @@ enum BgmTrack {
   focus_nature,
   focus_relaxing,
   focus_none,
-  none,
 }
 
 class BgmManager {
