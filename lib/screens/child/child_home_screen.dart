@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
+import 'passcode_lock_dialog.dart';
 import 'promise_board_screen.dart';
 import 'timer_screen.dart';
 import 'shop_screen.dart';
@@ -490,12 +492,34 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             ),
                             onPressed: () async {
                               SfxManager.instance.playTapSound();
+
+                              // ★ 保存されているロックモードを読み込む
+                              final lockMode =
+                                  await SharedPrefsHelper.loadLockMode();
+
+                              // ★ モードに応じて表示するダイアログを切り替える
                               final bool? isCorrect = await showDialog<bool>(
                                 context: context,
-                                builder: (context) => const MathLockDialog(),
+                                builder: (context) {
+                                  if (lockMode == LockMode.passcode) {
+                                    // ★ 保存されているパスワードがなければ、掛け算モードにフォールバック
+                                    // (親がパスワード設定を忘れた場合の安全策)
+                                    return FutureBuilder<String?>(
+                                      future: SharedPrefsHelper.loadPasscode(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData &&
+                                            snapshot.data != null &&
+                                            snapshot.data!.isNotEmpty) {
+                                          return const PasscodeLockDialog();
+                                        }
+                                        return const MathLockDialog(); // パスワード未設定なら掛け算
+                                      },
+                                    );
+                                  }
+                                  return const MathLockDialog(); // デフォルトは掛け算
+                                },
                               );
 
-                              // ★もし、結果がtrue（正解）だったら、親モード画面へ
                               if (isCorrect == true) {
                                 if (!mounted) return;
                                 Navigator.push(

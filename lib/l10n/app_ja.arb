@@ -245,5 +245,17 @@
   "selectBgmTitle": "BGMをえらぶ",
   "focusBgmSettingTitle": "タイマーの音楽（集中BGM）",
   "normalBgm": "ふだんのBGM",
-  "focusBgm": "しゅうちゅうBGM"
+  "focusBgm": "しゅうちゅうBGM",
+  "passcodeIncorrect": "パスワードが違います",
+  "passcodeEnter4Digit": "4桁のパスワードを入力",
+  "cancelAction": "キャンセル",
+  "setAction": "設定する",
+  "lockMethod": "ロック方法",
+  "multiplication": "掛け算",
+  "fourDigitPasscode": "4桁パスワード",
+  "setPasscode": "パスワードを設定",
+  "notSet": "未設定",
+  "supportThisApp": "このアプリを支援する",
+  "supportEncouragement": "今後の開発の励みになります！",
+  "supportPageOpenError": "ページを開けませんでした"
 }

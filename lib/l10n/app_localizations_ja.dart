@@ -555,4 +555,40 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get focusBgm => 'しゅうちゅうBGM';
+
+  @override
+  String get passcodeIncorrect => 'パスワードが違います';
+
+  @override
+  String get passcodeEnter4Digit => '4桁のパスワードを入力';
+
+  @override
+  String get cancelAction => 'キャンセル';
+
+  @override
+  String get setAction => '設定する';
+
+  @override
+  String get lockMethod => 'ロック方法';
+
+  @override
+  String get multiplication => '掛け算';
+
+  @override
+  String get fourDigitPasscode => '4桁パスワード';
+
+  @override
+  String get setPasscode => 'パスワードを設定';
+
+  @override
+  String get notSet => '未設定';
+
+  @override
+  String get supportThisApp => 'このアプリを支援する';
+
+  @override
+  String get supportEncouragement => '今後の開発の励みになります！';
+
+  @override
+  String get supportPageOpenError => 'ページを開けませんでした';
 }

@@ -555,4 +555,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get focusBgm => 'Focus BGM';
+
+  @override
+  String get passcodeIncorrect => 'Incorrect Passcode';
+
+  @override
+  String get passcodeEnter4Digit => 'Enter 4-digit Passcode';
+
+  @override
+  String get cancelAction => 'Cancel';
+
+  @override
+  String get setAction => 'Set';
+
+  @override
+  String get lockMethod => 'Lock Method';
+
+  @override
+  String get multiplication => 'Multiplication';
+
+  @override
+  String get fourDigitPasscode => '4-Digit Passcode';
+
+  @override
+  String get setPasscode => 'Set Passcode';
+
+  @override
+  String get notSet => 'Not Set';
+
+  @override
+  String get supportThisApp => 'Support this app';
+
+  @override
+  String get supportEncouragement => 'Your support encourages future development!';
+
+  @override
+  String get supportPageOpenError => 'Could not open the page';
 }

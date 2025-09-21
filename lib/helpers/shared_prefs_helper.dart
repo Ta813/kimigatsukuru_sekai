@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
+import '../models/lock_mode.dart';
 
 class SharedPrefsHelper {
   // SharedPreferencesのインスタンスを取得するためのキー
@@ -366,5 +367,34 @@ class SharedPrefsHelper {
   static Future<String?> loadSelectedFocusBgm() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('selected_focus_bgm');
+  }
+
+  // ロックモードを保存
+  static Future<void> saveLockMode(LockMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lock_mode', mode.name); // enumの名前を文字列として保存
+  }
+
+  // ロックモードを読み込み
+  static Future<LockMode> loadLockMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final modeName = prefs.getString('lock_mode');
+    // 保存された文字列からenumに変換。保存されていなければデフォルトでmathを返す
+    return LockMode.values.firstWhere(
+      (e) => e.name == modeName,
+      orElse: () => LockMode.math,
+    );
+  }
+
+  // 4桁パスワードを保存
+  static Future<void> savePasscode(String passcode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('parent_passcode', passcode);
+  }
+
+  // 4桁パスワードを読み込み
+  static Future<String?> loadPasscode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('parent_passcode');
   }
 }

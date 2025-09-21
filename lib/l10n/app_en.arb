@@ -245,5 +245,17 @@
   "selectBgmTitle": "Select BGM",
   "focusBgmSettingTitle": "Timer Music (Focus BGM)",
   "normalBgm": "Normal BGM",
-  "focusBgm": "Focus BGM"
+  "focusBgm": "Focus BGM",
+  "passcodeIncorrect": "Incorrect Passcode",
+  "passcodeEnter4Digit": "Enter 4-digit Passcode",
+  "cancelAction": "Cancel",
+  "setAction": "Set",
+  "lockMethod": "Lock Method",
+  "multiplication": "Multiplication",
+  "fourDigitPasscode": "4-Digit Passcode",
+  "setPasscode": "Set Passcode",
+  "notSet": "Not Set",
+  "supportThisApp": "Support this app",
+  "supportEncouragement": "Your support encourages future development!",
+  "supportPageOpenError": "Could not open the page"
 }

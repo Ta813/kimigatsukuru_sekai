@@ -1150,6 +1150,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Focus BGM'**
   String get focusBgm;
+
+  /// No description provided for @passcodeIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect Passcode'**
+  String get passcodeIncorrect;
+
+  /// No description provided for @passcodeEnter4Digit.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 4-digit Passcode'**
+  String get passcodeEnter4Digit;
+
+  /// No description provided for @cancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelAction;
+
+  /// No description provided for @setAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get setAction;
+
+  /// No description provided for @lockMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Method'**
+  String get lockMethod;
+
+  /// No description provided for @multiplication.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiplication'**
+  String get multiplication;
+
+  /// No description provided for @fourDigitPasscode.
+  ///
+  /// In en, this message translates to:
+  /// **'4-Digit Passcode'**
+  String get fourDigitPasscode;
+
+  /// No description provided for @setPasscode.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Passcode'**
+  String get setPasscode;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Set'**
+  String get notSet;
+
+  /// No description provided for @supportThisApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Support this app'**
+  String get supportThisApp;
+
+  /// No description provided for @supportEncouragement.
+  ///
+  /// In en, this message translates to:
+  /// **'Your support encourages future development!'**
+  String get supportEncouragement;
+
+  /// No description provided for @supportPageOpenError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the page'**
+  String get supportPageOpenError;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
