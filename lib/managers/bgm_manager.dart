@@ -64,17 +64,16 @@ class BgmManager {
   }
 
   Future<void> play(BgmTrack track) async {
-    if (_bgmPlayer.playing && _currentTrack == track) return;
-
-    final trackPath = _getTrackPath(track);
-
-    if (trackPath == null) {
-      await stopBgm();
-      _currentTrack = track;
-      return;
-    }
-
     try {
+      if (_bgmPlayer.playing && _currentTrack == track) return;
+
+      final trackPath = _getTrackPath(track);
+
+      if (trackPath == null) {
+        await stopBgm();
+        _currentTrack = track;
+        return;
+      }
       // just_audioでは、assetsからの読み込みにsetAssetを使います
       await _bgmPlayer.setAsset(trackPath);
       // ループ再生を設定
@@ -87,16 +86,28 @@ class BgmManager {
   }
 
   Future<void> pause() async {
-    await _bgmPlayer.pause();
+    try {
+      await _bgmPlayer.pause();
+    } catch (e) {
+      print("BGMの一時停止エラー: $e");
+    }
   }
 
   Future<void> resume() async {
-    _bgmPlayer.play();
+    try {
+      _bgmPlayer.play();
+    } catch (e) {
+      print("BGMの再生エラー: $e");
+    }
   }
 
   Future<void> stopBgm() async {
-    await _bgmPlayer.stop();
-    _currentTrack = null;
+    try {
+      await _bgmPlayer.stop();
+      _currentTrack = null;
+    } catch (e) {
+      print("BGMの停止エラー: $e");
+    }
   }
 
   void dispose() {
