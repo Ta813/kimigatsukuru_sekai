@@ -7,8 +7,18 @@ import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
 
+enum CustomizeMode {
+  house, // 家の中モード
+  island, // 島モード
+}
+
 class FurnitureCustomizeScreen extends StatefulWidget {
-  const FurnitureCustomizeScreen({super.key});
+  final CustomizeMode mode; // ★ どのモードで開かれたかを受け取る
+
+  const FurnitureCustomizeScreen({
+    super.key,
+    required this.mode, // ★ コンストラクタで必須にする
+  });
 
   @override
   State<FurnitureCustomizeScreen> createState() =>
@@ -19,6 +29,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
   List<String> _purchasedItemNames = [];
   List<String> _equippedFurniture = [];
   List<String> _equippedHouseItems = [];
+  List<String> _equippedBuildings = [];
+  List<String> _equippedVehicles = [];
 
   @override
   void initState() {
@@ -30,11 +42,15 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     final purchased = await SharedPrefsHelper.loadPurchasedItems();
     final furniture = await SharedPrefsHelper.loadEquippedFurniture();
     final houseItems = await SharedPrefsHelper.loadEquippedHouseItems();
+    final buildings = await SharedPrefsHelper.loadEquippedBuildings();
+    final vehicles = await SharedPrefsHelper.loadEquippedVehicles();
 
     setState(() {
       _purchasedItemNames = purchased;
       _equippedFurniture = furniture;
       _equippedHouseItems = houseItems;
+      _equippedBuildings = buildings;
+      _equippedVehicles = vehicles;
     });
   }
 
@@ -60,7 +76,12 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
 
         return GestureDetector(
           onTap: () async {
-            SfxManager.instance.playTapSound();
+            try {
+              SfxManager.instance.playTapSound();
+            } catch (e) {
+              // エラーが発生した場合
+              print('再生エラー: $e');
+            }
             setState(() {
               if (isSelected) {
                 selected.remove(item.imagePath); // 選択解除
@@ -72,6 +93,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               await SharedPrefsHelper.saveEquippedFurniture(selected);
             } else if (type == 'house_item') {
               await SharedPrefsHelper.saveEquippedHouseItems(selected);
+            } else if (type == 'building') {
+              await SharedPrefsHelper.saveEquippedBuildings(selected);
+            } else if (type == 'vehicle') {
+              await SharedPrefsHelper.saveEquippedVehicles(selected);
             }
           },
           child: Container(
@@ -102,67 +127,99 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ownedFurniture = shopItems
-        .where(
-          (item) =>
-              item.type == 'furniture' &&
-              _purchasedItemNames.contains(item.name),
-        )
-        .toList();
-    final ownedHouseItems = shopItems
-        .where(
-          (item) =>
-              item.type == 'house_item' &&
-              _purchasedItemNames.contains(item.name),
-        )
-        .toList();
+    final List<Tab> tabs;
+    final List<Widget> tabViews;
+
+    if (widget.mode == CustomizeMode.house) {
+      final ownedFurniture = shopItems
+          .where(
+            (item) =>
+                item.type == 'furniture' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+      final ownedHouseItems = shopItems
+          .where(
+            (item) =>
+                item.type == 'house_item' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+
+      tabs = [
+        Tab(
+          text: AppLocalizations.of(context)!.furniture,
+          icon: Icon(Icons.chair),
+        ),
+        Tab(
+          text: AppLocalizations.of(context)!.houseItems,
+          icon: Icon(Icons.widgets),
+        ),
+      ];
+
+      tabViews = [
+        _buildMultiSelectionGrid(
+          ownedFurniture,
+          _equippedFurniture,
+          'furniture',
+        ),
+        _buildMultiSelectionGrid(
+          ownedHouseItems,
+          _equippedHouseItems,
+          'house_item',
+        ),
+      ];
+    } else {
+      final ownedBuildings = shopItems
+          .where(
+            (item) =>
+                item.type == 'building' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+      final ownedVehicles = shopItems
+          .where(
+            (item) =>
+                item.type == 'vehicle' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+
+      tabs = [
+        Tab(
+          text: AppLocalizations.of(context)!.buildings,
+          icon: Icon(Icons.home_work),
+        ),
+        Tab(
+          text: AppLocalizations.of(context)!.vehicles,
+          icon: Icon(Icons.directions_car),
+        ),
+      ];
+
+      tabViews = [
+        _buildMultiSelectionGrid(
+          ownedBuildings,
+          _equippedBuildings,
+          'building',
+        ),
+        _buildMultiSelectionGrid(ownedVehicles, _equippedVehicles, 'vehicle'),
+      ];
+    }
 
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.customizeTitle),
+          title: Text(
+            widget.mode == CustomizeMode.house
+                ? AppLocalizations.of(context)!.houseSettings
+                : AppLocalizations.of(context)!.islandSettings,
+          ),
           bottom: TabBar(
-            tabs: [
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.chair),
-                    SizedBox(width: 8), // アイコンとテキストの間のスペース
-                    Text(AppLocalizations.of(context)!.furniture),
-                  ],
-                ),
-              ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.widgets),
-                    SizedBox(width: 8), // アイコンとテキストの間のスペース
-                    Text(AppLocalizations.of(context)!.houseItems),
-                  ],
-                ),
-              ),
-            ],
+            tabs: tabs, // ★ 準備したタブリストを使用
           ),
         ),
-        body: TabBarView(
-          children: [
-            // 家具の選択グリッド
-            _buildMultiSelectionGrid(
-              ownedFurniture,
-              _equippedFurniture,
-              'furniture',
-            ),
-            // 家のアイテムの選択グリッド
-            _buildMultiSelectionGrid(
-              ownedHouseItems,
-              _equippedHouseItems,
-              'house_item',
-            ),
-          ],
-        ),
+        body: TabBarView(children: tabViews),
         // 画面下部にバナーを設置
         bottomNavigationBar: const AdBanner(),
       ),

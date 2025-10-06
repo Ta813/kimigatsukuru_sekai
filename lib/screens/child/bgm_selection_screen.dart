@@ -34,7 +34,12 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
       (e) => e.name == trackName,
       orElse: () => BgmTrack.main, // 保存されていなければデフォルト
     );
-    BgmManager.instance.play(track);
+    try {
+      BgmManager.instance.play(track);
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
   }
 
   Future<void> _loadSelectedBgms() async {
@@ -140,7 +145,12 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
               selectedTrack: _selectedMainTrack,
               onTrackSelected: (track) async {
                 setState(() => _selectedMainTrack = track);
-                BgmManager.instance.play(track);
+                try {
+                  BgmManager.instance.play(track);
+                } catch (e) {
+                  // エラーが発生した場合
+                  print('再生エラー: $e');
+                }
                 await SharedPrefsHelper.saveSelectedBgm(track.name);
               },
             ),
@@ -150,7 +160,12 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
               selectedTrack: _selectedFocusTrack,
               onTrackSelected: (track) async {
                 setState(() => _selectedFocusTrack = track);
-                BgmManager.instance.play(track); // 試聴
+                try {
+                  BgmManager.instance.play(track); // 試聴
+                } catch (e) {
+                  // エラーが発生した場合
+                  print('再生エラー: $e');
+                }
                 await SharedPrefsHelper.saveSelectedFocusBgm(track.name);
               },
             ),
@@ -182,7 +197,14 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
             title: Text(_getBgmDisplayName(track)), // ★ 表示名を返すメソッドを呼び出す
             trailing: IconButton(
               icon: const Icon(Icons.play_circle_outline),
-              onPressed: () => BgmManager.instance.play(track), // 試聴
+              onPressed: () {
+                try {
+                  BgmManager.instance.play(track);
+                } catch (e) {
+                  // エラーが発生した場合
+                  print('再生エラー: $e');
+                }
+              }, // 試聴
             ),
             onTap: () => onTrackSelected(track),
           ),

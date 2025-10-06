@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.1.5+13
+version: 2.0.1+14
 
 environment:
   sdk: ^3.8.1
@@ -48,7 +48,8 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   intl: ^0.20.2
   provider: ^6.1.2
-  url_launcher: ^6.3.1 
+  url_launcher: ^6.3.1
+  flutter_native_splash: ^2.4.0
 
 dev_dependencies:
   flutter_test:
@@ -78,9 +79,16 @@ flutter:
     - assets/images/house_interior/
     - assets/images/house_interior_furniture/
     - assets/images/house_interior_items/
+    - assets/images/island/
     - assets/audio/
     - assets/se/
     - assets/se/english/
+    - assets/fonts/
+  
+  fonts:
+    - family: MochiyPopOne
+      fonts:
+        - asset: assets/fonts/MochiyPopOne-Regular.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -119,3 +127,18 @@ flutter_launcher_icons:
   image_path: "assets/images/icon.png"
   adaptive_icon_background: "#FFFFFF" # 背景色
   adaptive_icon_foreground: "assets/images/icon.png" # 前景画像
+
+flutter_native_splash:
+  # 背景色を指定 (16進数のカラーコード)
+  color: "#FFFFFF"  # 例: 白色
+
+  # 中央に表示するロゴ画像
+  image: assets/images/icon.png
+
+  # Android 12以降で表示されるアイコンの背景色
+  # colorと同じで良ければ不要
+  # color_dark: "#000000" # ダークモード時の背景色
+
+  # andoridとiosの両方に適用
+  android: true
+  ios: true

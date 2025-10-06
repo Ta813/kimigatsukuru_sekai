@@ -397,4 +397,82 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('parent_passcode');
   }
+
+  // レベルを保存
+  static Future<void> saveLevel(int level) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('player_level', level);
+  }
+
+  // レベルを読み込み (保存されていなければレベル1を返す)
+  static Future<int> loadLevel() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('player_level') ?? 1;
+  }
+
+  // 経験値を保存
+  static Future<void> saveExperience(int exp) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('player_experience', exp);
+  }
+
+  // 経験値を読み込み
+  static Future<int> loadExperience() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('player_experience') ?? 0;
+  }
+
+  // 世界地図画面のガイドを表示したかを保存
+  static Future<void> setWorldMapGuideShown() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('world_map_guide_shown', true);
+  }
+
+  // 世界地図画面のガイドを表示したかを取得
+  static Future<bool> getWorldMapGuideShown() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('world_map_guide_shown') ?? false; // デフォルトはfalse
+  }
+
+  // 建物の装備情報を保存
+  static Future<void> saveEquippedBuildings(List<String> furniture) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_buildings', furniture);
+  }
+
+  // 建物の装備情報を読み込み
+  static Future<List<String>> loadEquippedBuildings() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_buildings') ?? [];
+  }
+
+  // 乗り物の装備情報を保存
+  static Future<void> saveEquippedVehicles(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_vehicles', items);
+  }
+
+  // 乗り物の装備情報を読み込み
+  static Future<List<String>> loadEquippedVehicles() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_vehicles') ?? [];
+  }
+
+  // 最後にアプリを利用した日付を保存
+  static Future<void> saveLastActiveDate(String dateString) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('last_active_date', dateString);
+  }
+
+  // 最後にアプリを利用した日付を読み込み
+  static Future<String?> loadLastActiveDate() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('last_active_date');
+  }
+
+  // 今日の達成済みやくそくの記録をクリアする
+  static Future<void> clearTodaysCompletedPromises() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('todays_completed_titles');
+  }
 }

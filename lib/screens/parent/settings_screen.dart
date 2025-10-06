@@ -8,6 +8,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../models/lock_mode.dart';
 import '../../screens/child/passcode_lock_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -22,6 +23,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String? _currentPasscode; // 現在のパスワードを保持
   bool _isPasscodeVisible = false; // パスワードを表示するかどうかの旗
 
+  int _currentLevel = 1;
+  int _currentExperience = 0;
+  final _expController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -31,10 +36,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadSettings() async {
     final lockMode = await SharedPrefsHelper.loadLockMode();
     final passcode = await SharedPrefsHelper.loadPasscode();
+    final level = await SharedPrefsHelper.loadLevel();
+    final experience = await SharedPrefsHelper.loadExperience();
     if (mounted) {
       setState(() {
         _selectedLockMode = lockMode;
         _currentPasscode = passcode;
+        _currentLevel = level;
+        _currentExperience = experience;
+        _expController.text = _currentExperience.toString();
       });
     }
   }
@@ -260,6 +270,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
               }
             },
           ),
+          if (kDebugMode) ...[
+            // kDebugModeがtrueの時だけ以下のウィジェットを表示
+            const Divider(thickness: 2, color: Colors.red),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                'デバッグメニュー (Debug Menu)',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            // --- レベル操作 ---
+            Text('レベル設定: $_currentLevel'),
+            Slider(
+              value: _currentLevel.toDouble(),
+              min: 1,
+              max: 50, // 最大レベルを適当に設定
+              divisions: 49, // max - min
+              label: _currentLevel.toString(),
+              onChanged: (double value) {
+                setState(() {
+                  _currentLevel = value.toInt();
+                });
+              },
+              // ★ スライダーを離した時に値を保存
+              onChangeEnd: (double value) async {
+                await SharedPrefsHelper.saveLevel(value.toInt());
+                // ホーム画面に戻った時に更新が反映されるようにする
+              },
+            ),
+
+            // --- 経験値操作 ---
+            const Text('経験値設定'),
+            TextField(
+              controller: _expController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(suffix: Text('EXP')),
+              onSubmitted: (String value) async {
+                final newExp = int.tryParse(value) ?? 0;
+                setState(() {
+                  _currentExperience = newExp;
+                });
+                await SharedPrefsHelper.saveExperience(newExp);
+              },
+            ),
+            const SizedBox(height: 20),
+            const Divider(thickness: 2, color: Colors.red),
+          ],
         ],
       ),
     );

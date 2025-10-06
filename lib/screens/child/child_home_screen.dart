@@ -16,6 +16,7 @@ import '../../managers/sfx_manager.dart';
 import 'math_lock_dialog.dart';
 import '../../l10n/app_localizations.dart';
 import 'house_interior_screen.dart';
+import 'world_map_screen.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -59,6 +60,66 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   bool _hasEnteredHouse = false; // 家に入ったことがあるかのローカルな旗
   late AnimationController _hintAnimationController; // 吹き出しアニメーション用
+
+  final List<int> requiredExpForLevelUp = [
+    0,
+    3,
+    9,
+    18,
+    30,
+    45,
+    60,
+    75,
+    90,
+    105,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330,
+    360,
+    390,
+    420,
+    450,
+    480,
+    510,
+    540,
+    570,
+    600,
+    630,
+    660,
+    690,
+    720,
+    750,
+    780,
+    810,
+    840,
+    870,
+    900,
+    930,
+    960,
+    990,
+    1020,
+    1050,
+    1080,
+    1110,
+    1140,
+    1170,
+    1200,
+    1230,
+    1260,
+    1290,
+  ];
+
+  int _level = 1; // レベル
+  int _experience = 0; // 経験値
+  int _requiredExpForNextLevel = 3; // 次のレベルまでに必要な経験値
+  double _experienceFraction = 0.0;
+
+  Timer? _midnightTimer;
 
   @override
   void initState() {
@@ -124,17 +185,25 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     _showGuideIfNeeded(); // 必要ならガイドを表示
 
     _playSavedBgm(); // 保存されたBGMを再生
+
+    _scheduleMidnightRefresh(); // 日付変更チェックのスケジュール設定
   }
 
   @override
   void dispose() {
+    _midnightTimer?.cancel(); // ★ disposeでタイマーをキャンセル
     _hintAnimationController.dispose();
     _animationController.dispose();
     _pointsAddedAnimationController.dispose();
     // ★アプリの状態変化の監視を終了
     WidgetsBinding.instance.removeObserver(this);
     // ★BGMマネージャーのリソースを解放
-    BgmManager.instance.dispose();
+    try {
+      BgmManager.instance.dispose();
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
     super.dispose();
   }
 
@@ -143,12 +212,59 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      // アプリが前面に戻ってきたら、BGMを再生
-      _playSavedBgm();
+      // アプリが前面に戻ってきたら、日付のチェックとBGM再生を行う
+      _handleAppResumed();
     } else {
       // アプリがバックグラウンドに回ったら、BGMを停止
-      BgmManager.instance.stopBgm();
+      try {
+        BgmManager.instance.stopBgm();
+      } catch (e) {
+        // エラーが発生した場合
+        print('再生エラー: $e');
+      }
     }
+  }
+
+  void _scheduleMidnightRefresh() {
+    _midnightTimer?.cancel(); // 既存のタイマーがあればキャンセル
+
+    final now = DateTime.now();
+    // 次の日の午前0時0分1秒を計算
+    final midnight = DateTime(now.year, now.month, now.day + 1, 0, 0, 1);
+    final durationUntilMidnight = midnight.difference(now);
+
+    // 次の午前0時になったらデータを更新するタイマーをセット
+    _midnightTimer = Timer(durationUntilMidnight, () {
+      // 日付が変わったので、「今日達成したやくそく」をリセット
+      SharedPrefsHelper.clearTodaysCompletedPromises();
+      // やくそくリストを再読み込み
+      _loadAndDetermineDisplayPromise();
+      // さらに次の日のタイマーをセット
+      _scheduleMidnightRefresh();
+    });
+  }
+
+  // アプリが前面に戻ってきた時の処理
+  Future<void> _handleAppResumed() async {
+    // 保存されたBGMを再生
+    _playSavedBgm();
+
+    // --- 日付変更チェック ---
+    final lastActiveDateStr = await SharedPrefsHelper.loadLastActiveDate();
+    final today = DateTime.now();
+    final todayStr = "${today.year}-${today.month}-${today.day}";
+
+    // 保存された日付が今日と違う場合、または初めての場合
+    if (lastActiveDateStr != todayStr) {
+      // 「今日達成したやくそく」のリストをリセットする
+      await SharedPrefsHelper.clearTodaysCompletedPromises();
+      // その後、やくそくリストを再読み込み
+      _loadAndDetermineDisplayPromise();
+    }
+
+    // 最後に、今日の日付を「最終利用日」として保存
+    await SharedPrefsHelper.saveLastActiveDate(todayStr);
+    _scheduleMidnightRefresh(); // タイマーを再設定
   }
 
   Future<void> _playSavedBgm() async {
@@ -157,7 +273,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       (e) => e.name == trackName,
       orElse: () => BgmTrack.main, // デフォルトはmain
     );
-    BgmManager.instance.play(track);
+    try {
+      BgmManager.instance.play(track);
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
   }
 
   void _showTutorial() async {
@@ -195,6 +316,17 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       title: AppLocalizations.of(context)!.guideCustomizeTitle,
       content: AppLocalizations.of(context)!.guideCustomizeDesc,
     );
+    // BGMボタンのガイド
+    await _showGuideDialog(
+      title: AppLocalizations.of(context)!.guideBgmButtonTitle,
+      content: AppLocalizations.of(context)!.guideBgmButtonDesc,
+    );
+
+    // 外の世界に出るボタンのガイド
+    await _showGuideDialog(
+      title: AppLocalizations.of(context)!.guideWorldMapButtonTitle,
+      content: AppLocalizations.of(context)!.guideWorldMapButtonDesc,
+    );
     // ヘルプボタンのガイド
     await _showGuideDialog(
       title: AppLocalizations.of(context)!.guideHelpTitle,
@@ -228,7 +360,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         actions: [
           TextButton(
             onPressed: () {
-              SfxManager.instance.playTapSound();
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (e) {
+                // エラーが発生した場合
+                print('再生エラー: $e');
+              }
               Navigator.of(context).pop();
             },
             child: const Text('OK'),
@@ -251,6 +388,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       'avatar',
     );
     final entered = await SharedPrefsHelper.getHasEnteredHouse();
+    final level = await SharedPrefsHelper.loadLevel();
+    final experience = await SharedPrefsHelper.loadExperience();
 
     Map<String, dynamic>? nextPromise;
     bool isEmergency = false;
@@ -358,6 +497,30 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _itemPositionsMap[itemPath] =
             loadedPositions[itemPath] ?? Offset(100, 190); // 読み込んだ位置を保存
       }
+      _level = level;
+      _experience = experience;
+      _requiredExpForNextLevel = (_level < requiredExpForLevelUp.length)
+          ? requiredExpForLevelUp[_level]
+          : requiredExpForLevelUp.last;
+      if (_level < requiredExpForLevelUp.length - 1) {
+        _requiredExpForNextLevel = requiredExpForLevelUp[_level];
+
+        final expForCurrentLevel = requiredExpForLevelUp[_level - 1];
+        final totalExpNeededForThisLevel =
+            _requiredExpForNextLevel - expForCurrentLevel;
+
+        if (totalExpNeededForThisLevel > 0) {
+          final progressInThisLevel = _experience - expForCurrentLevel;
+          _experienceFraction =
+              progressInThisLevel / totalExpNeededForThisLevel;
+        } else {
+          _experienceFraction = 0.0;
+        }
+      } else {
+        // 最大レベルに達した場合
+        _requiredExpForNextLevel = _experience;
+        _experienceFraction = 1.0;
+      }
     });
   }
 
@@ -374,10 +537,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     );
 
     // ★ タイマー画面に行く前に、"選択された"集中BGMを再生
-    BgmManager.instance.play(focusTrack);
+    try {
+      BgmManager.instance.play(focusTrack);
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
 
     // タイマー画面に遷移し、結果（獲得ポイント）を待つ
-    final pointsAwarded = await Navigator.push<int>(
+    final result = await Navigator.push<Map<String, int>?>(
       context,
       MaterialPageRoute(
         // TimerScreenに、緊急かどうかの情報も渡す
@@ -387,6 +555,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         ),
       ),
     );
+
+    // 戻り値からポイントと経験値を取得
+    final pointsAwarded = result != null ? result['points'] : null;
+    final exp = result != null ? result['exp'] : null;
 
     // ★タイマー画面から戻ってきたら、メインBGMを再生
     _playSavedBgm();
@@ -402,22 +574,86 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       await SharedPrefsHelper.savePoints(newTotalPoints);
 
       // ポイント追加の効果音出す
-      SfxManager.instance.playSuccessSound();
+      try {
+        SfxManager.instance.playSuccessSound();
+      } catch (e) {
+        // エラーが発生した場合
+        print('再生エラー: $e');
+      }
 
       setState(() {
         _pointsAdded = pointsAwarded;
+        _experience += exp ?? 0;
       });
       // 追加されたポイント数を一時的に保存して、アニメーションで表示
       _animationController.forward(from: 0.0);
       _pointsAddedAnimationController.forward(from: 0.0);
+
+      // レベルアップのチェックと表示
+      _checkLevelUp();
       // 画面の状態を更新して、再読み込み
       _loadAndDetermineDisplayPromise();
     }
   }
 
+  void _checkLevelUp() {
+    // 現在のレベルで、次のレベルアップに必要な経験値を超えているか？
+    if (_level < requiredExpForLevelUp.length &&
+        _experience >= requiredExpForLevelUp[_level]) {
+      final newLevel = _level + 1;
+      setState(() {
+        _level = newLevel;
+      });
+      SharedPrefsHelper.saveLevel(newLevel);
+
+      // レベルアップの効果音を再生
+
+      final lang = AppLocalizations.of(context)!.localeName;
+      if (lang == 'ja') {
+        try {
+          SfxManager.instance.playTimeYattaSound();
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
+      } else {
+        final List<String> soundsToPlay = [];
+        soundsToPlay.addAll(['se/english/level_up.mp3']);
+        try {
+          SfxManager.instance.playSequentialSounds(soundsToPlay);
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
+      }
+
+      // ★ レベルアップしたことを伝えるダイアログなどを表示
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(AppLocalizations.of(context)!.levelUpTitle),
+          content: Text(AppLocalizations.of(context)!.levelUpMessage(newLevel)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+    // 変更された経験値を保存
+    SharedPrefsHelper.saveExperience(_experience);
+  }
+
   // このメソッドを新しく追加します
   void _skipPromise() async {
-    SfxManager.instance.playTapSound();
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
     if (_displayPromise == null) return;
 
     // 「やらなかった」やくそくも、達成済みとして記録します
@@ -491,7 +727,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               color: Color(0xFFFFCA28),
                             ),
                             onPressed: () async {
-                              SfxManager.instance.playTapSound();
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (e) {
+                                // エラーが発生した場合
+                                print('再生エラー: $e');
+                              }
 
                               // ★ 保存されているロックモードを読み込む
                               final lockMode =
@@ -548,7 +789,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               color: Color(0xFFFFCA28),
                             ),
                             onPressed: () {
-                              SfxManager.instance.playTapSound();
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (e) {
+                                // エラーが発生した場合
+                                print('再生エラー: $e');
+                              }
                               _showTutorial();
                             },
                           ),
@@ -651,25 +897,45 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               color: Color(0xFFFFCA28),
                             ),
                             onPressed: () async {
-                              SfxManager.instance.playTapSound();
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (e) {
+                                // エラーが発生した場合
+                                print('再生エラー: $e');
+                              }
                               // やくそくボード画面から戻ってくるのを「await」で待ち、結果を受け取る
-                              final pointsFromBoard = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PromiseBoardScreen(),
-                                ),
-                              );
+                              final result =
+                                  await Navigator.push<Map<String, int?>>(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const PromiseBoardScreen(),
+                                    ),
+                                  );
+
+                              // 戻り値からポイントと経験値を取得
+                              final pointsFromBoard = result != null
+                                  ? result['points']
+                                  : null;
+                              final expFromBoard = result != null
+                                  ? result['exp']
+                                  : null;
 
                               // もし、ポイントを持って戻ってきたら
                               if (pointsFromBoard != null) {
                                 // ポイント追加の効果音出す
-                                SfxManager.instance.playSuccessSound();
+                                try {
+                                  SfxManager.instance.playSuccessSound();
+                                } catch (e) {
+                                  // エラーが発生した場合
+                                  print('再生エラー: $e');
+                                }
 
                                 // setStateを使って、ポイントを加算し、画面を更新！
                                 setState(() {
-                                  _points += (pointsFromBoard as int);
+                                  _points += pointsFromBoard;
                                   _pointsAdded = pointsFromBoard;
+                                  _experience += expFromBoard ?? 0;
                                 });
 
                                 _animationController.forward(from: 0.0);
@@ -677,6 +943,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   from: 0.0,
                                 );
                               }
+
+                              // レベルアップのチェックと表示
+                              _checkLevelUp();
                               // SharedPreferencesに新しいポイントを保存
                               await SharedPrefsHelper.savePoints(_points);
 
@@ -701,7 +970,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               color: Color(0xFFFFCA28),
                             ),
                             onPressed: () {
-                              SfxManager.instance.playTapSound();
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (e) {
+                                // エラーが発生した場合
+                                print('再生エラー: $e');
+                              }
                               // キャラクター設定画面へ遷移
                               Navigator.push(
                                 context,
@@ -738,6 +1012,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   // ★現在のポイント数を渡してショップ画面を開く
                                   builder: (context) => ShopScreen(
                                     currentPoints: _points,
+                                    currentLevel: _level,
                                     mode: ShopMode.forGeneral,
                                   ),
                                 ),
@@ -786,6 +1061,46 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             },
                           ),
                         ),
+
+                        const SizedBox(height: 10), // ボタンの間に少し隙間をあける
+
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFF7043).withOpacity(0.9),
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.public,
+                              size: 40,
+                              color: Color(0xFFFFCA28),
+                            ),
+                            onPressed: () {
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (e) {
+                                // エラーが発生した場合
+                                print('再生エラー: $e');
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WorldMapScreen(
+                                    currentLevel: _level,
+                                    currentPoints: _points,
+                                    requiredExpForNextLevel:
+                                        _requiredExpForNextLevel,
+                                    experience: _experience,
+                                    experienceFraction: _experienceFraction,
+                                  ),
+                                ),
+                              ).then((_) {
+                                // ★世界選択画面から戻ってきたら、必ずデータを再読み込みする
+                                _loadAndDetermineDisplayPromise();
+                              });
+                            },
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -796,7 +1111,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
           // 真ん中のエリア（アバターと家）
           Align(
-            alignment: Alignment.bottomCenter, // 画面下の中央を基準に配置
+            alignment: Alignment.center, // 画面の中央を基準に配置
             child: GestureDetector(
               onTap: () {
                 // もしすでにタイマーが動いていたら、一度キャンセルする
@@ -817,7 +1132,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
               onLongPress: () async {
                 // 家を長押しした時の処理
-                SfxManager.instance.playSuccessSound(); // 音を鳴らす
+                try {
+                  SfxManager.instance.playSuccessSound(); // 音を鳴らす
+                } catch (e) {
+                  // エラーが発生した場合
+                  print('再生エラー: $e');
+                }
 
                 if (!_hasEnteredHouse) {
                   await SharedPrefsHelper.setHasEnteredHouse(true);
@@ -831,6 +1151,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   MaterialPageRoute(
                     builder: (context) => HouseInteriorScreen(
                       equippedHousePath: _equippedHousePath,
+                      requiredExpForNextLevel: _requiredExpForNextLevel,
+                      experience: _experience,
+                      experienceFraction: _experienceFraction,
                     ),
                   ),
                 ).then((_) {
@@ -838,19 +1161,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   _loadAndDetermineDisplayPromise();
                 });
               },
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 100.0), // 下から少し浮かせる
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // 中央揃え
-                  crossAxisAlignment: CrossAxisAlignment.end, // アバターと家の底を揃える
-                  children: [
-                    // 家の画像
-                    Image.asset(
-                      _equippedHousePath, // あなたが用意した画像ファイル名
-                      height: 200, // 高さを指定
-                    ),
-                  ],
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center, // 中央揃え
+                crossAxisAlignment: CrossAxisAlignment.end, // アバターと家の底を揃える
+                children: [
+                  // 家の画像
+                  Image.asset(
+                    _equippedHousePath, // あなたが用意した画像ファイル名
+                    height: 200, // 高さを指定
+                  ),
+                ],
               ),
             ),
           ),
@@ -1070,6 +1390,84 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     ),
                   ),
                 ),
+          Positioned(
+            top: 30, // ポイント表示の下あたり
+            left: 0, // 左端を画面の左端に合わせる
+            right: 0, // 右端を画面の右端に合わせる
+            child: Center(
+              // ★ Centerウィジェットで中央に配置
+              child: Container(
+                // ★ ここからが白い枠のデザイン設定
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9), // 少し半透明の白
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    // ポイント表示と同じような影をつける
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 200, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min, // Rowが中身のサイズに合わせる
+                            children: [
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.levelLabel(_level),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Text(
+                                // ★ 次のレベルまでの必要経験値を計算して表示
+                                // _requiredExpForNextLevelは次のレベルに必要な「累計」経験値
+                                AppLocalizations.of(context)!.expToNextLevel(
+                                  _requiredExpForNextLevel - _experience,
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          //経験値バー
+                          LinearProgressIndicator(
+                            value: _experienceFraction, // 現在の経験値の割合
+                            backgroundColor: Colors.grey[300],
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
 
           // ★アバターの表示と操作
           DraggableCharacter(

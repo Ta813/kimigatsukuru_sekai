@@ -68,7 +68,12 @@ class _RegularPromiseSettingsScreenState
 
   // 「＋」ボタンが押された時の処理
   void _navigateToAddScreen() async {
-    SfxManager.instance.playTapSound();
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
     // まず、追加画面のファイルをインポートするのを忘れないようにしましょう
     // import 'add_edit_promise_screen.dart';
 
@@ -162,7 +167,12 @@ class _RegularPromiseSettingsScreenState
                   IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () {
-                      SfxManager.instance.playTapSound();
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {
+                        // エラーが発生した場合
+                        print('再生エラー: $e');
+                      }
                       _navigateToEditScreen(index);
                     },
                   ),
@@ -170,7 +180,12 @@ class _RegularPromiseSettingsScreenState
                   IconButton(
                     icon: Icon(Icons.delete, color: Colors.red[400]),
                     onPressed: () {
-                      SfxManager.instance.playTapSound();
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {
+                        // エラーが発生した場合
+                        print('再生エラー: $e');
+                      }
                       _deletePromise(index);
                     },
                   ),

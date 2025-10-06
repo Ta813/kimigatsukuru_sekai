@@ -10,16 +10,19 @@ import '../../l10n/app_localizations.dart';
 enum ShopMode {
   forGeneral, // ホーム画面からの通常表示
   forHouse, // 家の中からの家具・アイテム表示
+  forIsland, // 島からの表示
 }
 
 class ShopScreen extends StatefulWidget {
   final int currentPoints;
+  final int currentLevel;
   final ShopMode mode;
 
   const ShopScreen({
     super.key,
     required this.mode,
     required this.currentPoints,
+    required this.currentLevel,
   });
 
   @override
@@ -47,11 +50,21 @@ class _ShopScreenState extends State<ShopScreen> {
     if (!_hasPlayedInitialSound) {
       final lang = AppLocalizations.of(context)!.localeName;
       if (lang == 'ja') {
-        SfxManager.instance.playShopInitSound();
+        try {
+          SfxManager.instance.playShopInitSound();
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
       } else {
         final List<String> soundsToPlay = [];
         soundsToPlay.addAll(['se/english/welcome.mp3']);
-        SfxManager.instance.playSequentialSounds(soundsToPlay);
+        try {
+          SfxManager.instance.playSequentialSounds(soundsToPlay);
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
       }
       _hasPlayedInitialSound = true; // ★再生済みの旗を立てる
     }
@@ -78,7 +91,12 @@ class _ShopScreenState extends State<ShopScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                SfxManager.instance.playTapSound();
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (e) {
+                  // エラーが発生した場合
+                  print('再生エラー: $e');
+                }
                 Navigator.pop(context);
               },
               child: Text(AppLocalizations.of(context)!.quitAction),
@@ -87,11 +105,21 @@ class _ShopScreenState extends State<ShopScreen> {
               onPressed: () async {
                 final lang = AppLocalizations.of(context)!.localeName;
                 if (lang == 'ja') {
-                  SfxManager.instance.playShopBuySound();
+                  try {
+                    SfxManager.instance.playShopBuySound();
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
                 } else {
                   final List<String> soundsToPlay = [];
                   soundsToPlay.addAll(['se/english/thank_you_very_much.mp3']);
-                  SfxManager.instance.playSequentialSounds(soundsToPlay);
+                  try {
+                    SfxManager.instance.playSequentialSounds(soundsToPlay);
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
                 }
                 final newPoints = _points - item.price;
                 await SharedPrefsHelper.savePoints(newPoints);
@@ -136,16 +164,18 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Widget _buildShopItemCard(ShopItem item) {
+    // ★ レベルが足りているか判定
+    final bool isLocked = widget.currentLevel < item.requiredLevel;
     // ★このアイテムが購入済みかどうかをチェック
     final bool isPurchased = _purchasedItemNames.contains(item.name);
 
     return Card(
       elevation: 2,
       // 購入済みなら、カード全体を少しグレーにする
-      color: isPurchased ? Colors.grey[200] : Colors.white,
+      color: (isLocked || isPurchased) ? Colors.grey[200] : Colors.white,
       child: InkWell(
         // ★購入済みなら、タップできないようにする (onTap: null)
-        onTap: isPurchased ? null : () => _buyItem(item),
+        onTap: (isLocked || isPurchased) ? null : () => _buyItem(item),
         child: Stack(
           // ★重ねて表示するためにStackを使用
           children: [
@@ -158,7 +188,7 @@ class _ShopScreenState extends State<ShopScreen> {
                     padding: const EdgeInsets.all(8.0),
                     // ★購入済みなら、画像も少しグレーにする
                     child: Opacity(
-                      opacity: isPurchased ? 0.5 : 1.0,
+                      opacity: (isLocked || isPurchased) ? 0.5 : 1.0,
                       child: Image.asset(item.imagePath),
                     ),
                   ),
@@ -172,8 +202,37 @@ class _ShopScreenState extends State<ShopScreen> {
                 const SizedBox(height: 10),
               ],
             ),
+
+            if (isLocked)
+              Positioned.fill(
+                child: Container(
+                  // 半透明の黒いマスクをかける
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(12), // Cardの角丸に合わせる
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // 鍵アイコン
+                      const Icon(Icons.lock, color: Colors.white, size: 40),
+                      const SizedBox(height: 8),
+                      // 解放レベルを表示
+                      Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.unlockedAtLevel(item.requiredLevel),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             // ★購入済みの場合のみ、「購入済み」ラベルを上に重ねて表示
-            if (isPurchased)
+            if (isPurchased && !isLocked)
               Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -224,7 +283,45 @@ class _ShopScreenState extends State<ShopScreen> {
     final List<Tab> tabs;
     final List<Widget> tabViews;
 
-    if (widget.mode == ShopMode.forHouse) {
+    if (widget.mode == ShopMode.forIsland) {
+      // 島モードの場合、島限定アイテムのみにする
+      final islandItems = shopItems.where((item) => item.isIslandOnly).toList();
+
+      final buildingItems = islandItems
+          .where((item) => item.type == 'building')
+          .toList();
+      final vehicleItems = islandItems
+          .where((item) => item.type == 'vehicle')
+          .toList();
+
+      tabs = [
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.home_work),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.buildings),
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.directions_car),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.vehicles),
+            ],
+          ),
+        ),
+      ];
+
+      tabViews = [
+        _buildCategoryGrid(buildingItems, crossAxisCount: 7),
+        _buildCategoryGrid(vehicleItems, crossAxisCount: 7),
+      ];
+    } else if (widget.mode == ShopMode.forHouse) {
       // --- 🏠 家の中モードの時の表示 ---
       final furnitureItems = shopItems
           .where((item) => item.type == 'furniture')
@@ -330,7 +427,7 @@ class _ShopScreenState extends State<ShopScreen> {
     }
 
     return DefaultTabController(
-      length: widget.mode == ShopMode.forHouse ? 2 : 4, // ★タブの数
+      length: widget.mode == ShopMode.forGeneral ? 4 : 2, // ★タブの数
       child: Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.shopTitle),

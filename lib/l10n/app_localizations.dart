@@ -215,10 +215,34 @@ abstract class AppLocalizations {
   /// **'You can change your avatar\'s clothes and house with the items you\'ve bought.\nCreate your very own world!'**
   String get guideCustomizeDesc;
 
+  /// No description provided for @guideBgmButtonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'⑦ BGM (♪ Icon on the Right)'**
+  String get guideBgmButtonTitle;
+
+  /// No description provided for @guideBgmButtonDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Press here to choose your favorite music. Change the mood with a fun song!'**
+  String get guideBgmButtonDesc;
+
+  /// No description provided for @guideWorldMapButtonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'⑧ Outer World (🌎 Icon on the Right)'**
+  String get guideWorldMapButtonTitle;
+
+  /// No description provided for @guideWorldMapButtonDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Press this button to see the whole world map. As you level up, you might unlock new places to go!'**
+  String get guideWorldMapButtonDesc;
+
   /// No description provided for @guideHelpTitle.
   ///
   /// In en, this message translates to:
-  /// **'⑦ Help (Left ? icon)'**
+  /// **'⑨ Help (Left ? icon)'**
   String get guideHelpTitle;
 
   /// No description provided for @guideHelpDesc.
@@ -1222,6 +1246,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not open the page'**
   String get supportPageOpenError;
+
+  /// No description provided for @timerExpChance.
+  ///
+  /// In en, this message translates to:
+  /// **'A chance at 3 EXP!'**
+  String get timerExpChance;
+
+  /// No description provided for @timerExpFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll get 1 EXP!'**
+  String get timerExpFailure;
+
+  /// No description provided for @buildings.
+  ///
+  /// In en, this message translates to:
+  /// **'Buildings'**
+  String get buildings;
+
+  /// No description provided for @vehicles.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicles'**
+  String get vehicles;
+
+  /// No description provided for @houseSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'House Settings'**
+  String get houseSettings;
+
+  /// No description provided for @islandSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Island Settings'**
+  String get islandSettings;
+
+  /// Label to display the current level
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level}'**
+  String levelLabel(int level);
+
+  /// Label to display the remaining experience points to the next level
+  ///
+  /// In en, this message translates to:
+  /// **'{exp} next EXP'**
+  String expToNextLevel(int exp);
+
+  /// No description provided for @levelUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Level Up!'**
+  String get levelUpTitle;
+
+  /// Message shown when the user levels up
+  ///
+  /// In en, this message translates to:
+  /// **'You reached level {newLevel}!'**
+  String levelUpMessage(int newLevel);
+
+  /// Label indicating a feature unlocks at a specific level
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocks at Level {level}'**
+  String unlockedAtLevel(int level);
+
+  /// No description provided for @worldMapGuideTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!'**
+  String get worldMapGuideTitle1;
+
+  /// No description provided for @worldMapGuideContent1.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the world map!\nAs you level up, you\'ll unlock more places to go.'**
+  String get worldMapGuideContent1;
+
+  /// No description provided for @worldMapGuideTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'The Central Island'**
+  String get worldMapGuideTitle2;
+
+  /// No description provided for @worldMapGuideContent2.
+  ///
+  /// In en, this message translates to:
+  /// **'Once you reach Level 5, you\'ll be able to tap here to enter the island.'**
+  String get worldMapGuideContent2;
+
+  /// No description provided for @worldMapGuideTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'A Widening World'**
+  String get worldMapGuideTitle3;
+
+  /// No description provided for @worldMapGuideContent3.
+  ///
+  /// In en, this message translates to:
+  /// **'You might even be able to visit the sea below or the space far above someday...?\nStay tuned!'**
+  String get worldMapGuideContent3;
+
+  /// No description provided for @seaAreaLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This area is scheduled to unlock at Level 10!'**
+  String get seaAreaLocked;
+
+  /// No description provided for @spaceAreaLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This area is scheduled to unlock at Level 15!'**
+  String get spaceAreaLocked;
+
+  /// No description provided for @islandLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll be able to enter at Level 5!'**
+  String get islandLocked;
+
+  /// No description provided for @itemHouse1.
+  ///
+  /// In en, this message translates to:
+  /// **'House 1'**
+  String get itemHouse1;
+
+  /// No description provided for @itemHouse2.
+  ///
+  /// In en, this message translates to:
+  /// **'House 2'**
+  String get itemHouse2;
+
+  /// No description provided for @itemHouse3.
+  ///
+  /// In en, this message translates to:
+  /// **'House 3'**
+  String get itemHouse3;
+
+  /// No description provided for @itemHouse4.
+  ///
+  /// In en, this message translates to:
+  /// **'House 4'**
+  String get itemHouse4;
+
+  /// No description provided for @itemHouse5.
+  ///
+  /// In en, this message translates to:
+  /// **'House 5'**
+  String get itemHouse5;
+
+  /// No description provided for @itemHouse6.
+  ///
+  /// In en, this message translates to:
+  /// **'House 6'**
+  String get itemHouse6;
+
+  /// No description provided for @itemHouse7.
+  ///
+  /// In en, this message translates to:
+  /// **'House 7'**
+  String get itemHouse7;
+
+  /// No description provided for @itemConvenienceStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Convenience Store'**
+  String get itemConvenienceStore;
+
+  /// No description provided for @itemSupermarket.
+  ///
+  /// In en, this message translates to:
+  /// **'Supermarket'**
+  String get itemSupermarket;
+
+  /// No description provided for @itemHospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital'**
+  String get itemHospital;
+
+  /// No description provided for @itemPoliceStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Police Station'**
+  String get itemPoliceStation;
+
+  /// No description provided for @itemPark1.
+  ///
+  /// In en, this message translates to:
+  /// **'Park 1'**
+  String get itemPark1;
+
+  /// No description provided for @itemPark2.
+  ///
+  /// In en, this message translates to:
+  /// **'Park 2'**
+  String get itemPark2;
+
+  /// No description provided for @itemCastle.
+  ///
+  /// In en, this message translates to:
+  /// **'Castle'**
+  String get itemCastle;
+
+  /// No description provided for @itemCarIsland.
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get itemCarIsland;
+
+  /// No description provided for @itemTaxiIsland.
+  ///
+  /// In en, this message translates to:
+  /// **'Taxi'**
+  String get itemTaxiIsland;
+
+  /// No description provided for @itemBusIsland.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get itemBusIsland;
+
+  /// No description provided for @itemHelicopterIsland.
+  ///
+  /// In en, this message translates to:
+  /// **'Helicopter'**
+  String get itemHelicopterIsland;
+
+  /// No description provided for @itemAirship1Island.
+  ///
+  /// In en, this message translates to:
+  /// **'Airship 1'**
+  String get itemAirship1Island;
+
+  /// No description provided for @itemAirship2Island.
+  ///
+  /// In en, this message translates to:
+  /// **'Airship 2'**
+  String get itemAirship2Island;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

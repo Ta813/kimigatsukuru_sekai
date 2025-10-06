@@ -30,7 +30,12 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
   }
 
   void _savePromise() async {
-    SfxManager.instance.playTapSound();
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
     if (_formKey.currentState!.validate()) {
       final emergencyPromise = {
         'title': _titleController.text,

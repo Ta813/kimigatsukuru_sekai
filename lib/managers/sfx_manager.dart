@@ -75,6 +75,7 @@ class SfxManager {
   void playTimerTimeUpSound() => _playSound('se/「タイムアップ」.mp3');
   void playTimerTimeUpSoundEnglish() => _playSound('se/english/times_up.mp3');
   void playTimeAtoSound() => _playSound('se/「あと」.mp3');
+  void playTimeYattaSound() => _playSound('se/「やったーー！」.mp3');
 
   // アプリ終了時にリソースを解放する
   void dispose() {

@@ -69,7 +69,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guideCustomizeDesc => 'You can change your avatar\'s clothes and house with the items you\'ve bought.\nCreate your very own world!';
 
   @override
-  String get guideHelpTitle => '⑦ Help (Left ? icon)';
+  String get guideBgmButtonTitle => '⑦ BGM (♪ Icon on the Right)';
+
+  @override
+  String get guideBgmButtonDesc => 'Press here to choose your favorite music. Change the mood with a fun song!';
+
+  @override
+  String get guideWorldMapButtonTitle => '⑧ Outer World (🌎 Icon on the Right)';
+
+  @override
+  String get guideWorldMapButtonDesc => 'Press this button to see the whole world map. As you level up, you might unlock new places to go!';
+
+  @override
+  String get guideHelpTitle => '⑨ Help (Left ? icon)';
 
   @override
   String get guideHelpDesc => 'If you get stuck, you can press this button\nto see this explanation again.';
@@ -591,4 +603,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supportPageOpenError => 'Could not open the page';
+
+  @override
+  String get timerExpChance => 'A chance at 3 EXP!';
+
+  @override
+  String get timerExpFailure => 'You\'ll get 1 EXP!';
+
+  @override
+  String get buildings => 'Buildings';
+
+  @override
+  String get vehicles => 'Vehicles';
+
+  @override
+  String get houseSettings => 'House Settings';
+
+  @override
+  String get islandSettings => 'Island Settings';
+
+  @override
+  String levelLabel(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String expToNextLevel(int exp) {
+    return '$exp next EXP';
+  }
+
+  @override
+  String get levelUpTitle => 'Level Up!';
+
+  @override
+  String levelUpMessage(int newLevel) {
+    return 'You reached level $newLevel!';
+  }
+
+  @override
+  String unlockedAtLevel(int level) {
+    return 'Unlocks at Level $level';
+  }
+
+  @override
+  String get worldMapGuideTitle1 => 'Welcome!';
+
+  @override
+  String get worldMapGuideContent1 => 'This is the world map!\nAs you level up, you\'ll unlock more places to go.';
+
+  @override
+  String get worldMapGuideTitle2 => 'The Central Island';
+
+  @override
+  String get worldMapGuideContent2 => 'Once you reach Level 5, you\'ll be able to tap here to enter the island.';
+
+  @override
+  String get worldMapGuideTitle3 => 'A Widening World';
+
+  @override
+  String get worldMapGuideContent3 => 'You might even be able to visit the sea below or the space far above someday...?\nStay tuned!';
+
+  @override
+  String get seaAreaLocked => 'This area is scheduled to unlock at Level 10!';
+
+  @override
+  String get spaceAreaLocked => 'This area is scheduled to unlock at Level 15!';
+
+  @override
+  String get islandLocked => 'You\'ll be able to enter at Level 5!';
+
+  @override
+  String get itemHouse1 => 'House 1';
+
+  @override
+  String get itemHouse2 => 'House 2';
+
+  @override
+  String get itemHouse3 => 'House 3';
+
+  @override
+  String get itemHouse4 => 'House 4';
+
+  @override
+  String get itemHouse5 => 'House 5';
+
+  @override
+  String get itemHouse6 => 'House 6';
+
+  @override
+  String get itemHouse7 => 'House 7';
+
+  @override
+  String get itemConvenienceStore => 'Convenience Store';
+
+  @override
+  String get itemSupermarket => 'Supermarket';
+
+  @override
+  String get itemHospital => 'Hospital';
+
+  @override
+  String get itemPoliceStation => 'Police Station';
+
+  @override
+  String get itemPark1 => 'Park 1';
+
+  @override
+  String get itemPark2 => 'Park 2';
+
+  @override
+  String get itemCastle => 'Castle';
+
+  @override
+  String get itemCarIsland => 'Car';
+
+  @override
+  String get itemTaxiIsland => 'Taxi';
+
+  @override
+  String get itemBusIsland => 'Bus';
+
+  @override
+  String get itemHelicopterIsland => 'Helicopter';
+
+  @override
+  String get itemAirship1Island => 'Airship 1';
+
+  @override
+  String get itemAirship2Island => 'Airship 2';
 }

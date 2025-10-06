@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -16,9 +17,13 @@ class RouletteDialog extends StatefulWidget {
 }
 
 class _RouletteDialogState extends State<RouletteDialog> {
+  int _playerLevel = 1;
+  double _winPointMultiplier = 2.0;
+
   @override
   void initState() {
     super.initState();
+    _loadDisplay();
   }
 
   bool _hasPlayedInitialSound = false;
@@ -30,11 +35,21 @@ class _RouletteDialogState extends State<RouletteDialog> {
     if (!_hasPlayedInitialSound) {
       final lang = AppLocalizations.of(context)!.localeName;
       if (lang == 'ja') {
-        SfxManager.instance.playRouletteMessageSound();
+        try {
+          SfxManager.instance.playRouletteMessageSound();
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
       } else {
         final List<String> soundsToPlay = [];
         soundsToPlay.addAll(['se/english/please_touch_the_button.mp3']);
-        SfxManager.instance.playSequentialSounds(soundsToPlay);
+        try {
+          SfxManager.instance.playSequentialSounds(soundsToPlay);
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
       }
       _hasPlayedInitialSound = true; // ★再生済みの旗を立てる
     }
@@ -42,9 +57,18 @@ class _RouletteDialogState extends State<RouletteDialog> {
 
   bool _isSpinning = false;
   String? _resultText;
-  int _pointMultiplier = 1;
+  double _pointMultiplier = 1;
 
-  void _spin() {
+  Future<void> _loadDisplay() async {
+    // 現在のプレイヤーレベルを取得
+    _playerLevel = await SharedPrefsHelper.loadLevel();
+    // レベルに応じて倍率を決定
+    setState(() {
+      _winPointMultiplier = 2.0 + (_playerLevel - 1) * 0.1;
+    });
+  }
+
+  void _spin() async {
     setState(() {
       _isSpinning = true;
     });
@@ -59,22 +83,44 @@ class _RouletteDialogState extends State<RouletteDialog> {
         if (isWin) {
           final lang = AppLocalizations.of(context)!.localeName;
           if (lang == 'ja') {
-            SfxManager.instance.playRouletteWinSound();
+            try {
+              SfxManager.instance.playRouletteWinSound();
+            } catch (e) {
+              // エラーが発生した場合
+              print('再生エラー: $e');
+            }
           } else {
             final List<String> soundsToPlay = [];
             soundsToPlay.addAll(['se/english/jackpot.mp3']);
-            SfxManager.instance.playSequentialSounds(soundsToPlay);
+            try {
+              SfxManager.instance.playSequentialSounds(soundsToPlay);
+            } catch (e) {
+              // エラーが発生した場合
+              print('再生エラー: $e');
+            }
           }
           _resultText = AppLocalizations.of(context)!.rouletteCongrats;
-          _pointMultiplier = 2; // あたりなら2倍
+
+          // レベルに応じて倍率を決定
+          _pointMultiplier = _winPointMultiplier;
         } else {
           final lang = AppLocalizations.of(context)!.localeName;
           if (lang == 'ja') {
-            SfxManager.instance.playRouletteLoseSound();
+            try {
+              SfxManager.instance.playRouletteLoseSound();
+            } catch (e) {
+              // エラーが発生した場合
+              print('再生エラー: $e');
+            }
           } else {
             final List<String> soundsToPlay = [];
             soundsToPlay.addAll(['se/english/thats_a_shame.mp3']);
-            SfxManager.instance.playSequentialSounds(soundsToPlay);
+            try {
+              SfxManager.instance.playSequentialSounds(soundsToPlay);
+            } catch (e) {
+              // エラーが発生した場合
+              print('再生エラー: $e');
+            }
           }
           _resultText = AppLocalizations.of(context)!.rouletteTryAgain;
           _pointMultiplier = 1; // はずれなら1倍
@@ -125,7 +171,7 @@ class _RouletteDialogState extends State<RouletteDialog> {
                           ),
                           TextSpan(
                             text:
-                                '${widget.basePoints * 2} ${AppLocalizations.of(context)!.points}',
+                                '${(widget.basePoints * _winPointMultiplier).floor().toString()} ${AppLocalizations.of(context)!.points}',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.redAccent,

@@ -20,7 +20,11 @@
   "guideShopDesc": "貯めたポイントで、新しい服やおうちと交換できる場所だよ！",
   "guideCustomizeTitle": "⑥ きせかえ・もようがえ「右の☺マーク」",
   "guideCustomizeDesc": "買ったアイテムで、アバターの服やおうちを変えられるよ！\n自分だけの世界をつくろう。",
-  "guideHelpTitle": "⑦ ヘルプ「左の？マーク」",
+  "guideBgmButtonTitle": "⑦ BGM「右の♪マーク」",
+  "guideBgmButtonDesc": "ここを押すと、好きな音楽を選べるよ。楽しい音楽で気分を変えてみよう！",
+  "guideWorldMapButtonTitle": "⑧ 外の世界「右の🌎マーク」",
+  "guideWorldMapButtonDesc": "このボタンを押すと、世界の全体図が見られるよ。レベルが上がると行ける場所が増えるかも！",
+  "guideHelpTitle": "⑨ ヘルプ「左の？マーク」",
   "guideHelpDesc": "わからなくなったら、このボタンを押して、\nもう一度この説明を見れるよ。",
   "emergency": "きんきゅう！",
   "nextPromise": "つぎのやくそく",
@@ -257,5 +261,77 @@
   "notSet": "未設定",
   "supportThisApp": "このアプリを支援する",
   "supportEncouragement": "今後の開発の励みになります！",
-  "supportPageOpenError": "ページを開けませんでした"
+  "supportPageOpenError": "ページを開けませんでした",
+  "timerExpChance": "EXP 3 ゲットのチャンス！",
+  "timerExpFailure": "EXPは 1 になるよ！",
+  "buildings": "たてもの",
+  "vehicles": "のりもの",
+  "houseSettings": "いえのせってい",
+  "islandSettings": "しまのせってい",
+  "levelLabel": "レベル {level}",
+  "@levelLabel": {
+    "description": "現在のレベルを表示するラベル",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "expToNextLevel": "あと{exp} EXP",
+  "@expToNextLevel": {
+    "description": "次のレベルまでの残りの経験値を表示するラベル",
+    "placeholders": {
+      "exp": {
+        "type": "int"
+      }
+    }
+  },
+  "levelUpTitle": "レベルアップ！",
+  "levelUpMessage": "レベルが {newLevel} にあがった！",
+  "@levelUpMessage": {
+    "description": "ユーザーがレベルアップした時に表示するメッセージ",
+    "placeholders": {
+      "newLevel": {
+        "type": "int"
+      }
+    }
+  },
+  "unlockedAtLevel": "レベル {level} で解放",
+  "@unlockedAtLevel": {
+    "description": "特定のレベルで機能が解放されることを示すラベル",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "worldMapGuideTitle1": "ようこそ！",
+  "worldMapGuideContent1": "ここは世界の全体図だよ！\nレベルが上がると行ける場所が増えるんだ。",
+  "worldMapGuideTitle2": "まんなかの島",
+  "worldMapGuideContent2": "レベル5になったら、ここをタップして島に入れるようになるんだ。",
+  "worldMapGuideTitle3": "まだまだ広がる世界",
+  "worldMapGuideContent3": "下にある海や、ずーっと上の宇宙にも、いつか行けるようになるかも…？\nお楽しみに！",
+  "seaAreaLocked": "ここはレベル10で解放される予定です！",
+  "spaceAreaLocked": "ここはレベル15で解放される予定です！",
+  "islandLocked": "レベル5になると入れるようになります！",
+  "itemHouse1": "いえ１",
+  "itemHouse2": "いえ２",
+  "itemHouse3": "いえ３",
+  "itemHouse4": "いえ４",
+  "itemHouse5": "いえ５",
+  "itemHouse6": "いえ６",
+  "itemHouse7": "いえ７",
+  "itemConvenienceStore": "コンビニ",
+  "itemSupermarket": "スーパー",
+  "itemHospital": "びょういん",
+  "itemPoliceStation": "けいさつしょ",
+  "itemPark1": "こうえん１",
+  "itemPark2": "こうえん２",
+  "itemCastle": "おしろ",
+  "itemCarIsland": "くるま",
+  "itemTaxiIsland": "タクシー",
+  "itemBusIsland": "バス",
+  "itemHelicopterIsland": "ヘリコプター",
+  "itemAirship1Island": "ひこうせん１",
+  "itemAirship2Island": "ひこうせん２"
 }

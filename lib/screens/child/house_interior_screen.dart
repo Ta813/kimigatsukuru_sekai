@@ -10,8 +10,17 @@ import 'shop_screen.dart';
 class HouseInteriorScreen extends StatefulWidget {
   // ★ホーム画面から、現在装備中の家の画像パスを受け取る
   final String equippedHousePath;
+  final int requiredExpForNextLevel;
+  final int experience;
+  final double experienceFraction;
 
-  const HouseInteriorScreen({super.key, required this.equippedHousePath});
+  const HouseInteriorScreen({
+    super.key,
+    required this.equippedHousePath,
+    required this.requiredExpForNextLevel,
+    required this.experience,
+    required this.experienceFraction,
+  });
 
   @override
   State<HouseInteriorScreen> createState() => _HouseInteriorScreenState();
@@ -27,8 +36,12 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
   String _equippedClothesPath = 'assets/images/avatar.png'; // デフォルトの服
   Offset _avatarPosition = const Offset(100, 150); // デフォルトの位置
 
+  List<String> _equippedCharacters = [];
+  Map<String, Offset> _characterPositionsMap = {};
+
   // ポイント数の状態を管理するための変数
   int _points = 0;
+  int _level = 1;
 
   String _getInteriorBackgroundImage(String houseAssetPath) {
     switch (houseAssetPath) {
@@ -53,6 +66,7 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
   // ★ アイテムと位置情報を読み込むメソッド
   Future<void> _loadItemsAndPositions() async {
     final loadedPoints = await SharedPrefsHelper.loadPoints();
+    final loadedLevel = await SharedPrefsHelper.loadLevel();
     final furniture = await SharedPrefsHelper.loadEquippedFurniture();
     final houseItems = await SharedPrefsHelper.loadEquippedHouseItems();
     // アバターの服を読み込む
@@ -61,6 +75,8 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
     Offset? position = await SharedPrefsHelper.loadCharacterPosition(
       'avatar_in_house',
     );
+
+    final characters = await SharedPrefsHelper.loadEquippedCharacters();
 
     late double screenWidth;
     late double screenHeight;
@@ -88,8 +104,20 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
       loadedPositions[itemPath] = position ?? const Offset(100, 150);
     }
 
+    final charactersToLoad = characters.isEmpty
+        ? ['assets/images/character_usagi.gif']
+        : characters;
+
+    for (var charPath in charactersToLoad) {
+      final loadedPos = await SharedPrefsHelper.loadCharacterPosition(
+        'house_$charPath',
+      );
+      loadedPositions[charPath] = loadedPos ?? Offset(100, 150);
+    }
+
     setState(() {
       _points = loadedPoints;
+      _level = loadedLevel;
       _equippedFurniture = furniture;
       _equippedHouseItems = houseItems;
       _itemPositionsMap = {};
@@ -107,6 +135,19 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
       _equippedClothesPath =
           clothes ?? 'assets/images/avatar.png'; // 読み込んだ服、なければデフォルト
       _avatarPosition = position ?? const Offset(100, 150); // 読み込んだ位置、なければデフォルト
+      _equippedCharacters = characters;
+      _characterPositionsMap = {}; // 一旦クリア
+      for (var charPath in _equippedCharacters) {
+        if (loadedPositions[charPath] != null &&
+            (loadedPositions[charPath].dx > screenWidth ||
+                loadedPositions[charPath].dy > screenHeight ||
+                loadedPositions[charPath].dx < 0 ||
+                loadedPositions[charPath].dy < 0)) {
+          loadedPositions[charPath] = null; // 範囲外ならリセット
+        }
+        _characterPositionsMap[charPath] =
+            loadedPositions[charPath] ?? Offset(100, 150); // 読み込んだ位置を保存
+      }
     });
   }
 
@@ -224,6 +265,86 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
             ),
           ),
 
+          Positioned(
+            top: 30, // ポイント表示の下あたり
+            left: 0, // 左端を画面の左端に合わせる
+            right: 0, // 右端を画面の右端に合わせる
+            child: Center(
+              // ★ Centerウィジェットで中央に配置
+              child: Container(
+                // ★ ここからが白い枠のデザイン設定
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9), // 少し半透明の白
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    // ポイント表示と同じような影をつける
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 200, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min, // Rowが中身のサイズに合わせる
+                            children: [
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.levelLabel(_level),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Text(
+                                // ★ 次のレベルまでの必要経験値を計算して表示
+                                // _requiredExpForNextLevelは次のレベルに必要な「累計」経験値
+                                AppLocalizations.of(context)!.expToNextLevel(
+                                  widget.requiredExpForNextLevel -
+                                      widget.experience,
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          //経験値バー
+                          LinearProgressIndicator(
+                            value: widget.experienceFraction, // 現在の経験値の割合
+                            backgroundColor: Colors.grey[300],
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.green,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
           // ★ 配置された家具のリストを表示 (ホーム画面と全く同じ仕組み)
           ..._equippedFurniture.map((itemPath) {
             return DraggableCharacter(
@@ -270,6 +391,25 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
             },
           ),
 
+          // ★応援キャラクターの表示と操作
+          ..._equippedCharacters.map((charPath) {
+            return DraggableCharacter(
+              id: 'house_$charPath', // IDとして画像パスを使う
+              imagePath: charPath,
+              position: _characterPositionsMap[charPath] ?? Offset(490, 190),
+              size: 80,
+              onPositionChanged: (delta) {
+                setState(() {
+                  // ★位置の更新
+                  _characterPositionsMap[charPath] =
+                      (_characterPositionsMap[charPath] ??
+                          const Offset(490, 190)) +
+                      delta;
+                });
+              },
+            );
+          }).toList(),
+
           // 右側のボタン群
           Positioned(
             top: 80.0, // 上からの距離
@@ -293,8 +433,9 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              const FurnitureCustomizeScreen(),
+                          builder: (context) => const FurnitureCustomizeScreen(
+                            mode: CustomizeMode.house,
+                          ),
                         ),
                       ).then((_) {
                         // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
@@ -324,6 +465,7 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                         MaterialPageRoute(
                           builder: (context) => ShopScreen(
                             currentPoints: _points, // ユーザーの所持ポイント
+                            currentLevel: _level, // ユーザーレベルも渡す
                             mode: ShopMode.forHouse, // ★家の中モードを指定
                           ),
                         ),

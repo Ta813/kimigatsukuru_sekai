@@ -55,7 +55,12 @@ class ParentTopScreen extends StatelessWidget {
             // 「定例のやくそく設定」ボタン
             ElevatedButton(
               onPressed: () {
-                SfxManager.instance.playTapSound();
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (e) {
+                  // エラーが発生した場合
+                  print('再生エラー: $e');
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -76,7 +81,12 @@ class ParentTopScreen extends StatelessWidget {
             // 「緊急のやくそく設定」ボタン
             ElevatedButton(
               onPressed: () {
-                SfxManager.instance.playTapSound();
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (e) {
+                  // エラーが発生した場合
+                  print('再生エラー: $e');
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(

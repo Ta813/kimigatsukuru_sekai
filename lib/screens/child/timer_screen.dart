@@ -61,11 +61,21 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     if (!_hasPlayedInitialSound) {
       final lang = AppLocalizations.of(context)!.localeName;
       if (lang == 'ja') {
-        SfxManager.instance.playStartSound();
+        try {
+          SfxManager.instance.playStartSound();
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
       } else {
         final List<String> soundsToPlay = [];
         soundsToPlay.addAll(['se/english/lets_go.mp3']);
-        SfxManager.instance.playSequentialSounds(soundsToPlay);
+        try {
+          SfxManager.instance.playSequentialSounds(soundsToPlay);
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
       }
       _hasPlayedInitialSound = true; // ★再生済みの旗を立てる
     }
@@ -97,7 +107,12 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
       );
 
       // ★ タイマー画面に行く前に、"選択された"集中BGMを再生
-      BgmManager.instance.play(focusTrack);
+      try {
+        BgmManager.instance.play(focusTrack);
+      } catch (e) {
+        // エラーが発生した場合
+        print('再生エラー: $e');
+      }
 
       // もしタイマーが止まっていたら再開
       if (_timer == null || !_timer!.isActive) {
@@ -106,7 +121,12 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     } else {
       // アプリが裏に回ったら、UI更新用のタイマーは一旦停止
       _timer?.cancel();
-      BgmManager.instance.stopBgm();
+      try {
+        BgmManager.instance.stopBgm();
+      } catch (e) {
+        // エラーが発生した場合
+        print('再生エラー: $e');
+      }
     }
   }
 
@@ -277,19 +297,39 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
       // もし再生すべき音があれば、SfxManagerの新しいメソッドを呼び出す
       if (soundsToPlay.isNotEmpty) {
         // 1. BGMを一時停止
-        BgmManager.instance.pause();
+        try {
+          BgmManager.instance.pause();
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
         // 2. 効果音の再生が「終わるのを待つ」
         if (soundsToPlay.length == 10) {
-          await SfxManager.instance.playSequentialSounds(
-            soundsToPlay,
-            speed: 1.2,
-          );
+          try {
+            await SfxManager.instance.playSequentialSounds(
+              soundsToPlay,
+              speed: 1.2,
+            );
+          } catch (e) {
+            // エラーが発生した場合
+            print('再生エラー: $e');
+          }
         } else {
-          await SfxManager.instance.playSequentialSounds(soundsToPlay);
+          try {
+            await SfxManager.instance.playSequentialSounds(soundsToPlay);
+          } catch (e) {
+            // エラーが発生した場合
+            print('再生エラー: $e');
+          }
         }
         await Future.delayed(const Duration(seconds: 3));
         // 3. BGMを再開
-        BgmManager.instance.resume();
+        try {
+          BgmManager.instance.resume();
+        } catch (e) {
+          // エラーが発生した場合
+          print('再生エラー: $e');
+        }
       }
     });
   }
@@ -318,7 +358,12 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
             TextButton(
               child: Text(AppLocalizations.of(context)!.notYet),
               onPressed: () {
-                SfxManager.instance.playTapSound();
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (e) {
+                  // エラーが発生した場合
+                  print('再生エラー: $e');
+                }
                 Navigator.of(dialogContext).pop();
                 _startTimer();
               },
@@ -331,20 +376,35 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
                 Navigator.of(dialogContext).pop();
                 // 次に、時間切れかどうかで処理を分岐
                 if (!_isTimeUp) {
-                  SfxManager.instance.playTimerWinSound();
+                  try {
+                    SfxManager.instance.playTimerWinSound();
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
                   // 時間内なら -> ルーレットへ
                   _showRouletteAndFinish();
                 } else {
                   final lang = AppLocalizations.of(context)!.localeName;
                   if (lang == 'ja') {
-                    SfxManager.instance.playTimerLoseSound();
+                    try {
+                      SfxManager.instance.playTimerLoseSound();
+                    } catch (e) {
+                      // エラーが発生した場合
+                      print('再生エラー: $e');
+                    }
                   } else {
                     final List<String> soundsToPlay = [];
                     soundsToPlay.addAll(['se/english/you_did_your_best.mp3']);
-                    SfxManager.instance.playSequentialSounds(soundsToPlay);
+                    try {
+                      SfxManager.instance.playSequentialSounds(soundsToPlay);
+                    } catch (e) {
+                      // エラーが発生した場合
+                      print('再生エラー: $e');
+                    }
                   }
                   // 時間切れなら -> ポイント半分で終了
-                  _finishPromise(pointMultiplier: 0.5);
+                  _finishPromise(pointMultiplier: 0.5, exp: 1);
                 }
               },
             ),
@@ -358,25 +418,25 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
   void _showRouletteAndFinish() async {
     final basePoints = widget.promise['points'] as int? ?? 0;
 
-    final multiplier = await showDialog<int>(
+    final multiplier = await showDialog<double>(
       context: context,
       barrierDismissible: false,
       builder: (context) => RouletteDialog(basePoints: basePoints),
     );
     // ルーレットの結果（1倍か2倍か）で終了処理を呼ぶ
-    _finishPromise(pointMultiplier: multiplier ?? 1);
+    _finishPromise(pointMultiplier: multiplier ?? 1, exp: 3);
   }
 
   // ★ポイントを計算して、画面を閉じる最終処理メソッド
-  void _finishPromise({required num pointMultiplier}) async {
+  void _finishPromise({required num pointMultiplier, required int exp}) async {
     final basePoints = widget.promise['points'] as int? ?? 0;
-    final pointsAwarded = (basePoints * pointMultiplier).toInt();
+    int pointsAwarded = (basePoints * pointMultiplier).toInt();
 
     if (widget.isEmergency) {
       await SharedPrefsHelper.saveEmergencyPromise(null);
     }
     if (!mounted) return;
-    Navigator.of(context).pop(pointsAwarded);
+    Navigator.of(context).pop({'points': pointsAwarded, 'exp': exp});
   }
 
   @override
@@ -405,7 +465,7 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
                 Text(
                   _formatDuration(_remainingSeconds), // タイマー表示
                   style: TextStyle(
-                    fontSize: 50,
+                    fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: _isTimeUp ? Colors.red : Colors.black,
                   ),
@@ -414,17 +474,23 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
                 _isTimeUp
                     ? Text(
                         AppLocalizations.of(context)!.pointsHalf(
-                          (widget.promise['points'] / 2).floor().toString(),
-                        ),
+                              (widget.promise['points'] / 2).floor().toString(),
+                            ) +
+                            '\n' +
+                            AppLocalizations.of(context)!.timerExpFailure,
                         style: TextStyle(fontSize: 20, color: Colors.red[700]),
+                        textAlign: TextAlign.center,
                       )
                     : Text(
                         AppLocalizations.of(
-                          context,
-                        )!.pointsChance(widget.promise['points']),
+                              context,
+                            )!.pointsChance(widget.promise['points']) +
+                            '\n' +
+                            AppLocalizations.of(context)!.timerExpChance,
                         style: const TextStyle(fontSize: 20),
+                        textAlign: TextAlign.center,
                       ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
                   onPressed: () {

@@ -69,6 +69,9 @@ dependencies {
 
     // Unity Ads SDK本体を明示的に追加する
     implementation("com.unity3d.ads:unity-ads:4.16.1")
+
+    // ironSource Mediation Adapter
+    implementation("com.google.ads.mediation:ironsource:9.0.0.0")
 }
 
 flutter {

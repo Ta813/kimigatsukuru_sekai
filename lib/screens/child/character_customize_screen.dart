@@ -76,7 +76,12 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
 
         return GestureDetector(
           onTap: () async {
-            SfxManager.instance.playTapSound();
+            try {
+              SfxManager.instance.playTapSound();
+            } catch (e) {
+              // エラーが発生した場合
+              print('再生エラー: $e');
+            }
             setState(() {
               if (isSelected) {
                 selected.remove(item.imagePath); // 選択解除
@@ -117,7 +122,12 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   void _equipItem(ShopItem item) async {
-    SfxManager.instance.playTapSound();
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
     await SharedPrefsHelper.saveEquippedItem(item.type, item.imagePath);
     _loadEquippedItems(); // データを再読み込みして画面を更新
   }

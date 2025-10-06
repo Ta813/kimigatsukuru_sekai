@@ -20,7 +20,11 @@
   "guideShopDesc": "This is where you can exchange the points you've saved for new clothes and houses!",
   "guideCustomizeTitle": "⑥ Customize (Right ☺ icon)",
   "guideCustomizeDesc": "You can change your avatar's clothes and house with the items you've bought.\nCreate your very own world!",
-  "guideHelpTitle": "⑦ Help (Left ? icon)",
+  "guideBgmButtonTitle": "⑦ BGM (♪ Icon on the Right)",
+  "guideBgmButtonDesc": "Press here to choose your favorite music. Change the mood with a fun song!",
+  "guideWorldMapButtonTitle": "⑧ Outer World (🌎 Icon on the Right)",
+  "guideWorldMapButtonDesc": "Press this button to see the whole world map. As you level up, you might unlock new places to go!",
+  "guideHelpTitle": "⑨ Help (Left ? icon)",
   "guideHelpDesc": "If you get stuck, you can press this button\nto see this explanation again.",
   "emergency": "EMERGENCY!",
   "nextPromise": "Next Promise",
@@ -257,5 +261,77 @@
   "notSet": "Not Set",
   "supportThisApp": "Support this app",
   "supportEncouragement": "Your support encourages future development!",
-  "supportPageOpenError": "Could not open the page"
+  "supportPageOpenError": "Could not open the page",
+  "timerExpChance": "A chance at 3 EXP!",
+  "timerExpFailure": "You'll get 1 EXP!",
+  "buildings": "Buildings",
+  "vehicles": "Vehicles",
+  "houseSettings": "House Settings",
+  "islandSettings": "Island Settings",
+  "levelLabel": "Level {level}",
+  "@levelLabel": {
+    "description": "Label to display the current level",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "expToNextLevel": "{exp} next EXP",
+  "@expToNextLevel": {
+    "description": "Label to display the remaining experience points to the next level",
+    "placeholders": {
+      "exp": {
+        "type": "int"
+      }
+    }
+  },
+  "levelUpTitle": "Level Up!",
+  "levelUpMessage": "You reached level {newLevel}!",
+  "@levelUpMessage": {
+    "description": "Message shown when the user levels up",
+    "placeholders": {
+      "newLevel": {
+        "type": "int"
+      }
+    }
+  },
+  "unlockedAtLevel": "Unlocks at Level {level}",
+  "@unlockedAtLevel": {
+    "description": "Label indicating a feature unlocks at a specific level",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "worldMapGuideTitle1": "Welcome!",
+  "worldMapGuideContent1": "This is the world map!\nAs you level up, you'll unlock more places to go.",
+  "worldMapGuideTitle2": "The Central Island",
+  "worldMapGuideContent2": "Once you reach Level 5, you'll be able to tap here to enter the island.",
+  "worldMapGuideTitle3": "A Widening World",
+  "worldMapGuideContent3": "You might even be able to visit the sea below or the space far above someday...?\nStay tuned!",
+  "seaAreaLocked": "This area is scheduled to unlock at Level 10!",
+  "spaceAreaLocked": "This area is scheduled to unlock at Level 15!",
+  "islandLocked": "You'll be able to enter at Level 5!",
+  "itemHouse1": "House 1",
+  "itemHouse2": "House 2",
+  "itemHouse3": "House 3",
+  "itemHouse4": "House 4",
+  "itemHouse5": "House 5",
+  "itemHouse6": "House 6",
+  "itemHouse7": "House 7",
+  "itemConvenienceStore": "Convenience Store",
+  "itemSupermarket": "Supermarket",
+  "itemHospital": "Hospital",
+  "itemPoliceStation": "Police Station",
+  "itemPark1": "Park 1",
+  "itemPark2": "Park 2",
+  "itemCastle": "Castle",
+  "itemCarIsland": "Car",
+  "itemTaxiIsland": "Taxi",
+  "itemBusIsland": "Bus",
+  "itemHelicopterIsland": "Helicopter",
+  "itemAirship1Island": "Airship 1",
+  "itemAirship2Island": "Airship 2"
 }

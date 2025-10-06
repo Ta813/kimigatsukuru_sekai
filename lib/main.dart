@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/child/child_home_screen.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -77,7 +76,7 @@ class MyApp extends StatelessWidget {
 
       // アプリのテーマカラーなどを後で設定できます
       theme: ThemeData(
-        fontFamily: GoogleFonts.mochiyPopOne().fontFamily,
+        fontFamily: 'MochiyPopOne',
         // 2. メインカラー（温かいオレンジ）
         primaryColor: const Color(0xFFFF7043),
 

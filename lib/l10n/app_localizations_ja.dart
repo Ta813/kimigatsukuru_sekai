@@ -69,7 +69,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideCustomizeDesc => '買ったアイテムで、アバターの服やおうちを変えられるよ！\n自分だけの世界をつくろう。';
 
   @override
-  String get guideHelpTitle => '⑦ ヘルプ「左の？マーク」';
+  String get guideBgmButtonTitle => '⑦ BGM「右の♪マーク」';
+
+  @override
+  String get guideBgmButtonDesc => 'ここを押すと、好きな音楽を選べるよ。楽しい音楽で気分を変えてみよう！';
+
+  @override
+  String get guideWorldMapButtonTitle => '⑧ 外の世界「右の🌎マーク」';
+
+  @override
+  String get guideWorldMapButtonDesc => 'このボタンを押すと、世界の全体図が見られるよ。レベルが上がると行ける場所が増えるかも！';
+
+  @override
+  String get guideHelpTitle => '⑨ ヘルプ「左の？マーク」';
 
   @override
   String get guideHelpDesc => 'わからなくなったら、このボタンを押して、\nもう一度この説明を見れるよ。';
@@ -591,4 +603,132 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get supportPageOpenError => 'ページを開けませんでした';
+
+  @override
+  String get timerExpChance => 'EXP 3 ゲットのチャンス！';
+
+  @override
+  String get timerExpFailure => 'EXPは 1 になるよ！';
+
+  @override
+  String get buildings => 'たてもの';
+
+  @override
+  String get vehicles => 'のりもの';
+
+  @override
+  String get houseSettings => 'いえのせってい';
+
+  @override
+  String get islandSettings => 'しまのせってい';
+
+  @override
+  String levelLabel(int level) {
+    return 'レベル $level';
+  }
+
+  @override
+  String expToNextLevel(int exp) {
+    return 'あと$exp EXP';
+  }
+
+  @override
+  String get levelUpTitle => 'レベルアップ！';
+
+  @override
+  String levelUpMessage(int newLevel) {
+    return 'レベルが $newLevel にあがった！';
+  }
+
+  @override
+  String unlockedAtLevel(int level) {
+    return 'レベル $level で解放';
+  }
+
+  @override
+  String get worldMapGuideTitle1 => 'ようこそ！';
+
+  @override
+  String get worldMapGuideContent1 => 'ここは世界の全体図だよ！\nレベルが上がると行ける場所が増えるんだ。';
+
+  @override
+  String get worldMapGuideTitle2 => 'まんなかの島';
+
+  @override
+  String get worldMapGuideContent2 => 'レベル5になったら、ここをタップして島に入れるようになるんだ。';
+
+  @override
+  String get worldMapGuideTitle3 => 'まだまだ広がる世界';
+
+  @override
+  String get worldMapGuideContent3 => '下にある海や、ずーっと上の宇宙にも、いつか行けるようになるかも…？\nお楽しみに！';
+
+  @override
+  String get seaAreaLocked => 'ここはレベル10で解放される予定です！';
+
+  @override
+  String get spaceAreaLocked => 'ここはレベル15で解放される予定です！';
+
+  @override
+  String get islandLocked => 'レベル5になると入れるようになります！';
+
+  @override
+  String get itemHouse1 => 'いえ１';
+
+  @override
+  String get itemHouse2 => 'いえ２';
+
+  @override
+  String get itemHouse3 => 'いえ３';
+
+  @override
+  String get itemHouse4 => 'いえ４';
+
+  @override
+  String get itemHouse5 => 'いえ５';
+
+  @override
+  String get itemHouse6 => 'いえ６';
+
+  @override
+  String get itemHouse7 => 'いえ７';
+
+  @override
+  String get itemConvenienceStore => 'コンビニ';
+
+  @override
+  String get itemSupermarket => 'スーパー';
+
+  @override
+  String get itemHospital => 'びょういん';
+
+  @override
+  String get itemPoliceStation => 'けいさつしょ';
+
+  @override
+  String get itemPark1 => 'こうえん１';
+
+  @override
+  String get itemPark2 => 'こうえん２';
+
+  @override
+  String get itemCastle => 'おしろ';
+
+  @override
+  String get itemCarIsland => 'くるま';
+
+  @override
+  String get itemTaxiIsland => 'タクシー';
+
+  @override
+  String get itemBusIsland => 'バス';
+
+  @override
+  String get itemHelicopterIsland => 'ヘリコプター';
+
+  @override
+  String get itemAirship1Island => 'ひこうせん１';
+
+  @override
+  String get itemAirship2Island => 'ひこうせん２';
 }

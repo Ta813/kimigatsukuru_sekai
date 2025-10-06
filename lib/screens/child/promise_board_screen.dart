@@ -57,14 +57,23 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
     );
 
     // ★ タイマー画面に行く前に、"選択された"集中BGMを再生
-    BgmManager.instance.play(focusTrack);
+    try {
+      BgmManager.instance.play(focusTrack);
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
 
-    final pointsAwarded = await Navigator.push<int>(
+    final result = await Navigator.push<Map<String, int>?>(
       context,
       MaterialPageRoute(
         builder: (context) => TimerScreen(promise: promise, isEmergency: false),
       ),
     );
+
+    // 戻り値からポイントと経験値を取得
+    final pointsAwarded = result != null ? result['points'] : null;
+    final exp = result != null ? result['exp'] : null;
 
     // ★タイマー画面から戻ってきたら、メインBGMを再生
     _playSavedBgm();
@@ -75,7 +84,7 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
 
       if (mounted) {
         // ポイントを持ってホーム画面に戻る
-        Navigator.pop(context, pointsAwarded);
+        Navigator.pop(context, {'points': pointsAwarded, 'exp': exp});
       }
     }
   }
@@ -86,7 +95,12 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
       (e) => e.name == trackName,
       orElse: () => BgmTrack.main, // デフォルトはmain
     );
-    BgmManager.instance.play(track);
+    try {
+      BgmManager.instance.play(track);
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
   }
 
   void _skipPromiseOnBoard(String promiseTitle) async {
@@ -141,7 +155,12 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                                   color: Colors.grey[400],
                                 ),
                                 onPressed: () {
-                                  SfxManager.instance.playTapSound();
+                                  try {
+                                    SfxManager.instance.playTapSound();
+                                  } catch (e) {
+                                    // エラーが発生した場合
+                                    print('再生エラー: $e');
+                                  }
                                   _skipPromiseOnBoard(promise['title']);
                                 },
                               ),
