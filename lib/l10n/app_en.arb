@@ -333,5 +333,20 @@
   "itemBusIsland": "Bus",
   "itemHelicopterIsland": "Helicopter",
   "itemAirship1Island": "Airship 1",
-  "itemAirship2Island": "Airship 2"
+  "itemAirship2Island": "Airship 2",
+  "itemClothesRedDress": "Red Dress",
+  "itemClothesBlueDress": "Blue Dress",
+  "itemClothesPinkDress": "Pink Dress",
+  "itemClothesBear": "Bear Costume",
+  "itemClothesDinosaur": "Dinosaur Costume",
+  "itemClothesPrince": "Prince Outfit",
+  "itemClothesAdventurer": "Adventurer Outfit",
+  "itemClothesHero": "Hero Costume",
+  "itemClothesCowboy": "Cowboy Outfit",
+  "itemClothesWarrior": "Warrior Armor",
+  "charGirl": "Girl",
+  "charPrincess": "Princess",
+  "charPrince": "Prince",
+  "charDinosaur": "Dinosaur",
+  "charRobot": "Robot"
 }

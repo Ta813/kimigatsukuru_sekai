@@ -333,5 +333,20 @@
   "itemBusIsland": "バス",
   "itemHelicopterIsland": "ヘリコプター",
   "itemAirship1Island": "ひこうせん１",
-  "itemAirship2Island": "ひこうせん２"
+  "itemAirship2Island": "ひこうせん２",
+  "itemClothesRedDress": "あかのドレス",
+  "itemClothesBlueDress": "あおのドレス",
+  "itemClothesPinkDress": "ピンクドレス",
+  "itemClothesBear": "くま",
+  "itemClothesDinosaur": "きょうりゅう",
+  "itemClothesPrince": "おうじさま",
+  "itemClothesAdventurer": "ぼうけんしゃ",
+  "itemClothesHero": "ヒーロー",
+  "itemClothesCowboy": "カウボーイ",
+  "itemClothesWarrior": "せんし",
+  "charGirl": "おんなのこ",
+  "charPrincess": "おひめさま",
+  "charPrince": "おうじさま",
+  "charDinosaur": "きょうりゅう",
+  "charRobot": "ロボット"
 }

@@ -1486,6 +1486,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Airship 2'**
   String get itemAirship2Island;
+
+  /// No description provided for @itemClothesRedDress.
+  ///
+  /// In en, this message translates to:
+  /// **'Red Dress'**
+  String get itemClothesRedDress;
+
+  /// No description provided for @itemClothesBlueDress.
+  ///
+  /// In en, this message translates to:
+  /// **'Blue Dress'**
+  String get itemClothesBlueDress;
+
+  /// No description provided for @itemClothesPinkDress.
+  ///
+  /// In en, this message translates to:
+  /// **'Pink Dress'**
+  String get itemClothesPinkDress;
+
+  /// No description provided for @itemClothesBear.
+  ///
+  /// In en, this message translates to:
+  /// **'Bear Costume'**
+  String get itemClothesBear;
+
+  /// No description provided for @itemClothesDinosaur.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinosaur Costume'**
+  String get itemClothesDinosaur;
+
+  /// No description provided for @itemClothesPrince.
+  ///
+  /// In en, this message translates to:
+  /// **'Prince Outfit'**
+  String get itemClothesPrince;
+
+  /// No description provided for @itemClothesAdventurer.
+  ///
+  /// In en, this message translates to:
+  /// **'Adventurer Outfit'**
+  String get itemClothesAdventurer;
+
+  /// No description provided for @itemClothesHero.
+  ///
+  /// In en, this message translates to:
+  /// **'Hero Costume'**
+  String get itemClothesHero;
+
+  /// No description provided for @itemClothesCowboy.
+  ///
+  /// In en, this message translates to:
+  /// **'Cowboy Outfit'**
+  String get itemClothesCowboy;
+
+  /// No description provided for @itemClothesWarrior.
+  ///
+  /// In en, this message translates to:
+  /// **'Warrior Armor'**
+  String get itemClothesWarrior;
+
+  /// No description provided for @charGirl.
+  ///
+  /// In en, this message translates to:
+  /// **'Girl'**
+  String get charGirl;
+
+  /// No description provided for @charPrincess.
+  ///
+  /// In en, this message translates to:
+  /// **'Princess'**
+  String get charPrincess;
+
+  /// No description provided for @charPrince.
+  ///
+  /// In en, this message translates to:
+  /// **'Prince'**
+  String get charPrince;
+
+  /// No description provided for @charDinosaur.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinosaur'**
+  String get charDinosaur;
+
+  /// No description provided for @charRobot.
+  ///
+  /// In en, this message translates to:
+  /// **'Robot'**
+  String get charRobot;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

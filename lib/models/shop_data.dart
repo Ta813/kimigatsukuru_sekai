@@ -179,6 +179,36 @@ class ShopItem {
         return l10n.itemAirship1Island;
       case 'ひこうせん２（しま）':
         return l10n.itemAirship2Island;
+      case 'あかのドレス':
+        return l10n.itemClothesRedDress;
+      case 'あおのドレス':
+        return l10n.itemClothesBlueDress;
+      case 'ピンクドレス':
+        return l10n.itemClothesPinkDress;
+      case 'くま':
+        return l10n.itemClothesBear;
+      case 'きょうりゅう':
+        return l10n.itemClothesDinosaur;
+      case 'おうじさま':
+        return l10n.itemClothesPrince;
+      case 'ぼうけんしゃ':
+        return l10n.itemClothesAdventurer;
+      case 'ヒーロー':
+        return l10n.itemClothesHero;
+      case 'カウボーイ':
+        return l10n.itemClothesCowboy;
+      case 'せんし':
+        return l10n.itemClothesWarrior;
+      case 'おんなのこ':
+        return l10n.charGirl;
+      case 'おひめさま':
+        return l10n.charPrincess;
+      case 'おうじさま（おうえん）':
+        return l10n.charPrince;
+      case 'きょうりゅう（おうえん）':
+        return l10n.charDinosaur;
+      case 'ロボット':
+        return l10n.charRobot;
       default:
         return name;
     }
@@ -259,6 +289,13 @@ final List<ShopItem> shopItems = [
     requiredLevel: 1,
   ),
   ShopItem(
+    name: 'みずいろのふく',
+    imagePath: 'assets/images/clothes_boy_water.gif',
+    price: 50,
+    type: 'clothes',
+    requiredLevel: 1,
+  ),
+  ShopItem(
     name: 'あかのドレス',
     imagePath: 'assets/images/clothes_dress_red.gif',
     price: 200,
@@ -325,13 +362,6 @@ final List<ShopItem> shopItems = [
     name: 'せんし',
     imagePath: 'assets/images/clothes_boy_senshi.gif',
     price: 200,
-    type: 'clothes',
-    requiredLevel: 5,
-  ),
-  ShopItem(
-    name: 'みずいろのふく',
-    imagePath: 'assets/images/clothes_boy_water.gif',
-    price: 50,
     type: 'clothes',
     requiredLevel: 5,
   ),

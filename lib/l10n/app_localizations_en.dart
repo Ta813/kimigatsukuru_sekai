@@ -731,4 +731,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itemAirship2Island => 'Airship 2';
+
+  @override
+  String get itemClothesRedDress => 'Red Dress';
+
+  @override
+  String get itemClothesBlueDress => 'Blue Dress';
+
+  @override
+  String get itemClothesPinkDress => 'Pink Dress';
+
+  @override
+  String get itemClothesBear => 'Bear Costume';
+
+  @override
+  String get itemClothesDinosaur => 'Dinosaur Costume';
+
+  @override
+  String get itemClothesPrince => 'Prince Outfit';
+
+  @override
+  String get itemClothesAdventurer => 'Adventurer Outfit';
+
+  @override
+  String get itemClothesHero => 'Hero Costume';
+
+  @override
+  String get itemClothesCowboy => 'Cowboy Outfit';
+
+  @override
+  String get itemClothesWarrior => 'Warrior Armor';
+
+  @override
+  String get charGirl => 'Girl';
+
+  @override
+  String get charPrincess => 'Princess';
+
+  @override
+  String get charPrince => 'Prince';
+
+  @override
+  String get charDinosaur => 'Dinosaur';
+
+  @override
+  String get charRobot => 'Robot';
 }

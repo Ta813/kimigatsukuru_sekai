@@ -731,4 +731,49 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get itemAirship2Island => 'ひこうせん２';
+
+  @override
+  String get itemClothesRedDress => 'あかのドレス';
+
+  @override
+  String get itemClothesBlueDress => 'あおのドレス';
+
+  @override
+  String get itemClothesPinkDress => 'ピンクドレス';
+
+  @override
+  String get itemClothesBear => 'くま';
+
+  @override
+  String get itemClothesDinosaur => 'きょうりゅう';
+
+  @override
+  String get itemClothesPrince => 'おうじさま';
+
+  @override
+  String get itemClothesAdventurer => 'ぼうけんしゃ';
+
+  @override
+  String get itemClothesHero => 'ヒーロー';
+
+  @override
+  String get itemClothesCowboy => 'カウボーイ';
+
+  @override
+  String get itemClothesWarrior => 'せんし';
+
+  @override
+  String get charGirl => 'おんなのこ';
+
+  @override
+  String get charPrincess => 'おひめさま';
+
+  @override
+  String get charPrince => 'おうじさま';
+
+  @override
+  String get charDinosaur => 'きょうりゅう';
+
+  @override
+  String get charRobot => 'ロボット';
 }

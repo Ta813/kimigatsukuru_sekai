@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
     final localeProvider = Provider.of<LocaleProvider>(context);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appName,
       locale: localeProvider.locale,
       localeResolutionCallback: (deviceLocale, supportedLocales) {
