@@ -48,11 +48,6 @@ Future<void> main() async {
   );
   await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
 
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.landscapeLeft, // 横向き左
-    DeviceOrientation.landscapeRight, // 横向き右
-  ]);
-
   // すべての準備が終わってから、アプリを起動します
   runApp(
     ChangeNotifierProvider.value(value: localeProvider, child: const MyApp()),

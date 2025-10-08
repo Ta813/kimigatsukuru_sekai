@@ -17,6 +17,7 @@ import 'math_lock_dialog.dart';
 import '../../l10n/app_localizations.dart';
 import 'house_interior_screen.dart';
 import 'world_map_screen.dart';
+import 'package:flutter/services.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -124,6 +125,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   @override
   void initState() {
     super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft, // 横向き左
+      DeviceOrientation.landscapeRight, // 横向き右
+    ]);
 
     // ★ 吹き出し用のヒントアニメーションコントローラーを初期化
     _hintAnimationController = AnimationController(
