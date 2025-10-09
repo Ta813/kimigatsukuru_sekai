@@ -42,8 +42,12 @@ Future<void> main() async {
   await MobileAds.instance.initialize();
 
   // 全ての広告リクエストを子供向けとして扱う
-  final requestConfiguration = RequestConfiguration(
+  final RequestConfiguration requestConfiguration = RequestConfiguration(
+    // アプリのターゲットが子供であることをSDKに伝える
     tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+    // ユーザーが同意年齢に達していない可能性があることをSDKに伝える
+    tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+    // 表示する広告コンテンツのレーティング上限を「G（全年齢対象）」に設定
     maxAdContentRating: MaxAdContentRating.g,
   );
   await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
