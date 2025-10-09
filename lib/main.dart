@@ -11,7 +11,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,12 +19,6 @@ Future<void> main() async {
   await localeProvider.init();
   // Firebaseを初期化
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // 子供向けアプリとして、広告IDなどのデータ収集を無効化する
-  await FirebaseAnalytics.instance.setConsent(
-    analyticsStorageConsentGranted: false,
-    adStorageConsentGranted: false,
-  );
 
   // Flutterフレームワーク内でキャッチされなかったエラーをCrashlyticsに送信
   PlatformDispatcher.instance.onError = (error, stack) {
@@ -40,17 +33,6 @@ Future<void> main() async {
 
   // ★広告SDKを初期化する
   await MobileAds.instance.initialize();
-
-  // 全ての広告リクエストを子供向けとして扱う
-  final RequestConfiguration requestConfiguration = RequestConfiguration(
-    // アプリのターゲットが子供であることをSDKに伝える
-    tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-    // ユーザーが同意年齢に達していない可能性があることをSDKに伝える
-    tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-    // 表示する広告コンテンツのレーティング上限を「G（全年齢対象）」に設定
-    maxAdContentRating: MaxAdContentRating.g,
-  );
-  await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
 
   // すべての準備が終わってから、アプリを起動します
   runApp(
