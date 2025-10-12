@@ -348,5 +348,9 @@
   "charPrincess": "Princess",
   "charPrince": "Prince",
   "charDinosaur": "Dinosaur",
-  "charRobot": "Robot"
+  "charRobot": "Robot",
+  "disclosureTitle": "About Your Data",
+  "disclosureMessage": "To show ads and improve app performance, this app may collect and share information about installed apps and your device's Advertising ID.",
+  "disagreeAction": "Disagree",
+  "agreeAction": "Agree and Continue"
 }

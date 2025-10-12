@@ -776,4 +776,16 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get charRobot => 'ロボット';
+
+  @override
+  String get disclosureTitle => 'データの取り扱いについて';
+
+  @override
+  String get disclosureMessage => 'このアプリは、広告の表示とアプリのパフォーマンス改善を目的として、インストール済みのアプリに関する情報や、デバイスの広告IDを収集・共有することがあります。';
+
+  @override
+  String get disagreeAction => '同意しない';
+
+  @override
+  String get agreeAction => '同意して利用する';
 }

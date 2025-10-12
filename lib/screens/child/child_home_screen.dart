@@ -18,6 +18,7 @@ import '../../l10n/app_localizations.dart';
 import 'house_interior_screen.dart';
 import 'world_map_screen.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -188,6 +189,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     // ★アプリの状態変化の監視を開始
     WidgetsBinding.instance.addObserver(this);
 
+    // ★ 最初のフレーム描画後に、同意ダイアログの表示チェックを行う
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Platform.isAndroid) {
+        _showDisclosureDialogIfNeeded();
+      }
+    });
+
     _showGuideIfNeeded(); // 必要ならガイドを表示
 
     _playSavedBgm(); // 保存されたBGMを再生
@@ -228,6 +236,46 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         // エラーが発生した場合
         print('再生エラー: $e');
       }
+    }
+  }
+
+  Future<void> _showDisclosureDialogIfNeeded() async {
+    final hasConsented = await SharedPrefsHelper.hasConsentedToDataCollection();
+
+    // まだ同意していない場合のみダイアログを表示
+    if (!hasConsented && mounted) {
+      final l10n = AppLocalizations.of(context)!;
+
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false, // ダイアログの外をタップしても閉じない
+        builder: (context) => AlertDialog(
+          title: Text(l10n.disclosureTitle),
+          content: SingleChildScrollView(
+            child: Text(
+              // Googleが要求する文言のテンプレートに沿った文章
+              l10n.disclosureMessage,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(l10n.disagreeAction),
+              onPressed: () {
+                // 同意しない場合はアプリを終了する
+                SystemNavigator.pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text(l10n.agreeAction),
+              onPressed: () async {
+                // 同意したことを記録
+                await SharedPrefsHelper.setDataCollectionConsent(true);
+                if (mounted) Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
     }
   }
 

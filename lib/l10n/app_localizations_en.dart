@@ -776,4 +776,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get charRobot => 'Robot';
+
+  @override
+  String get disclosureTitle => 'About Your Data';
+
+  @override
+  String get disclosureMessage => 'To show ads and improve app performance, this app may collect and share information about installed apps and your device\'s Advertising ID.';
+
+  @override
+  String get disagreeAction => 'Disagree';
+
+  @override
+  String get agreeAction => 'Agree and Continue';
 }

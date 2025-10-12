@@ -475,4 +475,16 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('todays_completed_titles');
   }
+
+  // データ収集の同意状況を保存
+  static Future<void> setDataCollectionConsent(bool consented) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('data_collection_consent', consented);
+  }
+
+  // データ収集の同意状況を読み込み
+  static Future<bool> hasConsentedToDataCollection() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('data_collection_consent') ?? false;
+  }
 }

@@ -1576,6 +1576,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Robot'**
   String get charRobot;
+
+  /// No description provided for @disclosureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About Your Data'**
+  String get disclosureTitle;
+
+  /// No description provided for @disclosureMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'To show ads and improve app performance, this app may collect and share information about installed apps and your device\'s Advertising ID.'**
+  String get disclosureMessage;
+
+  /// No description provided for @disagreeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Disagree'**
+  String get disagreeAction;
+
+  /// No description provided for @agreeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Agree and Continue'**
+  String get agreeAction;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -348,5 +348,9 @@
   "charPrincess": "おひめさま",
   "charPrince": "おうじさま",
   "charDinosaur": "きょうりゅう",
-  "charRobot": "ロボット"
+  "charRobot": "ロボット",
+  "disclosureTitle": "データの取り扱いについて",
+  "disclosureMessage": "このアプリは、広告の表示とアプリのパフォーマンス改善を目的として、インストール済みのアプリに関する情報や、デバイスの広告IDを収集・共有することがあります。",
+  "disagreeAction": "同意しない",
+  "agreeAction": "同意して利用する"
 }
