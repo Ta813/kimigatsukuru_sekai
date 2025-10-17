@@ -76,9 +76,16 @@ class SfxManager {
   void playTimerTimeUpSoundEnglish() => _playSound('se/english/times_up.mp3');
   void playTimeAtoSound() => _playSound('se/「あと」.mp3');
   void playTimeYattaSound() => _playSound('se/「やったーー！」.mp3');
+  void playRouletteSpinSound() => _playSound('se/ドラムロール.mp3');
+  void playTimerWinSound2() => _playSound('se/歓声と拍手.mp3');
 
   // アプリ終了時にリソースを解放する
-  void dispose() {
-    _sfxPlayer.dispose();
+  void dispose() async {
+    try {
+      await _sfxPlayer.stop();
+      await _sfxPlayer.dispose();
+    } catch (e) {
+      print("効果音プレイヤーの停止エラー: $e");
+    }
   }
 }

@@ -69,12 +69,14 @@ class _RouletteDialogState extends State<RouletteDialog> {
   }
 
   void _spin() async {
+    SfxManager.instance.playRouletteSpinSound();
+
     setState(() {
       _isSpinning = true;
     });
 
     // 2秒間、回転アニメーションを見せる
-    Timer(const Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 4), () {
       // 50%の確率で「あたり」を決定
       final bool isWin = Random().nextBool();
 
@@ -128,7 +130,7 @@ class _RouletteDialogState extends State<RouletteDialog> {
       });
 
       // 結果を2.5秒表示したら、自動でダイアログを閉じる
-      Timer(const Duration(milliseconds: 2500), () {
+      Timer(const Duration(milliseconds: 3000), () {
         if (mounted) {
           // 閉じる時に、結果（1倍か2倍か）を返す
           Navigator.of(context).pop(_pointMultiplier);
@@ -142,19 +144,36 @@ class _RouletteDialogState extends State<RouletteDialog> {
     return AlertDialog(
       title: Text(AppLocalizations.of(context)!.rouletteTitle),
       content: SizedBox(
-        height: 150,
+        height: 200,
         child: Center(
           child: _isSpinning
-              ? const CircularProgressIndicator() // 回転中のアニメーション
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset('assets/images/slot_spinning.gif', height: 150),
+                    const SizedBox(height: 43),
+                  ],
+                )
               : _resultText != null
-              ? Text(
-                  // 結果表示
-                  _resultText!,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      _pointMultiplier > 1
+                          ? 'assets/images/slot_win.png'
+                          : 'assets/images/slot_lose.png',
+                      height: 150,
+                    ),
+                    Text(
+                      // 結果表示
+                      _resultText!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 )
               : Column(
                   // 最初の表示

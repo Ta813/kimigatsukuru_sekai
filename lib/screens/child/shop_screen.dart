@@ -452,10 +452,10 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
         ),
         // ★bodyをTabBarViewに変更します
-        body: TabBarView(
-          children: tabViews,
-
-          // 各タブの中身となるGridViewを、共通メソッドで生成します
+        body: SafeArea(
+          child: TabBarView(
+            children: tabViews, // 各タブの中身となるGridViewを、共通メソッドで生成します
+          ),
         ),
         bottomNavigationBar: const AdBanner(),
       ),

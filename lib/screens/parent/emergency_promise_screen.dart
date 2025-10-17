@@ -68,58 +68,62 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
           AppLocalizations.of(context)!.emergencyPromiseSettingsTitle,
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              TextFormField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(
-                    context,
-                  )!.promiseNameExampleHint,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                TextFormField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(
+                      context,
+                    )!.promiseNameExampleHint,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return AppLocalizations.of(context)!.promiseNameHint;
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.promiseNameHint;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _durationController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.durationLabel,
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _durationController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.durationLabel,
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _pointsController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.points,
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _pointsController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.points,
+                  ),
+                  keyboardType: TextInputType.number,
+                  maxLength: kDebugMode ? null : 2,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(kDebugMode ? 10 : 2),
+                  ],
                 ),
-                keyboardType: TextInputType.number,
-                maxLength: kDebugMode ? null : 2,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(kDebugMode ? 10 : 2),
-                ],
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _savePromise,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: _savePromise,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.setThisPromiseButton,
+                  ),
                 ),
-                child: Text(AppLocalizations.of(context)!.setThisPromiseButton),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

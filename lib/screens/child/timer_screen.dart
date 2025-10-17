@@ -10,6 +10,7 @@ import '../../managers/sfx_manager.dart';
 import '../../managers/bgm_manager.dart';
 import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
+import 'package:confetti/confetti.dart';
 
 class TimerScreen extends StatefulWidget {
   // StatefulWidgetに変更
@@ -35,10 +36,15 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
   String? _randomSupportCharacterPath; // ★ランダムで表示するキャラのパス
   String _avatarPath = 'assets/images/avatar.png';
 
+  late ConfettiController _confettiController; // ★ 紙吹雪のコントローラーを宣言
+
   // この画面が表示された瞬間に、一度だけ呼ばれる初期化処理
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 6), // 6秒間だけ紙吹雪を出す
+    );
     // ★アプリの状態変化の監視を開始
     WidgetsBinding.instance.addObserver(this);
     // ★画面が表示されたら、スリープを無効にする
@@ -84,6 +90,7 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
   // この画面が閉じられる時に、一度だけ呼ばれるお片付け処理
   @override
   void dispose() {
+    _confettiController.dispose();
     // ★アプリの状態変化の監視を終了
     WidgetsBinding.instance.removeObserver(this);
     // ★画面が閉じられたら、スリープを有効に戻す（非常に重要！）
@@ -158,9 +165,11 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
     final difference = _endTime!.difference(now);
 
     // 残り時間が0以下なら0に、そうでなければ残り秒数をセット
-    setState(() {
-      _remainingSeconds = difference.isNegative ? 0 : difference.inSeconds;
-    });
+    if (mounted) {
+      setState(() {
+        _remainingSeconds = difference.isNegative ? 0 : difference.inSeconds;
+      });
+    }
   }
 
   void _startTimer() {
@@ -371,19 +380,30 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
             ElevatedButton(
               child: Text(AppLocalizations.of(context)!.yesFinished),
               // ★「おわったよ！」ボタンが押されたら、ここから処理が始まる
-              onPressed: () {
+              onPressed: () async {
                 // まず承認ダイアログを閉じる
                 Navigator.of(dialogContext).pop();
                 // 次に、時間切れかどうかで処理を分岐
                 if (!_isTimeUp) {
+                  _confettiController.play();
                   try {
                     SfxManager.instance.playTimerWinSound();
                   } catch (e) {
                     // エラーが発生した場合
                     print('再生エラー: $e');
                   }
+                  await Future.delayed(const Duration(seconds: 2));
+                  try {
+                    SfxManager.instance.playTimerWinSound2();
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
+                  await Future.delayed(const Duration(seconds: 4));
                   // 時間内なら -> ルーレットへ
-                  _showRouletteAndFinish();
+                  if (mounted) {
+                    _showRouletteAndFinish();
+                  }
                 } else {
                   final lang = AppLocalizations.of(context)!.localeName;
                   if (lang == 'ja') {
@@ -403,8 +423,12 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
                       print('再生エラー: $e');
                     }
                   }
+                  await Future.delayed(const Duration(seconds: 2));
+
                   // 時間切れなら -> ポイント半分で終了
-                  _finishPromise(pointMultiplier: 0.5, exp: 1);
+                  if (mounted) {
+                    _finishPromise(pointMultiplier: 0.5, exp: 1);
+                  }
                 }
               },
             ),
@@ -518,6 +542,25 @@ class _TimerScreenState extends State<TimerScreen> with WidgetsBindingObserver {
               bottom: 50,
               child: Image.asset(_randomSupportCharacterPath!, height: 180),
             ),
+          Align(
+            alignment: Alignment.topCenter, // 画面の上部中央から紙吹雪を出す
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality: BlastDirectionality.explosive, // 全方向に爆発
+              shouldLoop: false, // 繰り返しはしない
+              numberOfParticles: 30, // パーティクルの数
+              gravity: 0.3, // 重力（ゆっくり落ちるように）
+              emissionFrequency: 0.05, // 発生頻度
+              colors: const [
+                // 紙吹雪の色
+                Colors.green,
+                Colors.blue,
+                Colors.pink,
+                Colors.orange,
+                Colors.purple,
+              ],
+            ),
+          ),
         ],
       ),
       // 画面下部にバナーを設置

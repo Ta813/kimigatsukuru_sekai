@@ -210,21 +210,23 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            // 服の選択グリッド
-            _buildItemGrid(ownedClothes, _equippedClothes),
-            // 家の選択グリッド
-            _buildItemGrid(ownedHouses, _equippedHouse),
-            // キャラクターの選択グリッド
-            _buildMultiSelectionGrid(
-              ownedCharacters,
-              _equippedCharacters,
-              'character',
-            ),
-            // アイテムの選択グリッド
-            _buildMultiSelectionGrid(ownedItems, _equippedItems, 'item'),
-          ],
+        body: SafeArea(
+          child: TabBarView(
+            children: [
+              // 服の選択グリッド
+              _buildItemGrid(ownedClothes, _equippedClothes),
+              // 家の選択グリッド
+              _buildItemGrid(ownedHouses, _equippedHouse),
+              // キャラクターの選択グリッド
+              _buildMultiSelectionGrid(
+                ownedCharacters,
+                _equippedCharacters,
+                'character',
+              ),
+              // アイテムの選択グリッド
+              _buildMultiSelectionGrid(ownedItems, _equippedItems, 'item'),
+            ],
+          ),
         ),
         // 画面下部にバナーを設置
         bottomNavigationBar: const AdBanner(),

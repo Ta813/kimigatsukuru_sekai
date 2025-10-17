@@ -126,7 +126,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rouletteCongrats => 'Congratulations!\n2x Points!';
 
   @override
-  String get rouletteTryAgain => 'Try Again Next Time';
+  String get rouletteTryAgain => 'Try Again Next Time\n';
 
   @override
   String get rouletteTitle => 'Point Up Chance!';

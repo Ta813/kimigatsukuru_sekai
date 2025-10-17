@@ -148,57 +148,60 @@ class _RegularPromiseSettingsScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.regularPromiseSettingsTitle),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: _navigateToAddScreen, // 既存の追加処理をそのまま使う
+          ),
+        ],
       ),
-      body: ListView.builder(
-        itemCount: _regularPromises.length,
-        itemBuilder: (context, index) {
-          final promise = _regularPromises[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              title: Text(promise['title']),
-              subtitle: Text(
-                '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}分 / ${promise['points']}${AppLocalizations.of(context)!.points}',
+      body: SafeArea(
+        child: ListView.builder(
+          itemCount: _regularPromises.length,
+          itemBuilder: (context, index) {
+            final promise = _regularPromises[index];
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListTile(
+                title: Text(promise['title']),
+                subtitle: Text(
+                  '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}分 / ${promise['points']}${AppLocalizations.of(context)!.points}',
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min, // Rowが必要な分だけ幅をとるようにする
+                  children: [
+                    // 編集ボタン（機能は後で追加）
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {
+                          // エラーが発生した場合
+                          print('再生エラー: $e');
+                        }
+                        _navigateToEditScreen(index);
+                      },
+                    ),
+                    // 削除ボタン
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red[400]),
+                      onPressed: () {
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {
+                          // エラーが発生した場合
+                          print('再生エラー: $e');
+                        }
+                        _deletePromise(index);
+                      },
+                    ),
+                  ],
+                ),
               ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min, // Rowが必要な分だけ幅をとるようにする
-                children: [
-                  // 編集ボタン（機能は後で追加）
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {
-                        // エラーが発生した場合
-                        print('再生エラー: $e');
-                      }
-                      _navigateToEditScreen(index);
-                    },
-                  ),
-                  // 削除ボタン
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red[400]),
-                    onPressed: () {
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {
-                        // エラーが発生した場合
-                        print('再生エラー: $e');
-                      }
-                      _deletePromise(index);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-      // 新しいやくそくを追加するための「＋」ボタン
-      floatingActionButton: FloatingActionButton(
-        onPressed: _navigateToAddScreen,
-        child: const Icon(Icons.add),
+            );
+          },
+        ),
       ),
       // 画面下部にバナーを設置
       bottomNavigationBar: const AdBanner(),

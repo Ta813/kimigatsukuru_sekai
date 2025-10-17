@@ -5,6 +5,11 @@ import '../../managers/bgm_manager.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
+import '../../screens/parent/advice_screen.dart';
+import '../../screens/parent/regular_promise_settings_screen.dart';
+import '../child/math_lock_dialog.dart'; // ロック画面
+import '../child/passcode_lock_dialog.dart';
+import '../../models/lock_mode.dart';
 
 class PromiseBoardScreen extends StatefulWidget {
   // StatefulWidgetに変更
@@ -110,10 +115,67 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
     _loadData();
   }
 
+  void _navigateToAddPromise() async {
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (e) {
+      // エラーが発生した場合
+      print('再生エラー: $e');
+    }
+    // 1. ロック画面を表示する
+    final lockMode = await SharedPrefsHelper.loadLockMode();
+    final bool? isCorrect = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        if (lockMode == LockMode.passcode) {
+          return const PasscodeLockDialog();
+        }
+        return const MathLockDialog();
+      },
+    );
+
+    // 2. ロックが解除されたら、やくそく設定画面に遷移
+    if (isCorrect == true && mounted) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const RegularPromiseSettingsScreen(),
+        ),
+      );
+      // ★ 設定画面から戻ってきたら、リストを再読み込みして最新の状態を反映
+      _loadData();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.promiseBoard)),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.promiseBoard),
+        actions: [
+          // ？ボタン (アドバイス画面へ)
+          IconButton(
+            icon: const Icon(Icons.question_mark_outlined),
+            onPressed: () {
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (e) {
+                // エラーが発生した場合
+                print('再生エラー: $e');
+              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AdviceScreen()),
+              );
+            },
+          ),
+          // ⚙ボタン (やくそく設定画面へ)
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: _navigateToAddPromise,
+          ),
+        ],
+      ),
       body: _promises.isEmpty
           ? Center(child: Text(AppLocalizations.of(context)!.noRegularPromises))
           : ListView.builder(

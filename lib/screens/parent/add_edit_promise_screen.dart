@@ -103,72 +103,74 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
               : AppLocalizations.of(context)!.editRegularPromiseTitle,
         ),
       ),
-      body: SingleChildScrollView(
-        // キーボード表示で画面がはみ出ないようにする
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              TextFormField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.promiseNameLabel,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          // キーボード表示で画面がはみ出ないようにする
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                TextFormField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.promiseNameLabel,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return AppLocalizations.of(context)!.promiseNameHint;
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.promiseNameHint;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _startTimeController,
-                readOnly: true, // テキストの手入力を不可にする
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.startTimeLabel,
-                  suffixIcon: Icon(Icons.access_time), // 時計アイコンを追加
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _startTimeController,
+                  readOnly: true, // テキストの手入力を不可にする
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.startTimeLabel,
+                    suffixIcon: Icon(Icons.access_time), // 時計アイコンを追加
+                  ),
+                  onTap: () {
+                    // タップされたら、タイムピッカーを呼び出す
+                    _selectTime(context);
+                  },
                 ),
-                onTap: () {
-                  // タップされたら、タイムピッカーを呼び出す
-                  _selectTime(context);
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _durationController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.durationLabel,
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _durationController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.durationLabel,
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ], // 数字のみ入力可
                 ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ], // 数字のみ入力可
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _pointsController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.points,
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _pointsController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.points,
+                  ),
+                  keyboardType: TextInputType.number,
+                  maxLength: kDebugMode ? null : 2,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(kDebugMode ? 10 : 2),
+                  ],
                 ),
-                keyboardType: TextInputType.number,
-                maxLength: kDebugMode ? null : 2,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(kDebugMode ? 10 : 2),
-                ],
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _savePromise,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                const SizedBox(height: 32),
+                ElevatedButton(
+                  onPressed: _savePromise,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(AppLocalizations.of(context)!.registerButton),
                 ),
-                child: Text(AppLocalizations.of(context)!.registerButton),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

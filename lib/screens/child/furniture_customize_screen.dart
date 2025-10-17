@@ -219,7 +219,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
             tabs: tabs, // ★ 準備したタブリストを使用
           ),
         ),
-        body: TabBarView(children: tabViews),
+        body: SafeArea(child: TabBarView(children: tabViews)),
         // 画面下部にバナーを設置
         bottomNavigationBar: const AdBanner(),
       ),

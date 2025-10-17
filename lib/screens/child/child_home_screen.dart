@@ -1105,6 +1105,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               color: Color(0xFFFFCA28),
                             ),
                             onPressed: () {
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (e) {
+                                // エラーが発生した場合
+                                print('再生エラー: $e');
+                              }
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

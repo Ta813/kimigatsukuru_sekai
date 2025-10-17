@@ -137,39 +137,41 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
           ),
         ),
         // ★ TabBarViewでタブの中身を作成
-        body: TabBarView(
-          children: [
-            // --- 1. ふだんのBGM選択リスト ---
-            _buildBgmList(
-              tracks: mainTracks,
-              selectedTrack: _selectedMainTrack,
-              onTrackSelected: (track) async {
-                setState(() => _selectedMainTrack = track);
-                try {
-                  BgmManager.instance.play(track);
-                } catch (e) {
-                  // エラーが発生した場合
-                  print('再生エラー: $e');
-                }
-                await SharedPrefsHelper.saveSelectedBgm(track.name);
-              },
-            ),
-            // --- 2. しゅうちゅうBGM選択リスト ---
-            _buildBgmList(
-              tracks: focusTracks,
-              selectedTrack: _selectedFocusTrack,
-              onTrackSelected: (track) async {
-                setState(() => _selectedFocusTrack = track);
-                try {
-                  BgmManager.instance.play(track); // 試聴
-                } catch (e) {
-                  // エラーが発生した場合
-                  print('再生エラー: $e');
-                }
-                await SharedPrefsHelper.saveSelectedFocusBgm(track.name);
-              },
-            ),
-          ],
+        body: SafeArea(
+          child: TabBarView(
+            children: [
+              // --- 1. ふだんのBGM選択リスト ---
+              _buildBgmList(
+                tracks: mainTracks,
+                selectedTrack: _selectedMainTrack,
+                onTrackSelected: (track) async {
+                  setState(() => _selectedMainTrack = track);
+                  try {
+                    BgmManager.instance.play(track);
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
+                  await SharedPrefsHelper.saveSelectedBgm(track.name);
+                },
+              ),
+              // --- 2. しゅうちゅうBGM選択リスト ---
+              _buildBgmList(
+                tracks: focusTracks,
+                selectedTrack: _selectedFocusTrack,
+                onTrackSelected: (track) async {
+                  setState(() => _selectedFocusTrack = track);
+                  try {
+                    BgmManager.instance.play(track); // 試聴
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
+                  await SharedPrefsHelper.saveSelectedFocusBgm(track.name);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -126,7 +126,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rouletteCongrats => 'おめでとう！\nポイント2ばい！';
 
   @override
-  String get rouletteTryAgain => 'またチャレンジしてね';
+  String get rouletteTryAgain => 'またチャレンジしてね\n';
 
   @override
   String get rouletteTitle => 'ポイントアップチャンス！';

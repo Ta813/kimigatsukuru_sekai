@@ -110,7 +110,12 @@ class BgmManager {
     }
   }
 
-  void dispose() {
-    _bgmPlayer.dispose();
+  void dispose() async {
+    try {
+      await _bgmPlayer.stop();
+      await _bgmPlayer.dispose();
+    } catch (e) {
+      print("BGMの停止エラー: $e");
+    }
   }
 }

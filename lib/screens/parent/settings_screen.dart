@@ -154,174 +154,176 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          ListTile(
-            leading: const Icon(Icons.language),
-            title: Text(l10n.languageSetting),
-            trailing: DropdownButton<String>(
-              value: currentValue,
-              onChanged: (String? newValue) {
-                if (newValue == 'ja') {
-                  localeProvider.setLocale(const Locale('ja'));
-                } else if (newValue == 'en') {
-                  localeProvider.setLocale(const Locale('en'));
-                }
-              },
-              // ★プルダウンの選択肢から「端末の設定」を削除
-              items: const <DropdownMenuItem<String>>[
-                DropdownMenuItem<String>(value: 'ja', child: Text('日本語')),
-                DropdownMenuItem<String>(value: 'en', child: Text('English')),
-              ],
-            ),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.lock),
-            title: Text(l10n.lockMethod),
-            trailing: DropdownButton<LockMode>(
-              value: _selectedLockMode,
-              items: [
-                DropdownMenuItem(
-                  value: LockMode.math,
-                  child: Text(l10n.multiplication),
-                ),
-                DropdownMenuItem(
-                  value: LockMode.passcode,
-                  child: Text(l10n.fourDigitPasscode),
-                ),
-              ],
-              onChanged: (LockMode? newValue) async {
-                if (newValue != null) {
-                  await SharedPrefsHelper.saveLockMode(newValue);
-                  setState(() {
-                    _selectedLockMode = newValue;
-                  });
-                  // もしパスワードモードが選ばれて、まだパスワードが設定されていなければ設定を促す
-                  if (newValue == LockMode.passcode &&
-                      await SharedPrefsHelper.loadPasscode() == null) {
-                    _showSetPasscodeDialog();
-                  }
-                }
-              },
-            ),
-          ),
-          // パスワードモードの時だけ「パスワード設定」を表示
-          if (_selectedLockMode == LockMode.passcode)
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: [
             ListTile(
-              leading: const Icon(Icons.password),
-              title: Text(l10n.setPasscode),
-              subtitle: Row(
-                children: [
-                  // パスワードを表示するか、●で隠すかを三項演算子で切り替え
-                  Text(
-                    _currentPasscode == null
-                        ? l10n.notSet
-                        : _isPasscodeVisible
-                        ? _currentPasscode!
-                        : '●●●●',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(width: 8),
-                  // 表示/非表示を切り替えるアイコンボタン
-                  IconButton(
-                    icon: Icon(
-                      _isPasscodeVisible
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isPasscodeVisible = !_isPasscodeVisible;
-                      });
-                    },
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
+              leading: const Icon(Icons.language),
+              title: Text(l10n.languageSetting),
+              trailing: DropdownButton<String>(
+                value: currentValue,
+                onChanged: (String? newValue) {
+                  if (newValue == 'ja') {
+                    localeProvider.setLocale(const Locale('ja'));
+                  } else if (newValue == 'en') {
+                    localeProvider.setLocale(const Locale('en'));
+                  }
+                },
+                // ★プルダウンの選択肢から「端末の設定」を削除
+                items: const <DropdownMenuItem<String>>[
+                  DropdownMenuItem<String>(value: 'ja', child: Text('日本語')),
+                  DropdownMenuItem<String>(value: 'en', child: Text('English')),
                 ],
               ),
-              onTap: () {
-                // ★ パスワード設定ダイアログを呼び出す処理を修正
-                _showSetPasscodeDialog().then((_) {
-                  // ダイアログが閉じた後に、設定を再読み込みして表示を更新する
-                  _loadSettings();
-                });
-              },
             ),
-          const Divider(),
-
-          // ここから寄付の導線を追加
-          ListTile(
-            leading: const Icon(Icons.favorite, color: Colors.pink),
-            title: Text(l10n.supportThisApp), // 文言は規約を意識
-            subtitle: Text(l10n.supportEncouragement),
-            onTap: () async {
-              // ★ 寄付ページのURLに書き換えてください
-              final url = Uri.parse('https://www.buymeacoffee.com/kotoapp');
-
-              if (await canLaunchUrl(url)) {
-                await launchUrl(url, mode: LaunchMode.externalApplication);
-              } else {
-                // URLが開けなかった場合の予備処理
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.supportPageOpenError)),
-                );
-              }
-            },
-          ),
-          if (kDebugMode) ...[
-            // kDebugModeがtrueの時だけ以下のウィジェットを表示
-            const Divider(thickness: 2, color: Colors.red),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'デバッグメニュー (Debug Menu)',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.lock),
+              title: Text(l10n.lockMethod),
+              trailing: DropdownButton<LockMode>(
+                value: _selectedLockMode,
+                items: [
+                  DropdownMenuItem(
+                    value: LockMode.math,
+                    child: Text(l10n.multiplication),
+                  ),
+                  DropdownMenuItem(
+                    value: LockMode.passcode,
+                    child: Text(l10n.fourDigitPasscode),
+                  ),
+                ],
+                onChanged: (LockMode? newValue) async {
+                  if (newValue != null) {
+                    await SharedPrefsHelper.saveLockMode(newValue);
+                    setState(() {
+                      _selectedLockMode = newValue;
+                    });
+                    // もしパスワードモードが選ばれて、まだパスワードが設定されていなければ設定を促す
+                    if (newValue == LockMode.passcode &&
+                        await SharedPrefsHelper.loadPasscode() == null) {
+                      _showSetPasscodeDialog();
+                    }
+                  }
+                },
               ),
             ),
+            // パスワードモードの時だけ「パスワード設定」を表示
+            if (_selectedLockMode == LockMode.passcode)
+              ListTile(
+                leading: const Icon(Icons.password),
+                title: Text(l10n.setPasscode),
+                subtitle: Row(
+                  children: [
+                    // パスワードを表示するか、●で隠すかを三項演算子で切り替え
+                    Text(
+                      _currentPasscode == null
+                          ? l10n.notSet
+                          : _isPasscodeVisible
+                          ? _currentPasscode!
+                          : '●●●●',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 8),
+                    // 表示/非表示を切り替えるアイコンボタン
+                    IconButton(
+                      icon: Icon(
+                        _isPasscodeVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasscodeVisible = !_isPasscodeVisible;
+                        });
+                      },
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // ★ パスワード設定ダイアログを呼び出す処理を修正
+                  _showSetPasscodeDialog().then((_) {
+                    // ダイアログが閉じた後に、設定を再読み込みして表示を更新する
+                    _loadSettings();
+                  });
+                },
+              ),
+            const Divider(),
 
-            // --- レベル操作 ---
-            Text('レベル設定: $_currentLevel'),
-            Slider(
-              value: _currentLevel.toDouble(),
-              min: 1,
-              max: 50, // 最大レベルを適当に設定
-              divisions: 49, // max - min
-              label: _currentLevel.toString(),
-              onChanged: (double value) {
-                setState(() {
-                  _currentLevel = value.toInt();
-                });
-              },
-              // ★ スライダーを離した時に値を保存
-              onChangeEnd: (double value) async {
-                await SharedPrefsHelper.saveLevel(value.toInt());
-                // ホーム画面に戻った時に更新が反映されるようにする
+            // ここから寄付の導線を追加
+            ListTile(
+              leading: const Icon(Icons.favorite, color: Colors.pink),
+              title: Text(l10n.supportThisApp), // 文言は規約を意識
+              subtitle: Text(l10n.supportEncouragement),
+              onTap: () async {
+                // ★ 寄付ページのURLに書き換えてください
+                final url = Uri.parse('https://www.buymeacoffee.com/kotoapp');
+
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                } else {
+                  // URLが開けなかった場合の予備処理
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.supportPageOpenError)),
+                  );
+                }
               },
             ),
+            if (kDebugMode) ...[
+              // kDebugModeがtrueの時だけ以下のウィジェットを表示
+              const Divider(thickness: 2, color: Colors.red),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'デバッグメニュー (Debug Menu)',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
 
-            // --- 経験値操作 ---
-            const Text('経験値設定'),
-            TextField(
-              controller: _expController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(suffix: Text('EXP')),
-              onSubmitted: (String value) async {
-                final newExp = int.tryParse(value) ?? 0;
-                setState(() {
-                  _currentExperience = newExp;
-                });
-                await SharedPrefsHelper.saveExperience(newExp);
-              },
-            ),
-            const SizedBox(height: 20),
-            const Divider(thickness: 2, color: Colors.red),
+              // --- レベル操作 ---
+              Text('レベル設定: $_currentLevel'),
+              Slider(
+                value: _currentLevel.toDouble(),
+                min: 1,
+                max: 50, // 最大レベルを適当に設定
+                divisions: 49, // max - min
+                label: _currentLevel.toString(),
+                onChanged: (double value) {
+                  setState(() {
+                    _currentLevel = value.toInt();
+                  });
+                },
+                // ★ スライダーを離した時に値を保存
+                onChangeEnd: (double value) async {
+                  await SharedPrefsHelper.saveLevel(value.toInt());
+                  // ホーム画面に戻った時に更新が反映されるようにする
+                },
+              ),
+
+              // --- 経験値操作 ---
+              const Text('経験値設定'),
+              TextField(
+                controller: _expController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(suffix: Text('EXP')),
+                onSubmitted: (String value) async {
+                  final newExp = int.tryParse(value) ?? 0;
+                  setState(() {
+                    _currentExperience = newExp;
+                  });
+                  await SharedPrefsHelper.saveExperience(newExp);
+                },
+              ),
+              const SizedBox(height: 20),
+              const Divider(thickness: 2, color: Colors.red),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

@@ -332,7 +332,7 @@ abstract class AppLocalizations {
   /// No description provided for @rouletteTryAgain.
   ///
   /// In en, this message translates to:
-  /// **'Try Again Next Time'**
+  /// **'Try Again Next Time\n'**
   String get rouletteTryAgain;
 
   /// No description provided for @rouletteTitle.
