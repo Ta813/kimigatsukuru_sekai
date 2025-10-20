@@ -9,6 +9,7 @@ import '../../models/lock_mode.dart';
 import '../../screens/child/passcode_lock_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -320,6 +321,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               const SizedBox(height: 20),
+              ListTile(
+                leading: const Icon(Icons.mediation),
+                title: const Text('メディエーション テストスイート'),
+                onTap: () {
+                  // ★ この一行でテストスイートが起動します
+                  MobileAds.instance.openAdInspector((error) {
+                    if (error != null) {
+                      // エラー処理
+                      print("メディエーションERROR：" + error.message!);
+                    }
+                  });
+                },
+              ),
               const Divider(thickness: 2, color: Colors.red),
             ],
           ],

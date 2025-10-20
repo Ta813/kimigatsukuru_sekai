@@ -65,10 +65,10 @@ dependencies {
     implementation(kotlin("stdlib-jdk7"))
 
     // AdMob Unity Ads メディエーションアダプタ
-    implementation("com.google.ads.mediation:unity:4.16.1.0")
+    implementation("com.google.ads.mediation:unity:4.13.1.0")
 
     // Unity Ads SDK本体を明示的に追加する
-    implementation("com.unity3d.ads:unity-ads:4.16.1")
+    implementation("com.unity3d.ads:unity-ads:4.13.1")
 
     // ironSource Mediation Adapter
     implementation("com.google.ads.mediation:ironsource:9.0.0.0")

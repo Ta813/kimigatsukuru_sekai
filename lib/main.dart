@@ -34,6 +34,14 @@ Future<void> main() async {
   // ★広告SDKを初期化する
   await MobileAds.instance.initialize();
 
+  final RequestConfiguration requestConfiguration = RequestConfiguration(
+    tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+    tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+    maxAdContentRating: MaxAdContentRating.g,
+    testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
+  );
+  await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+
   // すべての準備が終わってから、アプリを起動します
   runApp(
     ChangeNotifierProvider.value(value: localeProvider, child: const MyApp()),

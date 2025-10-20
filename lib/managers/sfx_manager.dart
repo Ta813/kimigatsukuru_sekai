@@ -1,5 +1,7 @@
 // lib/sfx_manager.dart
 
+import 'dart:math';
+
 import 'package:just_audio/just_audio.dart';
 
 class SfxManager {
@@ -78,6 +80,45 @@ class SfxManager {
   void playTimeYattaSound() => _playSound('se/「やったーー！」.mp3');
   void playRouletteSpinSound() => _playSound('se/ドラムロール.mp3');
   void playTimerWinSound2() => _playSound('se/歓声と拍手.mp3');
+
+  Future<void> playRandomCheerSound() async {
+    try {
+      // 1. 再生したい音声ファイルのリストを作成
+      final List<String> cheerSounds = [
+        'se/「頑張って！」.mp3',
+        'se/「がんばれー」.mp3',
+        'se/「その調子その調子！」.mp3',
+        'se/「フレーフレー」.mp3',
+      ];
+
+      // 2. 0からリストの長さ-1までのランダムな整数を生成
+      final randomIndex = Random().nextInt(cheerSounds.length);
+
+      // 3. ランダムに選ばれた音声ファイルを再生
+      await _playSound(cheerSounds[randomIndex]);
+    } catch (e) {
+      print("再生エラー: $e");
+    }
+  }
+
+  Future<void> playRandomSadSound() async {
+    try {
+      // 1. 再生したい音声ファイルのリストを作成
+      final List<String> cheerSounds = [
+        'se/「ううっ…」.mp3',
+        'se/「ショックー…」.mp3',
+        'se/「そんなあー」.mp3',
+      ];
+
+      // 2. 0からリストの長さ-1までのランダムな整数を生成
+      final randomIndex = Random().nextInt(cheerSounds.length);
+
+      // 3. ランダムに選ばれた音声ファイルを再生
+      await _playSound(cheerSounds[randomIndex]);
+    } catch (e) {
+      print("再生エラー: $e");
+    }
+  }
 
   // アプリ終了時にリソースを解放する
   void dispose() async {

@@ -1,6 +1,5 @@
 // lib/widgets/ad_banner.dart
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -24,23 +23,12 @@ class _AdBannerState extends State<AdBanner> {
 
   static String get bannerAdUnitId {
     // デバッグモード（開発中）かどうかを判定
-    if (kDebugMode) {
-      // デバッグモードなら、プラットフォームに応じたテストIDを返す
-      if (Platform.isAndroid) {
-        return 'ca-app-pub-3940256098642544/6300978111'; // Android用テストバナーID
-      } else if (Platform.isIOS) {
-        return 'ca-app-pub-3940256098642544/2934735716'; // iOS用テストバナーID
-      } else {
-        throw UnsupportedError('Unsupported platform');
-      }
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-2333753292729105/1224734484'; // ← AndroidのバナーID
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-2333753292729105/2061719105'; // ← iOSのバナーID
     } else {
-      if (Platform.isAndroid) {
-        return 'ca-app-pub-2333753292729105/1224734484'; // ← AndroidのバナーID
-      } else if (Platform.isIOS) {
-        return 'ca-app-pub-2333753292729105/2061719105'; // ← iOSのバナーID
-      } else {
-        throw UnsupportedError('Unsupported platform');
-      }
+      throw UnsupportedError('Unsupported platform');
     }
   }
 
