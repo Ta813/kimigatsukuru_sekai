@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>Your data will be used to deliver personalized ads to you.</string>
 	<key>LSApplicationCategoryType</key>
 	<string>Privacy - Access to a File Provide Domain Usage Description</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
@@ -355,6 +353,11 @@
 			<key>SKAdNetworkIdentifier</key>
 			<string>w9q455wk68.skadnetwork</string>
 		</dict>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
 	</array>
 </dict>
 </plist>

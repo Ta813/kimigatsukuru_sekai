@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>よりあなたに関連性の高い広告を表示するために、アクティビティを追跡する許可をお願いします。</string>
 	<key>LSApplicationCategoryType</key>
 	<string>Privacy - Access to a File Provide Domain Usage Description</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>

@@ -19,7 +19,6 @@ import 'house_interior_screen.dart';
 import 'world_map_screen.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -197,11 +196,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       }
     });
 
-    // 最初のフレーム描画後にATTダイアログを表示
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _requestTrackingPermission();
-    });
-
     _showGuideIfNeeded(); // 必要ならガイドを表示
 
     _playSavedBgm(); // 保存されたBGMを再生
@@ -242,15 +236,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         // エラーが発生した場合
         print('再生エラー: $e');
       }
-    }
-  }
-
-  Future<void> _requestTrackingPermission() async {
-    // ATTダイアログを表示できるか確認
-    final status = await AppTrackingTransparency.trackingAuthorizationStatus;
-    if (status == TrackingStatus.notDetermined) {
-      // まだ許可を求めていない場合のみダイアログを表示
-      await AppTrackingTransparency.requestTrackingAuthorization();
     }
   }
 

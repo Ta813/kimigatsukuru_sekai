@@ -11,6 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
+import 'dart:io';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,16 +32,18 @@ Future<void> main() async {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
 
-  // ★広告SDKを初期化する
-  await MobileAds.instance.initialize();
+  if (Platform.isAndroid) {
+    // ★広告SDKを初期化する
+    await MobileAds.instance.initialize();
 
-  final RequestConfiguration requestConfiguration = RequestConfiguration(
-    tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-    tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-    maxAdContentRating: MaxAdContentRating.g,
-    testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
-  );
-  await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+    final RequestConfiguration requestConfiguration = RequestConfiguration(
+      tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+      tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+      maxAdContentRating: MaxAdContentRating.g,
+      testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
+    );
+    await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+  }
 
   // すべての準備が終わってから、アプリを起動します
   runApp(

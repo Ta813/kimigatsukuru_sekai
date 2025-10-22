@@ -22,7 +22,6 @@ class _AdBannerState extends State<AdBanner> {
   }
 
   static String get bannerAdUnitId {
-    // デバッグモード（開発中）かどうかを判定
     if (Platform.isAndroid) {
       return 'ca-app-pub-2333753292729105/1224734484'; // ← AndroidのバナーID
     } else if (Platform.isIOS) {
@@ -58,6 +57,10 @@ class _AdBannerState extends State<AdBanner> {
 
   @override
   Widget build(BuildContext context) {
+    if (!Platform.isAndroid) {
+      return Container(height: 0);
+    }
+
     return Padding(
       // ★Paddingウィジェットで囲む
       padding: const EdgeInsets.symmetric(vertical: 8.0),
