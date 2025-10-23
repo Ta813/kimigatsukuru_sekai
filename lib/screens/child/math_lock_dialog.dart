@@ -80,11 +80,10 @@ class _MathLockDialogState extends State<MathLockDialog> {
     ];
 
     return AlertDialog(
-      content: SizedBox(
-        // ★高さを少し柔軟性のある範囲で指定
-        height: MediaQuery.of(context).size.height * 0.65,
-        width: 250,
+      content: SingleChildScrollView(
+        // ← スクロール可能にする
         child: Column(
+          mainAxisSize: MainAxisSize.min, // ← 高さをコンテンツに合わせる
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center, // 横方向の中央揃え
@@ -94,7 +93,7 @@ class _MathLockDialogState extends State<MathLockDialog> {
                 Text(
                   '$_num1 × $_num2 =', // 「?」を「=」に変更
                   style: const TextStyle(
-                    fontSize: 22,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -107,7 +106,7 @@ class _MathLockDialogState extends State<MathLockDialog> {
                     readOnly: true,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                     decoration: InputDecoration(
@@ -121,7 +120,9 @@ class _MathLockDialogState extends State<MathLockDialog> {
             ),
             const SizedBox(height: 5),
             // ★残りのスペースを全てGridViewに与える
-            Expanded(
+            SizedBox(
+              height: 180, // GridViewの表示に必要な高さを確保する（調整が必要）
+              width: 250, // GridViewの幅
               child: GridView.builder(
                 itemCount: buttons.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
