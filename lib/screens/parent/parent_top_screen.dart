@@ -8,6 +8,7 @@ import '../../widgets/ad_banner.dart';
 import 'advice_screen.dart';
 import '../../l10n/app_localizations.dart';
 import 'settings_screen.dart';
+import 'child_name_settings_screen.dart';
 
 class ParentTopScreen extends StatelessWidget {
   const ParentTopScreen({super.key});
@@ -18,6 +19,17 @@ class ParentTopScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.parentScreenTitle),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.face_retouching_natural), // 顔アイコン
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChildNameSettingsScreen(),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {

@@ -788,4 +788,25 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get agreeAction => '同意して利用する';
+
+  @override
+  String get nameSettingHint => '名前を設定すると、応援のときに名前を呼んでもらえるよ！';
+
+  @override
+  String get nameAlreadyExists => '同じ名前と敬称の組み合わせはすでに登録されています。';
+
+  @override
+  String get childNameSettingsTitle => 'お子様の名前設定';
+
+  @override
+  String get enterNameHint => '名前を入力';
+
+  @override
+  String get addAction => '追加';
+
+  @override
+  String get registeredNamesLabel => '登録中の名前:';
+
+  @override
+  String get noNamesRegistered => 'まだ名前が登録されていません。';
 }

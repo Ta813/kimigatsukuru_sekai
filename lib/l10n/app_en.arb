@@ -352,5 +352,12 @@
   "disclosureTitle": "About Your Data",
   "disclosureMessage": "To show ads and improve app performance, this app may collect and share information about installed apps and your device's Advertising ID.",
   "disagreeAction": "Disagree",
-  "agreeAction": "Agree and Continue"
+  "agreeAction": "Agree and Continue",
+  "nameSettingHint": "Set a name so the character can cheer for you!",
+  "nameAlreadyExists": "This name and honorific combination is already registered.",
+  "childNameSettingsTitle": "Child's Name Settings",
+  "enterNameHint": "Enter name",
+  "addAction": "Add",
+  "registeredNamesLabel": "Registered Names:",
+  "noNamesRegistered": "No names registered yet."
 }

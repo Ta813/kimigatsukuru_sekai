@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/child/child_home_screen.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'firebase_options.dart'; // flutterfire configureで生成されたファイル
@@ -11,7 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
-import 'dart:io';
+// import 'dart:io';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,18 +32,18 @@ Future<void> main() async {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
 
-  if (Platform.isAndroid) {
-    // ★広告SDKを初期化する
-    await MobileAds.instance.initialize();
+  // if (Platform.isAndroid) {
+  //   // ★広告SDKを初期化する
+  //   await MobileAds.instance.initialize();
 
-    final RequestConfiguration requestConfiguration = RequestConfiguration(
-      tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-      tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-      maxAdContentRating: MaxAdContentRating.g,
-      testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
-    );
-    await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
-  }
+  //   final RequestConfiguration requestConfiguration = RequestConfiguration(
+  //     tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+  //     tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+  //     maxAdContentRating: MaxAdContentRating.g,
+  //     testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
+  //   );
+  //   await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+  // }
 
   // すべての準備が終わってから、アプリを起動します
   runApp(

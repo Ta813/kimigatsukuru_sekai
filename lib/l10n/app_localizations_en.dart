@@ -788,4 +788,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get agreeAction => 'Agree and Continue';
+
+  @override
+  String get nameSettingHint => 'Set a name so the character can cheer for you!';
+
+  @override
+  String get nameAlreadyExists => 'This name and honorific combination is already registered.';
+
+  @override
+  String get childNameSettingsTitle => 'Child\'s Name Settings';
+
+  @override
+  String get enterNameHint => 'Enter name';
+
+  @override
+  String get addAction => 'Add';
+
+  @override
+  String get registeredNamesLabel => 'Registered Names:';
+
+  @override
+  String get noNamesRegistered => 'No names registered yet.';
 }

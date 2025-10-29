@@ -352,5 +352,12 @@
   "disclosureTitle": "データの取り扱いについて",
   "disclosureMessage": "このアプリは、広告の表示とアプリのパフォーマンス改善を目的として、インストール済みのアプリに関する情報や、デバイスの広告IDを収集・共有することがあります。",
   "disagreeAction": "同意しない",
-  "agreeAction": "同意して利用する"
+  "agreeAction": "同意して利用する",
+  "nameSettingHint": "名前を設定すると、応援のときに名前を呼んでもらえるよ！",
+  "nameAlreadyExists": "同じ名前と敬称の組み合わせはすでに登録されています。",
+  "childNameSettingsTitle": "お子様の名前設定",
+  "enterNameHint": "名前を入力",
+  "addAction": "追加",
+  "registeredNamesLabel": "登録中の名前:",
+  "noNamesRegistered": "まだ名前が登録されていません。"
 }

@@ -86,7 +86,7 @@ class SfxManager {
       // 1. 再生したい音声ファイルのリストを作成
       final List<String> cheerSounds = [
         'se/「頑張って！」.mp3',
-        'se/「がんばれー」.mp3',
+        'se/ganbare--.mp3',
         'se/「その調子その調子！」.mp3',
         'se/「フレーフレー」.mp3',
       ];

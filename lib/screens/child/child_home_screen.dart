@@ -19,6 +19,7 @@ import 'house_interior_screen.dart';
 import 'world_map_screen.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -114,6 +115,36 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     1230,
     1260,
     1290,
+    1350,
+    1410,
+    1470,
+    1530,
+    1590,
+    1650,
+    1710,
+    1770,
+    1830,
+    1890,
+    1950,
+    2010,
+    2070,
+    2130,
+    2190,
+    2250,
+    2310,
+    2370,
+    2430,
+    2490,
+    2590,
+    2690,
+    2790,
+    2890,
+    2990,
+    3090,
+    3190,
+    3290,
+    3390,
+    3490,
   ];
 
   int _level = 1; // レベル
@@ -122,6 +153,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   double _experienceFraction = 0.0;
 
   Timer? _midnightTimer;
+
+  bool _isMobileAdsInitialized = false;
 
   @override
   void initState() {
@@ -201,6 +234,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     _playSavedBgm(); // 保存されたBGMを再生
 
     _scheduleMidnightRefresh(); // 日付変更チェックのスケジュール設定
+
+    _initializeMobileAds();
   }
 
   @override
@@ -237,6 +272,33 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         print('再生エラー: $e');
       }
     }
+  }
+
+  // ★ AdMob初期化メソッド
+  Future<void> _initializeMobileAds() async {
+    // Androidでのみ実行
+    // if (Platform.isAndroid) {
+    // まだ初期化されていなければ初期化する
+    if (!_isMobileAdsInitialized) {
+      await MobileAds.instance.initialize();
+      // RequestConfigurationの設定もここで行う
+      final RequestConfiguration requestConfiguration = RequestConfiguration(
+        tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+        tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+        maxAdContentRating: MaxAdContentRating.g,
+        testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
+      );
+      await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+      setState(() {
+        _isMobileAdsInitialized = true; // ★ 初期化完了フラグを立てる
+      });
+    }
+    // iOSの場合は何もしないか、Unity Adsの初期化をここで行う
+    // } else {
+    //   setState(() {
+    //     _isMobileAdsInitialized = true; // iOSでもフラグは立てておく
+    //   });
+    // }
   }
 
   Future<void> _showDisclosureDialogIfNeeded() async {

@@ -1600,6 +1600,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Agree and Continue'**
   String get agreeAction;
+
+  /// No description provided for @nameSettingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a name so the character can cheer for you!'**
+  String get nameSettingHint;
+
+  /// No description provided for @nameAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This name and honorific combination is already registered.'**
+  String get nameAlreadyExists;
+
+  /// No description provided for @childNameSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Child\'s Name Settings'**
+  String get childNameSettingsTitle;
+
+  /// No description provided for @enterNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter name'**
+  String get enterNameHint;
+
+  /// No description provided for @addAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addAction;
+
+  /// No description provided for @registeredNamesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered Names:'**
+  String get registeredNamesLabel;
+
+  /// No description provided for @noNamesRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'No names registered yet.'**
+  String get noNamesRegistered;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

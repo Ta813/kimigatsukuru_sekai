@@ -487,4 +487,49 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('data_collection_consent') ?? false;
   }
+
+  static Future<void> saveChildNames(List<Map<String, String>> names) async {
+    final prefs = await SharedPreferences.getInstance();
+    // ★ MapのリストをJSON文字列にエンコードして保存
+    String jsonString = jsonEncode(names);
+    await prefs.setString(
+      'child_names_with_honorifics',
+      jsonString,
+    ); // ★ キー名を変更
+  }
+
+  static Future<List<Map<String, String>>> loadChildNames() async {
+    final prefs = await SharedPreferences.getInstance();
+    // ★ JSON文字列を読み込み
+    String? jsonString = prefs.getString(
+      'child_names_with_honorifics',
+    ); // ★ キー名を変更
+    if (jsonString != null) {
+      try {
+        // ★ JSON文字列をMapのリストにデコードして返す
+        List<dynamic> decodedList = jsonDecode(jsonString);
+        // 型を明示的に変換
+        List<Map<String, String>> namesList = decodedList
+            .map((item) => Map<String, String>.from(item))
+            .toList();
+        return namesList;
+      } catch (e) {
+        print('Error decoding child names: $e');
+        return []; // デコード失敗時は空リスト
+      }
+    }
+    return []; // 保存されていなければ空リスト
+  }
+
+  // 名前設定画面に遷移したことがあるかを保存
+  static Future<void> setHasVisitedChildNameSettings(bool visited) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('visited_child_name_settings', visited);
+  }
+
+  // 名前設定画面に遷移したことがあるかを取得
+  static Future<bool> hasVisitedChildNameSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('visited_child_name_settings') ?? false; // デフォルトはfalse
+  }
 }
