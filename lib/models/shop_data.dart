@@ -11,6 +11,7 @@ class ShopItem {
   final String type; // 'clothes' or 'house'
   final int requiredLevel;
   final bool isIslandOnly;
+  final bool isSeaOnly;
 
   ShopItem({
     required this.name,
@@ -19,6 +20,7 @@ class ShopItem {
     required this.type,
     this.requiredLevel = 1,
     this.isIslandOnly = false,
+    this.isSeaOnly = false,
   });
 
   String getDisplayName(BuildContext context) {
@@ -209,6 +211,60 @@ class ShopItem {
         return l10n.charDinosaur;
       case 'ロボット':
         return l10n.charRobot;
+      case 'びん（うみ）':
+        return l10n.itemSeaBottle;
+      case 'イカリ（うみ）':
+        return l10n.itemSeaAnchor;
+      case 'かいがら（うみ）':
+        return l10n.itemSeaShell;
+      case 'こんぶ１（うみ）':
+        return l10n.itemSeaKelp1;
+      case 'こんぶ２（うみ）':
+        return l10n.itemSeaKelp2;
+      case 'さんご１（うみ）':
+        return l10n.itemSeaCoral1;
+      case 'さんご２（うみ）':
+        return l10n.itemSeaCoral2;
+      case 'たからばこ（うみ）':
+        return l10n.itemSeaTreasure;
+      case 'トライデント（うみ）':
+        return l10n.itemSeaTrident;
+      case 'つぼ（うみ）':
+        return l10n.itemSeaPot;
+      case 'せんすいかん（うみ）':
+        return l10n.itemSeaSubmarine;
+      case 'ちんぼつせん（うみ）':
+        return l10n.itemSeaSunkenShip;
+      case 'ふぐ':
+        return l10n.livingPufferfish;
+      case 'ひとで':
+        return l10n.livingStarfish;
+      case 'いか':
+        return l10n.livingSquid;
+      case 'イルカ':
+        return l10n.livingDolphin;
+      case 'かめ':
+        return l10n.livingTurtle;
+      case 'かに':
+        return l10n.livingCrab;
+      case 'クラゲ':
+        return l10n.livingJellyfish;
+      case 'さかな１':
+        return l10n.livingFish1;
+      case 'さかな２':
+        return l10n.livingFish2;
+      case 'さかな３':
+        return l10n.livingFish3;
+      case 'さかな４':
+        return l10n.livingFish4;
+      case 'サメ１':
+        return l10n.livingShark1;
+      case 'サメ２':
+        return l10n.livingShark2;
+      case 'たつのおとしご':
+        return l10n.livingSeahorse;
+      case 'ヤドカリ':
+        return l10n.livingHermitCrab;
       default:
         return name;
     }
@@ -909,5 +965,221 @@ final List<ShopItem> shopItems = [
     imagePath: 'assets/images/island/vehicle_hikousen2.png',
     requiredLevel: 8,
     isIslandOnly: true,
+  ),
+  ShopItem(
+    name: 'びん（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_bin.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'イカリ（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_ikari.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'かいがら（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_kaigara.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'こんぶ１（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_konbu1.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'こんぶ２（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_konbu2.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'さんご１（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_sango1.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'さんご２（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_sango2.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'たからばこ（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_takarabako.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'トライデント（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_toraidento.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'つぼ（うみ）',
+    type: 'sea_item',
+    price: 100,
+    imagePath: 'assets/images/sea/item_tubo.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'せんすいかん（うみ）',
+    type: 'sea_item',
+    price: 500,
+    imagePath: 'assets/images/sea/item_sensuikan.png',
+    requiredLevel: 15,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'ちんぼつせん（うみ）',
+    type: 'sea_item',
+    price: 500,
+    imagePath: 'assets/images/sea/item_tinbotsusen.png',
+    requiredLevel: 15,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'ふぐ',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_fugu.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'ひとで',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_hitode.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'いか',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_ika.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'イルカ',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_iruka.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'かめ',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_kame.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'かに',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_kani.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'クラゲ',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_kurage.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'さかな１',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_sakana1.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'さかな２',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_sakana2.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'さかな３',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_sakana3.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'さかな４',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_sakana4.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'サメ１',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_same1.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'サメ２',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_same2.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'たつのおとしご',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_tatsunootoshigo.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'ヤドカリ',
+    type: 'living',
+    price: 200,
+    imagePath: 'assets/images/sea/living_yadokari.png',
+    requiredLevel: 10,
+    isSeaOnly: true,
   ),
 ];

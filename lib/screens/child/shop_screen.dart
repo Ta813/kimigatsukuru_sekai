@@ -6,11 +6,13 @@ import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum ShopMode {
   forGeneral, // ホーム画面からの通常表示
   forHouse, // 家の中からの家具・アイテム表示
   forIsland, // 島からの表示
+  forSea, // 海からの表示
 }
 
 class ShopScreen extends StatefulWidget {
@@ -321,12 +323,54 @@ class _ShopScreenState extends State<ShopScreen> {
         _buildCategoryGrid(buildingItems, crossAxisCount: 7),
         _buildCategoryGrid(vehicleItems, crossAxisCount: 7),
       ];
+    } else if (widget.mode == ShopMode.forSea) {
+      // 海モードの場合、海限定アイテムのみにする
+      final isSeaItems = shopItems.where((item) => item.isSeaOnly).toList();
+
+      final seaItems = isSeaItems
+          .where((item) => item.type == 'sea_item')
+          .toList();
+      final livingItems = isSeaItems
+          .where((item) => item.type == 'living')
+          .toList();
+
+      tabs = [
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.anchor),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.seaItems),
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FaIcon(FontAwesomeIcons.fish),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.seaCreatures),
+            ],
+          ),
+        ),
+      ];
+
+      tabViews = [
+        _buildCategoryGrid(seaItems, crossAxisCount: 7),
+        _buildCategoryGrid(livingItems, crossAxisCount: 7),
+      ];
     } else if (widget.mode == ShopMode.forHouse) {
       // --- 🏠 家の中モードの時の表示 ---
-      final furnitureItems = shopItems
+
+      final items = shopItems
+          .where((item) => !item.isIslandOnly && !item.isSeaOnly)
+          .toList();
+      final furnitureItems = items
           .where((item) => item.type == 'furniture')
           .toList();
-      final houseItems = shopItems
+      final houseItems = items
           .where((item) => item.type == 'house_item')
           .toList();
 
@@ -358,8 +402,11 @@ class _ShopScreenState extends State<ShopScreen> {
         _buildCategoryGrid(houseItems, crossAxisCount: 7),
       ];
     } else {
+      final items = shopItems
+          .where((item) => !item.isIslandOnly && !item.isSeaOnly)
+          .toList();
       // まず、アイテムをカテゴリ別に分けます
-      final clothesItems = shopItems
+      final clothesItems = items
           .where(
             (item) =>
                 item.type == 'clothes' &&
@@ -367,13 +414,13 @@ class _ShopScreenState extends State<ShopScreen> {
                 item.name != 'おとこのこ',
           )
           .toList();
-      final houseItems = shopItems
+      final houseItems = items
           .where((item) => item.type == 'house' && item.name != 'さいしょのおうち')
           .toList();
-      final characterItems = shopItems
+      final characterItems = items
           .where((item) => item.type == 'character' && item.name != 'ウサギ')
           .toList();
-      final itemItems = shopItems.where((item) => item.type == 'item').toList();
+      final itemItems = items.where((item) => item.type == 'item').toList();
 
       tabs = [
         Tab(

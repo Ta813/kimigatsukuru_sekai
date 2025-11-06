@@ -3,6 +3,7 @@ import 'island_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
+import 'sea_screen.dart';
 
 class WorldMapScreen extends StatefulWidget {
   // ★ StatefulWidgetに変更
@@ -45,39 +46,57 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
 
   // ★ ガイドを順番に表示するメソッド
   Future<void> _showGuideSequence() async {
-    await _showGuideDialog(
+    bool shouldContinue;
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.worldMapGuideTitle1,
       content: AppLocalizations.of(context)!.worldMapGuideContent1,
     );
-    await _showGuideDialog(
+    if (!shouldContinue) return;
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.worldMapGuideTitle2,
       content: AppLocalizations.of(context)!.worldMapGuideContent2,
     );
-    await _showGuideDialog(
+    if (!shouldContinue) return;
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.worldMapGuideTitle3,
       content: AppLocalizations.of(context)!.worldMapGuideContent3,
     );
   }
 
   // ★ ダイアログを表示するための共通メソッド
-  Future<void> _showGuideDialog({
+  Future<bool> _showGuideDialog({
     required String title,
     required String content,
   }) async {
-    return showDialog<void>(
+    final bool? result = await showDialog<bool>(
       context: context,
-      barrierDismissible: false, // ダイアログの外をタップしても閉じない
       builder: (context) => AlertDialog(
         title: Text(title),
         content: Text(content),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              // ★ falseを返してダイアログを閉じる
+              Navigator.of(context).pop(false);
+            },
+            child: Text(AppLocalizations.of(context)!.skip), // TODO: l10n対応
+          ),
+          TextButton(
+            onPressed: () {
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (e) {
+                // エラーが発生した場合
+                print('再生エラー: $e');
+              }
+              Navigator.of(context).pop(true);
+            },
             child: const Text('OK'),
           ),
         ],
       ),
     );
+    return result ?? false;
   }
 
   @override
@@ -184,12 +203,37 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: () {
-                // このバージョンでは未実装のメッセージを表示
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(AppLocalizations.of(context)!.seaAreaLocked),
-                  ),
-                );
+                // ★ レベル10以上かチェック
+                if (widget.currentLevel >= 10) {
+                  try {
+                    SfxManager.instance.playSuccessSound();
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
+                  // ★ レベル10以上なら、SeaScreenに遷移
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SeaScreen(
+                        currentLevel: widget.currentLevel,
+                        currentPoints: widget.currentPoints,
+                        requiredExpForNextLevel: widget.requiredExpForNextLevel,
+                        experience: widget.experience,
+                        experienceFraction: widget.experienceFraction,
+                      ),
+                    ),
+                  );
+                } else {
+                  // ★ レベルが足りない場合はメッセージを表示
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)!.seaAreaLocked,
+                      ),
+                    ),
+                  );
+                }
               },
               child: Container(
                 width: 300,

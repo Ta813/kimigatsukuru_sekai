@@ -1352,7 +1352,7 @@ abstract class AppLocalizations {
   /// No description provided for @seaAreaLocked.
   ///
   /// In en, this message translates to:
-  /// **'This area is scheduled to unlock at Level 10!'**
+  /// **'You\'ll be able to enter at Level 10!'**
   String get seaAreaLocked;
 
   /// No description provided for @spaceAreaLocked.
@@ -1642,6 +1642,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No names registered yet.'**
   String get noNamesRegistered;
+
+  /// No description provided for @seaItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Sea Items'**
+  String get seaItems;
+
+  /// No description provided for @seaCreatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Sea Creatures'**
+  String get seaCreatures;
+
+  /// No description provided for @seaSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sea Settings'**
+  String get seaSettings;
+
+  /// No description provided for @itemSeaBottle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottle'**
+  String get itemSeaBottle;
+
+  /// No description provided for @itemSeaAnchor.
+  ///
+  /// In en, this message translates to:
+  /// **'Anchor'**
+  String get itemSeaAnchor;
+
+  /// No description provided for @itemSeaShell.
+  ///
+  /// In en, this message translates to:
+  /// **'Seashell'**
+  String get itemSeaShell;
+
+  /// No description provided for @itemSeaKelp1.
+  ///
+  /// In en, this message translates to:
+  /// **'Kelp 1'**
+  String get itemSeaKelp1;
+
+  /// No description provided for @itemSeaKelp2.
+  ///
+  /// In en, this message translates to:
+  /// **'Kelp 2'**
+  String get itemSeaKelp2;
+
+  /// No description provided for @itemSeaCoral1.
+  ///
+  /// In en, this message translates to:
+  /// **'Coral 1'**
+  String get itemSeaCoral1;
+
+  /// No description provided for @itemSeaCoral2.
+  ///
+  /// In en, this message translates to:
+  /// **'Coral 2'**
+  String get itemSeaCoral2;
+
+  /// No description provided for @itemSeaTreasure.
+  ///
+  /// In en, this message translates to:
+  /// **'Treasure Chest'**
+  String get itemSeaTreasure;
+
+  /// No description provided for @itemSeaTrident.
+  ///
+  /// In en, this message translates to:
+  /// **'Trident'**
+  String get itemSeaTrident;
+
+  /// No description provided for @itemSeaPot.
+  ///
+  /// In en, this message translates to:
+  /// **'Pot'**
+  String get itemSeaPot;
+
+  /// No description provided for @itemSeaSubmarine.
+  ///
+  /// In en, this message translates to:
+  /// **'Submarine'**
+  String get itemSeaSubmarine;
+
+  /// No description provided for @itemSeaSunkenShip.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunken Ship'**
+  String get itemSeaSunkenShip;
+
+  /// No description provided for @livingPufferfish.
+  ///
+  /// In en, this message translates to:
+  /// **'Pufferfish'**
+  String get livingPufferfish;
+
+  /// No description provided for @livingStarfish.
+  ///
+  /// In en, this message translates to:
+  /// **'Starfish'**
+  String get livingStarfish;
+
+  /// No description provided for @livingSquid.
+  ///
+  /// In en, this message translates to:
+  /// **'Squid'**
+  String get livingSquid;
+
+  /// No description provided for @livingDolphin.
+  ///
+  /// In en, this message translates to:
+  /// **'Dolphin'**
+  String get livingDolphin;
+
+  /// No description provided for @livingTurtle.
+  ///
+  /// In en, this message translates to:
+  /// **'Turtle'**
+  String get livingTurtle;
+
+  /// No description provided for @livingCrab.
+  ///
+  /// In en, this message translates to:
+  /// **'Crab'**
+  String get livingCrab;
+
+  /// No description provided for @livingJellyfish.
+  ///
+  /// In en, this message translates to:
+  /// **'Jellyfish'**
+  String get livingJellyfish;
+
+  /// No description provided for @livingFish1.
+  ///
+  /// In en, this message translates to:
+  /// **'Fish 1'**
+  String get livingFish1;
+
+  /// No description provided for @livingFish2.
+  ///
+  /// In en, this message translates to:
+  /// **'Fish 2'**
+  String get livingFish2;
+
+  /// No description provided for @livingFish3.
+  ///
+  /// In en, this message translates to:
+  /// **'Fish 3'**
+  String get livingFish3;
+
+  /// No description provided for @livingFish4.
+  ///
+  /// In en, this message translates to:
+  /// **'Fish 4'**
+  String get livingFish4;
+
+  /// No description provided for @livingShark1.
+  ///
+  /// In en, this message translates to:
+  /// **'Shark 1'**
+  String get livingShark1;
+
+  /// No description provided for @livingShark2.
+  ///
+  /// In en, this message translates to:
+  /// **'Shark 2'**
+  String get livingShark2;
+
+  /// No description provided for @livingSeahorse.
+  ///
+  /// In en, this message translates to:
+  /// **'Seahorse'**
+  String get livingSeahorse;
+
+  /// No description provided for @livingHermitCrab.
+  ///
+  /// In en, this message translates to:
+  /// **'Hermit Crab'**
+  String get livingHermitCrab;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

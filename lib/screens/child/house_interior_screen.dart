@@ -294,7 +294,7 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      width: 200, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
+                      width: 220, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter/foundation.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class AdBanner extends StatefulWidget {
   const AdBanner({super.key});
@@ -32,7 +33,17 @@ class _AdBannerState extends State<AdBanner> {
     }
   }
 
-  void _loadAd() {
+  void _loadAd() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      // オフラインなら何もしない
+      return;
+    }
+
+    // if (!Platform.isAndroid) {
+    //   return;
+    // }
+
     _bannerAd = BannerAd(
       adUnitId: bannerAdUnitId,
       request: const AdRequest(),

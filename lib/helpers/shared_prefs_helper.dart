@@ -532,4 +532,28 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('visited_child_name_settings') ?? false; // デフォルトはfalse
   }
+
+  // 海のアイテムの装備情報を保存
+  static Future<void> saveEquippedSeaItems(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_sea_items', items);
+  }
+
+  // 海のアイテムの装備情報を読み込み
+  static Future<List<String>> loadEquippedSeaItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_sea_items') ?? [];
+  }
+
+  // 海の生き物の装備情報を保存
+  static Future<void> saveEquippedLivings(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_livings', items);
+  }
+
+  // 海の生き物の装備情報を読み込み
+  static Future<List<String>> loadEquippedLivings() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_livings') ?? [];
+  }
 }

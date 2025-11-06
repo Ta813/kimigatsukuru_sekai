@@ -6,10 +6,12 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum CustomizeMode {
   house, // 家の中モード
   island, // 島モード
+  sea, // 海モード
 }
 
 class FurnitureCustomizeScreen extends StatefulWidget {
@@ -31,6 +33,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
   List<String> _equippedHouseItems = [];
   List<String> _equippedBuildings = [];
   List<String> _equippedVehicles = [];
+  List<String> _equippedSeaItems = [];
+  List<String> _equippedLivings = [];
 
   @override
   void initState() {
@@ -44,6 +48,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     final houseItems = await SharedPrefsHelper.loadEquippedHouseItems();
     final buildings = await SharedPrefsHelper.loadEquippedBuildings();
     final vehicles = await SharedPrefsHelper.loadEquippedVehicles();
+    final seaItems = await SharedPrefsHelper.loadEquippedSeaItems();
+    final livings = await SharedPrefsHelper.loadEquippedLivings();
 
     setState(() {
       _purchasedItemNames = purchased;
@@ -51,6 +57,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       _equippedHouseItems = houseItems;
       _equippedBuildings = buildings;
       _equippedVehicles = vehicles;
+      _equippedSeaItems = seaItems;
+      _equippedLivings = livings;
     });
   }
 
@@ -97,6 +105,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               await SharedPrefsHelper.saveEquippedBuildings(selected);
             } else if (type == 'vehicle') {
               await SharedPrefsHelper.saveEquippedVehicles(selected);
+            } else if (type == 'sea_item') {
+              await SharedPrefsHelper.saveEquippedSeaItems(selected);
+            } else if (type == 'living') {
+              await SharedPrefsHelper.saveEquippedLivings(selected);
             }
           },
           child: Container(
@@ -169,7 +181,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
           'house_item',
         ),
       ];
-    } else {
+    } else if (widget.mode == CustomizeMode.island) {
       final ownedBuildings = shopItems
           .where(
             (item) =>
@@ -204,6 +216,37 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
         ),
         _buildMultiSelectionGrid(ownedVehicles, _equippedVehicles, 'vehicle'),
       ];
+    } else {
+      final ownedSeaItems = shopItems
+          .where(
+            (item) =>
+                item.type == 'sea_item' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+      final ownedLiving = shopItems
+          .where(
+            (item) =>
+                item.type == 'living' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+
+      tabs = [
+        Tab(
+          text: AppLocalizations.of(context)!.seaItems,
+          icon: Icon(Icons.anchor),
+        ),
+        Tab(
+          text: AppLocalizations.of(context)!.seaCreatures,
+          icon: FaIcon(FontAwesomeIcons.fish),
+        ),
+      ];
+
+      tabViews = [
+        _buildMultiSelectionGrid(ownedSeaItems, _equippedSeaItems, 'sea_item'),
+        _buildMultiSelectionGrid(ownedLiving, _equippedLivings, 'living'),
+      ];
     }
 
     return DefaultTabController(
@@ -213,7 +256,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
           title: Text(
             widget.mode == CustomizeMode.house
                 ? AppLocalizations.of(context)!.houseSettings
-                : AppLocalizations.of(context)!.islandSettings,
+                : widget.mode == CustomizeMode.island
+                ? AppLocalizations.of(context)!.islandSettings
+                : AppLocalizations.of(context)!.seaSettings,
           ),
           bottom: TabBar(
             tabs: tabs, // ★ 準備したタブリストを使用

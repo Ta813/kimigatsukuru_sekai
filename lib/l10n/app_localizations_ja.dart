@@ -664,7 +664,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get worldMapGuideContent3 => '下にある海や、ずーっと上の宇宙にも、いつか行けるようになるかも…？\nお楽しみに！';
 
   @override
-  String get seaAreaLocked => 'ここはレベル10で解放される予定です！';
+  String get seaAreaLocked => 'レベル10になると入れるようになります！';
 
   @override
   String get spaceAreaLocked => 'ここはレベル15で解放される予定です！';
@@ -809,4 +809,97 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get noNamesRegistered => 'まだ名前が登録されていません。';
+
+  @override
+  String get seaItems => 'うみのアイテム';
+
+  @override
+  String get seaCreatures => 'うみのいきもの';
+
+  @override
+  String get seaSettings => 'うみのせってい';
+
+  @override
+  String get itemSeaBottle => 'びん';
+
+  @override
+  String get itemSeaAnchor => 'イカリ';
+
+  @override
+  String get itemSeaShell => 'かいがら';
+
+  @override
+  String get itemSeaKelp1 => 'こんぶ１';
+
+  @override
+  String get itemSeaKelp2 => 'こんぶ２';
+
+  @override
+  String get itemSeaCoral1 => 'さんご１';
+
+  @override
+  String get itemSeaCoral2 => 'さんご２';
+
+  @override
+  String get itemSeaTreasure => 'たからばこ';
+
+  @override
+  String get itemSeaTrident => 'トライデント';
+
+  @override
+  String get itemSeaPot => 'つぼ';
+
+  @override
+  String get itemSeaSubmarine => 'せんすいかん';
+
+  @override
+  String get itemSeaSunkenShip => 'ちんぼつせん';
+
+  @override
+  String get livingPufferfish => 'ふぐ';
+
+  @override
+  String get livingStarfish => 'ひとで';
+
+  @override
+  String get livingSquid => 'いか';
+
+  @override
+  String get livingDolphin => 'イルカ';
+
+  @override
+  String get livingTurtle => 'かめ';
+
+  @override
+  String get livingCrab => 'かに';
+
+  @override
+  String get livingJellyfish => 'クラゲ';
+
+  @override
+  String get livingFish1 => 'さかな１';
+
+  @override
+  String get livingFish2 => 'さかな２';
+
+  @override
+  String get livingFish3 => 'さかな３';
+
+  @override
+  String get livingFish4 => 'さかな４';
+
+  @override
+  String get livingShark1 => 'サメ１';
+
+  @override
+  String get livingShark2 => 'サメ２';
+
+  @override
+  String get livingSeahorse => 'たつのおとしご';
+
+  @override
+  String get livingHermitCrab => 'ヤドカリ';
+
+  @override
+  String get skip => 'スキップ';
 }

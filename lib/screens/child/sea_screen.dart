@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
-import '../../widgets/draggable_character.dart';
-import 'shop_screen.dart'; // ショップ画面
-import 'furniture_customize_screen.dart'; // 家具設定画面
 import '../../l10n/app_localizations.dart';
+import '../../widgets/animated_icon_indicator.dart';
+import '../../widgets/draggable_character.dart';
+import 'furniture_customize_screen.dart';
+import 'shop_screen.dart';
 import '../../managers/sfx_manager.dart';
 
-class IslandScreen extends StatefulWidget {
+class SeaScreen extends StatefulWidget {
   final int currentLevel;
   final int currentPoints;
   final int requiredExpForNextLevel;
   final int experience;
   final double experienceFraction;
 
-  const IslandScreen({
+  const SeaScreen({
     super.key,
     required this.currentLevel,
     required this.currentPoints,
@@ -23,14 +24,14 @@ class IslandScreen extends StatefulWidget {
   });
 
   @override
-  State<IslandScreen> createState() => _IslandScreenState();
+  State<SeaScreen> createState() => _SeaScreenState();
 }
 
-class _IslandScreenState extends State<IslandScreen> {
+class _SeaScreenState extends State<SeaScreen> {
   // --- 配置するアイテムの状態を管理する変数 ---
   String? _equippedClothesPath;
-  List<String> _equippedBuildings = [];
-  List<String> _equippedVehicles = [];
+  List<String> _equippedSeaItems = [];
+  List<String> _equippedLivings = [];
 
   Offset _avatarPosition = const Offset(150, 200);
   Map<String, Offset> _itemPositionsMap = {};
@@ -54,12 +55,12 @@ class _IslandScreenState extends State<IslandScreen> {
     final loadedPoints = await SharedPrefsHelper.loadPoints();
     final loadedLevel = await SharedPrefsHelper.loadLevel();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
-    final buildings = await SharedPrefsHelper.loadEquippedBuildings();
-    final vehicles = await SharedPrefsHelper.loadEquippedVehicles();
+    final seaItems = await SharedPrefsHelper.loadEquippedSeaItems();
+    final livings = await SharedPrefsHelper.loadEquippedLivings();
 
     // --- 位置情報の読み込み ---
     Offset? avatarPos = await SharedPrefsHelper.loadCharacterPosition(
-      'avatar_on_island',
+      'avatar_on_sea',
     );
 
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
@@ -81,7 +82,7 @@ class _IslandScreenState extends State<IslandScreen> {
     }
 
     // 全てのアイテムのパスを結合
-    final allItems = [...buildings, ...vehicles];
+    final allItems = [...seaItems, ...livings];
     final loadedPositions = {};
 
     for (var itemPath in allItems) {
@@ -98,7 +99,7 @@ class _IslandScreenState extends State<IslandScreen> {
 
     for (var charPath in charactersToLoad) {
       final loadedPos = await SharedPrefsHelper.loadCharacterPosition(
-        'island_$charPath',
+        'sea_$charPath',
       );
       loadedPositions[charPath] =
           loadedPos ?? Offset(screenWidth / 2, screenHeight * 2 / 3);
@@ -111,8 +112,8 @@ class _IslandScreenState extends State<IslandScreen> {
         _equippedClothesPath = clothes ?? 'assets/images/avatar.png';
         _avatarPosition =
             avatarPos ?? Offset(screenWidth / 2, screenHeight * 2 / 3);
-        _equippedBuildings = buildings;
-        _equippedVehicles = vehicles;
+        _equippedSeaItems = seaItems;
+        _equippedLivings = livings;
         _itemPositionsMap = {};
         for (var itemPath in allItems) {
           if (loadedPositions[itemPath] != null &&
@@ -146,21 +147,18 @@ class _IslandScreenState extends State<IslandScreen> {
 
   // アイテムごとのサイズを返すヘルパーメソッド
   double _getItemSize(String itemPath) {
-    if (itemPath.contains('avatar')) return 30.0;
-    if (itemPath.contains('clothes_')) return 30.0;
-    if (itemPath.contains('character')) return 30.0;
-    if (itemPath.contains('building_keisatsu')) return 80.0;
-    if (itemPath.contains('building_byoin')) return 80.0;
-    if (itemPath.contains('building_kouen')) return 80.0;
-    if (itemPath.contains('building_konbini')) return 70.0;
-    if (itemPath.contains('building_su-pa-')) return 70.0;
-    if (itemPath.contains('building_oshiro')) return 200.0;
-    if (itemPath.contains('building')) return 100.0;
-    if (itemPath.contains('vehicle_takushi-')) return 50.0;
-    if (itemPath.contains('vehicle_kuruma')) return 50.0;
-    if (itemPath.contains('vehicle_herikoputa-')) return 50.0;
-    if (itemPath.contains('vehicle_bus')) return 50.0;
-    if (itemPath.contains('vehicle')) return 100.0;
+    if (itemPath.contains('avatar')) return 60.0;
+    if (itemPath.contains('clothes_')) return 60.0;
+    if (itemPath.contains('character')) return 60.0;
+    if (itemPath.contains('item_tinbotsusen')) return 150.0;
+    if (itemPath.contains('item_sensuikan')) return 150.0;
+    if (itemPath.contains('item')) return 40.0;
+    if (itemPath.contains('living_sakana')) return 40.0;
+    if (itemPath.contains('living_tatsunootoshigo')) return 50.0;
+    if (itemPath.contains('living_same')) return 90.0;
+    if (itemPath.contains('living_kurage')) return 50.0;
+    if (itemPath.contains('living_yadokari')) return 50.0;
+    if (itemPath.contains('living')) return 70.0;
     // ... 他のアイテムのサイズ ...
     return 60.0;
   }
@@ -171,52 +169,51 @@ class _IslandScreenState extends State<IslandScreen> {
       body: Stack(
         children: [
           Container(
-            // 島の背景画像を設定します
+            // ★ ここに海の背景画像などを設定します
             decoration: const BoxDecoration(
               image: DecorationImage(
-                //「世界の全貌」の背景画像を指定
-                image: AssetImage('assets/images/island.png'),
+                image: AssetImage(
+                  'assets/images/sea_background.png',
+                ), // ★ 海用の背景画像
                 fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SafeArea(
+            // ★ ノッチやステータスバーを避ける
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 1.0), // 画面上端からの余白
+                child: GestureDetector(
+                  onTap: () {
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (e) {
+                      // エラーが発生した場合
+                      print('再生エラー: $e');
+                    }
+                    // ★ ワールドマップ画面に戻る
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0), // タップ領域を広げる
+                    child: const AnimatedIconIndicator(
+                      iconData: Icons.arrow_upward, // ★ 上矢印
+                      iconColor: Colors.blueAccent,
+                      iconSize: 40,
+                      offsetY: 5, // 上下動の幅を少し小さめに
+                      duration: Duration(seconds: 1),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
 
           Positioned(
-            top: 20.0, // 上からの距離
-            left: 20.0, // 左からの距離
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                    shape: BoxShape.circle, // 形を円にする
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.keyboard_return,
-                      size: 40,
-                      color: Color(0xFFFFCA28),
-                    ),
-                    onPressed: () {
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {
-                        // エラーが発生した場合
-                        print('再生エラー: $e');
-                      }
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Positioned(
             top: 30, // ポイント表示の下あたり
-            left: 0, // 左端を画面の左端に合わせる
-            right: 0, // 右端を画面の右端に合わせる
+            left: 30, // 左端を画面の左端に合わせる
             child: Center(
               // ★ Centerウィジェットで中央に配置
               child: Container(
@@ -350,7 +347,7 @@ class _IslandScreenState extends State<IslandScreen> {
                   ),
                   child: IconButton(
                     icon: const Icon(
-                      Icons.home_work,
+                      Icons.anchor,
                       size: 40,
                       color: Color(0xFFFFCA28),
                     ),
@@ -365,7 +362,7 @@ class _IslandScreenState extends State<IslandScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const FurnitureCustomizeScreen(
-                            mode: CustomizeMode.island,
+                            mode: CustomizeMode.sea,
                           ),
                         ),
                       ).then((_) {
@@ -403,7 +400,7 @@ class _IslandScreenState extends State<IslandScreen> {
                           builder: (context) => ShopScreen(
                             currentPoints: _points, // ユーザーの所持ポイント
                             currentLevel: _level, // ユーザーレベルも渡す
-                            mode: ShopMode.forIsland, // ★家の中モードを指定
+                            mode: ShopMode.forSea, // ★家の中モードを指定
                           ),
                         ),
                       ).then((_) {
@@ -417,8 +414,8 @@ class _IslandScreenState extends State<IslandScreen> {
             ),
           ),
 
-          // 配置された建物のリストを表示 (ホーム画面と全く同じ仕組み)
-          ..._equippedBuildings.map((itemPath) {
+          // 配置されたアイテムのリストを表示 (ホーム画面と全く同じ仕組み)
+          ..._equippedSeaItems.map((itemPath) {
             return DraggableCharacter(
               id: itemPath, // IDとして画像パスを使う
               imagePath: itemPath,
@@ -434,8 +431,8 @@ class _IslandScreenState extends State<IslandScreen> {
             );
           }).toList(),
 
-          // 配置された乗り物のアイテムのリストを表示
-          ..._equippedVehicles.map((itemPath) {
+          // 配置された生き物のアイテムのリストを表示
+          ..._equippedLivings.map((itemPath) {
             return DraggableCharacter(
               id: itemPath,
               imagePath: itemPath,
@@ -454,7 +451,7 @@ class _IslandScreenState extends State<IslandScreen> {
           // --- アバターの表示 ---
           if (_equippedClothesPath != null)
             DraggableCharacter(
-              id: 'avatar_on_island',
+              id: 'avatar_on_sea',
               imagePath: _equippedClothesPath!,
               position: _avatarPosition,
               size: _getItemSize(_equippedClothesPath!),
@@ -466,7 +463,7 @@ class _IslandScreenState extends State<IslandScreen> {
           // ★応援キャラクターの表示と操作
           ..._equippedCharacters.map((charPath) {
             return DraggableCharacter(
-              id: 'island_$charPath', // IDとして画像パスを使う
+              id: 'sea_$charPath', // IDとして画像パスを使う
               imagePath: charPath,
               position: _characterPositionsMap[charPath] ?? Offset(490, 190),
               size: _getItemSize(charPath),

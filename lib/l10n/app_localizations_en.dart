@@ -664,7 +664,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get worldMapGuideContent3 => 'You might even be able to visit the sea below or the space far above someday...?\nStay tuned!';
 
   @override
-  String get seaAreaLocked => 'This area is scheduled to unlock at Level 10!';
+  String get seaAreaLocked => 'You\'ll be able to enter at Level 10!';
 
   @override
   String get spaceAreaLocked => 'This area is scheduled to unlock at Level 15!';
@@ -809,4 +809,97 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noNamesRegistered => 'No names registered yet.';
+
+  @override
+  String get seaItems => 'Sea Items';
+
+  @override
+  String get seaCreatures => 'Sea Creatures';
+
+  @override
+  String get seaSettings => 'Sea Settings';
+
+  @override
+  String get itemSeaBottle => 'Bottle';
+
+  @override
+  String get itemSeaAnchor => 'Anchor';
+
+  @override
+  String get itemSeaShell => 'Seashell';
+
+  @override
+  String get itemSeaKelp1 => 'Kelp 1';
+
+  @override
+  String get itemSeaKelp2 => 'Kelp 2';
+
+  @override
+  String get itemSeaCoral1 => 'Coral 1';
+
+  @override
+  String get itemSeaCoral2 => 'Coral 2';
+
+  @override
+  String get itemSeaTreasure => 'Treasure Chest';
+
+  @override
+  String get itemSeaTrident => 'Trident';
+
+  @override
+  String get itemSeaPot => 'Pot';
+
+  @override
+  String get itemSeaSubmarine => 'Submarine';
+
+  @override
+  String get itemSeaSunkenShip => 'Sunken Ship';
+
+  @override
+  String get livingPufferfish => 'Pufferfish';
+
+  @override
+  String get livingStarfish => 'Starfish';
+
+  @override
+  String get livingSquid => 'Squid';
+
+  @override
+  String get livingDolphin => 'Dolphin';
+
+  @override
+  String get livingTurtle => 'Turtle';
+
+  @override
+  String get livingCrab => 'Crab';
+
+  @override
+  String get livingJellyfish => 'Jellyfish';
+
+  @override
+  String get livingFish1 => 'Fish 1';
+
+  @override
+  String get livingFish2 => 'Fish 2';
+
+  @override
+  String get livingFish3 => 'Fish 3';
+
+  @override
+  String get livingFish4 => 'Fish 4';
+
+  @override
+  String get livingShark1 => 'Shark 1';
+
+  @override
+  String get livingShark2 => 'Shark 2';
+
+  @override
+  String get livingSeahorse => 'Seahorse';
+
+  @override
+  String get livingHermitCrab => 'Hermit Crab';
+
+  @override
+  String get skip => 'Skip';
 }

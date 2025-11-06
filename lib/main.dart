@@ -11,39 +11,53 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 // import 'dart:io';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // ★ ネットワーク接続チェック
+  final connectivityResult = await (Connectivity().checkConnectivity());
+  final isOnline = connectivityResult != ConnectivityResult.none;
+
   final localeProvider = LocaleProvider();
   await localeProvider.init();
-  // Firebaseを初期化
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if (isOnline) {
+    try {
+      // Firebaseを初期化
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
-  // Flutterフレームワーク内でキャッチされなかったエラーをCrashlyticsに送信
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+      // Flutterフレームワーク内でキャッチされなかったエラーをCrashlyticsに送信
+      PlatformDispatcher.instance.onError = (error, stack) {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        return true;
+      };
 
-  // Flutterフレームワーク内で処理されたエラーをCrashlyticsに送信
-  FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  };
+      // Flutterフレームワーク内で処理されたエラーをCrashlyticsに送信
+      FlutterError.onError = (errorDetails) {
+        FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+      };
 
-  // if (Platform.isAndroid) {
-  //   // ★広告SDKを初期化する
-  //   await MobileAds.instance.initialize();
+      // if (Platform.isAndroid) {
+      //   // ★広告SDKを初期化する
+      //   await MobileAds.instance.initialize();
 
-  //   final RequestConfiguration requestConfiguration = RequestConfiguration(
-  //     tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-  //     tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-  //     maxAdContentRating: MaxAdContentRating.g,
-  //     testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
-  //   );
-  //   await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
-  // }
+      //   final RequestConfiguration requestConfiguration = RequestConfiguration(
+      //     tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+      //     tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+      //     maxAdContentRating: MaxAdContentRating.g,
+      //     testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
+      //   );
+      //   await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+      // }
+    } catch (e) {
+      // 初期化に失敗してもアプリは続行する
+      print('Failed to initialize network services (offline?): $e');
+    }
+  }
 
   // すべての準備が終わってから、アプリを起動します
   runApp(

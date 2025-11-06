@@ -20,6 +20,7 @@ import 'world_map_screen.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -276,29 +277,42 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   // ★ AdMob初期化メソッド
   Future<void> _initializeMobileAds() async {
-    // Androidでのみ実行
-    // if (Platform.isAndroid) {
-    // まだ初期化されていなければ初期化する
-    if (!_isMobileAdsInitialized) {
-      await MobileAds.instance.initialize();
-      // RequestConfigurationの設定もここで行う
-      final RequestConfiguration requestConfiguration = RequestConfiguration(
-        tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-        tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-        maxAdContentRating: MaxAdContentRating.g,
-        testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
-      );
-      await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
-      setState(() {
-        _isMobileAdsInitialized = true; // ★ 初期化完了フラグを立てる
-      });
+    // ★ ネットワーク接続チェック
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    final isOnline = connectivityResult != ConnectivityResult.none;
+
+    if (!isOnline) return; // オフラインなら初期化しない
+
+    try {
+      // Androidでのみ実行
+      // if (Platform.isAndroid) {
+      // まだ初期化されていなければ初期化する
+      if (!_isMobileAdsInitialized) {
+        await MobileAds.instance.initialize();
+        // RequestConfigurationの設定もここで行う
+        final RequestConfiguration requestConfiguration = RequestConfiguration(
+          tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+          tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+          maxAdContentRating: MaxAdContentRating.g,
+          testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
+        );
+        await MobileAds.instance.updateRequestConfiguration(
+          requestConfiguration,
+        );
+        setState(() {
+          _isMobileAdsInitialized = true; // ★ 初期化完了フラグを立てる
+        });
+      }
+      // iOSの場合は何もしないか、Unity Adsの初期化をここで行う
+      // } else {
+      //   setState(() {
+      //     _isMobileAdsInitialized = true; // iOSでもフラグは立てておく
+      //   });
+      // }
+    } catch (e) {
+      // 初期化に失敗してもアプリは続行する
+      print('Failed to initialize network services (offline?): $e');
     }
-    // iOSの場合は何もしないか、Unity Adsの初期化をここで行う
-    // } else {
-    //   setState(() {
-    //     _isMobileAdsInitialized = true; // iOSでもフラグは立てておく
-    //   });
-    // }
   }
 
   Future<void> _showDisclosureDialogIfNeeded() async {
@@ -398,53 +412,63 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   }
 
   void _showTutorial() async {
-    await _showGuideDialog(
+    bool shouldContinue;
+
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guideWelcomeTitle,
       content: AppLocalizations.of(context)!.guideWelcomeDesc,
     );
+    if (!shouldContinue) return;
     // 親モード設定のガイド
-    await _showGuideDialog(
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guideSettingsTitle,
       content: AppLocalizations.of(context)!.guideSettingsDesc,
     );
+    if (!shouldContinue) return;
     // つぎのやくそくのガイド
-    await _showGuideDialog(
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guideNextPromiseTitle,
       content: AppLocalizations.of(context)!.guideNextPromiseDesc,
     );
+    if (!shouldContinue) return;
     // やくそくボードのガイド
-    await _showGuideDialog(
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guidePromiseBoardTitle,
       content: AppLocalizations.of(context)!.guidePromiseBoardDesc,
     );
+    if (!shouldContinue) return;
     // ポイントのガイド
-    await _showGuideDialog(
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guidePointsTitle,
       content: AppLocalizations.of(context)!.guidePointsDesc,
     );
+    if (!shouldContinue) return;
     // ショップのガイド
-    await _showGuideDialog(
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guideShopTitle,
       content: AppLocalizations.of(context)!.guideShopDesc,
     );
+    if (!shouldContinue) return;
     // キャラクター選択のガイド
-    await _showGuideDialog(
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guideCustomizeTitle,
       content: AppLocalizations.of(context)!.guideCustomizeDesc,
     );
+    if (!shouldContinue) return;
     // BGMボタンのガイド
-    await _showGuideDialog(
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guideBgmButtonTitle,
       content: AppLocalizations.of(context)!.guideBgmButtonDesc,
     );
-
+    if (!shouldContinue) return;
     // 外の世界に出るボタンのガイド
-    await _showGuideDialog(
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guideWorldMapButtonTitle,
       content: AppLocalizations.of(context)!.guideWorldMapButtonDesc,
     );
+    if (!shouldContinue) return;
     // ヘルプボタンのガイド
-    await _showGuideDialog(
+    shouldContinue = await _showGuideDialog(
       title: AppLocalizations.of(context)!.guideHelpTitle,
       content: AppLocalizations.of(context)!.guideHelpDesc,
     );
@@ -464,16 +488,23 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   }
 
   // 説明ダイアログを表示するための共通メソッド
-  Future<void> _showGuideDialog({
+  Future<bool> _showGuideDialog({
     required String title,
     required String content,
   }) async {
-    return showDialog<void>(
+    final bool? result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(title),
         content: Text(content),
         actions: [
+          TextButton(
+            onPressed: () {
+              // ★ falseを返してダイアログを閉じる
+              Navigator.of(context).pop(false);
+            },
+            child: Text(AppLocalizations.of(context)!.skip), // TODO: l10n対応
+          ),
           TextButton(
             onPressed: () {
               try {
@@ -482,13 +513,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 // エラーが発生した場合
                 print('再生エラー: $e');
               }
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(true);
             },
             child: const Text('OK'),
           ),
         ],
       ),
     );
+    return result ?? false;
   }
 
   // データを読み込み、表示するやくそくを決定する
@@ -1541,7 +1573,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      width: 200, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
+                      width: 220, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
