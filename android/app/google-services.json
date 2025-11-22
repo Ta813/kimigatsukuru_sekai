@@ -12,7 +12,20 @@
           "package_name": "com.kotoapp.kimigatsukuru_sekai"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1059611862340-fvf23c3gpr55h5s37q8n7tmmr9rd8ptk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kotoapp.kimigatsukuru_sekai",
+            "certificate_hash": "9d52d75cd502ae1cd415cd90af9fc2673780abb8"
+          }
+        },
+        {
+          "client_id": "1059611862340-ufsa13v97tuhaoqfd185j4n1gquesn3l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDraNJ9juRmdBDgwAt1Tkv62yo2Q8_RPX8"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1059611862340-ufsa13v97tuhaoqfd185j4n1gquesn3l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1059611862340-47ua2e9cfhh175i4nhp5i6u9li3m34st.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kotoapp.kimigatsukuruSekai.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }

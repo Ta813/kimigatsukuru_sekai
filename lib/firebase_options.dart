@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDczgyjzDjWNv1G3_kuKXT2d4QtZ6fNXok',
-    appId: '1:1059611862340:ios:50156e3f99e260596de311',
+    appId: '1:1059611862340:ios:9080bc9f3e9e3cfc6de311',
     messagingSenderId: '1059611862340',
     projectId: 'kimigatsukuru-sekai',
     storageBucket: 'kimigatsukuru-sekai.firebasestorage.app',
-    iosBundleId: 'com.kotoapp.kimigatsukuruSekai',
+    iosBundleId: 'com.kotoapp.kimigatsukuruSekai.RunnerTests',
   );
 
 }

@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'dart:io';
+import '../../services/backup_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -29,6 +30,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int _currentExperience = 0;
   final _expController = TextEditingController();
 
+  BackupServiceKbn _linkedService = BackupServiceKbn.none; // ★ 連携状態を管理
+  bool _isLoading = false; // ★ バックアップ/復元中のローディングフラグ
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final passcode = await SharedPrefsHelper.loadPasscode();
     final level = await SharedPrefsHelper.loadLevel();
     final experience = await SharedPrefsHelper.loadExperience();
+    final service = await SharedPrefsHelper.loadBackupService();
     if (mounted) {
       setState(() {
         _selectedLockMode = lockMode;
@@ -47,6 +52,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _currentLevel = level;
         _currentExperience = experience;
         _expController.text = _currentExperience.toString();
+        _linkedService = service;
       });
     }
   }
@@ -132,6 +138,71 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  // ★ バックアップ処理
+  Future<void> _handleBackup(BackupServiceKbn service) async {
+    setState(() {
+      _isLoading = true;
+    });
+    bool success = false;
+    if (service == BackupServiceKbn.googleDrive) {
+      success = await BackupService.backupToGoogleDrive();
+    } else if (service == BackupServiceKbn.icloud) {
+      success = await BackupService.backupToiCloud();
+    }
+
+    if (success) {
+      await SharedPrefsHelper.saveBackupService(service);
+      setState(() {
+        _linkedService = service;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('バックアップが完了しました')));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('バックアップに失敗しました')));
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  // ★ 復元処理（仮）
+  Future<void> _handleRestore(BackupServiceKbn service) async {
+    setState(() {
+      _isLoading = true;
+    });
+    bool success = false;
+    if (service == BackupServiceKbn.googleDrive) {
+      success = await BackupService.restoreFromGoogleDrive();
+    } else if (service == BackupServiceKbn.icloud) {
+      success = await BackupService.restoreFromiCloud();
+    }
+
+    if (success) {
+      await SharedPrefsHelper.saveBackupService(service);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('データを復元しました')));
+      // ★ 復元したデータをUIに反映させるために、設定を再読み込み
+      _loadSettings();
+      // TODO: ホーム画面など、他の画面もリフレッシュする必要があるかもしれない
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('復元に失敗しました')));
+    }
+
+    await Future.delayed(const Duration(seconds: 2));
+    print('復元処理 ($service) を実行');
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final localeProvider = Provider.of<LocaleProvider>(context);
@@ -156,191 +227,273 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: [
-            ListTile(
-              leading: const Icon(Icons.language),
-              title: Text(l10n.languageSetting),
-              trailing: DropdownButton<String>(
-                value: currentValue,
-                onChanged: (String? newValue) {
-                  if (newValue == 'ja') {
-                    localeProvider.setLocale(const Locale('ja'));
-                  } else if (newValue == 'en') {
-                    localeProvider.setLocale(const Locale('en'));
-                  }
-                },
-                // ★プルダウンの選択肢から「端末の設定」を削除
-                items: const <DropdownMenuItem<String>>[
-                  DropdownMenuItem<String>(value: 'ja', child: Text('日本語')),
-                  DropdownMenuItem<String>(value: 'en', child: Text('English')),
-                ],
-              ),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.lock),
-              title: Text(l10n.lockMethod),
-              trailing: DropdownButton<LockMode>(
-                value: _selectedLockMode,
-                items: [
-                  DropdownMenuItem(
-                    value: LockMode.math,
-                    child: Text(l10n.multiplication),
-                  ),
-                  DropdownMenuItem(
-                    value: LockMode.passcode,
-                    child: Text(l10n.fourDigitPasscode),
-                  ),
-                ],
-                onChanged: (LockMode? newValue) async {
-                  if (newValue != null) {
-                    await SharedPrefsHelper.saveLockMode(newValue);
-                    setState(() {
-                      _selectedLockMode = newValue;
-                    });
-                    // もしパスワードモードが選ばれて、まだパスワードが設定されていなければ設定を促す
-                    if (newValue == LockMode.passcode &&
-                        await SharedPrefsHelper.loadPasscode() == null) {
-                      _showSetPasscodeDialog();
-                    }
-                  }
-                },
-              ),
-            ),
-            // パスワードモードの時だけ「パスワード設定」を表示
-            if (_selectedLockMode == LockMode.passcode)
-              ListTile(
-                leading: const Icon(Icons.password),
-                title: Text(l10n.setPasscode),
-                subtitle: Row(
-                  children: [
-                    // パスワードを表示するか、●で隠すかを三項演算子で切り替え
-                    Text(
-                      _currentPasscode == null
-                          ? l10n.notSet
-                          : _isPasscodeVisible
-                          ? _currentPasscode!
-                          : '●●●●',
-                      style: const TextStyle(fontSize: 16),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator()) // ★ ローディング中は操作不可に
+          : SafeArea(
+              child: ListView(
+                padding: const EdgeInsets.all(16.0),
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.language),
+                    title: Text(l10n.languageSetting),
+                    trailing: DropdownButton<String>(
+                      value: currentValue,
+                      onChanged: (String? newValue) {
+                        if (newValue == 'ja') {
+                          localeProvider.setLocale(const Locale('ja'));
+                        } else if (newValue == 'en') {
+                          localeProvider.setLocale(const Locale('en'));
+                        }
+                      },
+                      // ★プルダウンの選択肢から「端末の設定」を削除
+                      items: const <DropdownMenuItem<String>>[
+                        DropdownMenuItem<String>(
+                          value: 'ja',
+                          child: Text('日本語'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'en',
+                          child: Text('English'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    // 表示/非表示を切り替えるアイコンボタン
-                    IconButton(
-                      icon: Icon(
-                        _isPasscodeVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.lock),
+                    title: Text(l10n.lockMethod),
+                    trailing: DropdownButton<LockMode>(
+                      value: _selectedLockMode,
+                      items: [
+                        DropdownMenuItem(
+                          value: LockMode.math,
+                          child: Text(l10n.multiplication),
+                        ),
+                        DropdownMenuItem(
+                          value: LockMode.passcode,
+                          child: Text(l10n.fourDigitPasscode),
+                        ),
+                      ],
+                      onChanged: (LockMode? newValue) async {
+                        if (newValue != null) {
+                          await SharedPrefsHelper.saveLockMode(newValue);
+                          setState(() {
+                            _selectedLockMode = newValue;
+                          });
+                          // もしパスワードモードが選ばれて、まだパスワードが設定されていなければ設定を促す
+                          if (newValue == LockMode.passcode &&
+                              await SharedPrefsHelper.loadPasscode() == null) {
+                            _showSetPasscodeDialog();
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                  // パスワードモードの時だけ「パスワード設定」を表示
+                  if (_selectedLockMode == LockMode.passcode)
+                    ListTile(
+                      leading: const Icon(Icons.password),
+                      title: Text(l10n.setPasscode),
+                      subtitle: Row(
+                        children: [
+                          // パスワードを表示するか、●で隠すかを三項演算子で切り替え
+                          Text(
+                            _currentPasscode == null
+                                ? l10n.notSet
+                                : _isPasscodeVisible
+                                ? _currentPasscode!
+                                : '●●●●',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(width: 8),
+                          // 表示/非表示を切り替えるアイコンボタン
+                          IconButton(
+                            icon: Icon(
+                              _isPasscodeVisible
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasscodeVisible = !_isPasscodeVisible;
+                              });
+                            },
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
+                        ],
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasscodeVisible = !_isPasscodeVisible;
+                      onTap: () {
+                        // ★ パスワード設定ダイアログを呼び出す処理を修正
+                        _showSetPasscodeDialog().then((_) {
+                          // ダイアログが閉じた後に、設定を再読み込みして表示を更新する
+                          _loadSettings();
                         });
                       },
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
                     ),
-                  ],
-                ),
-                onTap: () {
-                  // ★ パスワード設定ダイアログを呼び出す処理を修正
-                  _showSetPasscodeDialog().then((_) {
-                    // ダイアログが閉じた後に、設定を再読み込みして表示を更新する
-                    _loadSettings();
-                  });
-                },
-              ),
-            const Divider(),
+                  const Divider(),
 
-            // ここから寄付の導線を追加
-            ListTile(
-              leading: const Icon(Icons.favorite, color: Colors.pink),
-              title: Text(l10n.supportThisApp), // 文言は規約を意識
-              subtitle: Text(l10n.supportEncouragement),
-              onTap: () async {
-                // ★ 寄付ページのURLに書き換えてください
-                final url = Uri.parse('https://www.buymeacoffee.com/kotoapp');
-
-                if (await canLaunchUrl(url)) {
-                  await launchUrl(url, mode: LaunchMode.externalApplication);
-                } else {
-                  // URLが開けなかった場合の予備処理
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.supportPageOpenError)),
-                  );
-                }
-              },
-            ),
-            if (kDebugMode) ...[
-              // kDebugModeがtrueの時だけ以下のウィジェットを表示
-              const Divider(thickness: 2, color: Colors.red),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  'デバッグメニュー (Debug Menu)',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      'データのバックアップと復元',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
                   ),
-                ),
-              ),
 
-              // --- レベル操作 ---
-              Text('レベル設定: $_currentLevel'),
-              Slider(
-                value: _currentLevel.toDouble(),
-                min: 1,
-                max: 50, // 最大レベルを適当に設定
-                divisions: 49, // max - min
-                label: _currentLevel.toString(),
-                onChanged: (double value) {
-                  setState(() {
-                    _currentLevel = value.toInt();
-                  });
-                },
-                // ★ スライダーを離した時に値を保存
-                onChangeEnd: (double value) async {
-                  await SharedPrefsHelper.saveLevel(value.toInt());
-                  // ホーム画面に戻った時に更新が反映されるようにする
-                },
-              ),
+                  // --- Google Drive ボタン (Androidは常時表示, iOSはiCloud未連携時のみ) ---
+                  if (Platform.isAndroid ||
+                      (Platform.isIOS &&
+                          _linkedService != BackupServiceKbn.icloud))
+                    ListTile(
+                      leading: const Icon(Icons.cloud_upload_outlined),
+                      title: const Text('Google Drive'),
+                      subtitle: Text(
+                        _linkedService == BackupServiceKbn.googleDrive
+                            ? 'このサービスと連携済み' // l10n
+                            : 'Google Driveにデータを保存します', // l10n
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextButton(
+                            child: const Text('バックアップ'),
+                            onPressed: () =>
+                                _handleBackup(BackupServiceKbn.googleDrive),
+                          ),
+                          TextButton(
+                            child: const Text('復元'),
+                            onPressed: () =>
+                                _handleRestore(BackupServiceKbn.googleDrive),
+                          ),
+                        ],
+                      ),
+                    ),
 
-              // --- 経験値操作 ---
-              const Text('経験値設定'),
-              TextField(
-                controller: _expController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(suffix: Text('EXP')),
-                onSubmitted: (String value) async {
-                  final newExp = int.tryParse(value) ?? 0;
-                  setState(() {
-                    _currentExperience = newExp;
-                  });
-                  await SharedPrefsHelper.saveExperience(newExp);
-                },
-              ),
-              const SizedBox(height: 20),
-              if (Platform.isAndroid)
-                ListTile(
-                  leading: const Icon(Icons.mediation),
-                  title: const Text('メディエーション テストスイート'),
-                  onTap: () {
-                    // ★ この一行でテストスイートが起動します
-                    MobileAds.instance.openAdInspector((error) {
-                      if (error != null) {
-                        // エラー処理
-                        print("メディエーションERROR：" + error.message!);
+                  // --- iCloud ボタン (iOSのみ, Google Drive未連携時のみ) ---
+                  // if (Platform.isIOS &&
+                  //     _linkedService != BackupServiceKbn.googleDrive)
+                  //   ListTile(
+                  //     leading: const Icon(Icons.cloud_queue_rounded),
+                  //     title: const Text('iCloud'),
+                  //     subtitle: Text(
+                  //       _linkedService == BackupServiceKbn.icloud
+                  //           ? 'このサービスと連携済み' // l10n
+                  //           : 'iCloudにデータを保存します (iPhone/iPad間のみ)', // l10n
+                  //     ),
+                  //     trailing: Row(
+                  //       mainAxisSize: MainAxisSize.min,
+                  //       children: [
+                  //         TextButton(
+                  //           child: const Text('バックアップ'),
+                  //           onPressed: () =>
+                  //               _handleBackup(BackupServiceKbn.icloud),
+                  //         ),
+                  //         TextButton(
+                  //           child: const Text('復元'),
+                  //           onPressed: () =>
+                  //               _handleRestore(BackupServiceKbn.icloud),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  const Divider(),
+                  // ここから寄付の導線を追加
+                  ListTile(
+                    leading: const Icon(Icons.favorite, color: Colors.pink),
+                    title: Text(l10n.supportThisApp), // 文言は規約を意識
+                    subtitle: Text(l10n.supportEncouragement),
+                    onTap: () async {
+                      // ★ 寄付ページのURLに書き換えてください
+                      final url = Uri.parse(
+                        'https://www.buymeacoffee.com/kotoapp',
+                      );
+
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        );
+                      } else {
+                        // URLが開けなかった場合の予備処理
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l10n.supportPageOpenError)),
+                        );
                       }
-                    });
-                  },
-                ),
-              const Divider(thickness: 2, color: Colors.red),
-            ],
-          ],
-        ),
-      ),
+                    },
+                  ),
+                  if (kDebugMode) ...[
+                    // kDebugModeがtrueの時だけ以下のウィジェットを表示
+                    const Divider(thickness: 2, color: Colors.red),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        'デバッグメニュー (Debug Menu)',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                    // --- レベル操作 ---
+                    Text('レベル設定: $_currentLevel'),
+                    Slider(
+                      value: _currentLevel.toDouble(),
+                      min: 1,
+                      max: 50, // 最大レベルを適当に設定
+                      divisions: 49, // max - min
+                      label: _currentLevel.toString(),
+                      onChanged: (double value) {
+                        setState(() {
+                          _currentLevel = value.toInt();
+                        });
+                      },
+                      // ★ スライダーを離した時に値を保存
+                      onChangeEnd: (double value) async {
+                        await SharedPrefsHelper.saveLevel(value.toInt());
+                        // ホーム画面に戻った時に更新が反映されるようにする
+                      },
+                    ),
+
+                    // --- 経験値操作 ---
+                    const Text('経験値設定'),
+                    TextField(
+                      controller: _expController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(suffix: Text('EXP')),
+                      onSubmitted: (String value) async {
+                        final newExp = int.tryParse(value) ?? 0;
+                        setState(() {
+                          _currentExperience = newExp;
+                        });
+                        await SharedPrefsHelper.saveExperience(newExp);
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    if (Platform.isAndroid)
+                      ListTile(
+                        leading: const Icon(Icons.mediation),
+                        title: const Text('メディエーション テストスイート'),
+                        onTap: () {
+                          // ★ この一行でテストスイートが起動します
+                          MobileAds.instance.openAdInspector((error) {
+                            if (error != null) {
+                              // エラー処理
+                              print("メディエーションERROR：" + error.message!);
+                            }
+                          });
+                        },
+                      ),
+                    const Divider(thickness: 2, color: Colors.red),
+                  ],
+                ],
+              ),
+            ),
     );
   }
 }

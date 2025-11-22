@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/lock_mode.dart';
 
+// ★ 連携サービスの種類を定義
+enum BackupServiceKbn { none, googleDrive, icloud }
+
 class SharedPrefsHelper {
   // SharedPreferencesのインスタンスを取得するためのキー
   static const String _regularPromisesKey = 'regular_promises';
@@ -555,5 +558,64 @@ class SharedPrefsHelper {
   static Future<List<String>> loadEquippedLivings() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('equipped_livings') ?? [];
+  }
+
+  // ★ 連携中のバックアップサービスを保存
+  static Future<void> saveBackupService(BackupServiceKbn service) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('backup_service', service.name);
+  }
+
+  // ★ 連携中のバックアップサービスを読み込み
+  static Future<BackupServiceKbn> loadBackupService() async {
+    final prefs = await SharedPreferences.getInstance();
+    final serviceName = prefs.getString('backup_service');
+    return BackupServiceKbn.values.firstWhere(
+      (e) => e.name == serviceName,
+      orElse: () => BackupServiceKbn.none, // デフォルトは「連携なし」
+    );
+  }
+
+  // ★ 全てのデータをJSON文字列としてエクスポートする
+  static Future<String> exportDataAsJson() async {
+    final prefs = await SharedPreferences.getInstance();
+    final allKeys = prefs.getKeys();
+
+    final Map<String, dynamic> allData = {};
+    for (String key in allKeys) {
+      allData[key] = prefs.get(key);
+    }
+
+    return jsonEncode(allData);
+  }
+
+  // ★ JSON文字列からデータをインポート（復元）する
+  static Future<void> importDataFromJson(String jsonString) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // まず現在のデータをすべてクリアする（任意）
+    // await prefs.clear();
+    // ※ clear() を使うと連携サービスの設定も消えてしまうので、
+    // キーをループして削除する方が安全かもしれません。
+    // ここでは、読み書きの競合を防ぐため、キーごとに上書きします。
+
+    Map<String, dynamic> allData = jsonDecode(jsonString);
+
+    for (String key in allData.keys) {
+      final value = allData[key];
+      // 型に合わせてデータを書き戻す
+      if (value is bool) {
+        await prefs.setBool(key, value);
+      } else if (value is int) {
+        await prefs.setInt(key, value);
+      } else if (value is double) {
+        await prefs.setDouble(key, value);
+      } else if (value is String) {
+        await prefs.setString(key, value);
+      } else if (value is List) {
+        // List<String> のみを想定
+        await prefs.setStringList(key, value.cast<String>());
+      }
+    }
   }
 }
