@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1059611862340-a05alti34jioer01smve1abo1c8rcbnl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kotoapp.kimigatsukuru_sekai",
+            "certificate_hash": "d5e5ee8b27f0c19e6c8f53f2f8bdcadf56c9fbfc"
+          }
+        },
+        {
           "client_id": "1059611862340-fvf23c3gpr55h5s37q8n7tmmr9rd8ptk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
