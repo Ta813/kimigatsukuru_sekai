@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/child/child_home_screen.dart';
-// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'firebase_options.dart'; // flutterfire configureで生成されたファイル
@@ -12,7 +11,6 @@ import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-// import 'dart:io';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,19 +38,6 @@ Future<void> main() async {
       FlutterError.onError = (errorDetails) {
         FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
       };
-
-      // if (Platform.isAndroid) {
-      //   // ★広告SDKを初期化する
-      //   await MobileAds.instance.initialize();
-
-      //   final RequestConfiguration requestConfiguration = RequestConfiguration(
-      //     tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-      //     tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-      //     maxAdContentRating: MaxAdContentRating.g,
-      //     testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
-      //   );
-      //   await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
-      // }
     } catch (e) {
       // 初期化に失敗してもアプリは続行する
       print('Failed to initialize network services (offline?): $e');
