@@ -285,31 +285,30 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     try {
       // Androidでのみ実行
-      if (Platform.isAndroid) {
-        // まだ初期化されていなければ初期化する
-        if (!_isMobileAdsInitialized) {
-          await MobileAds.instance.initialize();
-          // RequestConfigurationの設定もここで行う
-          final RequestConfiguration requestConfiguration =
-              RequestConfiguration(
-                tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-                tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-                maxAdContentRating: MaxAdContentRating.g,
-                testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
-              );
-          await MobileAds.instance.updateRequestConfiguration(
-            requestConfiguration,
-          );
-          setState(() {
-            _isMobileAdsInitialized = true; // ★ 初期化完了フラグを立てる
-          });
-        }
-        // iOSの場合は何もしないか、Unity Adsの初期化をここで行う
-      } else {
+      // if (Platform.isAndroid) {
+      // まだ初期化されていなければ初期化する
+      if (!_isMobileAdsInitialized) {
+        await MobileAds.instance.initialize();
+        // RequestConfigurationの設定もここで行う
+        final RequestConfiguration requestConfiguration = RequestConfiguration(
+          tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+          tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+          maxAdContentRating: MaxAdContentRating.g,
+          testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
+        );
+        await MobileAds.instance.updateRequestConfiguration(
+          requestConfiguration,
+        );
         setState(() {
-          _isMobileAdsInitialized = true; // iOSでもフラグは立てておく
+          _isMobileAdsInitialized = true; // ★ 初期化完了フラグを立てる
         });
       }
+      // iOSの場合は何もしないか、Unity Adsの初期化をここで行う
+      // } else {
+      //   setState(() {
+      //     _isMobileAdsInitialized = true; // iOSでもフラグは立てておく
+      //   });
+      // }
     } catch (e) {
       // 初期化に失敗してもアプリは続行する
       print('Failed to initialize network services (offline?): $e');
