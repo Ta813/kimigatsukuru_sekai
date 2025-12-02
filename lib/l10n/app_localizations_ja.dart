@@ -667,7 +667,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get seaAreaLocked => 'レベル10になると入れるようになります！';
 
   @override
-  String get spaceAreaLocked => 'ここはレベル15で解放される予定です！';
+  String get skyAreaLocked => 'レベル15になると入れるようになります！';
 
   @override
   String get islandLocked => 'レベル5になると入れるようになります！';
@@ -902,4 +902,85 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get skip => 'スキップ';
+
+  @override
+  String get skyItems => 'そらのアイテム';
+
+  @override
+  String get skyCreatures => 'そらのいきもの';
+
+  @override
+  String get skyBalloon1 => 'ふうせん１';
+
+  @override
+  String get skyBalloon2 => 'ふうせん２';
+
+  @override
+  String get skyBalloon3 => 'ふうせん３';
+
+  @override
+  String get skyBalloon4 => 'ふうせん４';
+
+  @override
+  String get skyCloud => 'くも';
+
+  @override
+  String get skyHelicopter => 'ヘリコプター';
+
+  @override
+  String get skyAirplane1 => 'ひこうき１';
+
+  @override
+  String get skyAirplane2 => 'ひこうき２';
+
+  @override
+  String get skyAirplane3 => 'ひこうき３';
+
+  @override
+  String get skyAirplane4 => 'ひこうき４';
+
+  @override
+  String get skyAirship => 'ひこうせん';
+
+  @override
+  String get skyBalloonRide => 'ききゅう';
+
+  @override
+  String get skyFighter1 => 'せんとうき１';
+
+  @override
+  String get skyFighter2 => 'せんとうき２';
+
+  @override
+  String get skyBee => 'はち';
+
+  @override
+  String get skyOwl => 'フクロウ';
+
+  @override
+  String get skyBat => 'コウモリ';
+
+  @override
+  String get skyFlyingSquirrel => 'モモンガ';
+
+  @override
+  String get skyParrot => 'オウム';
+
+  @override
+  String get skySparrow => 'スズメ';
+
+  @override
+  String get skyLadybug => 'てんとうむし';
+
+  @override
+  String get skyDragonfly => 'とんぼ';
+
+  @override
+  String get skyCrane => 'ツル';
+
+  @override
+  String get skyButterfly => 'ちょうちょ';
+
+  @override
+  String get skyEagle => 'ワシ';
 }

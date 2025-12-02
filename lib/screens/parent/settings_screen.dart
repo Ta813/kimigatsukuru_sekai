@@ -445,8 +445,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     Slider(
                       value: _currentLevel.toDouble(),
                       min: 1,
-                      max: 50, // 最大レベルを適当に設定
-                      divisions: 49, // max - min
+                      max: 90, // 最大レベルを適当に設定
+                      divisions: 89, // max - min
                       label: _currentLevel.toString(),
                       onChanged: (double value) {
                         setState(() {

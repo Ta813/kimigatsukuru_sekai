@@ -12,6 +12,7 @@ class ShopItem {
   final int requiredLevel;
   final bool isIslandOnly;
   final bool isSeaOnly;
+  final bool isSkyOnly;
 
   ShopItem({
     required this.name,
@@ -21,6 +22,7 @@ class ShopItem {
     this.requiredLevel = 1,
     this.isIslandOnly = false,
     this.isSeaOnly = false,
+    this.isSkyOnly = false,
   });
 
   String getDisplayName(BuildContext context) {
@@ -265,6 +267,56 @@ class ShopItem {
         return l10n.livingSeahorse;
       case 'ヤドカリ':
         return l10n.livingHermitCrab;
+      case 'ふうせん１（そら）':
+        return l10n.skyBalloon1;
+      case 'ふうせん２（そら）':
+        return l10n.skyBalloon2;
+      case 'ふうせん３（そら）':
+        return l10n.skyBalloon3;
+      case 'ふうせん４（そら）':
+        return l10n.skyBalloon4;
+      case 'くも（そら）':
+        return l10n.skyCloud;
+      case 'ヘリコプター（そら）':
+        return l10n.skyHelicopter;
+      case 'ひこうき１（そら）':
+        return l10n.skyAirplane1;
+      case 'ひこうき２（そら）':
+        return l10n.skyAirplane2;
+      case 'ひこうき３（そら）':
+        return l10n.skyAirplane3;
+      case 'ひこうき４（そら）':
+        return l10n.skyAirplane4;
+      case 'ひこうせん（そら）':
+        return l10n.skyAirship;
+      case 'ききゅう（そら）':
+        return l10n.skyBalloonRide;
+      case 'せんとうき１（そら）':
+        return l10n.skyFighter1;
+      case 'せんとうき２（そら）':
+        return l10n.skyFighter2;
+      case 'はち（そら）':
+        return l10n.skyBee;
+      case 'フクロウ（そら）':
+        return l10n.skyOwl;
+      case 'コウモリ（そら）':
+        return l10n.skyBat;
+      case 'モモンガ（そら）':
+        return l10n.skyFlyingSquirrel;
+      case 'オウム（そら）':
+        return l10n.skyParrot;
+      case 'スズメ（そら）':
+        return l10n.skySparrow;
+      case 'てんとうむし（そら）':
+        return l10n.skyLadybug;
+      case 'とんぼ（そら）':
+        return l10n.skyDragonfly;
+      case 'ツル（そら）':
+        return l10n.skyCrane;
+      case 'ちょうちょ（そら）':
+        return l10n.skyButterfly;
+      case 'ワシ（そら）':
+        return l10n.skyEagle;
       default:
         return name;
     }
@@ -1181,5 +1233,205 @@ final List<ShopItem> shopItems = [
     imagePath: 'assets/images/sea/living_yadokari.png',
     requiredLevel: 10,
     isSeaOnly: true,
+  ),
+  ShopItem(
+    name: 'ふうせん１（そら）',
+    type: 'sky_item',
+    price: 100,
+    imagePath: 'assets/images/sky/item_huusen1.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ふうせん２（そら）',
+    type: 'sky_item',
+    price: 100,
+    imagePath: 'assets/images/sky/item_huusen2.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ふうせん３（そら）',
+    type: 'sky_item',
+    price: 100,
+    imagePath: 'assets/images/sky/item_huusen3.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ふうせん４（そら）',
+    type: 'sky_item',
+    price: 100,
+    imagePath: 'assets/images/sky/item_huusen4.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'くも（そら）',
+    type: 'sky_item',
+    price: 100,
+    imagePath: 'assets/images/sky/item_kumo.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ヘリコプター（そら）',
+    type: 'sky_item',
+    price: 200,
+    imagePath: 'assets/images/sky/item_herikoputa-.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ひこうき１（そら）',
+    type: 'sky_item',
+    price: 200,
+    imagePath: 'assets/images/sky/item_hikouki1.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ひこうき２（そら）',
+    type: 'sky_item',
+    price: 200,
+    imagePath: 'assets/images/sky/item_hikouki2.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ひこうき３（そら）',
+    type: 'sky_item',
+    price: 400,
+    imagePath: 'assets/images/sky/item_hikouki3.png',
+    requiredLevel: 18,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ひこうき４（そら）',
+    type: 'sky_item',
+    price: 400,
+    imagePath: 'assets/images/sky/item_hikouki4.png',
+    requiredLevel: 18,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ひこうせん（そら）',
+    type: 'sky_item',
+    price: 200,
+    imagePath: 'assets/images/sky/item_hikousen.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ききゅう（そら）',
+    type: 'sky_item',
+    price: 200,
+    imagePath: 'assets/images/sky/item_kikyuu.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'せんとうき１（そら）',
+    type: 'sky_item',
+    price: 300,
+    imagePath: 'assets/images/sky/item_sentouki1.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'せんとうき２（そら）',
+    type: 'sky_item',
+    price: 500,
+    imagePath: 'assets/images/sky/item_sentouki2.png',
+    requiredLevel: 18,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'はち（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_hati.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'フクロウ（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_hukurou.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'コウモリ（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_koumori.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'モモンガ（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_momonga.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'オウム（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_oumu.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'スズメ（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_suzume.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'てんとうむし（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_tentoumushi.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'とんぼ（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_tonbo.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ツル（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_tsuru.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ちょうちょ（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_tyoutyo.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'ワシ（そら）',
+    type: 'sky_living',
+    price: 200,
+    imagePath: 'assets/images/sky/living_washi.png',
+    requiredLevel: 15,
+    isSkyOnly: true,
   ),
 ];

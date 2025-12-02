@@ -13,6 +13,7 @@ enum ShopMode {
   forHouse, // 家の中からの家具・アイテム表示
   forIsland, // 島からの表示
   forSea, // 海からの表示
+  forSky, // 空からの表示
 }
 
 class ShopScreen extends StatefulWidget {
@@ -352,6 +353,44 @@ class _ShopScreenState extends State<ShopScreen> {
               FaIcon(FontAwesomeIcons.fish),
               SizedBox(width: 8), // アイコンとテキストの間のスペース
               Text(AppLocalizations.of(context)!.seaCreatures),
+            ],
+          ),
+        ),
+      ];
+
+      tabViews = [
+        _buildCategoryGrid(seaItems, crossAxisCount: 7),
+        _buildCategoryGrid(livingItems, crossAxisCount: 7),
+      ];
+    } else if (widget.mode == ShopMode.forSky) {
+      // 空モードの場合、空限定アイテムのみにする
+      final isSeaItems = shopItems.where((item) => item.isSkyOnly).toList();
+
+      final seaItems = isSeaItems
+          .where((item) => item.type == 'sky_item')
+          .toList();
+      final livingItems = isSeaItems
+          .where((item) => item.type == 'sky_living')
+          .toList();
+
+      tabs = [
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.flight),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.skyItems),
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FaIcon(FontAwesomeIcons.dove),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.skyCreatures),
             ],
           ),
         ),

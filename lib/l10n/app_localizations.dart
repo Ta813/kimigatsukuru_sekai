@@ -1355,11 +1355,11 @@ abstract class AppLocalizations {
   /// **'You\'ll be able to enter at Level 10!'**
   String get seaAreaLocked;
 
-  /// No description provided for @spaceAreaLocked.
+  /// No description provided for @skyAreaLocked.
   ///
   /// In en, this message translates to:
-  /// **'This area is scheduled to unlock at Level 15!'**
-  String get spaceAreaLocked;
+  /// **'You\'ll be able to enter at Level 15!'**
+  String get skyAreaLocked;
 
   /// No description provided for @islandLocked.
   ///
@@ -1828,6 +1828,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip'**
   String get skip;
+
+  /// No description provided for @skyItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky Items'**
+  String get skyItems;
+
+  /// No description provided for @skyCreatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky Creatures'**
+  String get skyCreatures;
+
+  /// No description provided for @skyBalloon1.
+  ///
+  /// In en, this message translates to:
+  /// **'Balloon 1'**
+  String get skyBalloon1;
+
+  /// No description provided for @skyBalloon2.
+  ///
+  /// In en, this message translates to:
+  /// **'Balloon 2'**
+  String get skyBalloon2;
+
+  /// No description provided for @skyBalloon3.
+  ///
+  /// In en, this message translates to:
+  /// **'Balloon 3'**
+  String get skyBalloon3;
+
+  /// No description provided for @skyBalloon4.
+  ///
+  /// In en, this message translates to:
+  /// **'Balloon 4'**
+  String get skyBalloon4;
+
+  /// No description provided for @skyCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud'**
+  String get skyCloud;
+
+  /// No description provided for @skyHelicopter.
+  ///
+  /// In en, this message translates to:
+  /// **'Helicopter'**
+  String get skyHelicopter;
+
+  /// No description provided for @skyAirplane1.
+  ///
+  /// In en, this message translates to:
+  /// **'Airplane 1'**
+  String get skyAirplane1;
+
+  /// No description provided for @skyAirplane2.
+  ///
+  /// In en, this message translates to:
+  /// **'Airplane 2'**
+  String get skyAirplane2;
+
+  /// No description provided for @skyAirplane3.
+  ///
+  /// In en, this message translates to:
+  /// **'Airplane 3'**
+  String get skyAirplane3;
+
+  /// No description provided for @skyAirplane4.
+  ///
+  /// In en, this message translates to:
+  /// **'Airplane 4'**
+  String get skyAirplane4;
+
+  /// No description provided for @skyAirship.
+  ///
+  /// In en, this message translates to:
+  /// **'Airship'**
+  String get skyAirship;
+
+  /// No description provided for @skyBalloonRide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hot Air Balloon'**
+  String get skyBalloonRide;
+
+  /// No description provided for @skyFighter1.
+  ///
+  /// In en, this message translates to:
+  /// **'Fighter Jet 1'**
+  String get skyFighter1;
+
+  /// No description provided for @skyFighter2.
+  ///
+  /// In en, this message translates to:
+  /// **'Fighter Jet 2'**
+  String get skyFighter2;
+
+  /// No description provided for @skyBee.
+  ///
+  /// In en, this message translates to:
+  /// **'Bee'**
+  String get skyBee;
+
+  /// No description provided for @skyOwl.
+  ///
+  /// In en, this message translates to:
+  /// **'Owl'**
+  String get skyOwl;
+
+  /// No description provided for @skyBat.
+  ///
+  /// In en, this message translates to:
+  /// **'Bat'**
+  String get skyBat;
+
+  /// No description provided for @skyFlyingSquirrel.
+  ///
+  /// In en, this message translates to:
+  /// **'Flying Squirrel'**
+  String get skyFlyingSquirrel;
+
+  /// No description provided for @skyParrot.
+  ///
+  /// In en, this message translates to:
+  /// **'Parrot'**
+  String get skyParrot;
+
+  /// No description provided for @skySparrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sparrow'**
+  String get skySparrow;
+
+  /// No description provided for @skyLadybug.
+  ///
+  /// In en, this message translates to:
+  /// **'Ladybug'**
+  String get skyLadybug;
+
+  /// No description provided for @skyDragonfly.
+  ///
+  /// In en, this message translates to:
+  /// **'Dragonfly'**
+  String get skyDragonfly;
+
+  /// No description provided for @skyCrane.
+  ///
+  /// In en, this message translates to:
+  /// **'Crane'**
+  String get skyCrane;
+
+  /// No description provided for @skyButterfly.
+  ///
+  /// In en, this message translates to:
+  /// **'Butterfly'**
+  String get skyButterfly;
+
+  /// No description provided for @skyEagle.
+  ///
+  /// In en, this message translates to:
+  /// **'Eagle'**
+  String get skyEagle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

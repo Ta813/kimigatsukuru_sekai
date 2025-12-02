@@ -12,6 +12,7 @@ enum CustomizeMode {
   house, // 家の中モード
   island, // 島モード
   sea, // 海モード
+  sky, // 空モード
 }
 
 class FurnitureCustomizeScreen extends StatefulWidget {
@@ -35,6 +36,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
   List<String> _equippedVehicles = [];
   List<String> _equippedSeaItems = [];
   List<String> _equippedLivings = [];
+  List<String> _equippedSkyItems = [];
+  List<String> _equippedSkyLivings = [];
 
   @override
   void initState() {
@@ -50,6 +53,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     final vehicles = await SharedPrefsHelper.loadEquippedVehicles();
     final seaItems = await SharedPrefsHelper.loadEquippedSeaItems();
     final livings = await SharedPrefsHelper.loadEquippedLivings();
+    final skyItems = await SharedPrefsHelper.loadEquippedSkyItems();
+    final skyLivings = await SharedPrefsHelper.loadEquippedSkyLivings();
 
     setState(() {
       _purchasedItemNames = purchased;
@@ -59,6 +64,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       _equippedVehicles = vehicles;
       _equippedSeaItems = seaItems;
       _equippedLivings = livings;
+      _equippedSkyItems = skyItems;
+      _equippedSkyLivings = skyLivings;
     });
   }
 
@@ -109,6 +116,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               await SharedPrefsHelper.saveEquippedSeaItems(selected);
             } else if (type == 'living') {
               await SharedPrefsHelper.saveEquippedLivings(selected);
+            } else if (type == 'sky_item') {
+              await SharedPrefsHelper.saveEquippedSkyItems(selected);
+            } else if (type == 'sky_living') {
+              await SharedPrefsHelper.saveEquippedSkyLivings(selected);
             }
           },
           child: Container(
@@ -216,7 +227,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
         ),
         _buildMultiSelectionGrid(ownedVehicles, _equippedVehicles, 'vehicle'),
       ];
-    } else {
+    } else if (widget.mode == CustomizeMode.sea) {
       final ownedSeaItems = shopItems
           .where(
             (item) =>
@@ -246,6 +257,41 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       tabViews = [
         _buildMultiSelectionGrid(ownedSeaItems, _equippedSeaItems, 'sea_item'),
         _buildMultiSelectionGrid(ownedLiving, _equippedLivings, 'living'),
+      ];
+    } else {
+      final ownedSeaItems = shopItems
+          .where(
+            (item) =>
+                item.type == 'sky_item' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+      final ownedLiving = shopItems
+          .where(
+            (item) =>
+                item.type == 'sky_living' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+
+      tabs = [
+        Tab(
+          text: AppLocalizations.of(context)!.skyItems,
+          icon: Icon(Icons.flight),
+        ),
+        Tab(
+          text: AppLocalizations.of(context)!.skyCreatures,
+          icon: FaIcon(FontAwesomeIcons.dove),
+        ),
+      ];
+
+      tabViews = [
+        _buildMultiSelectionGrid(ownedSeaItems, _equippedSkyItems, 'sky_item'),
+        _buildMultiSelectionGrid(
+          ownedLiving,
+          _equippedSkyLivings,
+          'sky_living',
+        ),
       ];
     }
 

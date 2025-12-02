@@ -667,7 +667,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seaAreaLocked => 'You\'ll be able to enter at Level 10!';
 
   @override
-  String get spaceAreaLocked => 'This area is scheduled to unlock at Level 15!';
+  String get skyAreaLocked => 'You\'ll be able to enter at Level 15!';
 
   @override
   String get islandLocked => 'You\'ll be able to enter at Level 5!';
@@ -902,4 +902,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skip => 'Skip';
+
+  @override
+  String get skyItems => 'Sky Items';
+
+  @override
+  String get skyCreatures => 'Sky Creatures';
+
+  @override
+  String get skyBalloon1 => 'Balloon 1';
+
+  @override
+  String get skyBalloon2 => 'Balloon 2';
+
+  @override
+  String get skyBalloon3 => 'Balloon 3';
+
+  @override
+  String get skyBalloon4 => 'Balloon 4';
+
+  @override
+  String get skyCloud => 'Cloud';
+
+  @override
+  String get skyHelicopter => 'Helicopter';
+
+  @override
+  String get skyAirplane1 => 'Airplane 1';
+
+  @override
+  String get skyAirplane2 => 'Airplane 2';
+
+  @override
+  String get skyAirplane3 => 'Airplane 3';
+
+  @override
+  String get skyAirplane4 => 'Airplane 4';
+
+  @override
+  String get skyAirship => 'Airship';
+
+  @override
+  String get skyBalloonRide => 'Hot Air Balloon';
+
+  @override
+  String get skyFighter1 => 'Fighter Jet 1';
+
+  @override
+  String get skyFighter2 => 'Fighter Jet 2';
+
+  @override
+  String get skyBee => 'Bee';
+
+  @override
+  String get skyOwl => 'Owl';
+
+  @override
+  String get skyBat => 'Bat';
+
+  @override
+  String get skyFlyingSquirrel => 'Flying Squirrel';
+
+  @override
+  String get skyParrot => 'Parrot';
+
+  @override
+  String get skySparrow => 'Sparrow';
+
+  @override
+  String get skyLadybug => 'Ladybug';
+
+  @override
+  String get skyDragonfly => 'Dragonfly';
+
+  @override
+  String get skyCrane => 'Crane';
+
+  @override
+  String get skyButterfly => 'Butterfly';
+
+  @override
+  String get skyEagle => 'Eagle';
 }

@@ -618,4 +618,28 @@ class SharedPrefsHelper {
       }
     }
   }
+
+  // 空のアイテムの装備情報を保存
+  static Future<void> saveEquippedSkyItems(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_sky_items', items);
+  }
+
+  // 空のアイテムの装備情報を読み込み
+  static Future<List<String>> loadEquippedSkyItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_sky_items') ?? [];
+  }
+
+  // 空の生き物の装備情報を保存
+  static Future<void> saveEquippedSkyLivings(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_sky_livings', items);
+  }
+
+  // 空の生き物の装備情報を読み込み
+  static Future<List<String>> loadEquippedSkyLivings() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_sky_livings') ?? [];
+  }
 }

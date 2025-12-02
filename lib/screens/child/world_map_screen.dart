@@ -4,6 +4,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
 import 'sea_screen.dart';
+import 'sky_screen.dart';
 
 class WorldMapScreen extends StatefulWidget {
   // ★ StatefulWidgetに変更
@@ -254,19 +255,36 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
             ),
           ),
 
-          // ★ --- 上の宇宙エリアのタップ領域 --- ★
+          // ★ --- 上の空エリアのタップ領域 --- ★
           Align(
             alignment: Alignment.topCenter,
             child: GestureDetector(
               onTap: () {
-                // このバージョンでは未実装のメッセージを表示
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(context)!.spaceAreaLocked,
+                // ★ レベル15以上かチェック
+                if (widget.currentLevel >= 15) {
+                  // ★ レベル15以上なら、SkyScreenに遷移
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SkyScreen(
+                        currentLevel: widget.currentLevel,
+                        currentPoints: widget.currentPoints,
+                        requiredExpForNextLevel: widget.requiredExpForNextLevel,
+                        experience: widget.experience,
+                        experienceFraction: widget.experienceFraction,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                } else {
+                  // レベルが足りない場合
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)!.skyAreaLocked,
+                      ),
+                    ),
+                  );
+                }
               },
               child: Container(
                 width: 300,

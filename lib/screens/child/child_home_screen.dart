@@ -21,6 +21,7 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -146,6 +147,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     3290,
     3390,
     3490,
+    3590,
+    3690,
+    3790,
+    3890,
+    3990,
+    4090,
+    4190,
+    4290,
+    4390,
+    4490,
   ];
 
   int _level = 1; // レベル
@@ -788,10 +799,30 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
           ],
         ),
-      );
+      ).then((_) {
+        // レベルアップダイアログが閉じられた後にレビューリクエストをチェック
+        _requestReviewIfTargetLevel(newLevel);
+      });
     }
     // 変更された経験値を保存
     SharedPrefsHelper.saveExperience(_experience);
+  }
+
+  Future<void> _requestReviewIfTargetLevel(int level) async {
+    // レビューを表示したいレベルのリスト
+    const targetLevels = [5, 10, 15];
+
+    if (targetLevels.contains(level)) {
+      try {
+        final InAppReview inAppReview = InAppReview.instance;
+        if (await inAppReview.isAvailable()) {
+          // システムのレビューダイアログを表示
+          await inAppReview.requestReview();
+        }
+      } catch (e) {
+        print('Review request failed: $e');
+      }
+    }
   }
 
   // このメソッドを新しく追加します
