@@ -1990,6 +1990,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Eagle'**
   String get skyEagle;
+
+  /// No description provided for @spaceItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Space Items'**
+  String get spaceItems;
+
+  /// No description provided for @spaceCreatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Space Creatures'**
+  String get spaceCreatures;
+
+  /// No description provided for @spaceMeteorite1.
+  ///
+  /// In en, this message translates to:
+  /// **'Meteorite 1'**
+  String get spaceMeteorite1;
+
+  /// No description provided for @spaceMeteorite2.
+  ///
+  /// In en, this message translates to:
+  /// **'Meteorite 2'**
+  String get spaceMeteorite2;
+
+  /// No description provided for @spaceMeteorite3.
+  ///
+  /// In en, this message translates to:
+  /// **'Meteorite 3'**
+  String get spaceMeteorite3;
+
+  /// No description provided for @spaceSatellite1.
+  ///
+  /// In en, this message translates to:
+  /// **'Satellite 1'**
+  String get spaceSatellite1;
+
+  /// No description provided for @spaceSatellite2.
+  ///
+  /// In en, this message translates to:
+  /// **'Satellite 2'**
+  String get spaceSatellite2;
+
+  /// No description provided for @spacePlanet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Planet 1'**
+  String get spacePlanet1;
+
+  /// No description provided for @spacePlanet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Planet 2'**
+  String get spacePlanet2;
+
+  /// No description provided for @spacePlanet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Planet 3'**
+  String get spacePlanet3;
+
+  /// No description provided for @spaceRocket.
+  ///
+  /// In en, this message translates to:
+  /// **'Rocket'**
+  String get spaceRocket;
+
+  /// No description provided for @spaceShuttle.
+  ///
+  /// In en, this message translates to:
+  /// **'Space Shuttle'**
+  String get spaceShuttle;
+
+  /// No description provided for @spaceUfo.
+  ///
+  /// In en, this message translates to:
+  /// **'UFO'**
+  String get spaceUfo;
+
+  /// No description provided for @spaceAlien1.
+  ///
+  /// In en, this message translates to:
+  /// **'Alien 1'**
+  String get spaceAlien1;
+
+  /// No description provided for @spaceAlien2.
+  ///
+  /// In en, this message translates to:
+  /// **'Alien 2'**
+  String get spaceAlien2;
+
+  /// No description provided for @spaceAlien3.
+  ///
+  /// In en, this message translates to:
+  /// **'Alien 3'**
+  String get spaceAlien3;
+
+  /// No description provided for @spaceAlien4.
+  ///
+  /// In en, this message translates to:
+  /// **'Alien 4'**
+  String get spaceAlien4;
+
+  /// No description provided for @spaceAlien5.
+  ///
+  /// In en, this message translates to:
+  /// **'Alien 5'**
+  String get spaceAlien5;
+
+  /// No description provided for @spaceAlien6.
+  ///
+  /// In en, this message translates to:
+  /// **'Alien 6'**
+  String get spaceAlien6;
+
+  /// No description provided for @spaceAlien7.
+  ///
+  /// In en, this message translates to:
+  /// **'Alien 7'**
+  String get spaceAlien7;
+
+  /// No description provided for @spaceAlien8.
+  ///
+  /// In en, this message translates to:
+  /// **'Alien 8'**
+  String get spaceAlien8;
+
+  /// No description provided for @spaceAlien9.
+  ///
+  /// In en, this message translates to:
+  /// **'Alien 9'**
+  String get spaceAlien9;
+
+  /// No description provided for @skySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky Settings'**
+  String get skySettings;
+
+  /// No description provided for @spaceSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Space Settings'**
+  String get spaceSettings;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

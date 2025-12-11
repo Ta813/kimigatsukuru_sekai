@@ -642,4 +642,28 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('equipped_sky_livings') ?? [];
   }
+
+  // 宇宙のアイテムの装備情報を保存
+  static Future<void> saveEquippedSpaceItems(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_space_items', items);
+  }
+
+  // 宇宙のアイテムの装備情報を読み込み
+  static Future<List<String>> loadEquippedSpaceItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_space_items') ?? [];
+  }
+
+  // 宇宙の生き物の装備情報を保存
+  static Future<void> saveEquippedSpaceLivings(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_space_livings', items);
+  }
+
+  // 宇宙の生き物の装備情報を読み込み
+  static Future<List<String>> loadEquippedSpaceLivings() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_space_livings') ?? [];
+  }
 }

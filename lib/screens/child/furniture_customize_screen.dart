@@ -13,6 +13,7 @@ enum CustomizeMode {
   island, // 島モード
   sea, // 海モード
   sky, // 空モード
+  space, // 宇宙モード
 }
 
 class FurnitureCustomizeScreen extends StatefulWidget {
@@ -38,6 +39,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
   List<String> _equippedLivings = [];
   List<String> _equippedSkyItems = [];
   List<String> _equippedSkyLivings = [];
+  List<String> _equippedSpaceItems = [];
+  List<String> _equippedSpaceLivings = [];
 
   @override
   void initState() {
@@ -55,6 +58,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     final livings = await SharedPrefsHelper.loadEquippedLivings();
     final skyItems = await SharedPrefsHelper.loadEquippedSkyItems();
     final skyLivings = await SharedPrefsHelper.loadEquippedSkyLivings();
+    final spaceItems = await SharedPrefsHelper.loadEquippedSpaceItems();
+    final spaceLivings = await SharedPrefsHelper.loadEquippedSpaceLivings();
 
     setState(() {
       _purchasedItemNames = purchased;
@@ -66,6 +71,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       _equippedLivings = livings;
       _equippedSkyItems = skyItems;
       _equippedSkyLivings = skyLivings;
+      _equippedSpaceItems = spaceItems;
+      _equippedSpaceLivings = spaceLivings;
     });
   }
 
@@ -120,6 +127,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               await SharedPrefsHelper.saveEquippedSkyItems(selected);
             } else if (type == 'sky_living') {
               await SharedPrefsHelper.saveEquippedSkyLivings(selected);
+            } else if (type == 'space_item') {
+              await SharedPrefsHelper.saveEquippedSpaceItems(selected);
+            } else if (type == 'space_living') {
+              await SharedPrefsHelper.saveEquippedSpaceLivings(selected);
             }
           },
           child: Container(
@@ -258,7 +269,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
         _buildMultiSelectionGrid(ownedSeaItems, _equippedSeaItems, 'sea_item'),
         _buildMultiSelectionGrid(ownedLiving, _equippedLivings, 'living'),
       ];
-    } else {
+    } else if (widget.mode == CustomizeMode.sky) {
       final ownedSeaItems = shopItems
           .where(
             (item) =>
@@ -293,6 +304,45 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
           'sky_living',
         ),
       ];
+    } else {
+      final ownedSeaItems = shopItems
+          .where(
+            (item) =>
+                item.type == 'space_item' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+      final ownedLiving = shopItems
+          .where(
+            (item) =>
+                item.type == 'space_living' &&
+                _purchasedItemNames.contains(item.name),
+          )
+          .toList();
+
+      tabs = [
+        Tab(
+          text: AppLocalizations.of(context)!.spaceItems,
+          icon: Icon(Icons.rocket_launch),
+        ),
+        Tab(
+          text: AppLocalizations.of(context)!.spaceCreatures,
+          icon: FaIcon(FontAwesomeIcons.redditAlien),
+        ),
+      ];
+
+      tabViews = [
+        _buildMultiSelectionGrid(
+          ownedSeaItems,
+          _equippedSpaceItems,
+          'space_item',
+        ),
+        _buildMultiSelectionGrid(
+          ownedLiving,
+          _equippedSpaceLivings,
+          'space_living',
+        ),
+      ];
     }
 
     return DefaultTabController(
@@ -304,7 +354,11 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 ? AppLocalizations.of(context)!.houseSettings
                 : widget.mode == CustomizeMode.island
                 ? AppLocalizations.of(context)!.islandSettings
-                : AppLocalizations.of(context)!.seaSettings,
+                : widget.mode == CustomizeMode.sea
+                ? AppLocalizations.of(context)!.seaSettings
+                : widget.mode == CustomizeMode.sky
+                ? AppLocalizations.of(context)!.skySettings
+                : AppLocalizations.of(context)!.spaceSettings,
           ),
           bottom: TabBar(
             tabs: tabs, // ★ 準備したタブリストを使用

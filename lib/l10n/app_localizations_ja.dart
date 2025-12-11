@@ -983,4 +983,76 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get skyEagle => 'ワシ';
+
+  @override
+  String get spaceItems => 'うちゅうのアイテム';
+
+  @override
+  String get spaceCreatures => 'うちゅうのいきもの';
+
+  @override
+  String get spaceMeteorite1 => 'いんせき１';
+
+  @override
+  String get spaceMeteorite2 => 'いんせき２';
+
+  @override
+  String get spaceMeteorite3 => 'いんせき３';
+
+  @override
+  String get spaceSatellite1 => 'えいせい１';
+
+  @override
+  String get spaceSatellite2 => 'えいせい２';
+
+  @override
+  String get spacePlanet1 => 'わくせい１';
+
+  @override
+  String get spacePlanet2 => 'わくせい２';
+
+  @override
+  String get spacePlanet3 => 'わくせい３';
+
+  @override
+  String get spaceRocket => 'ロケット';
+
+  @override
+  String get spaceShuttle => 'シャトル';
+
+  @override
+  String get spaceUfo => 'ユーフォー';
+
+  @override
+  String get spaceAlien1 => 'うちゅうじん１';
+
+  @override
+  String get spaceAlien2 => 'うちゅうじん２';
+
+  @override
+  String get spaceAlien3 => 'うちゅうじん３';
+
+  @override
+  String get spaceAlien4 => 'うちゅうじん４';
+
+  @override
+  String get spaceAlien5 => 'うちゅうじん５';
+
+  @override
+  String get spaceAlien6 => 'うちゅうじん６';
+
+  @override
+  String get spaceAlien7 => 'うちゅうじん７';
+
+  @override
+  String get spaceAlien8 => 'うちゅうじん８';
+
+  @override
+  String get spaceAlien9 => 'うちゅうじん９';
+
+  @override
+  String get skySettings => 'そらのせってい';
+
+  @override
+  String get spaceSettings => 'うちゅうのせってい';
 }

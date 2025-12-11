@@ -14,6 +14,7 @@ enum ShopMode {
   forIsland, // 島からの表示
   forSea, // 海からの表示
   forSky, // 空からの表示
+  forSpace, // 宇宙からの表示
 }
 
 class ShopScreen extends StatefulWidget {
@@ -399,6 +400,44 @@ class _ShopScreenState extends State<ShopScreen> {
       tabViews = [
         _buildCategoryGrid(seaItems, crossAxisCount: 7),
         _buildCategoryGrid(livingItems, crossAxisCount: 7),
+      ];
+    } else if (widget.mode == ShopMode.forSpace) {
+      // 空モードの場合、空限定アイテムのみにする
+      final isSpaceItems = shopItems.where((item) => item.isSpaceOnly).toList();
+
+      final spaceItems = isSpaceItems
+          .where((item) => item.type == 'space_item')
+          .toList();
+      final livingItems = isSpaceItems
+          .where((item) => item.type == 'space_living')
+          .toList();
+
+      tabs = [
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.rocket_launch),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.spaceItems),
+            ],
+          ),
+        ),
+        Tab(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FaIcon(FontAwesomeIcons.redditAlien),
+              SizedBox(width: 8), // アイコンとテキストの間のスペース
+              Text(AppLocalizations.of(context)!.spaceCreatures),
+            ],
+          ),
+        ),
+      ];
+
+      tabViews = [
+        _buildCategoryGrid(spaceItems, crossAxisCount: 6),
+        _buildCategoryGrid(livingItems, crossAxisCount: 6),
       ];
     } else if (widget.mode == ShopMode.forHouse) {
       // --- 🏠 家の中モードの時の表示 ---

@@ -6,16 +6,15 @@ import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
 import 'shop_screen.dart';
 import '../../managers/sfx_manager.dart';
-import 'space_screen.dart';
 
-class SkyScreen extends StatefulWidget {
+class SpaceScreen extends StatefulWidget {
   final int currentLevel;
   final int currentPoints;
   final int requiredExpForNextLevel;
   final int experience;
   final double experienceFraction;
 
-  const SkyScreen({
+  const SpaceScreen({
     super.key,
     required this.currentLevel,
     required this.currentPoints,
@@ -25,14 +24,14 @@ class SkyScreen extends StatefulWidget {
   });
 
   @override
-  State<SkyScreen> createState() => _SkyScreenState();
+  State<SpaceScreen> createState() => _SpaceScreenState();
 }
 
-class _SkyScreenState extends State<SkyScreen> {
+class _SpaceScreenState extends State<SpaceScreen> {
   // --- 配置するアイテムの状態を管理する変数 ---
   String? _equippedClothesPath;
-  List<String> _equippedSkyItems = [];
-  List<String> _equippedSkyLivings = [];
+  List<String> _equippedSpaceItems = [];
+  List<String> _equippedSpaceLivings = [];
 
   Offset _avatarPosition = const Offset(150, 200);
   Map<String, Offset> _itemPositionsMap = {};
@@ -56,12 +55,12 @@ class _SkyScreenState extends State<SkyScreen> {
     final loadedPoints = await SharedPrefsHelper.loadPoints();
     final loadedLevel = await SharedPrefsHelper.loadLevel();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
-    final skyItems = await SharedPrefsHelper.loadEquippedSkyItems();
-    final skyLivings = await SharedPrefsHelper.loadEquippedSkyLivings();
+    final spaceItems = await SharedPrefsHelper.loadEquippedSpaceItems();
+    final spaceLivings = await SharedPrefsHelper.loadEquippedSpaceLivings();
 
     // --- 位置情報の読み込み ---
     Offset? avatarPos = await SharedPrefsHelper.loadCharacterPosition(
-      'avatar_on_sky',
+      'avatar_on_space',
     );
 
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
@@ -83,7 +82,7 @@ class _SkyScreenState extends State<SkyScreen> {
     }
 
     // 全てのアイテムのパスを結合
-    final allItems = [...skyItems, ...skyLivings];
+    final allItems = [...spaceItems, ...spaceLivings];
     final loadedPositions = {};
 
     for (var itemPath in allItems) {
@@ -100,7 +99,7 @@ class _SkyScreenState extends State<SkyScreen> {
 
     for (var charPath in charactersToLoad) {
       final loadedPos = await SharedPrefsHelper.loadCharacterPosition(
-        'sky_$charPath',
+        'space_$charPath',
       );
       loadedPositions[charPath] =
           loadedPos ?? Offset(screenWidth / 2, screenHeight * 2 / 3);
@@ -113,8 +112,8 @@ class _SkyScreenState extends State<SkyScreen> {
         _equippedClothesPath = clothes ?? 'assets/images/avatar.png';
         _avatarPosition =
             avatarPos ?? Offset(screenWidth / 2, screenHeight * 2 / 3);
-        _equippedSkyItems = skyItems;
-        _equippedSkyLivings = skyLivings;
+        _equippedSpaceItems = spaceItems;
+        _equippedSpaceLivings = spaceLivings;
         _itemPositionsMap = {};
         for (var itemPath in allItems) {
           if (loadedPositions[itemPath] != null &&
@@ -151,10 +150,8 @@ class _SkyScreenState extends State<SkyScreen> {
     if (itemPath.contains('avatar')) return 60.0;
     if (itemPath.contains('clothes_')) return 60.0;
     if (itemPath.contains('character')) return 60.0;
-    if (itemPath.contains('item_huusen4')) return 80.0;
-    if (itemPath.contains('item_huusen')) return 50.0;
     if (itemPath.contains('item')) return 100.0;
-    if (itemPath.contains('living')) return 50.0;
+    if (itemPath.contains('living')) return 60.0;
     // ... 他のアイテムのサイズ ...
     return 60.0;
   }
@@ -162,25 +159,24 @@ class _SkyScreenState extends State<SkyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
       body: Stack(
         children: [
-          // --- 背景画像 (空・宇宙) ---
+          // --- 背景画像 (宇宙) ---
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                // ★ 空用の背景画像を用意してください
-                image: AssetImage('assets/images/sky_background.png'),
+                image: AssetImage('assets/images/space_background.png'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
+
+          // --- 下に戻る矢印 (空へ戻る) ---
           SafeArea(
-            // ★ ノッチやステータスバーを避ける
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 1.0), // 画面下からの余白
+                padding: const EdgeInsets.only(bottom: 16.0),
                 child: GestureDetector(
                   onTap: () {
                     try {
@@ -189,66 +185,16 @@ class _SkyScreenState extends State<SkyScreen> {
                       // エラーが発生した場合
                       print('再生エラー: $e');
                     }
-                    // ★ ワールドマップ画面に戻る
+                    // 空の画面に戻る
                     Navigator.pop(context);
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(8.0), // タップ領域を広げる
-                    child: const AnimatedIconIndicator(
-                      iconData: Icons.arrow_downward, // ★ 下矢印
-                      iconColor: Colors.blueAccent,
-                      iconSize: 40,
-                      offsetY: 5, // 上下動の幅を少し小さめに
-                      duration: Duration(seconds: 1),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter, // 上に配置
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: GestureDetector(
-                  onTap: () {
-                    // ★ レベル20以上で解放
-                    if (widget.currentLevel >= 20) {
-                      try {
-                        SfxManager.instance.playSuccessSound();
-                      } catch (e) {
-                        // エラーが発生した場合
-                        print('再生エラー: $e');
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SpaceScreen(
-                            currentLevel: widget.currentLevel,
-                            currentPoints: widget.currentPoints,
-                            requiredExpForNextLevel:
-                                widget.requiredExpForNextLevel,
-                            experience: widget.experience,
-                            experienceFraction: widget.experienceFraction,
-                          ),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('宇宙はレベル20で解放されます！')),
-                      );
-                    }
-                  },
-                  child: Container(
                     padding: const EdgeInsets.all(8.0),
-                    // 上向きの矢印
                     child: const AnimatedIconIndicator(
-                      iconData: Icons.arrow_upward,
-                      iconColor: Colors.purpleAccent,
+                      iconData: Icons.arrow_downward,
+                      iconColor: Colors.white,
                       iconSize: 40,
-                      offsetY: -5, // 上に動くアニメーション
+                      offsetY: 5,
                     ),
                   ),
                 ),
@@ -258,7 +204,8 @@ class _SkyScreenState extends State<SkyScreen> {
 
           Positioned(
             top: 30, // ポイント表示の下あたり
-            left: 30, // 左端を画面の左端に合わせる
+            left: 0,
+            right: 0,
             child: Center(
               // ★ Centerウィジェットで中央に配置
               child: Container(
@@ -392,7 +339,7 @@ class _SkyScreenState extends State<SkyScreen> {
                   ),
                   child: IconButton(
                     icon: const Icon(
-                      Icons.flight,
+                      Icons.rocket_launch,
                       size: 40,
                       color: Color(0xFFFFCA28),
                     ),
@@ -407,7 +354,7 @@ class _SkyScreenState extends State<SkyScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const FurnitureCustomizeScreen(
-                            mode: CustomizeMode.sky,
+                            mode: CustomizeMode.space,
                           ),
                         ),
                       ).then((_) {
@@ -445,7 +392,7 @@ class _SkyScreenState extends State<SkyScreen> {
                           builder: (context) => ShopScreen(
                             currentPoints: _points, // ユーザーの所持ポイント
                             currentLevel: _level, // ユーザーレベルも渡す
-                            mode: ShopMode.forSky, // ★空モードを指定
+                            mode: ShopMode.forSpace, // ★宇宙モードを指定
                           ),
                         ),
                       ).then((_) {
@@ -460,7 +407,7 @@ class _SkyScreenState extends State<SkyScreen> {
           ),
 
           // 配置されたアイテムのリストを表示 (ホーム画面と全く同じ仕組み)
-          ..._equippedSkyItems.map((itemPath) {
+          ..._equippedSpaceItems.map((itemPath) {
             return DraggableCharacter(
               id: itemPath, // IDとして画像パスを使う
               imagePath: itemPath,
@@ -477,7 +424,7 @@ class _SkyScreenState extends State<SkyScreen> {
           }).toList(),
 
           // 配置された生き物のアイテムのリストを表示
-          ..._equippedSkyLivings.map((itemPath) {
+          ..._equippedSpaceLivings.map((itemPath) {
             return DraggableCharacter(
               id: itemPath,
               imagePath: itemPath,
@@ -496,7 +443,7 @@ class _SkyScreenState extends State<SkyScreen> {
           // --- アバターの表示 ---
           if (_equippedClothesPath != null)
             DraggableCharacter(
-              id: 'avatar_on_sky',
+              id: 'avatar_on_space',
               imagePath: _equippedClothesPath!,
               position: _avatarPosition,
               size: _getItemSize(_equippedClothesPath!),
@@ -508,7 +455,7 @@ class _SkyScreenState extends State<SkyScreen> {
           // ★応援キャラクターの表示と操作
           ..._equippedCharacters.map((charPath) {
             return DraggableCharacter(
-              id: 'sky_$charPath', // IDとして画像パスを使う
+              id: 'space_$charPath', // IDとして画像パスを使う
               imagePath: charPath,
               position: _characterPositionsMap[charPath] ?? Offset(490, 190),
               size: _getItemSize(charPath),

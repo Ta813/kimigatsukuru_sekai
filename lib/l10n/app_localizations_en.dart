@@ -983,4 +983,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skyEagle => 'Eagle';
+
+  @override
+  String get spaceItems => 'Space Items';
+
+  @override
+  String get spaceCreatures => 'Space Creatures';
+
+  @override
+  String get spaceMeteorite1 => 'Meteorite 1';
+
+  @override
+  String get spaceMeteorite2 => 'Meteorite 2';
+
+  @override
+  String get spaceMeteorite3 => 'Meteorite 3';
+
+  @override
+  String get spaceSatellite1 => 'Satellite 1';
+
+  @override
+  String get spaceSatellite2 => 'Satellite 2';
+
+  @override
+  String get spacePlanet1 => 'Planet 1';
+
+  @override
+  String get spacePlanet2 => 'Planet 2';
+
+  @override
+  String get spacePlanet3 => 'Planet 3';
+
+  @override
+  String get spaceRocket => 'Rocket';
+
+  @override
+  String get spaceShuttle => 'Space Shuttle';
+
+  @override
+  String get spaceUfo => 'UFO';
+
+  @override
+  String get spaceAlien1 => 'Alien 1';
+
+  @override
+  String get spaceAlien2 => 'Alien 2';
+
+  @override
+  String get spaceAlien3 => 'Alien 3';
+
+  @override
+  String get spaceAlien4 => 'Alien 4';
+
+  @override
+  String get spaceAlien5 => 'Alien 5';
+
+  @override
+  String get spaceAlien6 => 'Alien 6';
+
+  @override
+  String get spaceAlien7 => 'Alien 7';
+
+  @override
+  String get spaceAlien8 => 'Alien 8';
+
+  @override
+  String get spaceAlien9 => 'Alien 9';
+
+  @override
+  String get skySettings => 'Sky Settings';
+
+  @override
+  String get spaceSettings => 'Space Settings';
 }

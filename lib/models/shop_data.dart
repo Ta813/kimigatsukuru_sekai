@@ -13,6 +13,7 @@ class ShopItem {
   final bool isIslandOnly;
   final bool isSeaOnly;
   final bool isSkyOnly;
+  final bool isSpaceOnly;
 
   ShopItem({
     required this.name,
@@ -23,6 +24,7 @@ class ShopItem {
     this.isIslandOnly = false,
     this.isSeaOnly = false,
     this.isSkyOnly = false,
+    this.isSpaceOnly = false,
   });
 
   String getDisplayName(BuildContext context) {
@@ -317,6 +319,46 @@ class ShopItem {
         return l10n.skyButterfly;
       case 'ワシ（そら）':
         return l10n.skyEagle;
+      case 'いんせき１（宇宙）':
+        return l10n.spaceMeteorite1;
+      case 'いんせき２（宇宙）':
+        return l10n.spaceMeteorite2;
+      case 'いんせき３（宇宙）':
+        return l10n.spaceMeteorite3;
+      case 'えいせい１（宇宙）':
+        return l10n.spaceSatellite1;
+      case 'えいせい２（宇宙）':
+        return l10n.spaceSatellite2;
+      case 'わくせい１（宇宙）':
+        return l10n.spacePlanet1;
+      case 'わくせい２（宇宙）':
+        return l10n.spacePlanet2;
+      case 'わくせい３（宇宙）':
+        return l10n.spacePlanet3;
+      case 'ロケット（宇宙）':
+        return l10n.spaceRocket;
+      case 'シャトル（宇宙）':
+        return l10n.spaceShuttle;
+      case 'ユーフォー（宇宙）':
+        return l10n.spaceUfo;
+      case 'うちゅうじん１（宇宙）':
+        return l10n.spaceAlien1;
+      case 'うちゅうじん２（宇宙）':
+        return l10n.spaceAlien2;
+      case 'うちゅうじん３（宇宙）':
+        return l10n.spaceAlien3;
+      case 'うちゅうじん４（宇宙）':
+        return l10n.spaceAlien4;
+      case 'うちゅうじん５（宇宙）':
+        return l10n.spaceAlien5;
+      case 'うちゅうじん６（宇宙）':
+        return l10n.spaceAlien6;
+      case 'うちゅうじん７（宇宙）':
+        return l10n.spaceAlien7;
+      case 'うちゅうじん８（宇宙）':
+        return l10n.spaceAlien8;
+      case 'うちゅうじん９（宇宙）':
+        return l10n.spaceAlien9;
       default:
         return name;
     }
@@ -1433,5 +1475,165 @@ final List<ShopItem> shopItems = [
     imagePath: 'assets/images/sky/living_washi.png',
     requiredLevel: 15,
     isSkyOnly: true,
+  ),
+  ShopItem(
+    name: 'いんせき１（宇宙）',
+    type: 'space_item',
+    price: 150,
+    imagePath: 'assets/images/space/item_inseki1.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'いんせき２（宇宙）',
+    type: 'space_item',
+    price: 150,
+    imagePath: 'assets/images/space/item_inseki2.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'いんせき３（宇宙）',
+    type: 'space_item',
+    price: 150,
+    imagePath: 'assets/images/space/item_inseki3.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'えいせい１（宇宙）',
+    type: 'space_item',
+    price: 150,
+    imagePath: 'assets/images/space/item_jinkoueisei1.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'えいせい２（宇宙）',
+    type: 'space_item',
+    price: 150,
+    imagePath: 'assets/images/space/item_jinkoueisei2.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'わくせい１（宇宙）',
+    type: 'space_item',
+    price: 150,
+    imagePath: 'assets/images/space/item_wakusei1.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'わくせい２（宇宙）',
+    type: 'space_item',
+    price: 150,
+    imagePath: 'assets/images/space/item_wakusei2.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'わくせい３（宇宙）',
+    type: 'space_item',
+    price: 150,
+    imagePath: 'assets/images/space/item_wakusei3.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'ロケット（宇宙）',
+    type: 'space_item',
+    price: 300,
+    imagePath: 'assets/images/space/item_roketto.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'シャトル（宇宙）',
+    type: 'space_item',
+    price: 300,
+    imagePath: 'assets/images/space/item_supe-susyatoru.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'ユーフォー（宇宙）',
+    type: 'space_item',
+    price: 300,
+    imagePath: 'assets/images/space/item_ufo.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'うちゅうじん１（宇宙）',
+    type: 'space_living',
+    price: 300,
+    imagePath: 'assets/images/space/living_utyujin1.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'うちゅうじん２（宇宙）',
+    type: 'space_living',
+    price: 300,
+    imagePath: 'assets/images/space/living_utyujin2.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'うちゅうじん３（宇宙）',
+    type: 'space_living',
+    price: 200,
+    imagePath: 'assets/images/space/living_utyujin3.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'うちゅうじん４（宇宙）',
+    type: 'space_living',
+    price: 200,
+    imagePath: 'assets/images/space/living_utyujin4.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'うちゅうじん５（宇宙）',
+    type: 'space_living',
+    price: 200,
+    imagePath: 'assets/images/space/living_utyujin5.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'うちゅうじん６（宇宙）',
+    type: 'space_living',
+    price: 200,
+    imagePath: 'assets/images/space/living_utyujin6.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'うちゅうじん７（宇宙）',
+    type: 'space_living',
+    price: 200,
+    imagePath: 'assets/images/space/living_utyujin7.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'うちゅうじん８（宇宙）',
+    type: 'space_living',
+    price: 200,
+    imagePath: 'assets/images/space/living_utyujin8.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
+  ),
+  ShopItem(
+    name: 'うちゅうじん９（宇宙）',
+    type: 'space_living',
+    price: 200,
+    imagePath: 'assets/images/space/living_utyujin9.png',
+    requiredLevel: 20,
+    isSpaceOnly: true,
   ),
 ];

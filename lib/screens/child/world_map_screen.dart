@@ -262,6 +262,12 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
               onTap: () {
                 // ★ レベル15以上かチェック
                 if (widget.currentLevel >= 15) {
+                  try {
+                    SfxManager.instance.playSuccessSound();
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
                   // ★ レベル15以上なら、SkyScreenに遷移
                   Navigator.push(
                     context,
