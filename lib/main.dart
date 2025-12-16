@@ -11,6 +11,7 @@ import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,13 @@ Future<void> main() async {
       FlutterError.onError = (errorDetails) {
         FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
       };
+
+      // Facebook SDKのインスタンス作成
+      final facebookAppEvents = FacebookAppEvents();
+
+      // (オプション) IDFA(トラッキング)の収集を無効化する設定
+      // キッズカテゴリなので、明示的に無効化しておいた方が安全です
+      await facebookAppEvents.setAdvertiserTracking(enabled: false);
     } catch (e) {
       // 初期化に失敗してもアプリは続行する
       print('Failed to initialize network services (offline?): $e');

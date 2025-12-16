@@ -71,5 +71,11 @@
 		    </array>
 	    </dict>
     </array>
+	<key>FacebookAppID</key>
+    <string>2210361479492024</string>
+    <key>FacebookClientToken</key>
+    <string>55600afd30e0755ffa3a615ee96fe8be</string>
+    <key>FacebookDisplayName</key>
+    <string>KimigatsukuruSekai</string>
 </dict>
 </plist>
