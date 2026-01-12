@@ -205,20 +205,22 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
           Positioned(
             top: 20.0, // 上からの距離
             left: 20.0, // 左からの距離
-            child: Container(
-              decoration: BoxDecoration(
-                color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                shape: BoxShape.circle, // 形を円にする
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.keyboard_return,
-                  size: 40,
-                  color: Color(0xFFFFCA28),
+            child: SafeArea(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
+                  shape: BoxShape.circle, // 形を円にする
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.keyboard_return,
+                    size: 40,
+                    color: Color(0xFFFFCA28),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
             ),
           ),
@@ -229,36 +231,38 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
             child: Stack(
               alignment: Alignment.topRight,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      // 少し影をつけて立体感を出す
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 24),
-                      const SizedBox(width: 8),
-                      Text(
-                        '$_points', // ポイント数を表示
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                SafeArea(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        // 少し影をつけて立体感を出す
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 2),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.star, color: Colors.amber, size: 24),
+                        const SizedBox(width: 8),
+                        Text(
+                          '$_points', // ポイント数を表示
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -415,68 +419,71 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
             top: 80.0, // 上からの距離
             right: 20.0, // 右からの距離
             // Columnでウィジェットを縦に並べます
-            child: Column(
-              children: [
-                // 家具設定ボタン
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                    shape: BoxShape.circle, // 形を円にする
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.chair,
-                      size: 40,
-                      color: Color(0xFFFFCA28),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  // 家具設定ボタン
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
+                      shape: BoxShape.circle, // 形を円にする
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FurnitureCustomizeScreen(
-                            mode: CustomizeMode.house,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.chair,
+                        size: 40,
+                        color: Color(0xFFFFCA28),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const FurnitureCustomizeScreen(
+                                  mode: CustomizeMode.house,
+                                ),
                           ),
-                        ),
-                      ).then((_) {
-                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                        _loadItemsAndPositions();
-                      });
-                    },
+                        ).then((_) {
+                          // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
+                          _loadItemsAndPositions();
+                        });
+                      },
+                    ),
                   ),
-                ),
-                // ボタンの間に少し隙間を空けます
-                const SizedBox(height: 10),
+                  // ボタンの間に少し隙間を空けます
+                  const SizedBox(height: 10),
 
-                // ショップボタン
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                    shape: BoxShape.circle, // 形を円にする
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.store,
-                      size: 40,
-                      color: Color(0xFFFFCA28),
+                  // ショップボタン
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
+                      shape: BoxShape.circle, // 形を円にする
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ShopScreen(
-                            currentPoints: _points, // ユーザーの所持ポイント
-                            currentLevel: _level, // ユーザーレベルも渡す
-                            mode: ShopMode.forHouse, // ★家の中モードを指定
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.store,
+                        size: 40,
+                        color: Color(0xFFFFCA28),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ShopScreen(
+                              currentPoints: _points, // ユーザーの所持ポイント
+                              currentLevel: _level, // ユーザーレベルも渡す
+                              mode: ShopMode.forHouse, // ★家の中モードを指定
+                            ),
                           ),
-                        ),
-                      ).then((_) {
-                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                        _loadItemsAndPositions();
-                      });
-                    },
+                        ).then((_) {
+                          // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
+                          _loadItemsAndPositions();
+                        });
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

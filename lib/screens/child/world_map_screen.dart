@@ -119,57 +119,59 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
           Positioned(
             top: 20.0, // 上からの距離
             left: 20.0, // 左からの距離
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                    shape: BoxShape.circle, // 形を円にする
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.keyboard_return,
-                      size: 40,
-                      color: Color(0xFFFFCA28),
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
+                      shape: BoxShape.circle, // 形を円にする
                     ),
-                    onPressed: () {
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {
-                        // エラーが発生した場合
-                        print('再生エラー: $e');
-                      }
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 10), // ボタンの間に少し隙間をあける
-
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFF7043).withOpacity(0.9),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.question_mark,
-                      size: 40,
-                      color: Color(0xFFFFCA28),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.keyboard_return,
+                        size: 40,
+                        color: Color(0xFFFFCA28),
+                      ),
+                      onPressed: () {
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {
+                          // エラーが発生した場合
+                          print('再生エラー: $e');
+                        }
+                        Navigator.pop(context);
+                      },
                     ),
-                    onPressed: () {
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {
-                        // エラーが発生した場合
-                        print('再生エラー: $e');
-                      }
-                      _showGuideSequence();
-                    },
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 10), // ボタンの間に少し隙間をあける
+
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFF7043).withOpacity(0.9),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.question_mark,
+                        size: 40,
+                        color: Color(0xFFFFCA28),
+                      ),
+                      onPressed: () {
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {
+                          // エラーが発生した場合
+                          print('再生エラー: $e');
+                        }
+                        _showGuideSequence();
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -179,20 +181,22 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                    shape: BoxShape.circle, // 形を円にする
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.keyboard_return,
-                      size: 40,
-                      color: Color(0xFFFFCA28),
+                SafeArea(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
+                      shape: BoxShape.circle, // 形を円にする
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.keyboard_return,
+                        size: 40,
+                        color: Color(0xFFFFCA28),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
                 ),
               ],
