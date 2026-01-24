@@ -810,7 +810,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   Future<void> _requestReviewIfTargetLevel(int level) async {
     // レビューを表示したいレベルのリスト
-    const targetLevels = [5, 10, 15];
+    const targetLevels = [2, 3, 4, 5];
 
     if (targetLevels.contains(level)) {
       try {
