@@ -403,29 +403,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   //   ),
                   const Divider(),
                   // ここから寄付の導線を追加
-                  ListTile(
-                    leading: const Icon(Icons.favorite, color: Colors.pink),
-                    title: Text(l10n.supportThisApp), // 文言は規約を意識
-                    subtitle: Text(l10n.supportEncouragement),
-                    onTap: () async {
-                      // ★ 寄付ページのURLに書き換えてください
-                      final url = Uri.parse(
-                        'https://www.buymeacoffee.com/kotoapp',
-                      );
+                  if (!Platform.isIOS)
+                    ListTile(
+                      leading: const Icon(Icons.favorite, color: Colors.pink),
+                      title: Text(l10n.supportThisApp), // 文言は規約を意識
+                      subtitle: Text(l10n.supportEncouragement),
+                      onTap: () async {
+                        // ★ 寄付ページのURLに書き換えてください
+                        final url = Uri.parse(
+                          'https://www.buymeacoffee.com/kotoapp',
+                        );
 
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(
-                          url,
-                          mode: LaunchMode.externalApplication,
-                        );
-                      } else {
-                        // URLが開けなかった場合の予備処理
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l10n.supportPageOpenError)),
-                        );
-                      }
-                    },
-                  ),
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        } else {
+                          // URLが開けなかった場合の予備処理
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(l10n.supportPageOpenError)),
+                          );
+                        }
+                      },
+                    ),
                   if (kDebugMode) ...[
                     // kDebugModeがtrueの時だけ以下のウィジェットを表示
                     const Divider(thickness: 2, color: Colors.red),
