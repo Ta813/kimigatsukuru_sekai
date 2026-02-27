@@ -666,4 +666,17 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getStringList('equipped_space_livings') ?? [];
   }
+
+  // 特定の機能のガイドを表示したかどうかを確認する
+  static Future<bool> isFeatureGuideShown(String featureKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    // デフォルトは false（まだ見ていない）
+    return prefs.getBool('guide_$featureKey') ?? false;
+  }
+
+  // 特定の機能のガイドを表示済みにする
+  static Future<void> setFeatureGuideShown(String featureKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('guide_$featureKey', true);
+  }
 }

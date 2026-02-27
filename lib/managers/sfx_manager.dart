@@ -21,7 +21,7 @@ class SfxManager {
     try {
       // just_audioでは、アセットパスの先頭に'assets/'をつけます
       await _sfxPlayer.setAsset('assets/$assetPath');
-      _sfxPlayer.play();
+      await _sfxPlayer.play();
     } catch (e) {
       // もしエラーが出た場合、コンソールに表示
       print("効果音の再生エラー ($assetPath): $e");

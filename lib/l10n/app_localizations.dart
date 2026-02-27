@@ -140,13 +140,13 @@ abstract class AppLocalizations {
   /// No description provided for @guideWelcomeDesc.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s explain how to play \'The World You Create\'!'**
+  /// **'To get started,\nplease set up your child\'s\nPromises (tasks).'**
   String get guideWelcomeDesc;
 
   /// No description provided for @guideSettingsTitle.
   ///
   /// In en, this message translates to:
-  /// **'① Parent Settings (Top-left ⚙️ icon)'**
+  /// **'Parent Settings (Top-left ⚙️ icon)'**
   String get guideSettingsTitle;
 
   /// No description provided for @guideSettingsDesc.
@@ -158,7 +158,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideNextPromiseTitle.
   ///
   /// In en, this message translates to:
-  /// **'② Next Promise (Bottom bar)'**
+  /// **'Next Promise (Bottom bar)'**
   String get guideNextPromiseTitle;
 
   /// No description provided for @guideNextPromiseDesc.
@@ -170,7 +170,7 @@ abstract class AppLocalizations {
   /// No description provided for @guidePromiseBoardTitle.
   ///
   /// In en, this message translates to:
-  /// **'③ Promise Board (Right 📄 icon)'**
+  /// **'Promise Board (Right 📄 icon)'**
   String get guidePromiseBoardTitle;
 
   /// No description provided for @guidePromiseBoardDesc.
@@ -182,7 +182,7 @@ abstract class AppLocalizations {
   /// No description provided for @guidePointsTitle.
   ///
   /// In en, this message translates to:
-  /// **'④ Points (Top-right ★)'**
+  /// **'Points (Top-right ★)'**
   String get guidePointsTitle;
 
   /// No description provided for @guidePointsDesc.
@@ -194,7 +194,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideShopTitle.
   ///
   /// In en, this message translates to:
-  /// **'⑤ Reward Shop (Right 🏠 icon)'**
+  /// **'Reward Shop (Right 🏠 icon)'**
   String get guideShopTitle;
 
   /// No description provided for @guideShopDesc.
@@ -206,7 +206,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideCustomizeTitle.
   ///
   /// In en, this message translates to:
-  /// **'⑥ Customize (Right ☺ icon)'**
+  /// **'Customize (Right ☺ icon)'**
   String get guideCustomizeTitle;
 
   /// No description provided for @guideCustomizeDesc.
@@ -218,7 +218,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideBgmButtonTitle.
   ///
   /// In en, this message translates to:
-  /// **'⑦ BGM (♪ Icon on the Right)'**
+  /// **'BGM (♪ Icon on the Right)'**
   String get guideBgmButtonTitle;
 
   /// No description provided for @guideBgmButtonDesc.
@@ -230,7 +230,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideWorldMapButtonTitle.
   ///
   /// In en, this message translates to:
-  /// **'⑧ Outer World (🌎 Icon on the Right)'**
+  /// **'Outer World (🌎 Icon on the Right)'**
   String get guideWorldMapButtonTitle;
 
   /// No description provided for @guideWorldMapButtonDesc.
@@ -238,18 +238,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Press this button to see the whole world map. As you level up, you might unlock new places to go!'**
   String get guideWorldMapButtonDesc;
-
-  /// No description provided for @guideHelpTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'⑨ Help (Left ? icon)'**
-  String get guideHelpTitle;
-
-  /// No description provided for @guideHelpDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'If you get stuck, you can press this button\nto see this explanation again.'**
-  String get guideHelpDesc;
 
   /// No description provided for @emergency.
   ///

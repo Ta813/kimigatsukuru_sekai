@@ -30,61 +30,55 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideWelcomeTitle => 'ようこそ！';
 
   @override
-  String get guideWelcomeDesc => 'これから「きみがつくる世界」の遊び方を説明するね！';
+  String get guideWelcomeDesc => 'アプリを始めるために、\n保護者の方が「お子様のやくそく」を\n設定してあげてください。';
 
   @override
-  String get guideSettingsTitle => '① おうちのひと設定「左上の⚙マーク」';
+  String get guideSettingsTitle => 'おうちのひと設定「左上の⚙マーク」';
 
   @override
   String get guideSettingsDesc => 'やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！';
 
   @override
-  String get guideNextPromiseTitle => '② つぎのやくそく「下のボード」';
+  String get guideNextPromiseTitle => 'つぎのやくそく「下のボード」';
 
   @override
   String get guideNextPromiseDesc => '次にやるべきやくそくが表示されるよ。\n「はじめる」を押して挑戦しよう！';
 
   @override
-  String get guidePromiseBoardTitle => '③ やくそくボード「右の📄マーク」';
+  String get guidePromiseBoardTitle => 'やくそくボード「右の📄マーク」';
 
   @override
   String get guidePromiseBoardDesc => '今日のやくそくの一覧が見れるよ。\n「できた！」マークを集めるのが目標だ！';
 
   @override
-  String get guidePointsTitle => '④ ポイント「右上の★」';
+  String get guidePointsTitle => 'ポイント「右上の★」';
 
   @override
   String get guidePointsDesc => 'ここにやくそくを達成すると、ポイントがもらえるよ！\nたくさん集めて、ごほうびと交換しよう。';
 
   @override
-  String get guideShopTitle => '⑤ ごほうびショップ「右の🏠マーク」';
+  String get guideShopTitle => 'ごほうびショップ「右の🏠マーク」';
 
   @override
   String get guideShopDesc => '貯めたポイントで、新しい服やおうちと交換できる場所だよ！';
 
   @override
-  String get guideCustomizeTitle => '⑥ きせかえ・もようがえ「右の☺マーク」';
+  String get guideCustomizeTitle => 'きせかえ・もようがえ「右の☺マーク」';
 
   @override
   String get guideCustomizeDesc => '買ったアイテムで、アバターの服やおうちを変えられるよ！\n自分だけの世界をつくろう。';
 
   @override
-  String get guideBgmButtonTitle => '⑦ BGM「右の♪マーク」';
+  String get guideBgmButtonTitle => 'BGM「右の♪マーク」';
 
   @override
   String get guideBgmButtonDesc => 'ここを押すと、好きな音楽を選べるよ。楽しい音楽で気分を変えてみよう！';
 
   @override
-  String get guideWorldMapButtonTitle => '⑧ 外の世界「右の🌎マーク」';
+  String get guideWorldMapButtonTitle => '外の世界「右の🌎マーク」';
 
   @override
   String get guideWorldMapButtonDesc => 'このボタンを押すと、世界の全体図が見られるよ。レベルが上がると行ける場所が増えるかも！';
-
-  @override
-  String get guideHelpTitle => '⑨ ヘルプ「左の？マーク」';
-
-  @override
-  String get guideHelpDesc => 'わからなくなったら、このボタンを押して、\nもう一度この説明を見れるよ。';
 
   @override
   String get emergency => 'きんきゅう！';

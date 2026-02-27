@@ -12,9 +12,35 @@ import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
+import 'package:audio_session/audio_session.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    final session = await AudioSession.instance;
+
+    // 手動で「環境音・ゲーム音（アンビエント）」の設定を作って適用します
+    await session.configure(
+      const AudioSessionConfiguration(
+        // 【iOS向け設定】マナーモードで消音 ＆ 他のアプリの音楽とミックスして鳴らす
+        avAudioSessionCategory: AVAudioSessionCategory.ambient,
+        avAudioSessionCategoryOptions:
+            AVAudioSessionCategoryOptions.mixWithOthers,
+        avAudioSessionMode: AVAudioSessionMode.defaultMode,
+
+        // 【Android向け設定】ゲームや効果音としての音声（裏の音楽を止めない）
+        androidAudioAttributes: AndroidAudioAttributes(
+          contentType: AndroidAudioContentType.sonification,
+          usage: AndroidAudioUsage.game,
+        ),
+        androidAudioFocusGainType:
+            AndroidAudioFocusGainType.gainTransientMayDuck,
+      ),
+    );
+  } catch (e) {
+    print("AudioSessionの初期化エラー: $e");
+  }
 
   // ★ ネットワーク接続チェック
   final connectivityResult = await (Connectivity().checkConnectivity());

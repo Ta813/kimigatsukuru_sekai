@@ -30,61 +30,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guideWelcomeTitle => 'Welcome!';
 
   @override
-  String get guideWelcomeDesc => 'Let\'s explain how to play \'The World You Create\'!';
+  String get guideWelcomeDesc => 'To get started,\nplease set up your child\'s\nPromises (tasks).';
 
   @override
-  String get guideSettingsTitle => '① Parent Settings (Top-left ⚙️ icon)';
+  String get guideSettingsTitle => 'Parent Settings (Top-left ⚙️ icon)';
 
   @override
   String get guideSettingsDesc => 'This is where parents can add or edit promises.\nTry deciding on the promises together with your child first!';
 
   @override
-  String get guideNextPromiseTitle => '② Next Promise (Bottom bar)';
+  String get guideNextPromiseTitle => 'Next Promise (Bottom bar)';
 
   @override
   String get guideNextPromiseDesc => 'The next promise you need to do is displayed here.\nPress \'Start\' to begin the challenge!';
 
   @override
-  String get guidePromiseBoardTitle => '③ Promise Board (Right 📄 icon)';
+  String get guidePromiseBoardTitle => 'Promise Board (Right 📄 icon)';
 
   @override
   String get guidePromiseBoardDesc => 'You can see a list of today\'s promises here.\nYour goal is to collect the \'Done!\' check marks!';
 
   @override
-  String get guidePointsTitle => '④ Points (Top-right ★)';
+  String get guidePointsTitle => 'Points (Top-right ★)';
 
   @override
   String get guidePointsDesc => 'When you complete a promise, you get points here!\nCollect a lot and exchange them for rewards.';
 
   @override
-  String get guideShopTitle => '⑤ Reward Shop (Right 🏠 icon)';
+  String get guideShopTitle => 'Reward Shop (Right 🏠 icon)';
 
   @override
   String get guideShopDesc => 'This is where you can exchange the points you\'ve saved for new clothes and houses!';
 
   @override
-  String get guideCustomizeTitle => '⑥ Customize (Right ☺ icon)';
+  String get guideCustomizeTitle => 'Customize (Right ☺ icon)';
 
   @override
   String get guideCustomizeDesc => 'You can change your avatar\'s clothes and house with the items you\'ve bought.\nCreate your very own world!';
 
   @override
-  String get guideBgmButtonTitle => '⑦ BGM (♪ Icon on the Right)';
+  String get guideBgmButtonTitle => 'BGM (♪ Icon on the Right)';
 
   @override
   String get guideBgmButtonDesc => 'Press here to choose your favorite music. Change the mood with a fun song!';
 
   @override
-  String get guideWorldMapButtonTitle => '⑧ Outer World (🌎 Icon on the Right)';
+  String get guideWorldMapButtonTitle => 'Outer World (🌎 Icon on the Right)';
 
   @override
   String get guideWorldMapButtonDesc => 'Press this button to see the whole world map. As you level up, you might unlock new places to go!';
-
-  @override
-  String get guideHelpTitle => '⑨ Help (Left ? icon)';
-
-  @override
-  String get guideHelpDesc => 'If you get stuck, you can press this button\nto see this explanation again.';
 
   @override
   String get emergency => 'EMERGENCY!';

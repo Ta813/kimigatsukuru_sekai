@@ -78,7 +78,7 @@ class BgmManager {
       await _bgmPlayer.setAsset(trackPath);
       // ループ再生を設定
       await _bgmPlayer.setLoopMode(LoopMode.one);
-      _bgmPlayer.play();
+      await _bgmPlayer.play();
       _currentTrack = track;
     } catch (e) {
       print("BGMの再生エラー: $e");
@@ -95,7 +95,7 @@ class BgmManager {
 
   Future<void> resume() async {
     try {
-      _bgmPlayer.play();
+      await _bgmPlayer.play();
     } catch (e) {
       print("BGMの再生エラー: $e");
     }
@@ -110,7 +110,7 @@ class BgmManager {
     }
   }
 
-  void dispose() async {
+  Future<void> dispose() async {
     try {
       await _bgmPlayer.stop();
       await _bgmPlayer.dispose();
