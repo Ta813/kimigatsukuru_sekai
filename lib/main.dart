@@ -13,6 +13,7 @@ import 'providers/locale_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:audio_session/audio_session.dart';
+import 'managers/notification_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,11 @@ Future<void> main() async {
   } catch (e) {
     print("AudioSessionの初期化エラー: $e");
   }
+
+  // 通知機能の初期化
+  await NotificationManager.instance.init();
+  // 毎週月曜11時の通知をスケジュール登録
+  await NotificationManager.instance.scheduleWeeklyMonday11AM();
 
   // ★ ネットワーク接続チェック
   final connectivityResult = await (Connectivity().checkConnectivity());

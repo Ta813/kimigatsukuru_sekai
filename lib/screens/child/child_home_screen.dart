@@ -865,10 +865,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   }
 
   Future<void> _requestReviewIfTargetLevel(int level) async {
-    // レビューを表示したいレベルのリスト
-    const targetLevels = [2, 3, 4, 5];
-
-    if (targetLevels.contains(level)) {
+    // レビューを表示したいレベルの条件をここで指定（例: レベル3以上）
+    if (level >= 3) {
       try {
         final InAppReview inAppReview = InAppReview.instance;
         if (await inAppReview.isAvailable()) {
