@@ -53,8 +53,6 @@ class NotificationManager {
           >();
       // 通知の許可（先ほど追加したもの）
       await androidImplementation?.requestNotificationsPermission();
-      // 🌟 【これを追加！】正確な時間（Exact Alarm）の許可を要求する
-      await androidImplementation?.requestExactAlarmsPermission();
     }
   }
 
