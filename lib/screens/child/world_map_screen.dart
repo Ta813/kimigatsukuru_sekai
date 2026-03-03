@@ -78,7 +78,9 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
           TextButton(
             onPressed: () {
               // ★ falseを返してダイアログを閉じる
-              Navigator.of(context).pop(false);
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(false);
+              }
             },
             child: Text(AppLocalizations.of(context)!.skip), // TODO: l10n対応
           ),
@@ -90,7 +92,9 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                 // エラーが発生した場合
                 print('再生エラー: $e');
               }
-              Navigator.of(context).pop(true);
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(true);
+              }
             },
             child: const Text('OK'),
           ),

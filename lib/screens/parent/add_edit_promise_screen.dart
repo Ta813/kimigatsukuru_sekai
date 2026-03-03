@@ -70,7 +70,9 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
         'points': int.tryParse(_pointsController.text) ?? 0,
       };
       // "結果"として新しいやくそくのデータを渡しつつ、前の画面に戻る
-      Navigator.of(context).pop(newPromise);
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop(newPromise);
+      }
     }
   }
 

@@ -35,7 +35,9 @@ class _MathLockDialogState extends State<MathLockDialog> {
   void _checkAnswer() {
     final int? userAnswer = int.tryParse(_answerController.text);
     if (userAnswer == _correctAnswer) {
-      Navigator.of(context).pop(true);
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop(true);
+      }
     } else {
       setState(() {
         _errorMessage = AppLocalizations.of(context)!.lockIncorrectAnswer;
@@ -159,7 +161,11 @@ class _MathLockDialogState extends State<MathLockDialog> {
       actionsPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(false);
+            }
+          },
           child: Text(AppLocalizations.of(context)!.cancel),
         ),
         ElevatedButton(onPressed: _checkAnswer, child: const Text('OK')),

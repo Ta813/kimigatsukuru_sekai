@@ -628,6 +628,7 @@ class _TimerScreenState extends State<TimerScreen>
       barrierDismissible: false,
       builder: (context) => RouletteDialog(basePoints: basePoints),
     );
+    if (!mounted) return;
     // ルーレットの結果（1倍か2倍か）で終了処理を呼ぶ
     _finishPromise(pointMultiplier: multiplier ?? 1, exp: 3);
   }
@@ -641,7 +642,9 @@ class _TimerScreenState extends State<TimerScreen>
       await SharedPrefsHelper.saveEmergencyPromise(null);
     }
     if (!mounted) return;
-    Navigator.of(context).pop({'points': pointsAwarded, 'exp': exp});
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop({'points': pointsAwarded, 'exp': exp});
+    }
   }
 
   // 応援フレーズのリスト

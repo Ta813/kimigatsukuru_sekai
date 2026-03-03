@@ -73,9 +73,9 @@ class _AdBannerState extends State<AdBanner> {
       return Container(height: 50);
     }
 
-    // if (!Platform.isAndroid) {
-    //   return Container(height: 50);
-    // }
+    if (!Platform.isAndroid) {
+      return Container(height: 50);
+    }
 
     return Padding(
       // ★Paddingウィジェットで囲む

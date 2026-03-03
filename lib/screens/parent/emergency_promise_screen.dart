@@ -55,7 +55,9 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
             ),
           ),
         );
-        Navigator.of(context).pop();
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
       }
     }
   }

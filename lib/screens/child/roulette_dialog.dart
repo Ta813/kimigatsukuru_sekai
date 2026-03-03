@@ -133,7 +133,9 @@ class _RouletteDialogState extends State<RouletteDialog> {
       Timer(const Duration(milliseconds: 3000), () {
         if (mounted) {
           // 閉じる時に、結果（1倍か2倍か）を返す
-          Navigator.of(context).pop(_pointMultiplier);
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop(_pointMultiplier);
+          }
         }
       });
     });

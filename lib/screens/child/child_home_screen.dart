@@ -357,7 +357,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               onPressed: () async {
                 // 同意したことを記録
                 await SharedPrefsHelper.setDataCollectionConsent(true);
-                if (mounted) Navigator.of(context).pop();
+                if (mounted) {
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  }
+                }
               },
             ),
           ],
@@ -512,7 +516,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           TextButton(
             onPressed: () {
               // ★ falseを返してダイアログを閉じる
-              Navigator.of(context).pop(false);
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(false);
+              }
             },
             child: Text(AppLocalizations.of(context)!.skip), // TODO: l10n対応
           ),
@@ -524,7 +530,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 // エラーが発生した場合
                 print('再生エラー: $e');
               }
-              Navigator.of(context).pop(true);
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(true);
+              }
             },
             child: const Text('OK'),
           ),
