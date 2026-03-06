@@ -129,8 +129,6 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
           ),
         ),
       ),
-      // 画面下部にバナーを設置
-      bottomNavigationBar: const AdBanner(),
     );
   }
 }

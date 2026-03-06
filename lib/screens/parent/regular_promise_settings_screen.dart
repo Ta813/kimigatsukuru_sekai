@@ -203,8 +203,6 @@ class _RegularPromiseSettingsScreenState
           },
         ),
       ),
-      // 画面下部にバナーを設置
-      bottomNavigationBar: const AdBanner(),
     );
   }
 }
