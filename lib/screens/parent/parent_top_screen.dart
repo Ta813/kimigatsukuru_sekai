@@ -122,8 +122,6 @@ class ParentTopScreen extends StatelessWidget {
           ),
         ),
       ),
-      // 画面下部にバナーを設置
-      bottomNavigationBar: const AdBanner(),
     );
   }
 }
