@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
-import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -365,8 +364,6 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
           ),
         ),
         body: SafeArea(child: TabBarView(children: tabViews)),
-        // 画面下部にバナーを設置
-        bottomNavigationBar: const AdBanner(),
       ),
     );
   }

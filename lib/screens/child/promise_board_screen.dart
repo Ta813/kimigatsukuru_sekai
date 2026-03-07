@@ -3,7 +3,6 @@ import 'timer_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/bgm_manager.dart';
 import '../../managers/sfx_manager.dart';
-import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/parent/advice_screen.dart';
 import '../../screens/parent/regular_promise_settings_screen.dart';
@@ -246,8 +245,6 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                 );
               },
             ),
-      // 画面下部にバナーを設置
-      bottomNavigationBar: const AdBanner(),
     );
   }
 }

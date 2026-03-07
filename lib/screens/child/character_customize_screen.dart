@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
-import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
 
 class CharacterCustomizeScreen extends StatefulWidget {
@@ -228,8 +227,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ],
           ),
         ),
-        // 画面下部にバナーを設置
-        bottomNavigationBar: const AdBanner(),
       ),
     );
   }

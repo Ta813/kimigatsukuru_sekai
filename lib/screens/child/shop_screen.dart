@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
-import '../../widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -582,7 +581,6 @@ class _ShopScreenState extends State<ShopScreen> {
             children: tabViews, // 各タブの中身となるGridViewを、共通メソッドで生成します
           ),
         ),
-        bottomNavigationBar: const AdBanner(),
       ),
     );
   }
