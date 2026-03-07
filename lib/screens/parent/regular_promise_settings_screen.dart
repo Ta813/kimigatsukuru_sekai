@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
-import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
 
 class RegularPromiseSettingsScreen extends StatefulWidget {

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'regular_promise_settings_screen.dart';
 import 'emergency_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
-import '../../widgets/ad_banner.dart';
 import 'advice_screen.dart';
 import '../../l10n/app_localizations.dart';
 import 'settings_screen.dart';
