@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
@@ -486,7 +487,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       content: AppLocalizations.of(context)!.guideWelcomeDesc,
     );
     if (!shouldContinue) return;
-    await _openParentMode();
+    await _openParentModeFromTutorial();
   }
 
   void _showGuideIfNeeded() async {
@@ -542,6 +543,34 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     return result ?? false;
   }
 
+  // チュートリアルから親モード（設定画面）を開く共通メソッド
+  Future<void> _openParentModeFromTutorial() async {
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ParentTopScreen()),
+    ).then((_) async {
+      _loadAndDetermineDisplayPromise();
+
+      // 🌟 ここから追加：やくそくが設定されていて、かつ実行ガイドをまだ見ていない場合
+      if (_displayPromise != null) {
+        bool isNextPromiseGuideShown =
+            await SharedPrefsHelper.isFeatureGuideShown('next_promise');
+
+        if (!isNextPromiseGuideShown && mounted) {
+          // 画面の描画が終わるのを少し待ってからダイアログを出す
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            await _showGuideDialog(
+              title: AppLocalizations.of(context)!.guideNextPromiseTitle,
+              content: AppLocalizations.of(context)!.guideNextPromiseDesc,
+            );
+            await SharedPrefsHelper.setFeatureGuideShown('next_promise');
+          });
+        }
+      }
+    });
+  }
+
   // ★ 親モード（設定画面）を開く共通メソッド
   Future<void> _openParentMode() async {
     // ★ 保存されているロックモードを読み込む
@@ -577,23 +606,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         MaterialPageRoute(builder: (context) => const ParentTopScreen()),
       ).then((_) async {
         _loadAndDetermineDisplayPromise();
-
-        // 🌟 ここから追加：やくそくが設定されていて、かつ実行ガイドをまだ見ていない場合
-        if (_displayPromise != null) {
-          bool isNextPromiseGuideShown =
-              await SharedPrefsHelper.isFeatureGuideShown('next_promise');
-
-          if (!isNextPromiseGuideShown && mounted) {
-            // 画面の描画が終わるのを少し待ってからダイアログを出す
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              await _showGuideDialog(
-                title: AppLocalizations.of(context)!.guideNextPromiseTitle,
-                content: AppLocalizations.of(context)!.guideNextPromiseDesc,
-              );
-              await SharedPrefsHelper.setFeatureGuideShown('next_promise');
-            });
-          }
-        }
       });
     }
   }
@@ -750,6 +762,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   // 「はじめる」ボタンを押した時の処理を修正
   void _startPromise() async {
     if (_displayPromise == null) return;
+
+    // 始める開始のイベントを記録
+    await FirebaseAnalytics.instance.logEvent(name: 'start_promise');
 
     // ★タイマー画面に行く前に、集中BGMを再生
     // ★ 保存されている集中BGM設定を読み込む
@@ -974,25 +989,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 // エラーが発生した場合
                                 print('再生エラー: $e');
                               }
-
-                              // 🌟 追加：初めて「おやが見る画面」を開く時だけ説明を出す
-                              bool isGuideShown =
-                                  await SharedPrefsHelper.isFeatureGuideShown(
-                                    'parent_mode',
-                                  );
-                              if (!isGuideShown && mounted) {
-                                await _showGuideDialog(
-                                  title: AppLocalizations.of(
-                                    context,
-                                  )!.guideSettingsTitle,
-                                  content: AppLocalizations.of(
-                                    context,
-                                  )!.guideSettingsDesc,
-                                );
-                                await SharedPrefsHelper.setFeatureGuideShown(
-                                  'parent_mode',
-                                );
-                              }
                               await _openParentMode();
                             },
                           ),
@@ -1125,24 +1121,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 print('再生エラー: $e');
                               }
 
-                              // 🌟 追加：初めて「やくそくボード」を開く時だけ説明を出す
-                              bool isGuideShown =
-                                  await SharedPrefsHelper.isFeatureGuideShown(
-                                    'promise_board',
-                                  );
-                              if (!isGuideShown && mounted) {
-                                await _showGuideDialog(
-                                  title: AppLocalizations.of(
-                                    context,
-                                  )!.guidePromiseBoardTitle,
-                                  content: AppLocalizations.of(
-                                    context,
-                                  )!.guidePromiseBoardDesc,
-                                );
-                                await SharedPrefsHelper.setFeatureGuideShown(
-                                  'promise_board',
-                                );
-                              }
                               // やくそくボード画面から戻ってくるのを「await」で待ち、結果を受け取る
                               final result =
                                   await Navigator.push<Map<String, int?>>(
@@ -1217,24 +1195,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 print('再生エラー: $e');
                               }
 
-                              // 🌟 追加：初めて「きせかえ」を開く時だけ説明を出す
-                              bool isGuideShown =
-                                  await SharedPrefsHelper.isFeatureGuideShown(
-                                    'customize',
-                                  );
-                              if (!isGuideShown && mounted) {
-                                await _showGuideDialog(
-                                  title: AppLocalizations.of(
-                                    context,
-                                  )!.guideCustomizeTitle,
-                                  content: AppLocalizations.of(
-                                    context,
-                                  )!.guideCustomizeDesc,
-                                );
-                                await SharedPrefsHelper.setFeatureGuideShown(
-                                  'customize',
-                                );
-                              }
                               // キャラクター設定画面へ遷移
                               Navigator.push(
                                 context,
@@ -1265,25 +1225,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               color: Color(0xFFFFCA28),
                             ),
                             onPressed: () async {
-                              // 🌟 追加：初めて「ショップ」を開く時だけ説明を出す
-                              bool isGuideShown =
-                                  await SharedPrefsHelper.isFeatureGuideShown(
-                                    'shop',
-                                  );
-                              if (!isGuideShown && mounted) {
-                                await _showGuideDialog(
-                                  title: AppLocalizations.of(
-                                    context,
-                                  )!.guideShopTitle,
-                                  content: AppLocalizations.of(
-                                    context,
-                                  )!.guideShopDesc,
-                                );
-                                await SharedPrefsHelper.setFeatureGuideShown(
-                                  'shop',
-                                );
-                              }
-
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -1336,25 +1277,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 print('再生エラー: $e');
                               }
 
-                              // 🌟 追加：初めて「BGM設定」を開く時だけ説明を出す
-                              bool isGuideShown =
-                                  await SharedPrefsHelper.isFeatureGuideShown(
-                                    'bgm',
-                                  );
-                              if (!isGuideShown && mounted) {
-                                await _showGuideDialog(
-                                  title: AppLocalizations.of(
-                                    context,
-                                  )!.guideBgmButtonTitle,
-                                  content: AppLocalizations.of(
-                                    context,
-                                  )!.guideBgmButtonDesc,
-                                );
-                                await SharedPrefsHelper.setFeatureGuideShown(
-                                  'bgm',
-                                );
-                              }
-
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -1385,25 +1307,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               } catch (e) {
                                 // エラーが発生した場合
                                 print('再生エラー: $e');
-                              }
-
-                              // 🌟 追加：初めて「外の世界」を開く時だけ説明を出す
-                              bool isGuideShown =
-                                  await SharedPrefsHelper.isFeatureGuideShown(
-                                    'world_map',
-                                  );
-                              if (!isGuideShown && mounted) {
-                                await _showGuideDialog(
-                                  title: AppLocalizations.of(
-                                    context,
-                                  )!.guideWorldMapButtonTitle,
-                                  content: AppLocalizations.of(
-                                    context,
-                                  )!.guideWorldMapButtonDesc,
-                                );
-                                await SharedPrefsHelper.setFeatureGuideShown(
-                                  'world_map',
-                                );
                               }
 
                               Navigator.push(

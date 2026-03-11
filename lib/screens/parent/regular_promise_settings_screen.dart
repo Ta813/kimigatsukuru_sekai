@@ -1,5 +1,6 @@
 // lib/screens/parent_mode/regular_promise_settings_screen.dart
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
@@ -27,6 +28,11 @@ class _RegularPromiseSettingsScreenState
   }
 
   Future<void> _loadPromises() async {
+    // 定例の約束設定のイベントを記録
+    await FirebaseAnalytics.instance.logEvent(
+      name: 'open_regular_promise_settings',
+    );
+
     final loadedPromises = await SharedPrefsHelper.loadRegularPromises(context);
     loadedPromises.sort((a, b) {
       final timeA = a['time'] ?? '00:00';

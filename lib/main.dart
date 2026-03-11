@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'screens/child/child_home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'firebase_options.dart'; // flutterfire configureで生成されたファイル
 import 'dart:async';
 import 'dart:ui';
@@ -153,6 +154,9 @@ class MyApp extends StatelessWidget {
       ),
       // このアプリの「玄関」となる画面を指定します
       home: const ChildHomeScreen(),
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      ],
     );
   }
 }

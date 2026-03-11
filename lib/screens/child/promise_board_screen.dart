@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'timer_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/bgm_manager.dart';
@@ -52,6 +53,9 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
 
   // 「はじめる」ボタンが押された時の処理
   void _startPromise(Map<String, dynamic> promise) async {
+    // はじめる開始のイベントを記録
+    await FirebaseAnalytics.instance.logEvent(name: 'start_promise');
+
     // ★タイマー画面に行く前に、集中BGMを再生
     // ★ 保存されている集中BGM設定を読み込む
     final trackName = await SharedPrefsHelper.loadSelectedFocusBgm();
