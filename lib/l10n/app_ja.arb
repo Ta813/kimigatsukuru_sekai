@@ -443,5 +443,13 @@
   "samplePromiseTitle": "やくそくを設定してね！",
   "samplePromiseDesc": "サンプルとして、いくつか「やくそく」を設定してあるよ！ご自身のお子様に合った設定に変えてあげてね。",
   "gotIt": "わかった",
-  "firstTimeBonus": "🌟 初回ボーナス 🌟"
+  "firstTimeBonus": "🌟 初回ボーナス 🌟",
+  "parentSettings": "おやの設定",
+  "help": "あそびかた",
+  "navPromiseBoard": "やくそく",
+  "navDressUp": "きせかえ",
+  "navShop": "おみせ",
+  "navMusic": "おんがく",
+  "navWorldMap": "せかい",
+  "navBack": "もどる"
 }

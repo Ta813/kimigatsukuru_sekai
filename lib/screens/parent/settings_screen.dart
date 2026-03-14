@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/settings_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:provider/provider.dart';
 import '../../providers/locale_provider.dart';
 import '../../l10n/app_localizations.dart';
@@ -240,8 +241,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       value: currentValue,
                       onChanged: (String? newValue) {
                         if (newValue == 'ja') {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_settings_language_ja',
+                          );
                           localeProvider.setLocale(const Locale('ja'));
                         } else if (newValue == 'en') {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_settings_language_en',
+                          );
                           localeProvider.setLocale(const Locale('en'));
                         }
                       },
@@ -276,6 +283,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ],
                       onChanged: (LockMode? newValue) async {
                         if (newValue != null) {
+                          if (newValue == LockMode.math) {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_settings_lock_multiplication',
+                            );
+                          } else if (newValue == LockMode.passcode) {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_settings_lock_passcode',
+                            );
+                          }
                           await SharedPrefsHelper.saveLockMode(newValue);
                           setState(() {
                             _selectedLockMode = newValue;
@@ -324,6 +340,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ],
                       ),
                       onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_settings_set_passcode',
+                        );
                         // ★ パスワード設定ダイアログを呼び出す処理を修正
                         _showSetPasscodeDialog().then((_) {
                           // ダイアログが閉じた後に、設定を再読み込みして表示を更新する
@@ -362,13 +381,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: [
                           TextButton(
                             child: const Text('バックアップ'),
-                            onPressed: () =>
-                                _handleBackup(BackupServiceKbn.googleDrive),
+                            onPressed: () {
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_settings_backup_google_drive',
+                              );
+                              _handleBackup(BackupServiceKbn.googleDrive);
+                            },
                           ),
                           TextButton(
                             child: const Text('復元'),
-                            onPressed: () =>
-                                _handleRestore(BackupServiceKbn.googleDrive),
+                            onPressed: () {
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_settings_restore_google_drive',
+                              );
+                              _handleRestore(BackupServiceKbn.googleDrive);
+                            },
                           ),
                         ],
                       ),
@@ -409,6 +436,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: Text(l10n.supportThisApp), // 文言は規約を意識
                       subtitle: Text(l10n.supportEncouragement),
                       onTap: () async {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_settings_support',
+                        );
                         // ★ 寄付ページのURLに書き換えてください
                         final url = Uri.parse(
                           'https://www.buymeacoffee.com/kotoapp',

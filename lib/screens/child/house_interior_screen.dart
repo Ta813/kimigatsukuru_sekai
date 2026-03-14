@@ -1,11 +1,13 @@
 // lib/screens/house_interior/house_interior_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
 import 'shop_screen.dart';
+import '../../managers/sfx_manager.dart';
 
 class HouseInteriorScreen extends StatefulWidget {
   // ★ホーム画面から、現在装備中の家の画像パスを受け取る
@@ -201,25 +203,54 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
               ),
             ),
 
-          // 左上の「ホームに戻る」ボタン
           Positioned(
             top: 20.0, // 上からの距離
             left: 20.0, // 左からの距離
             child: SafeArea(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                  shape: BoxShape.circle, // 形を円にする
-                ),
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.keyboard_return,
-                    size: 40,
-                    color: Color(0xFFFFCA28),
-                  ),
-                  onPressed: () {
+              child: Material(
+                color: const Color(0xFFFF7043).withOpacity(0.9),
+                borderRadius: BorderRadius.circular(8),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  onTap: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_house_interior_back',
+                    );
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (e) {
+                      print('再生エラー: $e');
+                    }
                     Navigator.pop(context);
                   },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6.0,
+                      vertical: 4.0,
+                    ),
+                    child: SizedBox(
+                      width: 60,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.keyboard_return,
+                            size: 24,
+                            color: Color(0xFFFFCA28),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            AppLocalizations.of(context)!.navBack,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Color(0xFFFFCA28),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -423,18 +454,20 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
               child: Column(
                 children: [
                   // 家具設定ボタン
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.chair,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_house_interior_customize',
+                        );
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {
+                          print('再生エラー: $e');
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -448,24 +481,54 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                           _loadItemsAndPositions();
                         });
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.chair,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.navDressUp,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 6),
 
                   // ショップボタン
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.store,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_house_interior_shop',
+                        );
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {
+                          print('再生エラー: $e');
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -480,6 +543,34 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                           _loadItemsAndPositions();
                         });
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.store,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.navShop,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

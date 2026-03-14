@@ -30,11 +30,6 @@ class _RegularPromiseSettingsScreenState
   }
 
   Future<void> _loadPromises() async {
-    // 定例の約束設定のイベントを記録
-    await FirebaseAnalytics.instance.logEvent(
-      name: 'open_regular_promise_settings',
-    );
-
     final loadedPromises = await SharedPrefsHelper.loadRegularPromises(context);
     loadedPromises.sort((a, b) {
       final timeA = a['time'] ?? '00:00';
@@ -186,7 +181,12 @@ class _RegularPromiseSettingsScreenState
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: _navigateToAddScreen, // 既存の追加処理をそのまま使う
+            onPressed: () {
+              FirebaseAnalytics.instance.logEvent(
+                name: 'start_regular_promise_settings_add',
+              );
+              _navigateToAddScreen();
+            }, // 既存の追加処理をそのまま使う
           ),
         ],
       ),
@@ -215,6 +215,9 @@ class _RegularPromiseSettingsScreenState
                           // エラーが発生した場合
                           print('再生エラー: $e');
                         }
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_regular_promise_settings_edit',
+                        );
                         _navigateToEditScreen(index);
                       },
                     ),
@@ -228,6 +231,9 @@ class _RegularPromiseSettingsScreenState
                           // エラーが発生した場合
                           print('再生エラー: $e');
                         }
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_regular_promise_settings_delete',
+                        );
                         _deletePromise(index);
                       },
                     ),

@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'roulette_dialog.dart';
@@ -49,9 +49,6 @@ class _TimerScreenState extends State<TimerScreen>
   bool _isCharacterSad = false;
   bool _isInteractionBusy = false;
   bool _showNameSettingHint = false;
-
-  // 広告を表示するかどうかのフラグ（初回起動時は false）
-  bool _showAd = false;
 
   final FlutterTts _flutterTts = FlutterTts();
   String? _childFullName; // 読み上げる名前（敬称付き）を保持
@@ -102,12 +99,9 @@ class _TimerScreenState extends State<TimerScreen>
     _loadAndSetRandomCharacter();
 
     _checkToShowNameHint();
-
-    // 🌟 初回起動チェック＆広告ロード
-    _checkFirstTimeAndLoadAd();
   }
 
-  /// 初回ボーナスチェック: レベル1かつ基本ポイントが50未満なら50に底上げ
+  /// 初回ボーナスチェック: レベル1の場合、100ポイントに設定
   Future<void> _checkFirstTimeBonus() async {
     final int currentExp = await SharedPrefsHelper.loadExperience();
     int currentLevel = 2;
@@ -116,33 +110,13 @@ class _TimerScreenState extends State<TimerScreen>
       currentLevel = 1;
     }
 
-    if (currentLevel == 1 && _basePoints < 50) {
+    if (currentLevel == 1) {
       if (mounted) {
         setState(() {
-          _basePoints = 50;
           _isFirstTimeBonus = true;
+          _basePoints = 100;
         });
       }
-    }
-  }
-
-  /// 初回タイマー起動時は広告を表示せず、2回目以降から表示する
-  Future<void> _checkFirstTimeAndLoadAd() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool isFirstTime = prefs.getBool('is_first_timer_open') ?? true;
-
-    if (isFirstTime) {
-      // 初回：広告は出さず、次回から出すためにフラグを更新
-      await prefs.setBool('is_first_timer_open', false);
-      print('タイマー画面：初回起動なので広告は出しません！');
-    } else {
-      // 2回目以降：広告を表示
-      if (mounted) {
-        setState(() {
-          _showAd = true;
-        });
-      }
-      print('タイマー画面：2回目以降なので広告を出します！');
     }
   }
 
@@ -245,6 +219,7 @@ class _TimerScreenState extends State<TimerScreen>
 
   // ★ 名前設定画面へ遷移するメソッド（ロック付き）
   void _navigateToChildNameSettings() async {
+    FirebaseAnalytics.instance.logEvent(name: 'start_timer_name_settings');
     // 1. ロック画面を表示
     final lockMode = await SharedPrefsHelper.loadLockMode();
     final bool? isCorrect = await showDialog<bool>(
@@ -824,6 +799,9 @@ class _TimerScreenState extends State<TimerScreen>
                     onPressed: _isFinishedButtonPressed
                         ? null
                         : () {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_timer_finished',
+                            );
                             setState(() {
                               _isFinishedButtonPressed = true;
                             });
@@ -865,6 +843,9 @@ class _TimerScreenState extends State<TimerScreen>
                           onPressed: _isInteractionBusy
                               ? null
                               : () async {
+                                  FirebaseAnalytics.instance.logEvent(
+                                    name: 'start_timer_cheer',
+                                  );
                                   setState(() {
                                     _isInteractionBusy = true;
                                   });
@@ -923,6 +904,9 @@ class _TimerScreenState extends State<TimerScreen>
                           onPressed: _isInteractionBusy
                               ? null
                               : () async {
+                                  FirebaseAnalytics.instance.logEvent(
+                                    name: 'start_timer_sad',
+                                  );
                                   setState(() {
                                     _isInteractionBusy = true;
                                     _isCharacterSad = true;
@@ -1029,7 +1013,7 @@ class _TimerScreenState extends State<TimerScreen>
           ],
         ),
         // 画面下部にバナーを設置（初回起動時は広告を表示しない）
-        bottomNavigationBar: _showAd ? const AdBanner() : null,
+        bottomNavigationBar: _isFirstTimeBonus ? null : const AdBanner(),
       ),
     );
   }

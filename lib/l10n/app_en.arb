@@ -443,5 +443,13 @@
   "samplePromiseTitle": "Please Set Up Promises!",
   "samplePromiseDesc": "We've set up some sample 'promises' for you! Please change the settings to suit your child.",
   "gotIt": "Got it",
-  "firstTimeBonus": "🌟 First Time Bonus! 🌟"
+  "firstTimeBonus": "🌟 First Time Bonus! 🌟",
+  "parentSettings": "Parent",
+  "help": "Help",
+  "navPromiseBoard": "Promises",
+  "navDressUp": "Dress Up",
+  "navShop": "Shop",
+  "navMusic": "Music",
+  "navWorldMap": "World",
+  "navBack": "Back"
 }

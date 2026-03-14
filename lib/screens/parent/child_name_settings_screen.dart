@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart'; // SharedPrefsHelperをインポート
 import '../../l10n/app_localizations.dart'; // l10nを使う場合
 
@@ -147,7 +148,12 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
                       label: Text(
                         AppLocalizations.of(context)!.addAction,
                       ), // l10n.addAction
-                      onPressed: _addChildName,
+                      onPressed: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_child_name_settings_add',
+                        );
+                        _addChildName();
+                      },
                     ),
                   ],
                 ),
@@ -189,7 +195,12 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
                                   Icons.delete_outline,
                                   color: Colors.red,
                                 ),
-                                onPressed: () => _removeChildName(index),
+                                onPressed: () {
+                                  FirebaseAnalytics.instance.logEvent(
+                                    name: 'start_child_name_settings_delete',
+                                  );
+                                  _removeChildName(index);
+                                },
                               ),
                             ),
                           );

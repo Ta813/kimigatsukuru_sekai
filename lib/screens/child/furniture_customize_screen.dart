@@ -1,6 +1,7 @@
 // lib/screens/child/furniture_customize_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
@@ -97,6 +98,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
 
         return GestureDetector(
           onTap: () async {
+            FirebaseAnalytics.instance.logEvent(
+              name: 'start_furniture_customize_select',
+              parameters: {'item_name': item.name, 'item_type': type},
+            );
             try {
               SfxManager.instance.playTapSound();
             } catch (e) {

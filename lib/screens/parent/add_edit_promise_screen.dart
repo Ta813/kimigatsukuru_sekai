@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/add_edit_promise_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
@@ -135,6 +136,9 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                     suffixIcon: Icon(Icons.access_time), // 時計アイコンを追加
                   ),
                   onTap: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_add_edit_promise_time_picker',
+                    );
                     // タップされたら、タイムピッカーを呼び出す
                     _selectTime(context);
                   },
@@ -165,7 +169,12 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: _savePromise,
+                  onPressed: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_add_edit_promise_save',
+                    );
+                    _savePromise();
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),

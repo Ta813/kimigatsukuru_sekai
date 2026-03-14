@@ -1,6 +1,7 @@
 // lib/screens/shop/shop_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../models/shop_data.dart';
@@ -94,6 +95,9 @@ class _ShopScreenState extends State<ShopScreen> {
           actions: [
             TextButton(
               onPressed: () {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'start_shop_cancel_buy',
+                );
                 try {
                   SfxManager.instance.playTapSound();
                 } catch (e) {
@@ -106,6 +110,9 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'start_shop_confirm_buy',
+                );
                 final lang = AppLocalizations.of(context)!.localeName;
                 if (lang == 'ja') {
                   try {
@@ -178,7 +185,15 @@ class _ShopScreenState extends State<ShopScreen> {
       color: (isLocked || isPurchased) ? Colors.grey[200] : Colors.white,
       child: InkWell(
         // ★購入済みなら、タップできないようにする (onTap: null)
-        onTap: (isLocked || isPurchased) ? null : () => _buyItem(item),
+        onTap: (isLocked || isPurchased)
+            ? null
+            : () {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'start_shop_buy_item',
+                  parameters: {'item_name': item.name},
+                );
+                _buyItem(item);
+              },
         child: Stack(
           // ★重ねて表示するためにStackを使用
           children: [

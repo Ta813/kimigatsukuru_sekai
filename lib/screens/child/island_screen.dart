@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../widgets/draggable_character.dart';
 import 'shop_screen.dart'; // ショップ画面
@@ -188,18 +189,15 @@ class _IslandScreenState extends State<IslandScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.keyboard_return,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_island_back',
+                        );
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
@@ -208,6 +206,34 @@ class _IslandScreenState extends State<IslandScreen> {
                         }
                         Navigator.pop(context);
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.keyboard_return,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.navBack,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -348,18 +374,15 @@ class _IslandScreenState extends State<IslandScreen> {
               child: Column(
                 children: [
                   // 家具設定ボタン
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.home_work,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_island_customize',
+                        );
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
@@ -379,24 +402,49 @@ class _IslandScreenState extends State<IslandScreen> {
                           _loadPlacedItems();
                         });
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.home_work,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.navDressUp,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 6),
 
                   // ショップボタン
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.store,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_island_shop',
+                        );
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
@@ -417,6 +465,34 @@ class _IslandScreenState extends State<IslandScreen> {
                           _loadPlacedItems();
                         });
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.store,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.navShop,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/animated_icon_indicator.dart';
@@ -185,27 +186,35 @@ class _SeaScreenState extends State<SeaScreen> {
               alignment: Alignment.topCenter,
               child: Padding(
                 padding: const EdgeInsets.only(top: 1.0), // 画面上端からの余白
-                child: GestureDetector(
-                  onTap: () {
-                    try {
-                      SfxManager.instance.playTapSound();
-                    } catch (e) {
-                      // エラーが発生した場合
-                      print('再生エラー: $e');
-                    }
-                    // ★ ワールドマップ画面に戻る
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0), // タップ領域を広げる
-                    child: const AnimatedIconIndicator(
-                      iconData: Icons.arrow_upward, // ★ 上矢印
-                      iconColor: Colors.blueAccent,
-                      iconSize: 40,
-                      offsetY: 5, // 上下動の幅を少し小さめに
-                      duration: Duration(seconds: 1),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_sea_back',
+                        );
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {
+                          // エラーが発生した場合
+                          print('再生エラー: $e');
+                        }
+                        // ★ ワールドマップ画面に戻る
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0), // タップ領域を広げる
+                        child: const AnimatedIconIndicator(
+                          iconData: Icons.arrow_upward, // ★ 上矢印
+                          iconColor: Colors.blueAccent,
+                          iconSize: 40,
+                          offsetY: 5, // 上下動の幅を少し小さめに
+                          duration: Duration(seconds: 1),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -343,18 +352,15 @@ class _SeaScreenState extends State<SeaScreen> {
               child: Column(
                 children: [
                   // 家具設定ボタン
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.anchor,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_sea_customize',
+                        );
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
@@ -374,24 +380,51 @@ class _SeaScreenState extends State<SeaScreen> {
                           _loadPlacedItems();
                         });
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.anchor,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.navDressUp, // 「きせかえ」を家具にも流用（必要なら専用キー作るが、一旦既存流用）
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 6),
 
                   // ショップボタン
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.store,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_sea_shop',
+                        );
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
@@ -412,6 +445,34 @@ class _SeaScreenState extends State<SeaScreen> {
                           _loadPlacedItems();
                         });
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.store,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.navShop,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

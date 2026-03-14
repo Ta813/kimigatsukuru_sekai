@@ -30,55 +30,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guideWelcomeTitle => 'Welcome!';
 
   @override
-  String get guideWelcomeDesc => 'To get started,\nplease set up your child\'s\nPromises (tasks).';
+  String get guideWelcomeDesc =>
+      'To get started,\nplease set up your child\'s\nPromises (tasks).';
 
   @override
   String get guideSettingsTitle => 'Parent Settings (Top-left ⚙️ icon)';
 
   @override
-  String get guideSettingsDesc => 'This is where parents can add or edit promises.\nTry deciding on the promises together with your child first!';
+  String get guideSettingsDesc =>
+      'This is where parents can add or edit promises.\nTry deciding on the promises together with your child first!';
 
   @override
   String get guideNextPromiseTitle => 'Next Promise (Bottom bar)';
 
   @override
-  String get guideNextPromiseDesc => 'The next promise you need to do is displayed here.\nPress \'Start\' to begin the challenge!';
+  String get guideNextPromiseDesc =>
+      'The next promise you need to do is displayed here.\nPress \'Start\' to begin the challenge!';
 
   @override
   String get guidePromiseBoardTitle => 'Promise Board (Right 📄 icon)';
 
   @override
-  String get guidePromiseBoardDesc => 'You can see a list of today\'s promises here.\nYour goal is to collect the \'Done!\' check marks!';
+  String get guidePromiseBoardDesc =>
+      'You can see a list of today\'s promises here.\nYour goal is to collect the \'Done!\' check marks!';
 
   @override
   String get guidePointsTitle => 'Points (Top-right ★)';
 
   @override
-  String get guidePointsDesc => 'When you complete a promise, you get points here!\nCollect a lot and exchange them for rewards.';
+  String get guidePointsDesc =>
+      'When you complete a promise, you get points here!\nCollect a lot and exchange them for rewards.';
 
   @override
   String get guideShopTitle => 'Reward Shop (Right 🏠 icon)';
 
   @override
-  String get guideShopDesc => 'This is where you can exchange the points you\'ve saved for new clothes and houses!';
+  String get guideShopDesc =>
+      'This is where you can exchange the points you\'ve saved for new clothes and houses!';
 
   @override
   String get guideCustomizeTitle => 'Customize (Right ☺ icon)';
 
   @override
-  String get guideCustomizeDesc => 'You can change your avatar\'s clothes and house with the items you\'ve bought.\nCreate your very own world!';
+  String get guideCustomizeDesc =>
+      'You can change your avatar\'s clothes and house with the items you\'ve bought.\nCreate your very own world!';
 
   @override
   String get guideBgmButtonTitle => 'BGM (♪ Icon on the Right)';
 
   @override
-  String get guideBgmButtonDesc => 'Press here to choose your favorite music. Change the mood with a fun song!';
+  String get guideBgmButtonDesc =>
+      'Press here to choose your favorite music. Change the mood with a fun song!';
 
   @override
   String get guideWorldMapButtonTitle => 'Outer World (🌎 Icon on the Right)';
 
   @override
-  String get guideWorldMapButtonDesc => 'Press this button to see the whole world map. As you level up, you might unlock new places to go!';
+  String get guideWorldMapButtonDesc =>
+      'Press this button to see the whole world map. As you level up, you might unlock new places to go!';
 
   @override
   String get emergency => 'EMERGENCY!';
@@ -225,31 +234,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get advice1Title => 'Decide on Promises Together with Your Child';
 
   @override
-  String get advice1Desc => 'Try deciding \"what,\" \"by when,\" and \"for how many points\" together with your child. Having rules they helped create sparks their motivation to take on the challenge.';
+  String get advice1Desc =>
+      'Try deciding \"what,\" \"by when,\" and \"for how many points\" together with your child. Having rules they helped create sparks their motivation to take on the challenge.';
 
   @override
   String get advice2Title => 'Start with \"Easy\" Tasks First';
 
   @override
-  String get advice2Desc => 'Begin with simple promises your child can definitely complete. Building up successful experiences of \"I did it!\" leads to confidence.';
+  String get advice2Desc =>
+      'Begin with simple promises your child can definitely complete. Building up successful experiences of \"I did it!\" leads to confidence.';
 
   @override
   String get advice3Title => 'Set the Time a \"Little Generously\"';
 
   @override
-  String get advice3Desc => 'Instead of making them rush, the key is to set the challenge time a little longer at first so they can feel the accomplishment of \"I did it within the time!\"';
+  String get advice3Desc =>
+      'Instead of making them rush, the key is to set the challenge time a little longer at first so they can feel the accomplishment of \"I did it within the time!\"';
 
   @override
   String get advice4Title => 'Treat Points as Something \"Special\"';
 
   @override
-  String get advice4Desc => 'For more difficult promises, try setting the points a little higher. Feeling that \"this mission is special!\" will boost your child\'s motivation to try.';
+  String get advice4Desc =>
+      'For more difficult promises, try setting the points a little higher. Feeling that \"this mission is special!\" will boost your child\'s motivation to try.';
 
   @override
   String get advice5Title => 'The Best Reward is \"Praise\"';
 
   @override
-  String get advice5Desc => 'While points in the app are important, when your child completes a promise, please praise them directly with words like \"Well done!\" or \"Amazing!\". That will be their greatest source of energy.';
+  String get advice5Desc =>
+      'While points in the app are important, when your child completes a promise, please praise them directly with words like \"Well done!\" or \"Amazing!\". That will be their greatest source of energy.';
 
   @override
   String emergencyPromiseSet(String promiseTitle) {
@@ -428,7 +442,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insideTheHouse => 'Inside the House';
 
   @override
-  String get roomIsEmpty => 'Looks like there\'s nothing here yet...\nWhat kind of room should we make?';
+  String get roomIsEmpty =>
+      'Looks like there\'s nothing here yet...\nWhat kind of room should we make?';
 
   @override
   String get furniture => 'Furniture';
@@ -593,7 +608,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get supportThisApp => 'Support this app';
 
   @override
-  String get supportEncouragement => 'Your support encourages future development!';
+  String get supportEncouragement =>
+      'Your support encourages future development!';
 
   @override
   String get supportPageOpenError => 'Could not open the page';
@@ -643,19 +659,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get worldMapGuideTitle1 => 'Welcome!';
 
   @override
-  String get worldMapGuideContent1 => 'This is the world map!\nAs you level up, you\'ll unlock more places to go.';
+  String get worldMapGuideContent1 =>
+      'This is the world map!\nAs you level up, you\'ll unlock more places to go.';
 
   @override
   String get worldMapGuideTitle2 => 'The Central Island';
 
   @override
-  String get worldMapGuideContent2 => 'Once you reach Level 5, you\'ll be able to tap here to enter the island.';
+  String get worldMapGuideContent2 =>
+      'Once you reach Level 5, you\'ll be able to tap here to enter the island.';
 
   @override
   String get worldMapGuideTitle3 => 'A Widening World';
 
   @override
-  String get worldMapGuideContent3 => 'You might even be able to visit the sea below or the space far above someday...?\nStay tuned!';
+  String get worldMapGuideContent3 =>
+      'You might even be able to visit the sea below or the space far above someday...?\nStay tuned!';
 
   @override
   String get seaAreaLocked => 'You\'ll be able to enter at Level 10!';
@@ -775,7 +794,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get disclosureTitle => 'About Your Data';
 
   @override
-  String get disclosureMessage => 'To show ads and improve app performance, this app may collect and share information about installed apps and your device\'s Advertising ID.';
+  String get disclosureMessage =>
+      'To show ads and improve app performance, this app may collect and share information about installed apps and your device\'s Advertising ID.';
 
   @override
   String get disagreeAction => 'Disagree';
@@ -784,10 +804,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get agreeAction => 'Agree and Continue';
 
   @override
-  String get nameSettingHint => 'Set a name so the character can cheer for you!';
+  String get nameSettingHint =>
+      'Set a name so the character can cheer for you!';
 
   @override
-  String get nameAlreadyExists => 'This name and honorific combination is already registered.';
+  String get nameAlreadyExists =>
+      'This name and honorific combination is already registered.';
 
   @override
   String get childNameSettingsTitle => 'Child\'s Name Settings';
@@ -1054,11 +1076,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get samplePromiseTitle => 'Please Set Up Promises!';
 
   @override
-  String get samplePromiseDesc => 'We\'ve set up some sample \'promises\' for you! Please change the settings to suit your child.';
+  String get samplePromiseDesc =>
+      'We\'ve set up some sample \'promises\' for you! Please change the settings to suit your child.';
 
   @override
   String get gotIt => 'Got it';
 
   @override
   String get firstTimeBonus => '🌟 First Time Bonus! 🌟';
+
+  @override
+  String get parentSettings => 'Parent';
+
+  @override
+  String get help => 'Help';
+
+  @override
+  String get navPromiseBoard => 'Promises';
+
+  @override
+  String get navDressUp => 'Dress Up';
+
+  @override
+  String get navShop => 'Shop';
+
+  @override
+  String get navMusic => 'Music';
+
+  @override
+  String get navWorldMap => 'World';
+
+  @override
+  String get navBack => 'Back';
 }

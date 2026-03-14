@@ -1061,4 +1061,28 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get firstTimeBonus => '🌟 初回ボーナス 🌟';
+
+  @override
+  String get parentSettings => 'おやの設定';
+
+  @override
+  String get help => 'あそびかた';
+
+  @override
+  String get navPromiseBoard => 'やくそく';
+
+  @override
+  String get navDressUp => 'きせかえ';
+
+  @override
+  String get navShop => 'おみせ';
+
+  @override
+  String get navMusic => 'おんがく';
+
+  @override
+  String get navWorldMap => 'せかい';
+
+  @override
+  String get navBack => 'もどる';
 }

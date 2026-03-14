@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/animated_icon_indicator.dart';
@@ -181,27 +182,35 @@ class _SkyScreenState extends State<SkyScreen> {
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 1.0), // 画面下からの余白
-                child: GestureDetector(
-                  onTap: () {
-                    try {
-                      SfxManager.instance.playTapSound();
-                    } catch (e) {
-                      // エラーが発生した場合
-                      print('再生エラー: $e');
-                    }
-                    // ★ ワールドマップ画面に戻る
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0), // タップ領域を広げる
-                    child: const AnimatedIconIndicator(
-                      iconData: Icons.arrow_downward, // ★ 下矢印
-                      iconColor: Colors.blueAccent,
-                      iconSize: 40,
-                      offsetY: 5, // 上下動の幅を少し小さめに
-                      duration: Duration(seconds: 1),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_sky_back',
+                        );
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {
+                          // エラーが発生した場合
+                          print('再生エラー: $e');
+                        }
+                        // ★ ワールドマップ画面に戻る
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0), // タップ領域を広げる
+                        child: const AnimatedIconIndicator(
+                          iconData: Icons.arrow_downward, // ★ 下矢印
+                          iconColor: Colors.blueAccent,
+                          iconSize: 40,
+                          offsetY: 5, // 上下動の幅を少し小さめに
+                          duration: Duration(seconds: 1),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -212,45 +221,53 @@ class _SkyScreenState extends State<SkyScreen> {
               alignment: Alignment.topCenter, // 上に配置
               child: Padding(
                 padding: const EdgeInsets.only(top: 16.0),
-                child: GestureDetector(
-                  onTap: () {
-                    // ★ レベル20以上で解放
-                    if (widget.currentLevel >= 20) {
-                      try {
-                        SfxManager.instance.playSuccessSound();
-                      } catch (e) {
-                        // エラーが発生した場合
-                        print('再生エラー: $e');
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SpaceScreen(
-                            currentLevel: widget.currentLevel,
-                            currentPoints: widget.currentPoints,
-                            requiredExpForNextLevel:
-                                widget.requiredExpForNextLevel,
-                            experience: widget.experience,
-                            experienceFraction: widget.experienceFraction,
-                          ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_sky_space',
+                        );
+                        // ★ レベル20以上で解放
+                        if (widget.currentLevel >= 20) {
+                          try {
+                            SfxManager.instance.playSuccessSound();
+                          } catch (e) {
+                            // エラーが発生した場合
+                            print('再生エラー: $e');
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SpaceScreen(
+                                currentLevel: widget.currentLevel,
+                                currentPoints: widget.currentPoints,
+                                requiredExpForNextLevel:
+                                    widget.requiredExpForNextLevel,
+                                experience: widget.experience,
+                                experienceFraction: widget.experienceFraction,
+                              ),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('宇宙はレベル20で解放されます！')),
+                          );
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        // 上向きの矢印
+                        child: const AnimatedIconIndicator(
+                          iconData: Icons.arrow_upward,
+                          iconColor: Colors.purpleAccent,
+                          iconSize: 40,
+                          offsetY: -5, // 上に動くアニメーション
                         ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('宇宙はレベル20で解放されます！')),
-                      );
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    // 上向きの矢印
-                    child: const AnimatedIconIndicator(
-                      iconData: Icons.arrow_upward,
-                      iconColor: Colors.purpleAccent,
-                      iconSize: 40,
-                      offsetY: -5, // 上に動くアニメーション
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -388,18 +405,15 @@ class _SkyScreenState extends State<SkyScreen> {
               child: Column(
                 children: [
                   // 家具設定ボタン
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.flight,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_sky_customize',
+                        );
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
@@ -419,24 +433,49 @@ class _SkyScreenState extends State<SkyScreen> {
                           _loadPlacedItems();
                         });
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.flight,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.navDressUp,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 6),
 
                   // ショップボタン
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.store,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_sky_shop',
+                        );
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
@@ -457,6 +496,34 @@ class _SkyScreenState extends State<SkyScreen> {
                           _loadPlacedItems();
                         });
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.store,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.navShop,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

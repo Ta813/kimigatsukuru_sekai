@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../managers/bgm_manager.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
@@ -200,6 +201,10 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
             trailing: IconButton(
               icon: const Icon(Icons.play_circle_outline),
               onPressed: () {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'start_bgm_selection_preview',
+                  parameters: {'track_name': track.name},
+                );
                 try {
                   BgmManager.instance.play(track);
                 } catch (e) {
@@ -208,7 +213,13 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
                 }
               }, // 試聴
             ),
-            onTap: () => onTrackSelected(track),
+            onTap: () {
+              FirebaseAnalytics.instance.logEvent(
+                name: 'start_bgm_selection_select',
+                parameters: {'track_name': track.name},
+              );
+              onTrackSelected(track);
+            },
           ),
         );
       },

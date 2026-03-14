@@ -1,6 +1,7 @@
 // lib/screens/character_customize/character_customize_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
@@ -75,6 +76,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
 
         return GestureDetector(
           onTap: () async {
+            FirebaseAnalytics.instance.logEvent(
+              name: 'start_character_customize_equip',
+              parameters: {'item_name': item.name, 'item_type': type},
+            );
             try {
               SfxManager.instance.playTapSound();
             } catch (e) {

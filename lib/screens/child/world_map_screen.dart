@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'island_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
@@ -119,7 +120,6 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
             ),
           ),
 
-          // 左上の「ホームに戻る」ボタン
           Positioned(
             top: 20.0, // 上からの距離
             left: 20.0, // 左からの距離
@@ -127,83 +127,103 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.keyboard_return,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_world_map_back',
+                        );
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
-                          // エラーが発生した場合
                           print('再生エラー: $e');
                         }
                         Navigator.pop(context);
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.keyboard_return,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.navBack,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
 
-                  const SizedBox(height: 10), // ボタンの間に少し隙間をあける
+                  const SizedBox(height: 6), // ボタンの間に少し隙間をあける
 
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9),
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.question_mark,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
+                  Material(
+                    color: const Color(0xFFFF7043).withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_world_map_help',
+                        );
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
-                          // エラーが発生した場合
                           print('再生エラー: $e');
                         }
                         _showGuideSequence();
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 4.0,
+                        ),
+                        child: SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.question_mark,
+                                size: 24,
+                                color: Color(0xFFFFCA28),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                AppLocalizations.of(context)!.help,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFFFFCA28),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-
-          Positioned(
-            top: 20.0, // 上からの距離
-            left: 20.0, // 左からの距離
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SafeArea(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF7043).withOpacity(0.9), // 半透明の黒い背景
-                      shape: BoxShape.circle, // 形を円にする
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.keyboard_return,
-                        size: 40,
-                        color: Color(0xFFFFCA28),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                ),
-              ],
             ),
           ),
 
@@ -212,6 +232,9 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: () {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'start_world_map_sea',
+                );
                 // ★ レベル10以上かチェック
                 if (widget.currentLevel >= 10) {
                   try {
@@ -268,6 +291,9 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
             alignment: Alignment.topCenter,
             child: GestureDetector(
               onTap: () {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'start_world_map_sky',
+                );
                 // ★ レベル15以上かチェック
                 if (widget.currentLevel >= 15) {
                   try {
@@ -324,6 +350,9 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
             alignment: Alignment.center,
             child: GestureDetector(
               onTap: () {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'start_world_map_island',
+                );
                 if (widget.currentLevel >= 5) {
                   try {
                     SfxManager.instance.playSuccessSound();

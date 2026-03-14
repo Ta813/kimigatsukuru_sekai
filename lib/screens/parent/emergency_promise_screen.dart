@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/emergency_promise_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
@@ -115,7 +116,12 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: _savePromise,
+                  onPressed: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_emergency_promise_set',
+                    );
+                    _savePromise();
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),

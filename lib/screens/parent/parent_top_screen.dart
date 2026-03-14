@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/parent_top_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'regular_promise_settings_screen.dart';
 import 'emergency_promise_screen.dart';
@@ -96,6 +97,9 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                   icon: const Icon(Icons.lightbulb_outline),
                   label: Text(AppLocalizations.of(context)!.readFirstButton),
                   onPressed: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_parent_top_read_first',
+                    );
                     // 押した瞬間に点滅解除
                     _markAdviceDone();
                     try {
@@ -126,6 +130,9 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                 borderRadius: 4,
                 child: ElevatedButton(
                   onPressed: () async {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_parent_top_regular_promise',
+                    );
                     // 押した瞬間に点滅解除
                     await _markRegularDone();
                     try {
@@ -156,6 +163,9 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
               // 「緊急のやくそく設定」ボタン
               ElevatedButton(
                 onPressed: () {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_parent_top_emergency_promise',
+                  );
                   try {
                     SfxManager.instance.playTapSound();
                   } catch (e) {

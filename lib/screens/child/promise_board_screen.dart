@@ -53,9 +53,9 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
 
   // 「はじめる」ボタンが押された時の処理
   void _startPromise(Map<String, dynamic> promise) async {
-    // はじめる開始のイベントを記録
-    await FirebaseAnalytics.instance.logEvent(name: 'start_promise');
-
+    FirebaseAnalytics.instance.logEvent(
+      name: 'start_promise_board_start_promise',
+    );
     // ★タイマー画面に行く前に、集中BGMを再生
     // ★ 保存されている集中BGM設定を読み込む
     final trackName = await SharedPrefsHelper.loadSelectedFocusBgm();
@@ -72,7 +72,7 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
       print('再生エラー: $e');
     }
 
-    final result = await Navigator.push<Map<String, int>?>(
+    final result = await Navigator.push<Map<String, dynamic>?>(
       context,
       MaterialPageRoute(
         builder: (context) => TimerScreen(promise: promise, isEmergency: false),
@@ -80,8 +80,8 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
     );
 
     // 戻り値からポイントと経験値を取得
-    final pointsAwarded = result != null ? result['points'] : null;
-    final exp = result != null ? result['exp'] : null;
+    final pointsAwarded = result != null ? result['points'] as int? : null;
+    final exp = result != null ? result['exp'] as int? : null;
 
     // ★タイマー画面から戻ってきたら、メインBGMを再生
     _playSavedBgm();
@@ -112,6 +112,9 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   }
 
   void _skipPromiseOnBoard(String promiseTitle) async {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'start_promise_board_skip_promise',
+    );
     // 達成記録を保存します
     await SharedPrefsHelper.addCompletionRecord(promiseTitle);
     // リストの表示を最新の状態に更新します
@@ -119,6 +122,7 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   }
 
   void _navigateToAddPromise() async {
+    FirebaseAnalytics.instance.logEvent(name: 'start_promise_board_settings');
     try {
       SfxManager.instance.playTapSound();
     } catch (e) {
@@ -160,6 +164,9 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
           IconButton(
             icon: const Icon(Icons.question_mark_outlined),
             onPressed: () {
+              FirebaseAnalytics.instance.logEvent(
+                name: 'start_promise_board_help',
+              );
               try {
                 SfxManager.instance.playTapSound();
               } catch (e) {

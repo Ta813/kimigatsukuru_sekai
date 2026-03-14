@@ -490,7 +490,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       title: AppLocalizations.of(context)!.guideWelcomeTitle,
       content: AppLocalizations.of(context)!.guideWelcomeDesc,
     );
-    if (!shouldContinue) return;
+    if (!shouldContinue) {
+      FirebaseAnalytics.instance.logEvent(name: 'skip_tutorial');
+      return;
+    }
+    FirebaseAnalytics.instance.logEvent(name: 'start_tutorial');
     await _openParentModeFromTutorial();
   }
 
@@ -781,9 +785,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       });
     }
 
-    // 始める開始のイベントを記録
-    await FirebaseAnalytics.instance.logEvent(name: 'start_promise');
-
     // ★タイマー画面に行く前に、集中BGMを再生
     // ★ 保存されている集中BGM設定を読み込む
     final trackName = await SharedPrefsHelper.loadSelectedFocusBgm();
@@ -793,6 +794,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     );
 
     // ★ タイマー画面に行く前に、"選択された"集中BGMを再生
+    FirebaseAnalytics.instance.logEvent(name: 'start_child_home_start_promise');
     try {
       BgmManager.instance.play(focusTrack);
     } catch (e) {
@@ -801,7 +803,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     }
 
     // タイマー画面に遷移し、結果（獲得ポイント）を待つ
-    final result = await Navigator.push<Map<String, int>?>(
+    final result = await Navigator.push<Map<String, dynamic>?>(
       context,
       MaterialPageRoute(
         // TimerScreenに、緊急かどうかの情報も渡す
@@ -813,8 +815,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     );
 
     // 戻り値からポイントと経験値を取得
-    final pointsAwarded = result != null ? result['points'] : null;
-    final exp = result != null ? result['exp'] : null;
+    final pointsAwarded = result != null ? result['points'] as int? : null;
+    final exp = result != null ? result['exp'] as int? : null;
 
     // ★タイマー画面から戻ってきたら、メインBGMを再生
     _playSavedBgm();
@@ -922,6 +924,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   // このメソッドを新しく追加します
   void _skipPromise() async {
+    FirebaseAnalytics.instance.logEvent(name: 'start_child_home_skip_promise');
     try {
       SfxManager.instance.playTapSound();
     } catch (e) {
@@ -987,20 +990,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(
-                              0xFFFF7043,
-                            ).withOpacity(0.9), // 半透明の黒い背景
-                            shape: BoxShape.circle, // 形を円にする
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.settings,
-                              size: 40,
-                              color: Color(0xFFFFCA28),
-                            ),
-                            onPressed: () async {
+                        Material(
+                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            onTap: () async {
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_child_home_parent_settings',
+                              );
                               try {
                                 SfxManager.instance.playTapSound();
                               } catch (e) {
@@ -1009,21 +1006,48 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               }
                               await _openParentMode();
                             },
+                            borderRadius: BorderRadius.circular(
+                              8,
+                            ), // タップした時の波紋の丸み
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: 64, // 幅を固定
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min, // 最小限のサイズにする
+                                  children: [
+                                    const Icon(
+                                      Icons.settings,
+                                      size: 28, // アイコンのサイズ
+                                      color: Color(0xFFFFCA28), // アイコンの色
+                                    ),
+                                    const SizedBox(height: 4), // アイコンと文字の間の隙間
+                                    Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.parentSettings,
+                                      style: const TextStyle(
+                                        fontSize: 12, // 文字は少し小さめがスッキリします
+                                        color: Color(0xFFFFCA28),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center, // 中央揃え
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 10), // ボタンの間に少し隙間をあける
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFFFF7043).withOpacity(0.9),
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.question_mark,
-                              size: 40,
-                              color: Color(0xFFFFCA28),
-                            ),
-                            onPressed: () {
+                        Material(
+                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            onTap: () {
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_child_home_help',
+                              );
                               try {
                                 SfxManager.instance.playTapSound();
                               } catch (e) {
@@ -1032,6 +1056,33 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               }
                               _showHelp();
                             },
+                            borderRadius: BorderRadius.circular(8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
+                                width: 64, // 幅を固定
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.question_mark,
+                                      size: 28,
+                                      color: Color(0xFFFFCA28),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      AppLocalizations.of(context)!.help,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFFFFCA28),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center, // 中央揃え
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -1112,26 +1163,18 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 Positioned(
                   top: 0,
                   bottom: 0,
-                  right: 75,
+                  right: 95,
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         // やくそくボードボタン
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(
-                              0xFFFF7043,
-                            ).withOpacity(0.9), // 半透明の黒い背景
-                            shape: BoxShape.circle, // 形を円にする
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.article_rounded,
-                              size: 40,
-                              color: Color(0xFFFFCA28),
-                            ),
-                            onPressed: () async {
+                        Material(
+                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () async {
                               try {
                                 SfxManager.instance.playTapSound();
                               } catch (e) {
@@ -1188,24 +1231,49 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               // ★やくそくボード画面から戻ってきたら、必ずデータを再読み込みする！
                               _loadAndDetermineDisplayPromise();
                             },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                                vertical: 4.0,
+                              ),
+                              child: SizedBox(
+                                width: 60,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.article_rounded,
+                                      size: 24,
+                                      color: Color(0xFFFFCA28),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.navPromiseBoard,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Color(0xFFFFCA28),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 10), // ボタンの間に少し隙間をあける
+                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
                         // キャラクター選択ボタン
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(
-                              0xFFFF7043,
-                            ).withOpacity(0.9), // 半透明の黒い背景
-                            shape: BoxShape.circle, // 形を円にする
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.face,
-                              size: 40,
-                              color: Color(0xFFFFCA28),
-                            ),
-                            onPressed: () async {
+                        Material(
+                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () async {
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_child_home_dress_up',
+                              );
                               try {
                                 SfxManager.instance.playTapSound();
                               } catch (e) {
@@ -1225,24 +1293,47 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 _loadAndDetermineDisplayPromise();
                               });
                             },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                                vertical: 4.0,
+                              ),
+                              child: SizedBox(
+                                width: 60,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.face,
+                                      size: 24,
+                                      color: Color(0xFFFFCA28),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      AppLocalizations.of(context)!.navDressUp,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Color(0xFFFFCA28),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 10), // ボタンの間に少し隙間をあける
+                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
                         // ごほうびショップボタン
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(
-                              0xFFFF7043,
-                            ).withOpacity(0.9), // 半透明の黒い背景
-                            shape: BoxShape.circle, // 形を円にする
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.store,
-                              size: 40,
-                              color: Color(0xFFFFCA28),
-                            ),
-                            onPressed: () async {
+                        Material(
+                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () async {
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_child_home_shop',
+                              );
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -1258,6 +1349,34 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 _loadAndDetermineDisplayPromise();
                               });
                             },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                                vertical: 4.0,
+                              ),
+                              child: SizedBox(
+                                width: 60,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.store,
+                                      size: 24,
+                                      color: Color(0xFFFFCA28),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      AppLocalizations.of(context)!.navShop,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Color(0xFFFFCA28),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -1274,20 +1393,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         // ★ BGM変更ボタンを一番上に追加
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Color(
-                              0xFFFF7043,
-                            ).withOpacity(0.9), // 半透明の黒い背景
-                            shape: BoxShape.circle, // 形を円にする
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.music_note,
-                              size: 40,
-                              color: Color(0xFFFFCA28),
-                            ),
-                            onPressed: () async {
+                        Material(
+                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () async {
                               try {
                                 SfxManager.instance.playTapSound();
                               } catch (e) {
@@ -1303,23 +1414,44 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 ),
                               );
                             },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                                vertical: 4.0,
+                              ),
+                              child: SizedBox(
+                                width: 60,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.music_note,
+                                      size: 24,
+                                      color: Color(0xFFFFCA28),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      AppLocalizations.of(context)!.navMusic,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Color(0xFFFFCA28),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
+                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
 
-                        const SizedBox(height: 10), // ボタンの間に少し隙間をあける
-
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFF7043).withOpacity(0.9),
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.public,
-                              size: 40,
-                              color: Color(0xFFFFCA28),
-                            ),
-                            onPressed: () async {
+                        Material(
+                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () async {
                               try {
                                 SfxManager.instance.playTapSound();
                               } catch (e) {
@@ -1344,6 +1476,34 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 _loadAndDetermineDisplayPromise();
                               });
                             },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                                vertical: 4.0,
+                              ),
+                              child: SizedBox(
+                                width: 60,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.public,
+                                      size: 24,
+                                      color: Color(0xFFFFCA28),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      AppLocalizations.of(context)!.navWorldMap,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Color(0xFFFFCA28),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
