@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/parent_top_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'regular_promise_settings_screen.dart';
 import 'emergency_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
@@ -8,9 +9,49 @@ import 'advice_screen.dart';
 import '../../l10n/app_localizations.dart';
 import 'settings_screen.dart';
 import 'child_name_settings_screen.dart';
+import '../../widgets/blinking_effect.dart';
 
-class ParentTopScreen extends StatelessWidget {
+class ParentTopScreen extends StatefulWidget {
   const ParentTopScreen({super.key});
+
+  @override
+  State<ParentTopScreen> createState() => _ParentTopScreenState();
+}
+
+class _ParentTopScreenState extends State<ParentTopScreen> {
+  // ボタンごとの初回フラグ
+  bool _isFirstAdvice = false; // 「最初にお読みください」
+  bool _isFirstRegular = false; // 「定例のやくそく設定」
+
+  @override
+  void initState() {
+    super.initState();
+    _checkFirstTime();
+  }
+
+  Future<void> _checkFirstTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        _isFirstAdvice = prefs.getBool('is_first_home_advice') ?? true;
+        _isFirstRegular = prefs.getBool('is_first_home_regular') ?? true;
+      });
+    }
+  }
+
+  /// 「最初にお読みください」を押したら点滅解除
+  Future<void> _markAdviceDone() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_first_home_advice', false);
+    if (mounted) setState(() => _isFirstAdvice = false);
+  }
+
+  /// 「定例のやくそく設定」を押したら点滅解除
+  Future<void> _markRegularDone() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_first_home_regular', false);
+    if (mounted) setState(() => _isFirstRegular = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,49 +88,68 @@ class ParentTopScreen extends StatelessWidget {
             // 画面いっぱいに広げる
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              OutlinedButton.icon(
-                icon: const Icon(Icons.lightbulb_outline),
-                label: Text(AppLocalizations.of(context)!.readFirstButton),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AdviceScreen(),
-                    ),
-                  );
-                },
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  textStyle: const TextStyle(fontSize: 16),
-                  foregroundColor: Theme.of(context).primaryColor,
-                  side: BorderSide(color: Theme.of(context).primaryColor),
+              // 「最初にお読みください」ボタン
+              BlinkingEffect(
+                isBlinking: _isFirstAdvice,
+                borderRadius: 4,
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.lightbulb_outline),
+                  label: Text(AppLocalizations.of(context)!.readFirstButton),
+                  onPressed: () {
+                    // 押した瞬間に点滅解除
+                    _markAdviceDone();
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (e) {
+                      // エラーが発生した場合
+                      print('再生エラー: $e');
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdviceScreen(),
+                      ),
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    textStyle: const TextStyle(fontSize: 16),
+                    foregroundColor: Theme.of(context).primaryColor,
+                    side: BorderSide(color: Theme.of(context).primaryColor),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
               // 「定例のやくそく設定」ボタン
-              ElevatedButton(
-                onPressed: () {
-                  try {
-                    SfxManager.instance.playTapSound();
-                  } catch (e) {
-                    // エラーが発生した場合
-                    print('再生エラー: $e');
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          const RegularPromiseSettingsScreen(),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  // main.dartで設定したテーマカラーが適用されます
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  textStyle: const TextStyle(fontSize: 18),
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.regularPromiseSettingsButton,
+              BlinkingEffect(
+                isBlinking: _isFirstRegular,
+                borderRadius: 4,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // 押した瞬間に点滅解除
+                    await _markRegularDone();
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (e) {
+                      // エラーが発生した場合
+                      print('再生エラー: $e');
+                    }
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const RegularPromiseSettingsScreen(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    // main.dartで設定したテーマカラーが適用されます
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    textStyle: const TextStyle(fontSize: 18),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.regularPromiseSettingsButton,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),

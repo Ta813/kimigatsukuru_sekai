@@ -631,7 +631,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String levelUpMessage(int newLevel) {
-    return 'レベルが $newLevel にあがった！';
+    return 'レベルが $newLevel にあがった！🎉\nおみせに いくと いいことがあるかも✨';
   }
 
   @override
@@ -1049,4 +1049,16 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get spaceSettings => 'うちゅうのせってい';
+
+  @override
+  String get samplePromiseTitle => 'やくそくを設定してね！';
+
+  @override
+  String get samplePromiseDesc => 'サンプルとして、いくつか「やくそく」を設定してあるよ！ご自身のお子様に合った設定に変えてあげてね。';
+
+  @override
+  String get gotIt => 'わかった';
+
+  @override
+  String get firstTimeBonus => '🌟 初回ボーナス 🌟';
 }

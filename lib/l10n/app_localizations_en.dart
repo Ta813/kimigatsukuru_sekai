@@ -631,7 +631,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String levelUpMessage(int newLevel) {
-    return 'You reached level $newLevel!';
+    return 'You reached level $newLevel!🎉\nThere might be something good if you go to the shop✨';
   }
 
   @override
@@ -1049,4 +1049,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spaceSettings => 'Space Settings';
+
+  @override
+  String get samplePromiseTitle => 'Please Set Up Promises!';
+
+  @override
+  String get samplePromiseDesc => 'We\'ve set up some sample \'promises\' for you! Please change the settings to suit your child.';
+
+  @override
+  String get gotIt => 'Got it';
+
+  @override
+  String get firstTimeBonus => '🌟 First Time Bonus! 🌟';
 }

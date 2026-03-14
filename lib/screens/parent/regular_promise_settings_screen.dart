@@ -2,6 +2,7 @@
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
@@ -25,6 +26,7 @@ class _RegularPromiseSettingsScreenState
   void initState() {
     super.initState();
     _loadPromises();
+    _checkFirstYakusoku();
   }
 
   Future<void> _loadPromises() async {
@@ -42,6 +44,34 @@ class _RegularPromiseSettingsScreenState
     setState(() {
       _regularPromises = loadedPromises;
     });
+  }
+
+  /// 初回訪問時のみダイアログを表示する
+  Future<void> _checkFirstYakusoku() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool isFirst = prefs.getBool('is_first_yakusoku') ?? true;
+
+    if (isFirst) {
+      // 画面描画後にダイアログを表示
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context)!.samplePromiseTitle),
+            content: Text(AppLocalizations.of(context)!.samplePromiseDesc),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(AppLocalizations.of(context)!.gotIt),
+              ),
+            ],
+          ),
+        );
+      });
+      // 次回からは出さないようにフラグを更新
+      await prefs.setBool('is_first_yakusoku', false);
+    }
   }
 
   // やくそくを削除する処理

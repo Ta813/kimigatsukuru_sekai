@@ -23,6 +23,7 @@ import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:in_app_review/in_app_review.dart';
+import '../../widgets/blinking_effect.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -63,6 +64,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   bool _showHouseHint = false; // 吹き出しを表示するかどうかの旗
   Timer? _hintTimer; // 吹き出しを自動で消すためのタイマー
+
+  // 「はじめる」ボタンを点滅させるフラグ
+  bool _showStartBlinking = false;
 
   bool _hasEnteredHouse = false; // 家に入ったことがあるかのローカルな旗
   late AnimationController _hintAnimationController; // 吹き出しアニメーション用
@@ -552,7 +556,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     ).then((_) async {
       _loadAndDetermineDisplayPromise();
 
-      // 🌟 ここから追加：やくそくが設定されていて、かつ実行ガイドをまだ見ていない場合
+      // 🌟 やくそくが設定されていて、かつ実行ガイドをまだ見ていない場合
       if (_displayPromise != null) {
         bool isNextPromiseGuideShown =
             await SharedPrefsHelper.isFeatureGuideShown('next_promise');
@@ -567,6 +571,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             await SharedPrefsHelper.setFeatureGuideShown('next_promise');
           });
         }
+      }
+
+      // 🌟 やくそくが1件以上あれば「はじめる」ボタンを点滅させる
+      if (_displayPromise != null && mounted) {
+        setState(() {
+          _showStartBlinking = true;
+        });
       }
     });
   }
@@ -762,6 +773,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   // 「はじめる」ボタンを押した時の処理を修正
   void _startPromise() async {
     if (_displayPromise == null) return;
+
+    // 点滅フラグをリセット
+    if (_showStartBlinking) {
+      setState(() {
+        _showStartBlinking = false;
+      });
+    }
 
     // 始める開始のイベントを記録
     await FirebaseAnalytics.instance.logEvent(name: 'start_promise');
@@ -1564,25 +1582,29 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           ),
                         ),
 
-                        ElevatedButton(
-                          onPressed: _startPromise,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _isDisplayPromiseEmergency
-                                ? Colors.white
-                                : Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                        BlinkingEffect(
+                          isBlinking: _showStartBlinking,
+                          borderRadius: 10,
+                          child: ElevatedButton(
+                            onPressed: _startPromise,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _isDisplayPromiseEmergency
+                                  ? Colors.white
+                                  : Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            _isDisplayPromiseEmergency
-                                ? AppLocalizations.of(context)!.startNow
-                                : AppLocalizations.of(context)!.startPromise,
-                            style: TextStyle(
-                              color: _isDisplayPromiseEmergency
-                                  ? Colors.red[400]
-                                  : Colors.white,
-                              fontWeight: FontWeight.bold,
+                            child: Text(
+                              _isDisplayPromiseEmergency
+                                  ? AppLocalizations.of(context)!.startNow
+                                  : AppLocalizations.of(context)!.startPromise,
+                              style: TextStyle(
+                                color: _isDisplayPromiseEmergency
+                                    ? Colors.red[400]
+                                    : Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),

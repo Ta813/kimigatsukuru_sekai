@@ -1292,7 +1292,7 @@ abstract class AppLocalizations {
   /// Message shown when the user levels up
   ///
   /// In en, this message translates to:
-  /// **'You reached level {newLevel}!'**
+  /// **'You reached level {newLevel}!🎉\nThere might be something good if you go to the shop✨'**
   String levelUpMessage(int newLevel);
 
   /// Label indicating a feature unlocks at a specific level
@@ -2122,6 +2122,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Space Settings'**
   String get spaceSettings;
+
+  /// No description provided for @samplePromiseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please Set Up Promises!'**
+  String get samplePromiseTitle;
+
+  /// No description provided for @samplePromiseDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ve set up some sample \'promises\' for you! Please change the settings to suit your child.'**
+  String get samplePromiseDesc;
+
+  /// No description provided for @gotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get gotIt;
+
+  /// No description provided for @firstTimeBonus.
+  ///
+  /// In en, this message translates to:
+  /// **'🌟 First Time Bonus! 🌟'**
+  String get firstTimeBonus;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'roulette_dialog.dart';
@@ -49,6 +50,9 @@ class _TimerScreenState extends State<TimerScreen>
   bool _isInteractionBusy = false;
   bool _showNameSettingHint = false;
 
+  // 広告を表示するかどうかのフラグ（初回起動時は false）
+  bool _showAd = false;
+
   final FlutterTts _flutterTts = FlutterTts();
   String? _childFullName; // 読み上げる名前（敬称付き）を保持
   bool _isTtsInitialized = false; // TTS初期化完了フラグ
@@ -58,10 +62,16 @@ class _TimerScreenState extends State<TimerScreen>
   late AnimationController _hintAnimationController;
   late Animation<double> _hintScaleAnimation;
 
+  int _basePoints = 0;
+  bool _isFirstTimeBonus = false;
+
   // この画面が表示された瞬間に、一度だけ呼ばれる初期化処理
   @override
   void initState() {
     super.initState();
+    _basePoints = widget.promise['points'] as int? ?? 0;
+    _checkFirstTimeBonus();
+
     _confettiController = ConfettiController(
       duration: const Duration(seconds: 6), // 6秒間だけ紙吹雪を出す
     );
@@ -92,6 +102,48 @@ class _TimerScreenState extends State<TimerScreen>
     _loadAndSetRandomCharacter();
 
     _checkToShowNameHint();
+
+    // 🌟 初回起動チェック＆広告ロード
+    _checkFirstTimeAndLoadAd();
+  }
+
+  /// 初回ボーナスチェック: レベル1かつ基本ポイントが50未満なら50に底上げ
+  Future<void> _checkFirstTimeBonus() async {
+    final int currentExp = await SharedPrefsHelper.loadExperience();
+    int currentLevel = 2;
+    // 経験値が3未満（レベル2に達していない）場合はレベル1とみなす
+    if (currentExp < 3) {
+      currentLevel = 1;
+    }
+
+    if (currentLevel == 1 && _basePoints < 50) {
+      if (mounted) {
+        setState(() {
+          _basePoints = 50;
+          _isFirstTimeBonus = true;
+        });
+      }
+    }
+  }
+
+  /// 初回タイマー起動時は広告を表示せず、2回目以降から表示する
+  Future<void> _checkFirstTimeAndLoadAd() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool isFirstTime = prefs.getBool('is_first_timer_open') ?? true;
+
+    if (isFirstTime) {
+      // 初回：広告は出さず、次回から出すためにフラグを更新
+      await prefs.setBool('is_first_timer_open', false);
+      print('タイマー画面：初回起動なので広告は出しません！');
+    } else {
+      // 2回目以降：広告を表示
+      if (mounted) {
+        setState(() {
+          _showAd = true;
+        });
+      }
+      print('タイマー画面：2回目以降なので広告を出します！');
+    }
   }
 
   bool _hasPlayedInitialSound = false;
@@ -621,7 +673,7 @@ class _TimerScreenState extends State<TimerScreen>
 
   // ★ルーレットを表示して、その結果で終了処理を呼ぶメソッド
   void _showRouletteAndFinish() async {
-    final basePoints = widget.promise['points'] as int? ?? 0;
+    final basePoints = _basePoints;
 
     final multiplier = await showDialog<double>(
       context: context,
@@ -635,15 +687,18 @@ class _TimerScreenState extends State<TimerScreen>
 
   // ★ポイントを計算して、画面を閉じる最終処理メソッド
   void _finishPromise({required num pointMultiplier, required int exp}) async {
-    final basePoints = widget.promise['points'] as int? ?? 0;
+    final basePoints = _basePoints;
     int pointsAwarded = (basePoints * pointMultiplier).toInt();
 
     if (widget.isEmergency) {
       await SharedPrefsHelper.saveEmergencyPromise(null);
     }
-    if (!mounted) return;
     if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop({'points': pointsAwarded, 'exp': exp});
+      Navigator.of(context).pop({
+        'points': pointsAwarded,
+        'exp': exp,
+        'isFirstTimeBonus': _isFirstTimeBonus,
+      });
     }
   }
 
@@ -741,9 +796,7 @@ class _TimerScreenState extends State<TimerScreen>
                   _isTimeUp
                       ? Text(
                           AppLocalizations.of(context)!.pointsHalf(
-                                (widget.promise['points'] / 2)
-                                    .floor()
-                                    .toString(),
+                                (_basePoints / 2).floor().toString(),
                               ) +
                               '\n' +
                               AppLocalizations.of(context)!.timerExpFailure,
@@ -754,9 +807,12 @@ class _TimerScreenState extends State<TimerScreen>
                           textAlign: TextAlign.center,
                         )
                       : Text(
-                          AppLocalizations.of(
+                          (_isFirstTimeBonus
+                                  ? '${AppLocalizations.of(context)!.firstTimeBonus}\n'
+                                  : '') +
+                              AppLocalizations.of(
                                 context,
-                              )!.pointsChance(widget.promise['points']) +
+                              )!.pointsChance(_basePoints) +
                               '\n' +
                               AppLocalizations.of(context)!.timerExpChance,
                           style: const TextStyle(fontSize: 20),
@@ -972,8 +1028,8 @@ class _TimerScreenState extends State<TimerScreen>
             ),
           ],
         ),
-        // 画面下部にバナーを設置
-        bottomNavigationBar: const AdBanner(),
+        // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+        bottomNavigationBar: _showAd ? const AdBanner() : null,
       ),
     );
   }

@@ -285,7 +285,7 @@
     }
   },
   "levelUpTitle": "Level Up!",
-  "levelUpMessage": "You reached level {newLevel}!",
+  "levelUpMessage": "You reached level {newLevel}!🎉\nThere might be something good if you go to the shop✨",
   "@levelUpMessage": {
     "description": "Message shown when the user levels up",
     "placeholders": {
@@ -439,5 +439,9 @@
   "spaceAlien8": "Alien 8",
   "spaceAlien9": "Alien 9",
   "skySettings": "Sky Settings",
-  "spaceSettings": "Space Settings"
+  "spaceSettings": "Space Settings",
+  "samplePromiseTitle": "Please Set Up Promises!",
+  "samplePromiseDesc": "We've set up some sample 'promises' for you! Please change the settings to suit your child.",
+  "gotIt": "Got it",
+  "firstTimeBonus": "🌟 First Time Bonus! 🌟"
 }

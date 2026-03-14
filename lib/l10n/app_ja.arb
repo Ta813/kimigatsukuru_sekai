@@ -285,7 +285,7 @@
     }
   },
   "levelUpTitle": "レベルアップ！",
-  "levelUpMessage": "レベルが {newLevel} にあがった！",
+  "levelUpMessage": "レベルが {newLevel} にあがった！🎉\nおみせに いくと いいことがあるかも✨",
   "@levelUpMessage": {
     "description": "ユーザーがレベルアップした時に表示するメッセージ",
     "placeholders": {
@@ -439,5 +439,9 @@
   "spaceAlien8": "うちゅうじん８",
   "spaceAlien9": "うちゅうじん９",
   "skySettings": "そらのせってい",
-  "spaceSettings": "うちゅうのせってい"
+  "spaceSettings": "うちゅうのせってい",
+  "samplePromiseTitle": "やくそくを設定してね！",
+  "samplePromiseDesc": "サンプルとして、いくつか「やくそく」を設定してあるよ！ご自身のお子様に合った設定に変えてあげてね。",
+  "gotIt": "わかった",
+  "firstTimeBonus": "🌟 初回ボーナス 🌟"
 }
