@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appName": "The World You Create",
+  "appName": "Kimigatsukurusekai",
   "customizeTitle": "Customize",
   "customizeTabClothes": "Clothes",
   "customizeTabHouse": "House",
@@ -462,6 +462,7 @@
     }
   },
   "loginBonusWeeklyTitle": "✨ This Week's Login Bonus ✨",
+  "loginBonusResetNote": "*Resets every Monday",
   "loginBonusDay": "Day {day}",
   "@loginBonusDay": {
     "placeholders": {

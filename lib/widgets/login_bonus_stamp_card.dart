@@ -37,7 +37,7 @@ class LoginBonusStampCard extends StatelessWidget {
             ),
           ),
           Text(
-            '※毎週月曜日リセット',
+            l10n.loginBonusResetNote,
             style: TextStyle(fontSize: 12, color: Colors.orange[700]),
           ),
           const SizedBox(height: 16),

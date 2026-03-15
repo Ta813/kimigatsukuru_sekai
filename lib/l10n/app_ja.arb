@@ -462,6 +462,7 @@
     }
   },
   "loginBonusWeeklyTitle": "✨ 今週のログインボーナス ✨",
+  "loginBonusResetNote": "※毎週月曜日リセット",
   "loginBonusDay": "{day}日目",
   "@loginBonusDay": {
     "placeholders": {
