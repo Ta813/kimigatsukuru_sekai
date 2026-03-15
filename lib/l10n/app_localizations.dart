@@ -2197,6 +2197,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get navBack;
+
+  /// No description provided for @loginBonusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login Bonus'**
+  String get loginBonusTitle;
+
+  /// No description provided for @loginBonusMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {count} login this week!\nYou got 10 points!'**
+  String loginBonusMessage(int count);
+
+  /// No description provided for @loginBonusWeeklyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'✨ This Week\'s Login Bonus ✨'**
+  String get loginBonusWeeklyTitle;
+
+  /// No description provided for @loginBonusDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {day}'**
+  String loginBonusDay(int day);
+
+  /// No description provided for @loginBonusCongrats.
+  ///
+  /// In en, this message translates to:
+  /// **'Yay!'**
+  String get loginBonusCongrats;
 }
 
 class _AppLocalizationsDelegate

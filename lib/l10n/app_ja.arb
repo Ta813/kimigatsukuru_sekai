@@ -451,5 +451,24 @@
   "navShop": "おみせ",
   "navMusic": "おんがく",
   "navWorldMap": "せかい",
-  "navBack": "もどる"
+  "navBack": "もどる",
+  "loginBonusTitle": "ログインボーナス",
+  "loginBonusMessage": "こんしゅう {count} にちめの ログイン！\n10ポイント ゲットしたよ！",
+  "@loginBonusMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "loginBonusWeeklyTitle": "✨ 今週のログインボーナス ✨",
+  "loginBonusDay": "{day}日目",
+  "@loginBonusDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "loginBonusCongrats": "やったー！"
 }

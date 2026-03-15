@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/settings_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:provider/provider.dart';
 import '../../providers/locale_provider.dart';
@@ -520,6 +521,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           });
                         },
                       ),
+                    // タイムトラベル（昨日に戻す）ボタン
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple,
+                      ),
+                      onPressed: () async {
+                        final prefs = await SharedPreferences.getInstance();
+
+                        // 「今の時間」から「1日」を引いて「昨日」を作る
+                        final yesterday = DateTime.now().subtract(
+                          const Duration(days: 1),
+                        );
+
+                        // SharedPreferencesに保存
+                        await prefs.setString(
+                          'last_login_date',
+                          yesterday.toIso8601String(),
+                        );
+
+                        // 画面下に「成功したよ！」という通知（スナックバー）を出すと分かりやすいです
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                '⏳ デバッグ: 最終ログイン日を昨日に変更しました！\nホーム画面に戻って確認してください。',
+                              ),
+                              backgroundColor: Colors.purple,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text(
+                        '【テスト】最終ログインを「昨日」にする',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     const Divider(thickness: 2, color: Colors.red),
                   ],
                 ],

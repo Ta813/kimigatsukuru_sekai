@@ -1108,4 +1108,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navBack => 'Back';
+
+  @override
+  String get loginBonusTitle => 'Login Bonus';
+
+  @override
+  String loginBonusMessage(int count) {
+    return 'Day $count login this week!\nYou got 10 points!';
+  }
+
+  @override
+  String get loginBonusWeeklyTitle => '✨ This Week\'s Login Bonus ✨';
+
+  @override
+  String loginBonusDay(int day) {
+    return 'Day $day';
+  }
+
+  @override
+  String get loginBonusCongrats => 'Yay!';
 }

@@ -23,6 +23,7 @@ import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:in_app_review/in_app_review.dart';
+import '../../managers/login_bonus_manager.dart';
 import '../../widgets/blinking_effect.dart';
 
 class ChildHomeScreen extends StatefulWidget {
@@ -235,20 +236,45 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       ),
     );
 
+    _playSavedBgm(); // 保存されたBGMを再生
+
     _loadAndDetermineDisplayPromise(); // 定例のやくそくを読み込む（既存の処理）
     // ★アプリの状態変化の監視を開始
     WidgetsBinding.instance.addObserver(this);
 
-    // ★ 最初のフレーム描画後に、同意ダイアログの表示チェックを行う
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // ★ 最初のフレーム描画後に、ダイアログの表示チェックを順番に行う
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // 1. 同意ダイアログ (Androidのみ)
       if (Platform.isAndroid) {
-        _showDisclosureDialogIfNeeded();
+        await _showDisclosureDialogIfNeeded();
+      }
+
+      // 2. ログインボーナスチェック
+      if (mounted) {
+        final earnedPoints = await LoginBonusManager().checkLoginBonus(context);
+        // 🌟 ダイアログが閉じた後に最新のポイントなどを再読み込み
+        await _loadAndDetermineDisplayPromise();
+
+        if (earnedPoints > 0 && mounted) {
+          // ポイント獲得のアニメーションと音を実行
+          try {
+            SfxManager.instance.playSuccessSound();
+          } catch (e) {
+            print('再生エラー: $e');
+          }
+
+          setState(() {
+            _pointsAdded = earnedPoints;
+          });
+
+          // アニメーション開始
+          _animationController.forward(from: 0.0);
+          _pointsAddedAnimationController.forward(from: 0.0);
+        }
       }
     });
 
     _showGuideIfNeeded(); // 必要ならガイドを表示
-
-    _playSavedBgm(); // 保存されたBGMを再生
 
     _scheduleMidnightRefresh(); // 日付変更チェックのスケジュール設定
 
@@ -846,7 +872,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       // 追加されたポイント数を一時的に保存して、アニメーションで表示
       _animationController.forward(from: 0.0);
       _pointsAddedAnimationController.forward(from: 0.0);
-
       // レベルアップのチェックと表示
       _checkLevelUp();
       // 画面の状態を更新して、再読み込み

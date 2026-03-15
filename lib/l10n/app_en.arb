@@ -451,5 +451,24 @@
   "navShop": "Shop",
   "navMusic": "Music",
   "navWorldMap": "World",
-  "navBack": "Back"
+  "navBack": "Back",
+  "loginBonusTitle": "Login Bonus",
+  "loginBonusMessage": "Day {count} login this week!\nYou got 10 points!",
+  "@loginBonusMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "loginBonusWeeklyTitle": "✨ This Week's Login Bonus ✨",
+  "loginBonusDay": "Day {day}",
+  "@loginBonusDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "loginBonusCongrats": "Yay!"
 }

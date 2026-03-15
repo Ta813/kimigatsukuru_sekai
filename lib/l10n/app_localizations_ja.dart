@@ -36,7 +36,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideSettingsTitle => 'おうちのひと設定「左上の⚙マーク」';
 
   @override
-  String get guideSettingsDesc => 'やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！';
+  String get guideSettingsDesc =>
+      'やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！';
 
   @override
   String get guideNextPromiseTitle => 'つぎのやくそく「下のボード」';
@@ -54,7 +55,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guidePointsTitle => 'ポイント「右上の★」';
 
   @override
-  String get guidePointsDesc => 'ここにやくそくを達成すると、ポイントがもらえるよ！\nたくさん集めて、ごほうびと交換しよう。';
+  String get guidePointsDesc =>
+      'ここにやくそくを達成すると、ポイントがもらえるよ！\nたくさん集めて、ごほうびと交換しよう。';
 
   @override
   String get guideShopTitle => 'ごほうびショップ「右の🏠マーク」';
@@ -78,7 +80,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideWorldMapButtonTitle => '外の世界「右の🌎マーク」';
 
   @override
-  String get guideWorldMapButtonDesc => 'このボタンを押すと、世界の全体図が見られるよ。レベルが上がると行ける場所が増えるかも！';
+  String get guideWorldMapButtonDesc =>
+      'このボタンを押すと、世界の全体図が見られるよ。レベルが上がると行ける場所が増えるかも！';
 
   @override
   String get emergency => 'きんきゅう！';
@@ -225,31 +228,36 @@ class AppLocalizationsJa extends AppLocalizations {
   String get advice1Title => 'やくそくは、お子さんと一緒に決める';
 
   @override
-  String get advice1Desc => '「何を」「いつまでに」「何ポイントで」やるか、お子さんと一緒に話しながら決めてみましょう。自分で決めたルールだからこそ、挑戦する気持ちが芽生えます。';
+  String get advice1Desc =>
+      '「何を」「いつまでに」「何ポイントで」やるか、お子さんと一緒に話しながら決めてみましょう。自分で決めたルールだからこそ、挑戦する気持ちが芽生えます。';
 
   @override
   String get advice2Title => '最初は「かんたん」から始めよう';
 
   @override
-  String get advice2Desc => 'まずは、お子さんが絶対にクリアできる簡単なやくそくから始めましょう。「できた！」という成功体験を積み重ねることが、自信に繋がります。';
+  String get advice2Desc =>
+      'まずは、お子さんが絶対にクリアできる簡単なやくそくから始めましょう。「できた！」という成功体験を積み重ねることが、自信に繋がります。';
 
   @override
   String get advice3Title => '時間は「少しだけ多め」に設定';
 
   @override
-  String get advice3Desc => '「急がなきゃ！」と焦らせるのではなく、「時間内にできた！」という達成感を味わえるように、最初のうちは挑戦時間を少しだけ長めに設定してあげるのがコツです。';
+  String get advice3Desc =>
+      '「急がなきゃ！」と焦らせるのではなく、「時間内にできた！」という達成感を味わえるように、最初のうちは挑戦時間を少しだけ長めに設定してあげるのがコツです。';
 
   @override
   String get advice4Title => 'ポイントは「特別感」を大切に';
 
   @override
-  String get advice4Desc => '難しいやくそくほど、もらえるポイントを少しだけ高く設定してみましょう。「このミッションは特別だ！」と感じることで、お子さんの挑戦意欲を引き出します。';
+  String get advice4Desc =>
+      '難しいやくそくほど、もらえるポイントを少しだけ高く設定してみましょう。「このミッションは特別だ！」と感じることで、お子さんの挑戦意欲を引き出します。';
 
   @override
   String get advice5Title => '一番のごほうびは「言葉」です';
 
   @override
-  String get advice5Desc => 'アプリでのポイントも大切ですが、やくそくを達成したときには、ぜひ「よくできたね！」「すごい！」と、直接言葉で褒めてあげてください。それが、お子さんにとって最高のエネルギーになります。';
+  String get advice5Desc =>
+      'アプリでのポイントも大切ですが、やくそくを達成したときには、ぜひ「よくできたね！」「すごい！」と、直接言葉で褒めてあげてください。それが、お子さんにとって最高のエネルギーになります。';
 
   @override
   String emergencyPromiseSet(String promiseTitle) {
@@ -655,7 +663,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get worldMapGuideTitle3 => 'まだまだ広がる世界';
 
   @override
-  String get worldMapGuideContent3 => '下にある海や、ずーっと上の宇宙にも、いつか行けるようになるかも…？\nお楽しみに！';
+  String get worldMapGuideContent3 =>
+      '下にある海や、ずーっと上の宇宙にも、いつか行けるようになるかも…？\nお楽しみに！';
 
   @override
   String get seaAreaLocked => 'レベル10になると入れるようになります！';
@@ -775,7 +784,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get disclosureTitle => 'データの取り扱いについて';
 
   @override
-  String get disclosureMessage => 'このアプリは、広告の表示とアプリのパフォーマンス改善を目的として、インストール済みのアプリに関する情報や、デバイスの広告IDを収集・共有することがあります。';
+  String get disclosureMessage =>
+      'このアプリは、広告の表示とアプリのパフォーマンス改善を目的として、インストール済みのアプリに関する情報や、デバイスの広告IDを収集・共有することがあります。';
 
   @override
   String get disagreeAction => '同意しない';
@@ -1054,7 +1064,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get samplePromiseTitle => 'やくそくを設定してね！';
 
   @override
-  String get samplePromiseDesc => 'サンプルとして、いくつか「やくそく」を設定してあるよ！ご自身のお子様に合った設定に変えてあげてね。';
+  String get samplePromiseDesc =>
+      'サンプルとして、いくつか「やくそく」を設定してあるよ！ご自身のお子様に合った設定に変えてあげてね。';
 
   @override
   String get gotIt => 'わかった';
@@ -1085,4 +1096,23 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get navBack => 'もどる';
+
+  @override
+  String get loginBonusTitle => 'ログインボーナス';
+
+  @override
+  String loginBonusMessage(int count) {
+    return 'こんしゅう $count にちめの ログイン！\n10ポイント ゲットしたよ！';
+  }
+
+  @override
+  String get loginBonusWeeklyTitle => '✨ 今週のログインボーナス ✨';
+
+  @override
+  String loginBonusDay(int day) {
+    return '$day日目';
+  }
+
+  @override
+  String get loginBonusCongrats => 'やったー！';
 }
