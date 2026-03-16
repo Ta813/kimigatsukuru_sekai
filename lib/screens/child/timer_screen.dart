@@ -38,6 +38,7 @@ class _TimerScreenState extends State<TimerScreen>
   Timer? _timer; // タイマーを管理するための変数
   DateTime? _endTime;
   int _remainingSeconds = 0; // 残り時間を秒で管理
+  int _totalSeconds = 0; // ★ 合計時間を秒で管理
   bool _isTimeUp = false;
 
   String? _randomSupportCharacterPath; // ★ランダムで表示するキャラのパス
@@ -92,6 +93,7 @@ class _TimerScreenState extends State<TimerScreen>
     WakelockPlus.enable();
 
     final durationInMinutes = widget.promise['duration'] as int? ?? 20;
+    _totalSeconds = durationInMinutes * 60; // ★ 合計秒数を計算
     _endTime = DateTime.now().add(Duration(minutes: durationInMinutes));
 
     _startTimer();
@@ -303,6 +305,17 @@ class _TimerScreenState extends State<TimerScreen>
     } catch (e) {
       print("TTS Speak Error: $e");
       // エラー発生時は通常の効果音にフォールバックするなどの処理も可能
+    }
+  }
+
+  // ★ 残り時間に合わせてゲージの色を変えるロジック
+  Color _getTimerColor(double progress) {
+    if (progress > 0.5) {
+      return Colors.green; // 半分以上は「緑（余裕）」
+    } else if (progress > 0.2) {
+      return Colors.orange; // 50%〜20%は「オレンジ（少し急ごう）」
+    } else {
+      return Colors.redAccent; // 残り20%を切ったら「赤（ピンチ！）」
     }
   }
 
@@ -759,41 +772,93 @@ class _TimerScreenState extends State<TimerScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    _formatDuration(_remainingSeconds), // タイマー表示
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: _isTimeUp ? Colors.red : Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _isTimeUp
-                      ? Text(
-                          AppLocalizations.of(context)!.pointsHalf(
-                                (_basePoints / 2).floor().toString(),
-                              ) +
-                              '\n' +
-                              AppLocalizations.of(context)!.timerExpFailure,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.red[700],
+                  // 🌟 ゲージとタイマーを横並びで表示
+                  Builder(
+                    builder: (context) {
+                      // 残り時間の割合（0.0 〜 1.0）を計算する
+                      double progress = _totalSeconds > 0
+                          ? (_remainingSeconds / _totalSeconds).clamp(0.0, 1.0)
+                          : 0.0;
+
+                      return Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.center, // 中央で横並びにする
+                        children: [
+                          // 🌟 左側：コンパクトな円形ゲージ
+                          SizedBox(
+                            width: 80, // サイズをグッと小さく！
+                            height: 80,
+                            child: CircularProgressIndicator(
+                              value: progress,
+                              strokeWidth: 14, // サイズに合わせて少し細くします
+                              backgroundColor: Colors.grey[200],
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                _getTimerColor(progress),
+                              ),
+                              strokeCap: StrokeCap.round,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
-                        )
-                      : Text(
-                          (_isFirstTimeBonus
-                                  ? '${AppLocalizations.of(context)!.firstTimeBonus}\n'
-                                  : '') +
-                              AppLocalizations.of(
-                                context,
-                              )!.pointsChance(_basePoints) +
-                              '\n' +
-                              AppLocalizations.of(context)!.timerExpChance,
-                          style: const TextStyle(fontSize: 20),
-                          textAlign: TextAlign.center,
-                        ),
-                  const SizedBox(height: 10),
+
+                          const SizedBox(width: 20), // ゲージと文字の間の隙間
+                          // 🌟 右側：時間とテキスト
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start, // 文字を左揃えにすると綺麗です
+                            children: [
+                              Text(
+                                _formatDuration(_remainingSeconds), // タイマー表示
+                                style: TextStyle(
+                                  fontSize: 48,
+                                  fontWeight: FontWeight.bold,
+                                  color: _isTimeUp
+                                      ? Colors.red
+                                      : Colors.black87,
+                                  height: 1.0, // 縦の隙間を詰めめる
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              _isTimeUp
+                                  ? Text(
+                                      AppLocalizations.of(context)!.pointsHalf(
+                                            (_basePoints / 2)
+                                                .floor()
+                                                .toString(),
+                                          ) +
+                                          '\n' +
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.timerExpFailure,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red[700],
+                                      ),
+                                    )
+                                  : Text(
+                                      (_isFirstTimeBonus
+                                              ? '${AppLocalizations.of(context)!.firstTimeBonus}\n'
+                                              : '') +
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.pointsChance(_basePoints) +
+                                          '\n' +
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.timerExpChance,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
                     onPressed: _isFinishedButtonPressed
