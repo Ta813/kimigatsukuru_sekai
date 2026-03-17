@@ -19,7 +19,7 @@ import '../../l10n/app_localizations.dart';
 import 'house_interior_screen.dart';
 import 'world_map_screen.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
+// import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -244,10 +244,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     // ★ 最初のフレーム描画後に、ダイアログの表示チェックを順番に行う
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // 1. 同意ダイアログ (Androidのみ)
-      if (Platform.isAndroid) {
-        await _showDisclosureDialogIfNeeded();
-      }
+      // 1. 同意ダイアログ (Androidのみ、こども向け設定のため不要)
+      // if (Platform.isAndroid) {
+      //   await _showDisclosureDialogIfNeeded();
+      // }
 
       // 2. ログインボーナスチェック
       if (mounted) {
@@ -326,80 +326,73 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (!isOnline) return; // オフラインなら初期化しない
 
     try {
-      // Androidでのみ実行
-      // if (Platform.isAndroid) {
       // まだ初期化されていなければ初期化する
       if (!_isMobileAdsInitialized) {
         await MobileAds.instance.initialize();
-        // RequestConfigurationの設定もここで行う
-        final RequestConfiguration requestConfiguration = RequestConfiguration(
-          tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-          tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-          maxAdContentRating: MaxAdContentRating.g,
-          testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
-        );
-        await MobileAds.instance.updateRequestConfiguration(
-          requestConfiguration,
-        );
+        // RequestConfigurationの設定もここで行う(こども向け設定のため不要)
+        // final RequestConfiguration requestConfiguration = RequestConfiguration(
+        //   tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
+        //   tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
+        //   maxAdContentRating: MaxAdContentRating.g,
+        //   testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
+        // );
+        // await MobileAds.instance.updateRequestConfiguration(
+        //   requestConfiguration,
+        // );
         setState(() {
           _isMobileAdsInitialized = true; // ★ 初期化完了フラグを立てる
         });
       }
-      // iOSの場合は何もしないか、Unity Adsの初期化をここで行う
-      // } else {
-      //   setState(() {
-      //     _isMobileAdsInitialized = true; // iOSでもフラグは立てておく
-      //   });
-      // }
     } catch (e) {
       // 初期化に失敗してもアプリは続行する
       print('Failed to initialize network services (offline?): $e');
     }
   }
 
-  Future<void> _showDisclosureDialogIfNeeded() async {
-    final hasConsented = await SharedPrefsHelper.hasConsentedToDataCollection();
+  // ★ 同意ダイアログ表示メソッド(こども向け設定のため不要)
+  // Future<void> _showDisclosureDialogIfNeeded() async {
+  //   final hasConsented = await SharedPrefsHelper.hasConsentedToDataCollection();
 
-    // まだ同意していない場合のみダイアログを表示
-    if (!hasConsented && mounted) {
-      final l10n = AppLocalizations.of(context)!;
+  //   // まだ同意していない場合のみダイアログを表示
+  //   if (!hasConsented && mounted) {
+  //     final l10n = AppLocalizations.of(context)!;
 
-      await showDialog<void>(
-        context: context,
-        barrierDismissible: false, // ダイアログの外をタップしても閉じない
-        builder: (context) => AlertDialog(
-          title: Text(l10n.disclosureTitle),
-          content: SingleChildScrollView(
-            child: Text(
-              // Googleが要求する文言のテンプレートに沿った文章
-              l10n.disclosureMessage,
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(l10n.disagreeAction),
-              onPressed: () {
-                // 同意しない場合はアプリを終了する
-                SystemNavigator.pop();
-              },
-            ),
-            ElevatedButton(
-              child: Text(l10n.agreeAction),
-              onPressed: () async {
-                // 同意したことを記録
-                await SharedPrefsHelper.setDataCollectionConsent(true);
-                if (mounted) {
-                  if (Navigator.of(context).canPop()) {
-                    Navigator.of(context).pop();
-                  }
-                }
-              },
-            ),
-          ],
-        ),
-      );
-    }
-  }
+  //     await showDialog<void>(
+  //       context: context,
+  //       barrierDismissible: false, // ダイアログの外をタップしても閉じない
+  //       builder: (context) => AlertDialog(
+  //         title: Text(l10n.disclosureTitle),
+  //         content: SingleChildScrollView(
+  //           child: Text(
+  //             // Googleが要求する文言のテンプレートに沿った文章
+  //             l10n.disclosureMessage,
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: Text(l10n.disagreeAction),
+  //             onPressed: () {
+  //               // 同意しない場合はアプリを終了する
+  //               SystemNavigator.pop();
+  //             },
+  //           ),
+  //           ElevatedButton(
+  //             child: Text(l10n.agreeAction),
+  //             onPressed: () async {
+  //               // 同意したことを記録
+  //               await SharedPrefsHelper.setDataCollectionConsent(true);
+  //               if (mounted) {
+  //                 if (Navigator.of(context).canPop()) {
+  //                   Navigator.of(context).pop();
+  //                 }
+  //               }
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   }
+  // }
 
   void _scheduleMidnightRefresh() {
     _midnightTimer?.cancel(); // 既存のタイマーがあればキャンセル
