@@ -1181,7 +1181,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 Positioned(
                   top: 0,
                   bottom: 0,
-                  right: 95,
+                  right: 80,
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -1255,7 +1255,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -1317,7 +1317,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -1373,7 +1373,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -1438,7 +1438,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -1500,7 +1500,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 60,
+                                width: 50,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [

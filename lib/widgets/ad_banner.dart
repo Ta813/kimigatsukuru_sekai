@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class AdBanner extends StatefulWidget {
@@ -69,9 +69,9 @@ class _AdBannerState extends State<AdBanner> {
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      return Container(height: 50);
-    }
+    // if (kDebugMode) {
+    //   return Container(height: 50);
+    // }
 
     // if (!Platform.isAndroid) {
     //   return Container(height: 50);
