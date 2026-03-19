@@ -73,31 +73,66 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
     final bool? result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(content),
+        title: Text(
+          title,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3E0), // ピーチクリーム
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
+              width: 2,
+            ),
+          ),
+          child: Text(
+            content,
+            style: const TextStyle(fontSize: 16, height: 1.5),
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
         actions: [
           TextButton(
             onPressed: () {
-              // ★ falseを返してダイアログを閉じる
               if (Navigator.of(context).canPop()) {
                 Navigator.of(context).pop(false);
               }
             },
-            child: Text(AppLocalizations.of(context)!.skip), // TODO: l10n対応
+            child: Text(
+              AppLocalizations.of(context)!.skip,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () {
               try {
                 SfxManager.instance.playTapSound();
               } catch (e) {
-                // エラーが発生した場合
                 print('再生エラー: $e');
               }
               if (Navigator.of(context).canPop()) {
                 Navigator.of(context).pop(true);
               }
             },
-            child: const Text('OK'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043), // オレンジ
+              foregroundColor: Colors.white,
+              side: const BorderSide(
+                color: Color(0xFFFFCA28),
+                width: 2,
+              ), // 黄色の輪郭
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
+            ),
+            child: const Text(
+              'OK',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),

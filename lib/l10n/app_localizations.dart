@@ -98,7 +98,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'The World You Create'**
+  /// **'Kimigatsukurusekai'**
   String get appName;
 
   /// No description provided for @customizeTitle.
@@ -2230,6 +2230,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Yay!'**
   String get loginBonusCongrats;
+
+  /// No description provided for @loginBonusReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'Get it!'**
+  String get loginBonusReceive;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

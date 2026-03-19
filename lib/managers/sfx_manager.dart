@@ -8,8 +8,16 @@ class SfxManager {
   // Singleton（このクラスの唯一のインスタンス）を生成
   static final SfxManager instance = SfxManager._internal();
 
-  // 効果音専用のプレイヤー (just_audio)
-  final AudioPlayer _sfxPlayer = AudioPlayer();
+  // 効果音専用のプレイヤーを遅延初期化します
+  AudioPlayer? _sfxPlayer;
+
+  AudioPlayer get _player {
+    if (_sfxPlayer == null) {
+      print("SfxManager: AudioPlayerを新規作成します");
+      _sfxPlayer = AudioPlayer();
+    }
+    return _sfxPlayer!;
+  }
 
   factory SfxManager() {
     return instance;
@@ -20,8 +28,8 @@ class SfxManager {
   Future<void> _playSound(String assetPath) async {
     try {
       // just_audioでは、アセットパスの先頭に'assets/'をつけます
-      await _sfxPlayer.setAsset('assets/$assetPath');
-      await _sfxPlayer.play();
+      await _player.setAsset('assets/$assetPath');
+      await _player.play();
     } catch (e) {
       // もしエラーが出た場合、コンソールに表示
       print("効果音の再生エラー ($assetPath): $e");
@@ -42,9 +50,9 @@ class SfxManager {
       );
 
       // プレイリストをプレイヤーにセットして再生
-      await _sfxPlayer.setAudioSource(playlist);
-      await _sfxPlayer.setSpeed(speed);
-      await _sfxPlayer.play();
+      await _player.setAudioSource(playlist);
+      await _player.setSpeed(speed);
+      await _player.play();
     } catch (e) {
       print("連続再生エラー: $e");
     }
@@ -123,8 +131,12 @@ class SfxManager {
   // アプリ終了時にリソースを解放する
   void dispose() async {
     try {
-      await _sfxPlayer.stop();
-      await _sfxPlayer.dispose();
+      if (_sfxPlayer != null) {
+        print("SfxManager: AudioPlayerを破棄します");
+        await _sfxPlayer!.stop();
+        await _sfxPlayer!.dispose();
+        _sfxPlayer = null;
+      }
     } catch (e) {
       print("効果音プレイヤーの停止エラー: $e");
     }

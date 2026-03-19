@@ -1107,4 +1107,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get loginBonusCongrats => 'やったー！';
+
+  @override
+  String get loginBonusReceive => 'うけとる！';
 }

@@ -92,7 +92,7 @@ class LoginBonusManager {
 
     await showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (context) {
         final screenWidth = MediaQuery.of(context).size.width;
         // 画面幅に応じて最大480pxまでの広い幅を確保する
@@ -111,10 +111,43 @@ class LoginBonusManager {
               child: LoginBonusStampCard(currentLoginCount: count),
             ),
           ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(l10n.loginBonusCongrats),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // ダイアログを閉じる
+                // 受け取り処理などをここに書く
+              },
+              style: ElevatedButton.styleFrom(
+                // 🌟 1. 色：アプリのテーマカラーの中で、最も「明るく目立つ色」を選ぶ
+                backgroundColor: const Color(
+                  0xFFFF7043,
+                ), // または Colors.orange など
+                foregroundColor: Colors.white, // 文字の色は白でコントラストを高く
+                // 🌟 2. サイズ：とにかく大きく、押しやすく！（横幅いっぱいに近く）
+                minimumSize: const Size(200, 60), // 横200、縦60。縦幅を出すのがポイント！
+                // 🌟 3. 形：子供向けなので、丸みを強くしてポップに
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30), // 完全に丸い端っこ
+                ),
+
+                // 🌟 4. 影（立体感）：ボタンが画面から浮き出ているように見せる
+                elevation: 8, // 影を強くして立体感を出す
+                shadowColor: const Color(
+                  0xFFFF7043,
+                ).withOpacity(0.5), // 影にも色をつけて光らせる
+                // 🌟 5. 境界線（オプション）：さらに強調したい場合
+                side: const BorderSide(color: Colors.white, width: 2),
+              ),
+              child: Text(
+                // 🌟 6. 文字：太く、大きく、ワクワクする言葉に！
+                l10n.loginBonusReceive, // 単なる「OK」ではなく、行動を促す言葉
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold, // 絶対に太字！
+                  letterSpacing: 2.0, // 文字間隔を広げて読みやすく
+                ),
+              ),
             ),
           ],
         );

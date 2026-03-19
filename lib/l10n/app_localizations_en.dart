@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'The World You Create';
+  String get appName => 'Kimigatsukurusekai';
 
   @override
   String get customizeTitle => 'Customize';
@@ -1107,4 +1107,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginBonusCongrats => 'Yay!';
+
+  @override
+  String get loginBonusReceive => 'Get it!';
 }

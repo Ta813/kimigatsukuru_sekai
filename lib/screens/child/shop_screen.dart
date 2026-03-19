@@ -88,10 +88,27 @@ class _ShopScreenState extends State<ShopScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(item.getDisplayName(context)),
-          content: Text(
-            AppLocalizations.of(context)!.shopConfirmExchange(item.price),
+          title: Text(
+            item.getDisplayName(context),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
+          content: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF3E0), // ピーチクリーム
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
+                width: 2,
+              ),
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.shopConfirmExchange(item.price),
+              style: const TextStyle(fontSize: 16, height: 1.5),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: [
             TextButton(
               onPressed: () {
@@ -101,12 +118,14 @@ class _ShopScreenState extends State<ShopScreen> {
                 try {
                   SfxManager.instance.playTapSound();
                 } catch (e) {
-                  // エラーが発生した場合
                   print('再生エラー: $e');
                 }
                 Navigator.pop(context);
               },
-              child: Text(AppLocalizations.of(context)!.quitAction),
+              child: Text(
+                AppLocalizations.of(context)!.quitAction,
+                style: TextStyle(color: Colors.grey[600]),
+              ),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -118,7 +137,6 @@ class _ShopScreenState extends State<ShopScreen> {
                   try {
                     SfxManager.instance.playShopBuySound();
                   } catch (e) {
-                    // エラーが発生した場合
                     print('再生エラー: $e');
                   }
                 } else {
@@ -127,25 +145,22 @@ class _ShopScreenState extends State<ShopScreen> {
                   try {
                     SfxManager.instance.playSequentialSounds(soundsToPlay);
                   } catch (e) {
-                    // エラーが発生した場合
                     print('再生エラー: $e');
                   }
                 }
                 final newPoints = _points - item.price;
                 await SharedPrefsHelper.savePoints(newPoints);
 
-                // ★購入済みアイテムとして保存する処理を追加
                 await SharedPrefsHelper.addPurchasedItem(item.name);
 
                 if (!mounted) return;
 
-                // 画面の状態を更新
                 setState(() {
                   _points = newPoints;
-                  _purchasedItemNames.add(item.name); // 画面上のリストにも追加
+                  _purchasedItemNames.add(item.name);
                 });
 
-                Navigator.pop(context); // ダイアログを閉じる
+                Navigator.pop(context);
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -157,8 +172,22 @@ class _ShopScreenState extends State<ShopScreen> {
                   ),
                 );
               },
-
-              child: Text(AppLocalizations.of(context)!.exchange),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF7043), // オレンジ
+                foregroundColor: Colors.white,
+                side: const BorderSide(
+                  color: Color(0xFFFFCA28),
+                  width: 2,
+                ), // 黄色の輪郭
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 4,
+              ),
+              child: Text(
+                AppLocalizations.of(context)!.exchange,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),

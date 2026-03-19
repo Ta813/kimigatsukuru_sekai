@@ -216,7 +216,22 @@ class _RouletteDialogState extends State<RouletteDialog> {
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: _spin,
-                      child: Text(AppLocalizations.of(context)!.rouletteSpin),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF7043), // オレンジ
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(
+                          color: Color(0xFFFFCA28),
+                          width: 2,
+                        ), // 黄色の輪郭
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 4,
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.rouletteSpin,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),

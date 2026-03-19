@@ -549,27 +549,41 @@ class _TimerScreenState extends State<TimerScreen>
     return '$minutes:$remainingSeconds';
   }
 
-  // ★承認ダイアログを表示するメソッド
   void _showApprovalDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.confirmation),
-          content: Text(
-            AppLocalizations.of(
-              context,
-            )!.askIfFinished(widget.promise['title']),
+          title: Text(
+            AppLocalizations.of(context)!.confirmation,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
+          content: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF3E0), // ピーチクリーム
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
+                width: 2,
+              ),
+            ),
+            child: Text(
+              AppLocalizations.of(
+                context,
+              )!.askIfFinished(widget.promise['title']),
+              style: const TextStyle(fontSize: 16, height: 1.5),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             TextButton(
-              child: Text(AppLocalizations.of(context)!.notYet),
               onPressed: () {
                 try {
                   SfxManager.instance.playTapSound();
                 } catch (e) {
-                  // エラーが発生した場合
                   print('再生エラー: $e');
                 }
                 Navigator.of(dialogContext).pop();
@@ -578,10 +592,12 @@ class _TimerScreenState extends State<TimerScreen>
                   _isFinishedButtonPressed = false;
                 });
               },
+              child: Text(
+                AppLocalizations.of(context)!.notYet,
+                style: TextStyle(color: Colors.grey[600]),
+              ),
             ),
             ElevatedButton(
-              child: Text(AppLocalizations.of(context)!.yesFinished),
-              // ★「おわったよ！」ボタンが押されたら、ここから処理が始まる
               onPressed: () async {
                 // まず承認ダイアログを閉じる
                 Navigator.of(dialogContext).pop();
@@ -591,7 +607,6 @@ class _TimerScreenState extends State<TimerScreen>
                   try {
                     SfxManager.instance.playTimerWinSound();
                   } catch (e) {
-                    // エラーが発生した場合
                     print('再生エラー: $e');
                   }
                   await Future.delayed(const Duration(seconds: 2));
@@ -609,7 +624,6 @@ class _TimerScreenState extends State<TimerScreen>
                     try {
                       SfxManager.instance.playTimerLoseSound();
                     } catch (e) {
-                      // エラーが発生した場合
                       print('再生エラー: $e');
                     }
                   } else {
@@ -618,7 +632,6 @@ class _TimerScreenState extends State<TimerScreen>
                     try {
                       SfxManager.instance.playSequentialSounds(soundsToPlay);
                     } catch (e) {
-                      // エラーが発生した場合
                       print('再生エラー: $e');
                     }
                   }
@@ -627,7 +640,6 @@ class _TimerScreenState extends State<TimerScreen>
                   try {
                     SfxManager.instance.playTimerWinSound2();
                   } catch (e) {
-                    // エラーが発生した場合
                     print('再生エラー: $e');
                   }
                   await Future.delayed(const Duration(seconds: 4));
@@ -648,7 +660,6 @@ class _TimerScreenState extends State<TimerScreen>
                     try {
                       SfxManager.instance.playTimerLoseSound();
                     } catch (e) {
-                      // エラーが発生した場合
                       print('再生エラー: $e');
                     }
                   } else {
@@ -657,7 +668,6 @@ class _TimerScreenState extends State<TimerScreen>
                     try {
                       SfxManager.instance.playSequentialSounds(soundsToPlay);
                     } catch (e) {
-                      // エラーが発生した場合
                       print('再生エラー: $e');
                     }
                   }
@@ -669,6 +679,22 @@ class _TimerScreenState extends State<TimerScreen>
                   }
                 }
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF7043), // オレンジ
+                foregroundColor: Colors.white,
+                side: const BorderSide(
+                  color: Color(0xFFFFCA28),
+                  width: 2,
+                ), // 黄色の輪郭
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 4,
+              ),
+              child: Text(
+                AppLocalizations.of(context)!.yesFinished,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         );

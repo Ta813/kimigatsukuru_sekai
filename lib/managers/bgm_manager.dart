@@ -22,9 +22,17 @@ enum BgmTrack {
 class BgmManager {
   static final BgmManager instance = BgmManager._internal();
 
-  // just_audioのプレイヤーを使います
-  final AudioPlayer _bgmPlayer = AudioPlayer();
+  // just_audioのプレイヤーを遅延初期化します
+  AudioPlayer? _bgmPlayer;
   BgmTrack? _currentTrack;
+
+  AudioPlayer get _player {
+    if (_bgmPlayer == null) {
+      print("BgmManager: AudioPlayerを新規作成します");
+      _bgmPlayer = AudioPlayer();
+    }
+    return _bgmPlayer!;
+  }
 
   factory BgmManager() {
     return instance;
@@ -65,7 +73,8 @@ class BgmManager {
 
   Future<void> play(BgmTrack track) async {
     try {
-      if (_bgmPlayer.playing && _currentTrack == track) return;
+      if (_bgmPlayer != null && _bgmPlayer!.playing && _currentTrack == track)
+        return;
 
       final trackPath = _getTrackPath(track);
 
@@ -75,10 +84,10 @@ class BgmManager {
         return;
       }
       // just_audioでは、assetsからの読み込みにsetAssetを使います
-      await _bgmPlayer.setAsset(trackPath);
+      await _player.setAsset(trackPath);
       // ループ再生を設定
-      await _bgmPlayer.setLoopMode(LoopMode.one);
-      await _bgmPlayer.play();
+      await _player.setLoopMode(LoopMode.one);
+      await _player.play();
       _currentTrack = track;
     } catch (e) {
       print("BGMの再生エラー: $e");
@@ -87,7 +96,9 @@ class BgmManager {
 
   Future<void> pause() async {
     try {
-      await _bgmPlayer.pause();
+      if (_bgmPlayer != null) {
+        await _bgmPlayer!.pause();
+      }
     } catch (e) {
       print("BGMの一時停止エラー: $e");
     }
@@ -95,7 +106,7 @@ class BgmManager {
 
   Future<void> resume() async {
     try {
-      await _bgmPlayer.play();
+      await _player.play();
     } catch (e) {
       print("BGMの再生エラー: $e");
     }
@@ -103,7 +114,9 @@ class BgmManager {
 
   Future<void> stopBgm() async {
     try {
-      await _bgmPlayer.stop();
+      if (_bgmPlayer != null) {
+        await _bgmPlayer!.stop();
+      }
       _currentTrack = null;
     } catch (e) {
       print("BGMの停止エラー: $e");
@@ -112,8 +125,12 @@ class BgmManager {
 
   Future<void> dispose() async {
     try {
-      await _bgmPlayer.stop();
-      await _bgmPlayer.dispose();
+      if (_bgmPlayer != null) {
+        print("BgmManager: AudioPlayerを破棄します");
+        await _bgmPlayer!.stop();
+        await _bgmPlayer!.dispose();
+        _bgmPlayer = null;
+      }
     } catch (e) {
       print("BGMの停止エラー: $e");
     }
