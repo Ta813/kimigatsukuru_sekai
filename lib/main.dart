@@ -11,7 +11,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:audio_session/audio_session.dart';
 import 'managers/notification_manager.dart';
@@ -19,19 +18,52 @@ import 'managers/notification_manager.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // 🌟 1. 画面の描画（UI）に絶対必要なもの「だけ」を先に待つ
+  // 多言語対応の初期化
+  final localeProvider = LocaleProvider();
+  await localeProvider.init();
+
+  // Firebaseの初期化（※オフラインでも絶対に初期化してOKです！）
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    // クラッシュレポートの設定
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+  } catch (e) {
+    print('Firebaseの初期化に失敗しました: $e');
+  }
+
+  // 🌟 2. 画面の描画を邪魔しないように、重い処理は「裏側」に投げる
+  // （await をつけずに呼び出すことで、処理を裏で走らせたまま次に進みます）
+  _initializeBackgroundServices();
+
+  // 🌟 3. UIに最低限必要な準備が終わったら、爆速でアプリを起動します！
+  runApp(
+    ChangeNotifierProvider.value(value: localeProvider, child: const MyApp()),
+  );
+}
+
+// ----------------------------------------------------
+// 🌟 画面の裏側で走らせる重い初期化処理をまとめたメソッド
+// ----------------------------------------------------
+Future<void> _initializeBackgroundServices() async {
+  // ① 音声セッションの初期化
   try {
     final session = await AudioSession.instance;
-
-    // 手動で「環境音・ゲーム音（アンビエント）」の設定を作って適用します
     await session.configure(
       const AudioSessionConfiguration(
-        // 【iOS向け設定】マナーモードで消音 ＆ 他のアプリの音楽とミックスして鳴らす
         avAudioSessionCategory: AVAudioSessionCategory.ambient,
         avAudioSessionCategoryOptions:
             AVAudioSessionCategoryOptions.mixWithOthers,
         avAudioSessionMode: AVAudioSessionMode.defaultMode,
-
-        // 【Android向け設定】ゲームや効果音としての音声（裏の音楽を止めない）
         androidAudioAttributes: AndroidAudioAttributes(
           contentType: AndroidAudioContentType.sonification,
           usage: AndroidAudioUsage.game,
@@ -44,51 +76,24 @@ Future<void> main() async {
     print("AudioSessionの初期化エラー: $e");
   }
 
-  // 通知機能の初期化
-  await NotificationManager.instance.init();
-  // 毎週月曜11時の通知をスケジュール登録
-  await NotificationManager.instance.scheduleWeeklyMonday11AM();
-
-  // ★ ネットワーク接続チェック
-  final connectivityResult = await (Connectivity().checkConnectivity());
-  final isOnline = connectivityResult != ConnectivityResult.none;
-
-  final localeProvider = LocaleProvider();
-  await localeProvider.init();
-  if (isOnline) {
-    try {
-      // Firebaseを初期化
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-
-      // Flutterフレームワーク内でキャッチされなかったエラーをCrashlyticsに送信
-      PlatformDispatcher.instance.onError = (error, stack) {
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-        return true;
-      };
-
-      // Flutterフレームワーク内で処理されたエラーをCrashlyticsに送信
-      FlutterError.onError = (errorDetails) {
-        FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-      };
-
-      // Facebook SDKのインスタンス作成
-      final facebookAppEvents = FacebookAppEvents();
-
-      // (オプション) IDFA(トラッキング)の収集を無効化する設定
-      // キッズカテゴリなので、明示的に無効化しておいた方が安全です
-      await facebookAppEvents.setAdvertiserTracking(enabled: false);
-    } catch (e) {
-      // 初期化に失敗してもアプリは続行する
-      print('Failed to initialize network services (offline?): $e');
-    }
+  // ② 通知の初期化とスケジュール登録
+  try {
+    await NotificationManager.instance.init();
+    await NotificationManager.instance.scheduleWeeklyMonday11AM();
+  } catch (e) {
+    print("通知マネージャーの初期化エラー: $e");
   }
 
-  // すべての準備が終わってから、アプリを起動します
-  runApp(
-    ChangeNotifierProvider.value(value: localeProvider, child: const MyApp()),
-  );
+  // ③ Facebook SDKの初期化
+  try {
+    //final facebookAppEvents = FacebookAppEvents();
+    FacebookAppEvents();
+    // 💡 既にキッズカテゴリから脱却しているため、大人向けの広告最適化ができるよう、
+    // ここは enabled: false を消すか、必要に応じて true に切り替えるのがおすすめです。
+    // await facebookAppEvents.setAdvertiserTracking(enabled: true);
+  } catch (e) {
+    print("Facebook SDKの初期化エラー: $e");
+  }
 }
 
 class MyApp extends StatelessWidget {

@@ -917,6 +917,16 @@ class _TimerScreenState extends State<TimerScreen>
                             _showApprovalDialog();
                           },
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF7043), // オレンジ
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(
+                        color: Color(0xFFFFCA28), // 黄色の輪郭
+                        width: 2,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 4,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
                         vertical: 20,

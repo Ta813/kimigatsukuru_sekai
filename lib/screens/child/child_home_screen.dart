@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
@@ -25,6 +26,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:in_app_review/in_app_review.dart';
 import '../../managers/login_bonus_manager.dart';
 import '../../widgets/blinking_effect.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -940,18 +942,67 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(AppLocalizations.of(context)!.levelUpTitle),
-          content: Text(AppLocalizations.of(context)!.levelUpMessage(newLevel)),
+          title: Text(
+            AppLocalizations.of(context)!.levelUpTitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF3E0), // ピーチクリーム
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
+                width: 2,
+              ),
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.levelUpMessage(newLevel),
+              style: const TextStyle(fontSize: 16, height: 1.5),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
+            ElevatedButton(
+              onPressed: () {
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (e) {
+                  print('再生エラー: $e');
+                }
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF7043), // オレンジ
+                foregroundColor: Colors.white,
+                side: const BorderSide(
+                  color: Color(0xFFFFCA28),
+                  width: 2,
+                ), // 黄色の輪郭
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 4,
+              ),
+              child: const Text(
+                'OK',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
-      ).then((_) {
-        // レベルアップダイアログが閉じられた後にレビューリクエストをチェック
-        _requestReviewIfTargetLevel(newLevel);
+      ).then((_) async {
+        // 1. まず通知許可リクエストをチェックし、ダイアログを出したかどうかの結果(true/false)を受け取る
+        bool didRequestNotification = await _requestNotificationPermission(
+          context,
+          newLevel,
+        );
+
+        // 🌟 2. もし通知許可ダイアログが「出なかった」場合だけ、レビューダイアログを聞く
+        if (!didRequestNotification) {
+          await _requestReviewIfTargetLevel(newLevel);
+        }
       });
     }
     // 変更された経験値を保存
@@ -971,6 +1022,116 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         print('Review request failed: $e');
       }
     }
+  }
+
+  // 通知の許可を求める一連の処理（プレ・ダイアログ → OSのダイアログ）
+  Future<bool> _requestNotificationPermission(
+    BuildContext context,
+    int level,
+  ) async {
+    // 🌟 1. セーブデータを読み込み、「すでに表示したか？」をチェック
+    final prefs = await SharedPreferences.getInstance();
+    final hasShown = prefs.getBool('has_shown_notification_dialog') ?? false;
+
+    if (hasShown) {
+      print('通知のお願いダイアログはすでに表示済みのためスキップします');
+      return false;
+    }
+
+    // レベル2以下なら通知の許可を求めない
+    if (level <= 2) return false;
+    // 1. 現在の通知許可のステータスを取得
+    PermissionStatus status = await Permission.notification.status;
+
+    // すでに「許可」されている、または設定から完全に「拒否」されている場合は何もしない
+    if (status.isGranted || status.isPermanentlyDenied) return false;
+
+    // 2. アプリオリジナルの可愛い「お願いダイアログ（プレ・ダイアログ）」を出す
+    // ユーザーが「うけとる！」を押したら true、「あとで」を押したら false が返ります
+    bool? shouldRequest = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // ダイアログの外側をタップして閉じられないようにする
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'お知らせをうけとる？🔔',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3E0), // ピーチクリーム
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
+              width: 2,
+            ),
+          ),
+          // 週1回の通知と、将来の拡張を見据えた安心感のあるメッセージ
+          child: const Text(
+            '毎週のお子様のがんばり状況や、新しいアイテムなどのお知らせをスマホにお届けします！\n\n通知をオンにして、親子で楽しく続けよう✨',
+            style: TextStyle(fontSize: 15, height: 1.5),
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        actions: [
+          // ❌ 「あとで」ボタン（グレーで目立たせない）
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), // falseを返す
+            style: TextButton.styleFrom(foregroundColor: Colors.grey),
+            child: const Text(
+              'あとで',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          // ⭕️ 「うけとる！」ボタン（オレンジで目立たせる）
+          ElevatedButton(
+            onPressed: () {
+              // 必要に応じてタップ音を鳴らす
+              try {
+                // SfxManager.instance.playTapSound();
+              } catch (e) {
+                print('再生エラー: $e');
+              }
+              Navigator.pop(context, true); // trueを返す
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043), // オレンジ
+              foregroundColor: Colors.white,
+              side: const BorderSide(
+                color: Color(0xFFFFCA28), // 黄色の輪郭
+                width: 2,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
+            ),
+            child: const Text(
+              'うけとる！',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // 🌟 3. ダイアログを表示し終わったら、「表示したよ！」という記録をセーブする
+    // （「うけとる！」でも「あとで」でも、一度見せたという事実は保存します）
+    await prefs.setBool('has_shown_notification_dialog', true);
+
+    // 3. ユーザーが「うけとる！」(true) を選んだ時だけ、OS標準のダイアログを出す
+    if (shouldRequest == true) {
+      await Permission.notification.request();
+      FirebaseAnalytics.instance.logEvent(
+        name: 'notification_permission_granted',
+      );
+    } else {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'notification_permission_denied',
+      );
+    }
+    return true;
   }
 
   // このメソッドを新しく追加します

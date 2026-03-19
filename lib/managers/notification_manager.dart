@@ -30,9 +30,9 @@ class NotificationManager {
     // iOSの設定（通知の許可を求める）
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
         );
 
     const InitializationSettings initializationSettings =
@@ -45,15 +45,6 @@ class NotificationManager {
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {},
     );
-
-    if (Platform.isAndroid) {
-      final androidImplementation = _flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin
-          >();
-      // 通知の許可（先ほど追加したもの）
-      await androidImplementation?.requestNotificationsPermission();
-    }
   }
 
   // 毎週月曜日の11時に通知をスケジュールするメソッド

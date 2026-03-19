@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helpers/shared_prefs_helper.dart';
@@ -115,6 +116,10 @@ class LoginBonusManager {
           actions: [
             ElevatedButton(
               onPressed: () {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'login_bonus_received',
+                  parameters: {'day': count, 'points_added': pointsToAdd},
+                );
                 Navigator.pop(context); // ダイアログを閉じる
                 // 受け取り処理などをここに書く
               },
