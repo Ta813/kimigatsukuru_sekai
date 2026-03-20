@@ -763,7 +763,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     for (var charPath in charactersToLoad) {
       final loadedPos = await SharedPrefsHelper.loadCharacterPosition(charPath);
-      loadedPositions[charPath] = loadedPos ?? Offset(safeAreaWidth - 100, 190);
+      loadedPositions[charPath] = loadedPos ?? Offset(safeAreaWidth - 220, 190);
     }
 
     final itemsToLoad = items.isEmpty ? [] : items;
@@ -796,7 +796,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         }
         _characterPositionsMap[charPath] =
             loadedPositions[charPath] ??
-            Offset(safeAreaWidth - 100, 190); // 読み込んだ位置を保存
+            Offset(safeAreaWidth - 220, 190); // 読み込んだ位置を保存
       }
       _itemPositionsMap = {};
       for (var itemPath in _equippedItems) {
@@ -1390,7 +1390,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 Positioned(
                   top: 0,
                   bottom: 0,
-                  right: 80,
+                  right: 85,
                   child: Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -2125,14 +2125,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               imagePath: charPath,
               position:
                   _characterPositionsMap[charPath] ??
-                  Offset(safeAreaWidth - 100, 190),
+                  Offset(safeAreaWidth - 220, 190),
               size: 80,
               onPositionChanged: (delta) {
                 setState(() {
                   // ★位置の更新
                   _characterPositionsMap[charPath] =
                       (_characterPositionsMap[charPath] ??
-                          Offset(safeAreaWidth - 100, 190)) +
+                          Offset(safeAreaWidth - 220, 190)) +
                       delta;
                 });
               },
