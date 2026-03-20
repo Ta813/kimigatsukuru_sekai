@@ -1449,7 +1449,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 50,
+                                width: 55,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -1511,7 +1511,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 50,
+                                width: 55,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -1567,7 +1567,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 50,
+                                width: 55,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -1632,7 +1632,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 50,
+                                width: 55,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -1694,7 +1694,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 vertical: 4.0,
                               ),
                               child: SizedBox(
-                                width: 50,
+                                width: 55,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
