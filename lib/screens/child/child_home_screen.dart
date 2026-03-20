@@ -730,14 +730,22 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     late double screenWidth;
     late double screenHeight;
+    late double rightPadding;
+    late double safeAreaWidth;
 
     // 画面の向きに応じて幅と高さを設定
     if (orientation == Orientation.landscape) {
       screenWidth = MediaQuery.of(context).size.width;
       screenHeight = MediaQuery.of(context).size.height;
+      // 右のノッチ（セーフエリア外）の幅を足す
+      rightPadding = MediaQuery.of(context).padding.right;
+      safeAreaWidth = screenWidth - rightPadding;
     } else {
       screenWidth = MediaQuery.of(context).size.height;
       screenHeight = MediaQuery.of(context).size.width;
+      // 右のノッチ（セーフエリア外）の幅を足す
+      rightPadding = MediaQuery.of(context).padding.right;
+      safeAreaWidth = screenWidth - rightPadding;
     }
 
     if (loadedAvatarPos != null &&
@@ -755,7 +763,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     for (var charPath in charactersToLoad) {
       final loadedPos = await SharedPrefsHelper.loadCharacterPosition(charPath);
-      loadedPositions[charPath] = loadedPos ?? Offset(490, 190);
+      loadedPositions[charPath] = loadedPos ?? Offset(safeAreaWidth - 100, 190);
     }
 
     final itemsToLoad = items.isEmpty ? [] : items;
@@ -787,7 +795,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           loadedPositions[charPath] = null; // 範囲外ならリセット
         }
         _characterPositionsMap[charPath] =
-            loadedPositions[charPath] ?? Offset(490, 190); // 読み込んだ位置を保存
+            loadedPositions[charPath] ??
+            Offset(safeAreaWidth - 100, 190); // 読み込んだ位置を保存
       }
       _itemPositionsMap = {};
       for (var itemPath in _equippedItems) {
@@ -1169,6 +1178,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    // 画面サイズを取得（位置計算に使用）
+    final double screenWidth = MediaQuery.of(context).size.width;
+    // 右のノッチ（セーフエリア外）の幅を足す
+    final double rightPadding = MediaQuery.of(context).padding.right;
+    final double safeAreaWidth = screenWidth - rightPadding;
+
     // Scaffoldが画面全体の基本的な骨組みです
     return Scaffold(
       body: Stack(
@@ -2108,14 +2123,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             return DraggableCharacter(
               id: charPath, // IDとして画像パスを使う
               imagePath: charPath,
-              position: _characterPositionsMap[charPath] ?? Offset(490, 190),
+              position:
+                  _characterPositionsMap[charPath] ??
+                  Offset(safeAreaWidth - 100, 190),
               size: 80,
               onPositionChanged: (delta) {
                 setState(() {
                   // ★位置の更新
                   _characterPositionsMap[charPath] =
                       (_characterPositionsMap[charPath] ??
-                          const Offset(490, 190)) +
+                          Offset(safeAreaWidth - 100, 190)) +
                       delta;
                 });
               },

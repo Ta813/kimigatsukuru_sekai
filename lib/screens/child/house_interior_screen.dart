@@ -172,9 +172,6 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
       widget.equippedHousePath,
     );
 
-    final bool areItemsPlaced =
-        _equippedFurniture.isNotEmpty || _equippedHouseItems.isNotEmpty;
-
     return Scaffold(
       body: Stack(
         children: [
@@ -186,22 +183,6 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
               ),
             ),
           ),
-
-          if (!areItemsPlaced)
-            Center(
-              child: Text(
-                AppLocalizations.of(context)!.roomIsEmpty,
-                style: const TextStyle(
-                  color: Colors.white, // 背景に合わせてテキストの色を調整
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  shadows: [
-                    Shadow(blurRadius: 4, color: Colors.black54),
-                  ], // 影をつけて読みやすく
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
 
           Positioned(
             top: 20.0, // 上からの距離
