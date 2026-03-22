@@ -93,7 +93,7 @@ class LoginBonusManager {
 
     await showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (context) {
         final screenWidth = MediaQuery.of(context).size.width;
         // 画面幅に応じて最大480pxまでの広い幅を確保する

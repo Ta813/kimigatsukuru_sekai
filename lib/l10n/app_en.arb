@@ -1,15 +1,25 @@
 {
   "@@locale": "en",
-  "appName": "Kimigatsukurusekai",
+  "appName": "Kids Habit Hero",
   "customizeTitle": "Customize",
   "customizeTabClothes": "Clothes",
   "customizeTabHouse": "House",
   "customizeTabCharacter": "Supporter",
   "customizeTabItem": "Items",
-  "guideWelcomeTitle": "Welcome!",
-  "guideWelcomeDesc": "To get started,\nplease set up your child's\nPromises (tasks).",
+  "guideWelcomeTitle": "Let's play from a child's perspective!",
+  "guideWelcomeDesc": "Let's experience how your child takes on a 'Promise'!\n\nWe have prepared a 'Trial Promise' on the bottom bar.\nPress 'Start' right away and try playing from a child's perspective!",
   "guideSettingsTitle": "Parent Settings (Top-left ⚙️ icon)",
   "guideSettingsDesc": "This is where parents can add or edit promises.\nTry deciding on the promises together with your child first!",
+  "tutorialShopTitle": "Got 100 points! ✨",
+  "tutorialShopDesc": "You have saved up points!\nLet's go to the 'Shop' from the 🏠 button on the right and buy an item!",
+  "tutorialCustomizeTitle": "Got an item! 🎁",
+  "tutorialCustomizeDesc": "You got an item!\nNext, let's decorate the room from 'Customize' using the ☺ button on the right!",
+  "tutorialParentSetupTitle": "Ready! 🎉",
+  "tutorialParentSetupDesc": "You're all set to make your child happy!\nLet's set up the daily 'Promises' right away and get started!",
+  "tutorialMoveTitle": "Let's Move Them! ✨",
+  "tutorialMoveDesc": "The items you picked in Dress-up/Customize can be moved with your finger!\nPut them wherever you like.",
+  "guideTrialPromiseTitle": "Parents, try it out! ✨",
+  "guideTrialPromiseDesc": "Let's experience how your child takes on a 'Promise'!\n\nWe have prepared a 'Trial Promise' on the bottom bar.\nPress 'Start' right away and try playing from a child's perspective!",
   "guideNextPromiseTitle": "Next Promise (Bottom bar)",
   "guideNextPromiseDesc": "The next promise you need to do is displayed here.\nPress 'Start' to begin the challenge!",
   "guidePromiseBoardTitle": "Promise Board (Right 📄 icon)",
@@ -471,6 +481,7 @@
       }
     }
   },
+  "trialPromiseTitle": "Promise (Trial)",
   "loginBonusCongrats": "Yay!",
   "loginBonusReceive": "Get it!"
 }

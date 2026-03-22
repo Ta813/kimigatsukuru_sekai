@@ -13,11 +13,15 @@ class BlinkingEffect extends StatefulWidget {
   /// ボタンの丸みに合わせて調整（デフォルト 8.0）
   final double borderRadius;
 
+  /// 点滅の色（デフォルトは purpleAccent）
+  final Color color;
+
   const BlinkingEffect({
     super.key,
     required this.child,
     this.isBlinking = true,
     this.borderRadius = 8.0,
+    this.color = Colors.purpleAccent,
   });
 
   @override
@@ -71,12 +75,10 @@ class _BlinkingEffectState extends State<BlinkingEffect>
             borderRadius: BorderRadius.circular(widget.borderRadius),
             boxShadow: [
               BoxShadow(
-                // アニメーション値(0.0〜1.0)に合わせて赤い影を変化させる
-                color: Colors.redAccent.withValues(
-                  alpha: _controller.value * 0.8,
-                ),
-                spreadRadius: 6 * _controller.value,
-                blurRadius: 10,
+                // アニメーション値(0.0〜1.0)に合わせて影を変化させる
+                color: widget.color.withValues(alpha: _controller.value * 0.8),
+                spreadRadius: 20 * _controller.value,
+                blurRadius: 1,
               ),
             ],
           ),

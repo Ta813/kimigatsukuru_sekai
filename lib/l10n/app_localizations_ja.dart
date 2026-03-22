@@ -27,16 +27,46 @@ class AppLocalizationsJa extends AppLocalizations {
   String get customizeTabItem => 'アイテム';
 
   @override
-  String get guideWelcomeTitle => 'ようこそ！';
+  String get guideWelcomeTitle => 'まずは子供の気分になって遊んでみよう！';
 
   @override
-  String get guideWelcomeDesc => 'アプリを始めるために、\n保護者の方が「お子様のやくそく」を\n設定してあげてください。';
+  String get guideWelcomeDesc => 'お子様がどんな風に「やくそく」にチャレンジするのか、実際に体験してみましょう！\n\n下のバーに「お試しのやくそく」をご用意しました。\nさっそく『スタート』を押して、お子様の気分で遊んでみてください！';
 
   @override
   String get guideSettingsTitle => 'おうちのひと設定「左上の⚙マーク」';
 
   @override
   String get guideSettingsDesc => 'やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！';
+
+  @override
+  String get tutorialShopTitle => '100ポイントゲット！✨';
+
+  @override
+  String get tutorialShopDesc => 'ポイントが貯まりました！\nさっそく右の🏠ボタンから「おみせ」でアイテムを買ってみましょう！';
+
+  @override
+  String get tutorialCustomizeTitle => 'アイテムをゲット！🎁';
+
+  @override
+  String get tutorialCustomizeDesc => 'アイテムを手に入れましたね！\n次は右の☺ボタンから「きせかえ・もようがえ」でお部屋に飾ってみましょう！';
+
+  @override
+  String get tutorialParentSetupTitle => '準備完了！🎉';
+
+  @override
+  String get tutorialParentSetupDesc => 'お子様が喜ぶ準備ができました！\nさっそく、毎日の『やくそく』を設定して始めましょう！';
+
+  @override
+  String get tutorialMoveTitle => 'うごかしてみよう！✨';
+
+  @override
+  String get tutorialMoveDesc => '「きせかえ・もようがえ」で　えらんだものは、ゆびで　うごかせるよ！\nすきな場所に　おいてみてね。';
+
+  @override
+  String get guideTrialPromiseTitle => 'パパ・ママも体験してみよう！✨';
+
+  @override
+  String get guideTrialPromiseDesc => 'お子様がどんな風に「やくそく」にチャレンジするのか、実際に体験してみましょう！\n\n下のバーに「お試しのやくそく」をご用意しました。\nさっそく『スタート』を押して、お子様の気分で遊んでみてください！';
 
   @override
   String get guideNextPromiseTitle => 'つぎのやくそく「下のボード」';
@@ -1104,6 +1134,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String loginBonusDay(int day) {
     return '$day日目';
   }
+
+  @override
+  String get trialPromiseTitle => 'やくそく（おためし）';
 
   @override
   String get loginBonusCongrats => 'やったー！';

@@ -679,4 +679,34 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('guide_$featureKey', true);
   }
+
+  // --- おやの設定ボタンの点滅フラグ（ホーム画面用） ---
+  static Future<bool> isFirstHomeAdvice() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('is_first_home_advice') ?? true;
+  }
+
+  static Future<bool> isFirstHomeRegular() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('is_first_home_regular') ?? true;
+  }
+
+  // --- チュートリアル各ステップの表示済みフラグ ---
+  static const String tutorialStepPromiseKey = 'tutorial_step_promise_shown';
+  static const String tutorialStepShopKey = 'tutorial_step_shop_shown';
+  static const String tutorialStepCustomizeKey =
+      'tutorial_step_customize_shown';
+  static const String tutorialStepMoveKey = 'tutorial_step_move_shown';
+  static const String tutorialStepParentSetupShownKey =
+      'tutorial_step_parent_setup_shown';
+
+  static Future<bool> isTutorialStepShown(String stepKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(stepKey) ?? false;
+  }
+
+  static Future<void> setTutorialStepShown(String stepKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(stepKey, true);
+  }
 }

@@ -98,7 +98,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Kimigatsukurusekai'**
+  /// **'Kids Habit Hero'**
   String get appName;
 
   /// No description provided for @customizeTitle.
@@ -134,13 +134,13 @@ abstract class AppLocalizations {
   /// No description provided for @guideWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome!'**
+  /// **'Let\'s play from a child\'s perspective!'**
   String get guideWelcomeTitle;
 
   /// No description provided for @guideWelcomeDesc.
   ///
   /// In en, this message translates to:
-  /// **'To get started,\nplease set up your child\'s\nPromises (tasks).'**
+  /// **'Let\'s experience how your child takes on a \'Promise\'!\n\nWe have prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing from a child\'s perspective!'**
   String get guideWelcomeDesc;
 
   /// No description provided for @guideSettingsTitle.
@@ -154,6 +154,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This is where parents can add or edit promises.\nTry deciding on the promises together with your child first!'**
   String get guideSettingsDesc;
+
+  /// No description provided for @tutorialShopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Got 100 points! ✨'**
+  String get tutorialShopTitle;
+
+  /// No description provided for @tutorialShopDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You have saved up points!\nLet\'s go to the \'Shop\' from the 🏠 button on the right and buy an item!'**
+  String get tutorialShopDesc;
+
+  /// No description provided for @tutorialCustomizeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Got an item! 🎁'**
+  String get tutorialCustomizeTitle;
+
+  /// No description provided for @tutorialCustomizeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You got an item!\nNext, let\'s decorate the room from \'Customize\' using the ☺ button on the right!'**
+  String get tutorialCustomizeDesc;
+
+  /// No description provided for @tutorialParentSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready! 🎉'**
+  String get tutorialParentSetupTitle;
+
+  /// No description provided for @tutorialParentSetupDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all set to make your child happy!\nLet\'s set up the daily \'Promises\' right away and get started!'**
+  String get tutorialParentSetupDesc;
+
+  /// No description provided for @tutorialMoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s Move Them! ✨'**
+  String get tutorialMoveTitle;
+
+  /// No description provided for @tutorialMoveDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The items you picked in Dress-up/Customize can be moved with your finger!\nPut them wherever you like.'**
+  String get tutorialMoveDesc;
+
+  /// No description provided for @guideTrialPromiseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Parents, try it out! ✨'**
+  String get guideTrialPromiseTitle;
+
+  /// No description provided for @guideTrialPromiseDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s experience how your child takes on a \'Promise\'!\n\nWe have prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing from a child\'s perspective!'**
+  String get guideTrialPromiseDesc;
 
   /// No description provided for @guideNextPromiseTitle.
   ///
@@ -2224,6 +2284,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Day {day}'**
   String loginBonusDay(int day);
+
+  /// No description provided for @trialPromiseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Promise (Trial)'**
+  String get trialPromiseTitle;
 
   /// No description provided for @loginBonusCongrats.
   ///

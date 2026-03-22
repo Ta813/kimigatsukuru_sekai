@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Kimigatsukurusekai';
+  String get appName => 'Kids Habit Hero';
 
   @override
   String get customizeTitle => 'Customize';
@@ -27,16 +27,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customizeTabItem => 'Items';
 
   @override
-  String get guideWelcomeTitle => 'Welcome!';
+  String get guideWelcomeTitle => 'Let\'s play from a child\'s perspective!';
 
   @override
-  String get guideWelcomeDesc => 'To get started,\nplease set up your child\'s\nPromises (tasks).';
+  String get guideWelcomeDesc => 'Let\'s experience how your child takes on a \'Promise\'!\n\nWe have prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing from a child\'s perspective!';
 
   @override
   String get guideSettingsTitle => 'Parent Settings (Top-left ⚙️ icon)';
 
   @override
   String get guideSettingsDesc => 'This is where parents can add or edit promises.\nTry deciding on the promises together with your child first!';
+
+  @override
+  String get tutorialShopTitle => 'Got 100 points! ✨';
+
+  @override
+  String get tutorialShopDesc => 'You have saved up points!\nLet\'s go to the \'Shop\' from the 🏠 button on the right and buy an item!';
+
+  @override
+  String get tutorialCustomizeTitle => 'Got an item! 🎁';
+
+  @override
+  String get tutorialCustomizeDesc => 'You got an item!\nNext, let\'s decorate the room from \'Customize\' using the ☺ button on the right!';
+
+  @override
+  String get tutorialParentSetupTitle => 'Ready! 🎉';
+
+  @override
+  String get tutorialParentSetupDesc => 'You\'re all set to make your child happy!\nLet\'s set up the daily \'Promises\' right away and get started!';
+
+  @override
+  String get tutorialMoveTitle => 'Let\'s Move Them! ✨';
+
+  @override
+  String get tutorialMoveDesc => 'The items you picked in Dress-up/Customize can be moved with your finger!\nPut them wherever you like.';
+
+  @override
+  String get guideTrialPromiseTitle => 'Parents, try it out! ✨';
+
+  @override
+  String get guideTrialPromiseDesc => 'Let\'s experience how your child takes on a \'Promise\'!\n\nWe have prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing from a child\'s perspective!';
 
   @override
   String get guideNextPromiseTitle => 'Next Promise (Bottom bar)';
@@ -1104,6 +1134,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String loginBonusDay(int day) {
     return 'Day $day';
   }
+
+  @override
+  String get trialPromiseTitle => 'Promise (Trial)';
 
   @override
   String get loginBonusCongrats => 'Yay!';

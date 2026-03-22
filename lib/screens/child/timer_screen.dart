@@ -40,6 +40,7 @@ class _TimerScreenState extends State<TimerScreen>
   int _remainingSeconds = 0; // 残り時間を秒で管理
   int _totalSeconds = 0; // ★ 合計時間を秒で管理
   bool _isTimeUp = false;
+  DateTime? _screenStartTime; // ★ 画面表示からの経過時間を測定
 
   String? _randomSupportCharacterPath; // ★ランダムで表示するキャラのパス
   String _avatarPath = 'assets/images/avatar.png';
@@ -73,6 +74,7 @@ class _TimerScreenState extends State<TimerScreen>
   @override
   void initState() {
     super.initState();
+    _screenStartTime = DateTime.now(); // ★ 追加：画面起動時刻を記録
     _basePoints = widget.promise['points'] as int? ?? 0;
     _checkFirstTimeBonus();
 
@@ -907,8 +909,15 @@ class _TimerScreenState extends State<TimerScreen>
                     onPressed: _isFinishedButtonPressed
                         ? null
                         : () {
+                            int elapsedSeconds = 0;
+                            if (_screenStartTime != null) {
+                              elapsedSeconds = DateTime.now()
+                                  .difference(_screenStartTime!)
+                                  .inSeconds;
+                            }
                             FirebaseAnalytics.instance.logEvent(
                               name: 'start_timer_finished',
+                              parameters: {'elapsed_seconds': elapsedSeconds},
                             );
                             setState(() {
                               _isFinishedButtonPressed = true;

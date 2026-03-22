@@ -6,10 +6,20 @@
   "customizeTabHouse": "おうち",
   "customizeTabCharacter": "応援キャラ",
   "customizeTabItem": "アイテム",
-  "guideWelcomeTitle": "ようこそ！",
-  "guideWelcomeDesc": "アプリを始めるために、\n保護者の方が「お子様のやくそく」を\n設定してあげてください。",
+  "guideWelcomeTitle": "まずは子供の気分になって遊んでみよう！",
+  "guideWelcomeDesc": "お子様がどんな風に「やくそく」にチャレンジするのか、実際に体験してみましょう！\n\n下のバーに「お試しのやくそく」をご用意しました。\nさっそく『スタート』を押して、お子様の気分で遊んでみてください！",
   "guideSettingsTitle": "おうちのひと設定「左上の⚙マーク」",
   "guideSettingsDesc": "やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！",
+  "tutorialShopTitle": "100ポイントゲット！✨",
+  "tutorialShopDesc": "ポイントが貯まりました！\nさっそく右の🏠ボタンから「おみせ」でアイテムを買ってみましょう！",
+  "tutorialCustomizeTitle": "アイテムをゲット！🎁",
+  "tutorialCustomizeDesc": "アイテムを手に入れましたね！\n次は右の☺ボタンから「きせかえ・もようがえ」でお部屋に飾ってみましょう！",
+  "tutorialParentSetupTitle": "準備完了！🎉",
+  "tutorialParentSetupDesc": "お子様が喜ぶ準備ができました！\nさっそく、毎日の『やくそく』を設定して始めましょう！",
+  "tutorialMoveTitle": "うごかしてみよう！✨",
+  "tutorialMoveDesc": "「きせかえ・もようがえ」で　えらんだものは、ゆびで　うごかせるよ！\nすきな場所に　おいてみてね。",
+  "guideTrialPromiseTitle": "パパ・ママも体験してみよう！✨",
+  "guideTrialPromiseDesc": "お子様がどんな風に「やくそく」にチャレンジするのか、実際に体験してみましょう！\n\n下のバーに「お試しのやくそく」をご用意しました。\nさっそく『スタート』を押して、お子様の気分で遊んでみてください！",
   "guideNextPromiseTitle": "つぎのやくそく「下のボード」",
   "guideNextPromiseDesc": "次にやるべきやくそくが表示されるよ。\n「はじめる」を押して挑戦しよう！",
   "guidePromiseBoardTitle": "やくそくボード「右の📄マーク」",
@@ -471,6 +481,7 @@
       }
     }
   },
+  "trialPromiseTitle": "やくそく（おためし）",
   "loginBonusCongrats": "やったー！",
   "loginBonusReceive": "うけとる！"
 }

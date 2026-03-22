@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
+import 'blinking_effect.dart';
 
 class DraggableCharacter extends StatefulWidget {
   final String id;
@@ -9,6 +10,7 @@ class DraggableCharacter extends StatefulWidget {
   final Offset position;
   final double size;
   final Function(Offset) onPositionChanged;
+  final bool isBlinking;
 
   const DraggableCharacter({
     super.key,
@@ -17,6 +19,7 @@ class DraggableCharacter extends StatefulWidget {
     required this.position,
     required this.size,
     required this.onPositionChanged,
+    this.isBlinking = false,
   });
 
   @override
@@ -39,7 +42,11 @@ class _DraggableCharacterState extends State<DraggableCharacter> {
         onPanEnd: (_) {
           SharedPrefsHelper.saveCharacterPosition(widget.id, widget.position);
         },
-        child: Image.asset(widget.imagePath, height: widget.size),
+        child: BlinkingEffect(
+          isBlinking: widget.isBlinking,
+          color: Colors.purpleAccent,
+          child: Image.asset(widget.imagePath, height: widget.size),
+        ),
       ),
     );
   }
