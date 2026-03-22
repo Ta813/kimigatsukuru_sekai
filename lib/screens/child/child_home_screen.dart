@@ -1102,7 +1102,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       bool wasShopStepShown = await SharedPrefsHelper.isTutorialStepShown(
         SharedPrefsHelper.tutorialStepShopKey,
       );
-      if (!wasShopStepShown && mounted) {
+      bool isShown = await SharedPrefsHelper.isGuideShown();
+      if (!wasShopStepShown && !isShown && mounted) {
         setState(() {
           _showShopBlinking = true; // おみせボタンを点滅させる
         });
@@ -1738,7 +1739,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       await SharedPrefsHelper.isTutorialStepShown(
                                         SharedPrefsHelper.tutorialStepMoveKey,
                                       );
-                                  if (!wasMoveShown && mounted) {
+                                  bool isShown =
+                                      await SharedPrefsHelper.isGuideShown();
+                                  if (!wasMoveShown && !isShown && mounted) {
                                     FirebaseAnalytics.instance.logEvent(
                                       name: 'start_tutorial_move_interaction',
                                     );
@@ -1835,7 +1838,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                         SharedPrefsHelper
                                             .tutorialStepCustomizeKey,
                                       );
-                                  if (!wasCustomizeStepShown && mounted) {
+                                  bool isShown =
+                                      await SharedPrefsHelper.isGuideShown();
+                                  if (!wasCustomizeStepShown &&
+                                      !isShown &&
+                                      mounted) {
                                     FirebaseAnalytics.instance.logEvent(
                                       name: 'start_tutorial_dress_up',
                                     );
