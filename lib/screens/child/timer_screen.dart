@@ -1045,10 +1045,10 @@ class _TimerScreenState extends State<TimerScreen>
             if (currentCharacterPath != null)
               Positioned(
                 right: 50,
-                bottom: 0,
+                bottom: 15,
                 child: Column(
                   children: [
-                    Image.asset(currentCharacterPath, height: 180),
+                    Image.asset(currentCharacterPath, height: 165),
                     Row(
                       children: [
                         // 応援マークボタン

@@ -79,7 +79,7 @@ class _AdBannerState extends State<AdBanner> {
 
     return Padding(
       // ★Paddingウィジェットで囲む
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Container(
         // ★常にContainerを返す
         alignment: Alignment.center,
