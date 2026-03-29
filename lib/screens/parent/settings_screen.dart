@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/settings_screen.dart
 
 import 'package:flutter/material.dart';
+import '../../widgets/custom_back_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:provider/provider.dart';
@@ -157,13 +158,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _linkedService = service;
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('バックアップが完了しました')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.backupSuccess)),
+      );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('バックアップに失敗しました')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.backupFailure)),
+      );
     }
 
     setState(() {
@@ -185,16 +186,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     if (success) {
       await SharedPrefsHelper.saveBackupService(service);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('データを復元しました')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.restoreSuccess)),
+      );
       // ★ 復元したデータをUIに反映させるために、設定を再読み込み
       _loadSettings();
       // TODO: ホーム画面など、他の画面もリフレッシュする必要があるかもしれない
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('復元に失敗しました')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.restoreFailure)),
+      );
     }
 
     await Future.delayed(const Duration(seconds: 2));
@@ -222,13 +223,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
       currentValue = 'ja';
     } else if (currentLocale == 'en') {
       currentValue = 'en';
+    } else if (currentLocale == 'hi') {
+      currentValue = 'hi';
     } else {
       // 手動設定がなければ、端末の言語で判断
-      currentValue = (deviceLocale == 'ja') ? 'ja' : 'en';
+      if (deviceLocale == 'ja') {
+        currentValue = 'ja';
+      } else if (deviceLocale == 'hi') {
+        currentValue = 'hi';
+      } else {
+        currentValue = 'en';
+      }
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.settingsTitle)),
+      appBar: AppBar(
+        leading: const CustomBackButton(),
+        title: Text(l10n.settingsTitle),
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator()) // ★ ローディング中は操作不可に
           : SafeArea(
@@ -251,6 +263,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             name: 'start_settings_language_en',
                           );
                           localeProvider.setLocale(const Locale('en'));
+                        } else if (newValue == 'hi') {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_settings_language_hi',
+                          );
+                          localeProvider.setLocale(const Locale('hi'));
                         }
                       },
                       // ★プルダウンの選択肢から「端末の設定」を削除
@@ -262,6 +279,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         DropdownMenuItem<String>(
                           value: 'en',
                           child: Text('English'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'hi',
+                          child: Text('हिन्दी'),
                         ),
                       ],
                     ),
@@ -356,7 +377,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
-                      'データのバックアップと復元',
+                      l10n.backupRestoreTitle,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -374,14 +395,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: const Text('Google Drive'),
                       subtitle: Text(
                         _linkedService == BackupServiceKbn.googleDrive
-                            ? 'このサービスと連携済み' // l10n
-                            : 'Google Driveにデータを保存します', // l10n
+                            ? l10n.backupServiceLinked
+                            : l10n.backupServiceGoogleDriveDesc,
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextButton(
-                            child: const Text('バックアップ'),
+                            child: Text(l10n.backupAction),
                             onPressed: () {
                               FirebaseAnalytics.instance.logEvent(
                                 name: 'start_settings_backup_google_drive',
@@ -390,7 +411,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             },
                           ),
                           TextButton(
-                            child: const Text('復元'),
+                            child: Text(l10n.restoreAction),
                             onPressed: () {
                               FirebaseAnalytics.instance.logEvent(
                                 name: 'start_settings_restore_google_drive',

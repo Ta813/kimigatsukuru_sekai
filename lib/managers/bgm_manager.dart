@@ -73,24 +73,31 @@ class BgmManager {
 
   Future<void> play(BgmTrack track) async {
     try {
-      if (_bgmPlayer != null && _bgmPlayer!.playing && _currentTrack == track)
-        return;
+      print("BgmManager.play: $track");
 
+      // 曲のパスを取得
       final trackPath = _getTrackPath(track);
 
       if (trackPath == null) {
+        print("BgmManager.play: トラックパスがnullのため停止します ($track)");
         await stopBgm();
         _currentTrack = track;
         return;
       }
+
+      // 一旦完全に停止してリセットする
+      await stopBgm();
+
       // just_audioでは、assetsからの読み込みにsetAssetを使います
+      print("BgmManager.play: アセットをロード中... $trackPath");
       await _player.setAsset(trackPath);
       // ループ再生を設定
       await _player.setLoopMode(LoopMode.one);
       await _player.play();
       _currentTrack = track;
+      print("BgmManager.play: 再生開始しました: $track");
     } catch (e) {
-      print("BGMの再生エラー: $e");
+      print("BGMの再生エラー ($track): $e");
     }
   }
 
@@ -114,6 +121,7 @@ class BgmManager {
 
   Future<void> stopBgm() async {
     try {
+      print("BgmManager.stopBgm (current: $_currentTrack)");
       if (_bgmPlayer != null) {
         await _bgmPlayer!.stop();
       }

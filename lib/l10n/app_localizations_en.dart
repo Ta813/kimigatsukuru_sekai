@@ -817,7 +817,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameSettingHint => 'Set a name so the character can cheer for you!';
 
   @override
+  String get nameSetting => 'Name Setting';
+
+  @override
   String get nameAlreadyExists => 'This name and honorific combination is already registered.';
+
+  @override
+  String get backButtonLabel => 'Back';
+
+  @override
+  String get childNameLabel => 'Name';
 
   @override
   String get childNameSettingsTitle => 'Child\'s Name Settings';
@@ -827,6 +836,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addAction => 'Add';
+
+  @override
+  String get editAction => 'Edit';
+
+  @override
+  String get deleteAction => 'Delete';
+
+  @override
+  String get howToUseLabel => 'How to Use';
+
+  @override
+  String get promiseSettingsLabel => 'Settings';
 
   @override
   String get registeredNamesLabel => 'Registered Names:';
@@ -1143,4 +1164,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginBonusReceive => 'Get it!';
+
+  @override
+  String get cheerLabel => 'Cheer';
+
+  @override
+  String get sadLabel => 'Sad';
+
+  @override
+  String get backupRestoreTitle => 'Data Backup and Restore';
+
+  @override
+  String get backupServiceLinked => 'Linked to this service';
+
+  @override
+  String get backupServiceGoogleDriveDesc => 'Save data to Google Drive';
+
+  @override
+  String get backupAction => 'Backup';
+
+  @override
+  String get restoreAction => 'Restore';
+
+  @override
+  String get backupSuccess => 'Backup completed';
+
+  @override
+  String get backupFailure => 'Backup failed';
+
+  @override
+  String get restoreSuccess => 'Data restored';
+
+  @override
+  String get restoreFailure => 'Restore failed';
+
+  @override
+  String get minutesLabel => 'min';
+
+  @override
+  String get okAction => 'OK';
+
+  @override
+  String get notificationRequestTitle => 'Receive notifications? 🔔';
+
+  @override
+  String get notificationRequestMessage => 'We\'ll send you weekly updates on your child\'s progress and news about new items to your phone!\n\nTurn on notifications and enjoy the journey together! ✨';
+
+  @override
+  String get notificationLater => 'Later';
+
+  @override
+  String get notificationAccept => 'Sure!';
 }

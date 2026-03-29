@@ -129,9 +129,9 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
               ),
               elevation: 4,
             ),
-            child: const Text(
-              'OK',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            child: Text(
+              AppLocalizations.of(context)!.okAction,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ],

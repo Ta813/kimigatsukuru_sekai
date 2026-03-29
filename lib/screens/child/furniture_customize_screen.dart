@@ -1,6 +1,7 @@
 // lib/screens/child/furniture_customize_screen.dart
 
 import 'package:flutter/material.dart';
+import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
@@ -353,6 +354,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          leading: const CustomBackButton(),
           title: Text(
             widget.mode == CustomizeMode.house
                 ? AppLocalizations.of(context)!.houseSettings

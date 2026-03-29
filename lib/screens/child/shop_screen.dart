@@ -7,6 +7,8 @@ import '../../managers/sfx_manager.dart';
 import '../../models/shop_data.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../widgets/blinking_effect.dart';
+import '../../widgets/custom_back_button.dart';
 
 enum ShopMode {
   forGeneral, // ホーム画面からの通常表示
@@ -38,11 +40,27 @@ class _ShopScreenState extends State<ShopScreen> {
 
   List<String> _purchasedItemNames = [];
 
+  bool _isTutorialStepShopShown = true;
+  bool _showItemBlinking = false;
+  bool _showBackButtonBlinking = false;
+
   @override
   void initState() {
     super.initState();
     _points = widget.currentPoints;
     _loadPurchasedItems();
+    _checkTutorialStep();
+  }
+
+  Future<void> _checkTutorialStep() async {
+    final isShopShown = await SharedPrefsHelper.isTutorialStepShown(
+      SharedPrefsHelper.tutorialStepShopKey,
+    );
+    bool isShown = await SharedPrefsHelper.isGuideShown();
+    setState(() {
+      _isTutorialStepShopShown = isShown || isShopShown;
+      _showItemBlinking = !isShown && !isShopShown;
+    });
   }
 
   bool _hasPlayedInitialSound = false;
@@ -62,7 +80,8 @@ class _ShopScreenState extends State<ShopScreen> {
         }
       } else {
         final List<String> soundsToPlay = [];
-        soundsToPlay.addAll(['se/english/welcome.mp3']);
+        final String voiceDir = SfxManager.instance.getVoiceDir(lang);
+        soundsToPlay.addAll(['se/$voiceDir/welcome.mp3']);
         try {
           SfxManager.instance.playSequentialSounds(soundsToPlay);
         } catch (e) {
@@ -141,7 +160,8 @@ class _ShopScreenState extends State<ShopScreen> {
                   }
                 } else {
                   final List<String> soundsToPlay = [];
-                  soundsToPlay.addAll(['se/english/thank_you_very_much.mp3']);
+                  final String voiceDir = SfxManager.instance.getVoiceDir(lang);
+                  soundsToPlay.addAll(['se/$voiceDir/thank_you_very_much.mp3']);
                   try {
                     SfxManager.instance.playSequentialSounds(soundsToPlay);
                   } catch (e) {
@@ -155,9 +175,20 @@ class _ShopScreenState extends State<ShopScreen> {
 
                 if (!mounted) return;
 
+                if (!_isTutorialStepShopShown) {
+                  await SharedPrefsHelper.setTutorialPurchasedItem(
+                    item.name,
+                    item.type,
+                  );
+                }
+
                 setState(() {
                   _points = newPoints;
                   _purchasedItemNames.add(item.name);
+                  if (!_isTutorialStepShopShown) {
+                    _showItemBlinking = false;
+                    _showBackButtonBlinking = true;
+                  }
                 });
 
                 Navigator.pop(context);
@@ -208,7 +239,7 @@ class _ShopScreenState extends State<ShopScreen> {
     // ★このアイテムが購入済みかどうかをチェック
     final bool isPurchased = _purchasedItemNames.contains(item.name);
 
-    return Card(
+    Widget card = Card(
       elevation: 2,
       // 購入済みなら、カード全体を少しグレーにする
       color: (isLocked || isPurchased) ? Colors.grey[200] : Colors.white,
@@ -303,6 +334,11 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       ),
     );
+
+    if (_showItemBlinking && item.price <= 100 && !isPurchased && !isLocked) {
+      return BlinkingEffect(isBlinking: true, child: card);
+    }
+    return card;
   }
 
   Widget _buildCategoryGrid(
@@ -598,6 +634,10 @@ class _ShopScreenState extends State<ShopScreen> {
       length: widget.mode == ShopMode.forGeneral ? 4 : 2, // ★タブの数
       child: Scaffold(
         appBar: AppBar(
+          leading: BlinkingEffect(
+            isBlinking: _showBackButtonBlinking,
+            child: const CustomBackButton(),
+          ),
           title: Text(AppLocalizations.of(context)!.shopTitle),
           actions: [
             Padding(

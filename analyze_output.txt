@@ -1,0 +1,326 @@
+Analyzing kimigatsukuru_sekai...                                
+
+   info • Don't use 'BuildContext's across async gaps • lib/helpers/shared_prefs_helper.dart:24:40 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/helpers/shared_prefs_helper.dart:95:42 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/helpers/shared_prefs_helper.dart:520:9 • avoid_print
+   info • The import of 'package:flutter/services.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' • lib/main.dart:2:8 • unnecessary_import
+   info • Don't invoke 'print' in production code • lib/main.dart:41:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/main.dart:76:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/main.dart:84:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/main.dart:95:5 • avoid_print
+   info • The constant name 'focus_original' isn't a lowerCamelCase identifier • lib/managers/bgm_manager.dart:13:3 • constant_identifier_names
+   info • The constant name 'focus_cute' isn't a lowerCamelCase identifier • lib/managers/bgm_manager.dart:14:3 • constant_identifier_names
+   info • The constant name 'focus_cool' isn't a lowerCamelCase identifier • lib/managers/bgm_manager.dart:15:3 • constant_identifier_names
+   info • The constant name 'focus_hurry' isn't a lowerCamelCase identifier • lib/managers/bgm_manager.dart:16:3 • constant_identifier_names
+   info • The constant name 'focus_nature' isn't a lowerCamelCase identifier • lib/managers/bgm_manager.dart:17:3 • constant_identifier_names
+   info • The constant name 'focus_relaxing' isn't a lowerCamelCase identifier • lib/managers/bgm_manager.dart:18:3 • constant_identifier_names
+   info • The constant name 'focus_none' isn't a lowerCamelCase identifier • lib/managers/bgm_manager.dart:19:3 • constant_identifier_names
+   info • Don't invoke 'print' in production code • lib/managers/bgm_manager.dart:31:7 • avoid_print
+   info • Statements in an if should be enclosed in a block • lib/managers/bgm_manager.dart:77:9 • curly_braces_in_flow_control_structures
+   info • Don't invoke 'print' in production code • lib/managers/bgm_manager.dart:93:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/bgm_manager.dart:103:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/bgm_manager.dart:111:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/bgm_manager.dart:122:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/bgm_manager.dart:129:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/bgm_manager.dart:135:7 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/managers/login_bonus_manager.dart:45:9 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/managers/login_bonus_manager.dart:68:11 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/managers/login_bonus_manager.dart:73:9 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/managers/login_bonus_manager.dart:143:19 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/managers/notification_manager.dart:82:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/notification_manager.dart:85:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/sfx_manager.dart:16:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/sfx_manager.dart:35:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/sfx_manager.dart:57:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/sfx_manager.dart:181:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/sfx_manager.dart:195:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/sfx_manager.dart:203:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/managers/sfx_manager.dart:209:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/bgm_selection_screen.dart:43:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/bgm_selection_screen.dart:156:21 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/bgm_selection_screen.dart:171:21 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/bgm_selection_screen.dart:214:19 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/character_customize_screen.dart:115:15 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/character_customize_screen.dart:152:50 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/character_customize_screen.dart:176:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:271:13 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:306:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:324:9 • avoid_print
+   info • The type of the right operand ('ConnectivityResult') isn't a subtype or a supertype of the left operand ('List<ConnectivityResult>') • lib/screens/child/child_home_screen.dart:333:41 • unrelated_type_equality_checks
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:357:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:458:7 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:473:34 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:474:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:479:34 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:480:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:485:34 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:486:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:491:34 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:492:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:497:34 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:498:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:503:34 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:504:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:509:34 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:510:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:522:38 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:537:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:538:38 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:644:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:645:38 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:687:46 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:704:17 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:754:46 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:779:17 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:826:7 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:862:65 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:914:39 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:923:35 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:924:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:926:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:929:35 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:930:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:932:36 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1053:7 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:1058:7 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1093:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1146:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1156:9 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1174:48 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1190:19 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:1216:11 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1240:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1255:7 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:1270:7 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1284:46 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1312:17 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1362:7 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1432:60 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1443:35 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1484:58 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1495:33 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1553:53 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1613:58 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1622:33 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1650:35 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1711:60 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1726:35 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1815:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1921:58 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1930:33 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:1974:58 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:1983:33 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/child_home_screen.dart:2068:19 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/child_home_screen.dart:2079:19 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:2124:45 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:2171:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:2197:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:2201:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:2311:43 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:2339:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/child_home_screen.dart:2344:43 • deprecated_member_use
+   info • Use a 'SizedBox' to add whitespace to a layout • lib/screens/child/child_home_screen.dart:2354:21 • sized_box_for_whitespace
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/child_home_screen.dart:2441:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/child_home_screen.dart:2460:14 • unnecessary_to_list_in_spreads
+   info • Don't invoke 'print' in production code • lib/screens/child/furniture_customize_screen.dart:110:15 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/furniture_customize_screen.dart:153:50 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/house_interior_screen.dart:87:33 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/house_interior_screen.dart:88:34 • use_build_context_synchronously
+   info • Statements in an if should be enclosed in a block • lib/screens/child/house_interior_screen.dart:162:7 • curly_braces_in_flow_control_structures
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/house_interior_screen.dart:192:48 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/house_interior_screen.dart:203:23 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/house_interior_screen.dart:258:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/house_interior_screen.dart:297:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/house_interior_screen.dart:302:43 • deprecated_member_use
+   info • Use a 'SizedBox' to add whitespace to a layout • lib/screens/child/house_interior_screen.dart:312:21 • sized_box_for_whitespace
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/house_interior_screen.dart:379:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/house_interior_screen.dart:396:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/house_interior_screen.dart:427:14 • unnecessary_to_list_in_spreads
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/house_interior_screen.dart:439:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/house_interior_screen.dart:450:27 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/house_interior_screen.dart:500:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/house_interior_screen.dart:511:27 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/island_screen.dart:72:33 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/island_screen.dart:73:34 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/island_screen.dart:193:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/island_screen.dart:205:27 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/island_screen.dart:257:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/island_screen.dart:262:43 • deprecated_member_use
+   info • Use a 'SizedBox' to add whitespace to a layout • lib/screens/child/island_screen.dart:272:21 • sized_box_for_whitespace
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/island_screen.dart:342:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/island_screen.dart:378:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/island_screen.dart:390:27 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/island_screen.dart:440:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/island_screen.dart:452:27 • avoid_print
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/island_screen.dart:518:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/island_screen.dart:535:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/island_screen.dart:566:14 • unnecessary_to_list_in_spreads
+   info • Use a 'SizedBox' to add whitespace to a layout • lib/screens/child/passcode_lock_dialog.dart:76:11 • sized_box_for_whitespace
+   info • The 'child' argument should be last in widget constructor invocations • lib/screens/child/passcode_lock_dialog.dart:134:13 • sort_child_properties_last
+   info • Don't invoke 'print' in production code • lib/screens/child/promise_board_screen.dart:73:7 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/promise_board_screen.dart:77:7 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/promise_board_screen.dart:111:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/promise_board_screen.dart:131:7 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/promise_board_screen.dart:136:7 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/promise_board_screen.dart:174:17 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/promise_board_screen.dart:263:37 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/roulette_dialog.dart:49:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/roulette_dialog.dart:59:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/roulette_dialog.dart:100:15 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/roulette_dialog.dart:110:15 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/roulette_dialog.dart:124:15 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/roulette_dialog.dart:134:15 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/sea_screen.dart:73:33 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/sea_screen.dart:74:34 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/sea_screen.dart:201:27 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sea_screen.dart:235:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sea_screen.dart:240:43 • deprecated_member_use
+   info • Use a 'SizedBox' to add whitespace to a layout • lib/screens/child/sea_screen.dart:250:21 • sized_box_for_whitespace
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sea_screen.dart:320:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sea_screen.dart:356:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/sea_screen.dart:368:27 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sea_screen.dart:420:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/sea_screen.dart:432:27 • avoid_print
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/sea_screen.dart:498:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/sea_screen.dart:515:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/sea_screen.dart:546:14 • unnecessary_to_list_in_spreads
+   info • Don't invoke 'print' in production code • lib/screens/child/shop_screen.dart:79:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/shop_screen.dart:89:11 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/shop_screen.dart:121:48 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/shop_screen.dart:140:19 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/shop_screen.dart:159:21 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/shop_screen.dart:168:21 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/shop_screen.dart:194:31 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/shop_screen.dart:196:38 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/shop_screen.dart:200:25 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/shop_screen.dart:201:66 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/shop_screen.dart:289:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/shop_screen.dart:321:41 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/sky_screen.dart:74:33 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/sky_screen.dart:75:34 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/sky_screen.dart:197:27 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/sky_screen.dart:238:29 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sky_screen.dart:288:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sky_screen.dart:293:43 • deprecated_member_use
+   info • Use a 'SizedBox' to add whitespace to a layout • lib/screens/child/sky_screen.dart:303:21 • sized_box_for_whitespace
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sky_screen.dart:373:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sky_screen.dart:409:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/sky_screen.dart:421:27 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/sky_screen.dart:471:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/sky_screen.dart:483:27 • avoid_print
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/sky_screen.dart:549:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/sky_screen.dart:566:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/sky_screen.dart:597:14 • unnecessary_to_list_in_spreads
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/space_screen.dart:73:33 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/space_screen.dart:74:34 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/space_screen.dart:193:27 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/space_screen.dart:227:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/space_screen.dart:232:43 • deprecated_member_use
+   info • Use a 'SizedBox' to add whitespace to a layout • lib/screens/child/space_screen.dart:242:21 • sized_box_for_whitespace
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/space_screen.dart:312:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/space_screen.dart:348:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/space_screen.dart:360:27 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/space_screen.dart:410:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/space_screen.dart:422:27 • avoid_print
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/space_screen.dart:488:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/space_screen.dart:505:14 • unnecessary_to_list_in_spreads
+   info • Unnecessary use of 'toList' in a spread • lib/screens/child/space_screen.dart:536:14 • unnecessary_to_list_in_spreads
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:146:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:155:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:200:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:214:9 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/timer_screen.dart:225:7 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/timer_screen.dart:240:9 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:268:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:293:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:299:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:489:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:500:13 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:507:13 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:516:11 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/timer_screen.dart:546:48 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:564:19 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:589:23 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/timer_screen.dart:594:54 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:606:25 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/timer_screen.dart:609:63 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:616:25 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:624:23 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:644:25 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/timer_screen.dart:647:63 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:654:25 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/timer_screen.dart:714:22 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/timer_screen.dart:715:20 • use_build_context_synchronously
+   info • 'WillPopScope' is deprecated and shouldn't be used. Use PopScope instead. The Android predictive back feature will not work with WillPopScope. This feature was deprecated after v3.12.0-1.0.pre • lib/screens/child/timer_screen.dart:768:12 • deprecated_member_use
+   info • Use interpolation to compose strings and values • lib/screens/child/timer_screen.dart:877:39 • prefer_interpolation_to_compose_strings
+   info • Use interpolation to compose strings and values • lib/screens/child/timer_screen.dart:896:43 • prefer_interpolation_to_compose_strings
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:989:37 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/timer_screen.dart:1001:59 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:1014:41 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:1062:37 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/timer_screen.dart:1079:41 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/world_map_screen.dart:58:34 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/world_map_screen.dart:59:36 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/world_map_screen.dart:63:34 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/child/world_map_screen.dart:64:36 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/world_map_screen.dart:87:46 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/world_map_screen.dart:114:17 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/world_map_screen.dart:166:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/world_map_screen.dart:177:27 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/child/world_map_screen.dart:215:52 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/child/world_map_screen.dart:226:27 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/world_map_screen.dart:279:21 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/world_map_screen.dart:338:21 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/child/world_map_screen.dart:396:21 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/parent/add_edit_promise_screen.dart:62:7 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/child_name_settings_screen.dart:61:21 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/parent/emergency_promise_screen.dart:38:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/parent/parent_top_screen.dart:151:23 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/parent/parent_top_screen.dart:184:23 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/parent_top_screen.dart:187:23 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/parent/parent_top_screen.dart:215:21 • avoid_print
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/parent/regular_promise_settings_screen.dart:68:50 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/screens/parent/regular_promise_settings_screen.dart:84:21 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/parent/regular_promise_settings_screen.dart:147:7 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/regular_promise_settings_screen.dart:171:28 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/regular_promise_settings_screen.dart:172:28 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/regular_promise_settings_screen.dart:175:33 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/regular_promise_settings_screen.dart:205:28 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/regular_promise_settings_screen.dart:206:28 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/regular_promise_settings_screen.dart:210:15 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/parent/regular_promise_settings_screen.dart:277:27 • avoid_print
+   info • Don't invoke 'print' in production code • lib/screens/parent/regular_promise_settings_screen.dart:313:27 • avoid_print
+   info • Use a 'SizedBox' to add whitespace to a layout • lib/screens/parent/settings_screen.dart:106:19 • sized_box_for_whitespace
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/screens/parent/settings_screen.dart:131:54 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/settings_screen.dart:161:28 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/settings_screen.dart:162:52 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/settings_screen.dart:165:28 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/settings_screen.dart:166:52 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/settings_screen.dart:189:28 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/settings_screen.dart:190:52 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/settings_screen.dart:196:28 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/settings_screen.dart:197:52 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/parent/settings_screen.dart:202:5 • avoid_print
+   info • Don't use 'BuildContext's across async gaps • lib/screens/parent/settings_screen.dart:476:48 • use_build_context_synchronously
+   info • Don't invoke 'print' in production code • lib/screens/parent/settings_screen.dart:540:31 • avoid_print
+   info • Use interpolation to compose strings and values • lib/screens/parent/settings_screen.dart:540:37 • prefer_interpolation_to_compose_strings
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:27:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:34:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:50:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:85:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:95:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:99:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:119:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:133:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:136:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:163:27 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:164:27 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:165:31 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:170:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:174:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:192:13 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:199:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:203:7 • avoid_print
+   info • The type of the right operand ('ConnectivityResult') isn't a subtype or a supertype of the left operand ('List<ConnectivityResult>') • lib/widgets/ad_banner.dart:38:28 • unrelated_type_equality_checks
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/login_bonus_stamp_card.dart:147:42 • deprecated_member_use
+

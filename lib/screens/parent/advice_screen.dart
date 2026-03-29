@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/advice_screen.dart
 
 import 'package:flutter/material.dart';
+import '../../widgets/custom_back_button.dart';
 import '../../l10n/app_localizations.dart';
 
 class AdviceScreen extends StatelessWidget {
@@ -13,6 +14,7 @@ class AdviceScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: const CustomBackButton(),
         title: Text(l10n.adviceScreenTitle), // ★翻訳キーを使用
       ),
       body: SingleChildScrollView(

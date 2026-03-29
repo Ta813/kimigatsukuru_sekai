@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_hi.dart';
 import 'app_localizations_ja.dart';
 
 // ignore_for_file: type=lint
@@ -92,6 +93,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
+    Locale('hi'),
     Locale('ja')
   ];
 
@@ -1655,11 +1657,29 @@ abstract class AppLocalizations {
   /// **'Set a name so the character can cheer for you!'**
   String get nameSettingHint;
 
+  /// No description provided for @nameSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Name Setting'**
+  String get nameSetting;
+
   /// No description provided for @nameAlreadyExists.
   ///
   /// In en, this message translates to:
   /// **'This name and honorific combination is already registered.'**
   String get nameAlreadyExists;
+
+  /// No description provided for @backButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get backButtonLabel;
+
+  /// No description provided for @childNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get childNameLabel;
 
   /// No description provided for @childNameSettingsTitle.
   ///
@@ -1678,6 +1698,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add'**
   String get addAction;
+
+  /// No description provided for @editAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editAction;
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAction;
+
+  /// No description provided for @howToUseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Use'**
+  String get howToUseLabel;
+
+  /// No description provided for @promiseSettingsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get promiseSettingsLabel;
 
   /// No description provided for @registeredNamesLabel.
   ///
@@ -2302,6 +2346,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Get it!'**
   String get loginBonusReceive;
+
+  /// No description provided for @cheerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cheer'**
+  String get cheerLabel;
+
+  /// No description provided for @sadLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sad'**
+  String get sadLabel;
+
+  /// No description provided for @backupRestoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Backup and Restore'**
+  String get backupRestoreTitle;
+
+  /// No description provided for @backupServiceLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked to this service'**
+  String get backupServiceLinked;
+
+  /// No description provided for @backupServiceGoogleDriveDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Save data to Google Drive'**
+  String get backupServiceGoogleDriveDesc;
+
+  /// No description provided for @backupAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backupAction;
+
+  /// No description provided for @restoreAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restoreAction;
+
+  /// No description provided for @backupSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup completed'**
+  String get backupSuccess;
+
+  /// No description provided for @backupFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup failed'**
+  String get backupFailure;
+
+  /// No description provided for @restoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Data restored'**
+  String get restoreSuccess;
+
+  /// No description provided for @restoreFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore failed'**
+  String get restoreFailure;
+
+  /// No description provided for @minutesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get minutesLabel;
+
+  /// No description provided for @okAction.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get okAction;
+
+  /// No description provided for @notificationRequestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive notifications? 🔔'**
+  String get notificationRequestTitle;
+
+  /// No description provided for @notificationRequestMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll send you weekly updates on your child\'s progress and news about new items to your phone!\n\nTurn on notifications and enjoy the journey together! ✨'**
+  String get notificationRequestMessage;
+
+  /// No description provided for @notificationLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get notificationLater;
+
+  /// No description provided for @notificationAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Sure!'**
+  String get notificationAccept;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -2313,7 +2459,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'ja'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'hi', 'ja'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2325,6 +2471,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en': return AppLocalizationsEn();
+    case 'hi': return AppLocalizationsHi();
     case 'ja': return AppLocalizationsJa();
   }
 

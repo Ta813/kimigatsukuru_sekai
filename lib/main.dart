@@ -109,8 +109,13 @@ class MyApp extends StatelessWidget {
       locale: localeProvider.locale,
       localeResolutionCallback: (deviceLocale, supportedLocales) {
         // 端末の言語設定が日本語だったら、日本語を選択
-        if (deviceLocale != null && deviceLocale.languageCode == 'ja') {
-          return const Locale('ja');
+        if (deviceLocale != null) {
+          if (deviceLocale.languageCode == 'ja') {
+            return const Locale('ja');
+          }
+          if (deviceLocale.languageCode == 'hi') {
+            return const Locale('hi');
+          }
         }
         // それ以外の場合は、すべて英語をデフォルトにする
         return const Locale('en');
@@ -124,6 +129,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('en', ''), // 英語
         Locale('ja', ''), // 日本語
+        Locale('hi', ''), // ヒンディー語
       ],
 
       // アプリのテーマカラーなどを後で設定できます

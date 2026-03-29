@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'blinking_effect.dart';
+import 'animated_hand_slide.dart';
 
 class DraggableCharacter extends StatefulWidget {
   final String id;
@@ -42,10 +43,21 @@ class _DraggableCharacterState extends State<DraggableCharacter> {
         onPanEnd: (_) {
           SharedPrefsHelper.saveCharacterPosition(widget.id, widget.position);
         },
-        child: BlinkingEffect(
-          isBlinking: widget.isBlinking,
-          color: Colors.purpleAccent,
-          child: Image.asset(widget.imagePath, height: widget.size),
+        child: Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: [
+            BlinkingEffect(
+              isBlinking: widget.isBlinking,
+              color: Colors.purpleAccent,
+              child: Image.asset(widget.imagePath, height: widget.size),
+            ),
+            if (widget.isBlinking)
+              const Positioned(
+                bottom: -20, // Display slightly below the center
+                child: AnimatedHandSlide(),
+              ),
+          ],
         ),
       ),
     );

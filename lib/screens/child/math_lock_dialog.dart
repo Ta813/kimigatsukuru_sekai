@@ -168,7 +168,10 @@ class _MathLockDialogState extends State<MathLockDialog> {
           },
           child: Text(AppLocalizations.of(context)!.cancel),
         ),
-        ElevatedButton(onPressed: _checkAnswer, child: const Text('OK')),
+        ElevatedButton(
+          onPressed: _checkAnswer,
+          child: Text(AppLocalizations.of(context)!.okAction),
+        ),
       ],
     );
   }

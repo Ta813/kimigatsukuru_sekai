@@ -12,6 +12,7 @@ import '../../managers/bgm_manager.dart';
 import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:confetti/confetti.dart';
+import '../../widgets/blinking_effect.dart';
 import '../parent/child_name_settings_screen.dart'; // 名前設定画面
 import 'math_lock_dialog.dart'; // ロック画面
 import 'passcode_lock_dialog.dart';
@@ -50,7 +51,6 @@ class _TimerScreenState extends State<TimerScreen>
   bool _isFinishedButtonPressed = false;
   bool _isCharacterSad = false;
   bool _isInteractionBusy = false;
-  bool _showNameSettingHint = false;
 
   final FlutterTts _flutterTts = FlutterTts();
   String? _childFullName; // 読み上げる名前（敬称付き）を保持
@@ -59,16 +59,15 @@ class _TimerScreenState extends State<TimerScreen>
   bool _didInitialize = false;
 
   late AnimationController _hintAnimationController;
-  late Animation<double> _hintScaleAnimation;
 
   int _basePoints = 0;
   bool _isFirstTimeBonus = false;
 
   // 広告を表示するかどうかのフラグ（最初は絶対にfalseにしておく）
-  bool _showAd = false;
+  //bool _showAd = false;
 
   // 広告表示用の遅延タイマー
-  Timer? _adDelayTimer;
+  //Timer? _adDelayTimer;
 
   // この画面が表示された瞬間に、一度だけ呼ばれる初期化処理
   @override
@@ -88,13 +87,6 @@ class _TimerScreenState extends State<TimerScreen>
       duration: const Duration(milliseconds: 800), // アニメーションの速度
     )..repeat(reverse: true); // ★ 繰り返し再生（reverse: trueで拡大・縮小）
 
-    // ★ スケールアニメーションを定義 (1.0倍から1.1倍に変化)
-    _hintScaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
-      CurvedAnimation(
-        parent: _hintAnimationController,
-        curve: Curves.easeInOut, // ゆっくり変化
-      ),
-    );
     // ★アプリの状態変化の監視を開始
     WidgetsBinding.instance.addObserver(this);
     // ★画面が表示されたら、スリープを無効にする
@@ -108,17 +100,16 @@ class _TimerScreenState extends State<TimerScreen>
 
     _loadAndSetRandomCharacter();
 
-    _checkToShowNameHint();
-
     // 🌟 画面が開いてから1分後（テスト時は seconds: 5 等）にフラグを true にする
-    _adDelayTimer = Timer(const Duration(minutes: 1), () {
-      if (mounted) {
-        setState(() {
-          _showAd = true;
-        });
-        print("1分経過！AdBannerを表示します");
-      }
-    });
+    // _adDelayTimer = Timer(const Duration(minutes: 1), () {
+    //   if (mounted) {
+    //     setState(() {
+    //       _showAd = true;
+    //     });
+    //     print("1分経過！AdBannerを表示します");
+    //   }
+    // });
+    _playFocusBgm();
   }
 
   /// 初回ボーナスチェック: レベル1の場合、100ポイントに設定
@@ -156,10 +147,8 @@ class _TimerScreenState extends State<TimerScreen>
           print('再生エラー: $e');
         }
       } else {
-        final List<String> soundsToPlay = [];
-        soundsToPlay.addAll(['se/english/lets_go.mp3']);
         try {
-          SfxManager.instance.playSequentialSounds(soundsToPlay);
+          SfxManager.instance.playStartSoundLocalized(lang);
         } catch (e) {
           // エラーが発生した場合
           print('再生エラー: $e');
@@ -184,7 +173,7 @@ class _TimerScreenState extends State<TimerScreen>
     // ★画面が閉じられたら、スリープを有効に戻す（非常に重要！）
     WakelockPlus.disable();
     _timer?.cancel(); // タイマーが動いていたら、必ず停止する
-    _adDelayTimer?.cancel();
+    //_adDelayTimer?.cancel();
     super.dispose();
   }
 
@@ -196,18 +185,12 @@ class _TimerScreenState extends State<TimerScreen>
       // アプリが前面に戻ってきたら、タイマーの表示を更新
       _updateRemainingSeconds();
 
-      final trackName = await SharedPrefsHelper.loadSelectedFocusBgm();
-      final focusTrack = BgmTrack.values.firstWhere(
-        (e) => e.name == trackName,
-        orElse: () => BgmTrack.focus_original, // 保存されていなければデフォルト
-      );
-
-      // ★ タイマー画面に行く前に、"選択された"集中BGMを再生
-      try {
-        BgmManager.instance.play(focusTrack);
-      } catch (e) {
-        // エラーが発生した場合
-        print('再生エラー: $e');
+      // ★ 自分が現在表示されている画面の場合のみ、BGMを再生する
+      if (ModalRoute.of(context)?.isCurrent ?? false) {
+        print("TimerScreen: アプリ復帰を検知し、集中BGMを再開します");
+        _playFocusBgm();
+      } else {
+        print("TimerScreen: アプリ復帰を検知しましたが、カレント画面ではないためスキップします");
       }
 
       // もしタイマーが止まっていたら再開
@@ -226,15 +209,18 @@ class _TimerScreenState extends State<TimerScreen>
     }
   }
 
-  // ★ 名前設定を促すメッセージを表示するかチェックするメソッド
-  Future<void> _checkToShowNameHint() async {
-    final hasVisited = await SharedPrefsHelper.hasVisitedChildNameSettings();
-    final names = await SharedPrefsHelper.loadChildNames(); // 現在の名前リストも確認
-    if (!hasVisited && names.isEmpty && mounted) {
-      // 未訪問かつ名前未登録の場合
-      setState(() {
-        _showNameSettingHint = true;
-      });
+  // ★ 集中BGMを再生するメソッド
+  Future<void> _playFocusBgm() async {
+    final trackName = await SharedPrefsHelper.loadSelectedFocusBgm();
+    final focusTrack = BgmTrack.values.firstWhere(
+      (e) => e.name == trackName,
+      orElse: () => BgmTrack.focus_original, // 保存されていなければデフォルト
+    );
+
+    try {
+      await BgmManager.instance.play(focusTrack);
+    } catch (e) {
+      print('再生エラー: $e');
     }
   }
 
@@ -257,10 +243,6 @@ class _TimerScreenState extends State<TimerScreen>
     if (isCorrect == true && mounted) {
       // ★ 初めて遷移するフラグを立てる
       await SharedPrefsHelper.setHasVisitedChildNameSettings(true);
-      // メッセージを非表示にする
-      setState(() {
-        _showNameSettingHint = false;
-      });
 
       await Navigator.push(
         context,
@@ -377,7 +359,8 @@ class _TimerScreenState extends State<TimerScreen>
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       _updateRemainingSeconds();
 
-      final lang = AppLocalizations.of(context)!.localeName;
+      final String lang = AppLocalizations.of(context)!.localeName;
+      final String voiceDir = SfxManager.instance.getVoiceDir(lang);
 
       // --- 音声再生ロジックをここにまとめる ---
       final List<String> soundsToPlay = [];
@@ -387,7 +370,7 @@ class _TimerScreenState extends State<TimerScreen>
           if (lang == 'ja') {
             soundsToPlay.add('se/「タイムアップ」.mp3'); // タイムアップ音
           } else {
-            soundsToPlay.add('se/english/times_up.mp3');
+            soundsToPlay.add('se/$voiceDir/times_up.mp3');
           }
           setState(() => _isTimeUp = true);
         }
@@ -397,37 +380,43 @@ class _TimerScreenState extends State<TimerScreen>
           soundsToPlay.add('se/「10、9、8、7、6、5、4、3、2、1、0」.mp3'); // 10秒カウントダウン
         } else {
           soundsToPlay.addAll([
-            'se/english/ten.mp3',
-            'se/english/nine.mp3',
-            'se/english/eight.mp3',
-            'se/english/seven.mp3',
-            'se/english/six.mp3',
-            'se/english/five.mp3',
-            'se/english/four.mp3',
-            'se/english/three.mp3',
-            'se/english/two.mp3',
-            'se/english/one.mp3',
+            'se/$voiceDir/ten.mp3',
+            'se/$voiceDir/nine.mp3',
+            'se/$voiceDir/eight.mp3',
+            'se/$voiceDir/seven.mp3',
+            'se/$voiceDir/six.mp3',
+            'se/$voiceDir/five.mp3',
+            'se/$voiceDir/four.mp3',
+            'se/$voiceDir/three.mp3',
+            'se/$voiceDir/two.mp3',
+            'se/$voiceDir/one.mp3',
           ]);
         }
       } else if (_remainingSeconds == 1 * 60) {
         if (lang == 'ja') {
           soundsToPlay.addAll(['se/「あと」.mp3', 'se/「1」.mp3', 'se/「分（ふん）」.mp3']);
         } else {
-          soundsToPlay.addAll(['se/english/one.mp3', 'se/english/minute.mp3']);
+          soundsToPlay.addAll([
+            'se/$voiceDir/one.mp3',
+            'se/$voiceDir/minute.mp3',
+          ]);
         }
       } else if (_remainingSeconds == 2 * 60) {
         if (lang == 'ja') {
           soundsToPlay.addAll(['se/「あと」.mp3', 'se/「2」.mp3', 'se/「分（ふん）」.mp3']);
         } else {
-          soundsToPlay.addAll(['se/english/two.mp3', 'se/english/minute.mp3']);
+          soundsToPlay.addAll([
+            'se/$voiceDir/two.mp3',
+            'se/$voiceDir/minute.mp3',
+          ]);
         }
       } else if (_remainingSeconds == 3 * 60) {
         if (lang == 'ja') {
           soundsToPlay.addAll(['se/「あと」.mp3', 'se/「3」.mp3', 'se/「分（ふん）」.mp3']);
         } else {
           soundsToPlay.addAll([
-            'se/english/three.mp3',
-            'se/english/minute.mp3',
+            'se/$voiceDir/three.mp3',
+            'se/$voiceDir/minute.mp3',
           ]);
         }
       } else if (_remainingSeconds == 4 * 60) {
@@ -438,13 +427,19 @@ class _TimerScreenState extends State<TimerScreen>
             'se/「分（ふん）」.mp3',
           ]);
         } else {
-          soundsToPlay.addAll(['se/english/four.mp3', 'se/english/minute.mp3']);
+          soundsToPlay.addAll([
+            'se/$voiceDir/four.mp3',
+            'se/$voiceDir/minute.mp3',
+          ]);
         }
       } else if (_remainingSeconds == 5 * 60) {
         if (lang == 'ja') {
           soundsToPlay.addAll(['se/「あと」.mp3', 'se/「5」.mp3', 'se/「分（ふん）」.mp3']);
         } else {
-          soundsToPlay.addAll(['se/english/five.mp3', 'se/english/minute.mp3']);
+          soundsToPlay.addAll([
+            'se/$voiceDir/five.mp3',
+            'se/$voiceDir/minute.mp3',
+          ]);
         }
       } else if (_remainingSeconds == 10 * 60) {
         if (lang == 'ja') {
@@ -454,7 +449,10 @@ class _TimerScreenState extends State<TimerScreen>
             'se/「分（ふん）」.mp3',
           ]);
         } else {
-          soundsToPlay.addAll(['se/english/ten.mp3', 'se/english/minute.mp3']);
+          soundsToPlay.addAll([
+            'se/$voiceDir/ten.mp3',
+            'se/$voiceDir/minute.mp3',
+          ]);
         }
       } else if (_remainingSeconds == 15 * 60) {
         if (lang == 'ja') {
@@ -466,8 +464,8 @@ class _TimerScreenState extends State<TimerScreen>
           ]);
         } else {
           soundsToPlay.addAll([
-            'se/english/fifteen.mp3',
-            'se/english/minute.mp3',
+            'se/$voiceDir/fifteen.mp3',
+            'se/$voiceDir/minute.mp3',
           ]);
         }
       } else if (_remainingSeconds == 20 * 60) {
@@ -475,8 +473,8 @@ class _TimerScreenState extends State<TimerScreen>
           soundsToPlay.addAll(['se/「あと」.mp3', 'se/「20」.mp3', 'se/「分（ふん）」.mp3']);
         } else {
           soundsToPlay.addAll([
-            'se/english/twenty.mp3',
-            'se/english/minute.mp3',
+            'se/$voiceDir/twenty.mp3',
+            'se/$voiceDir/minute.mp3',
           ]);
         }
       } else if (_remainingSeconds == 25 * 60) {
@@ -489,8 +487,8 @@ class _TimerScreenState extends State<TimerScreen>
           ]);
         } else {
           soundsToPlay.addAll([
-            'se/english/twenty_five.mp3',
-            'se/english/minute.mp3',
+            'se/$voiceDir/twenty_five.mp3',
+            'se/$voiceDir/minute.mp3',
           ]);
         }
       } else if (_remainingSeconds == 30 * 60) {
@@ -498,8 +496,8 @@ class _TimerScreenState extends State<TimerScreen>
           soundsToPlay.addAll(['se/「あと」.mp3', 'se/「30」.mp3', 'se/「分（ふん）」.mp3']);
         } else {
           soundsToPlay.addAll([
-            'se/english/thirty.mp3',
-            'se/english/minute.mp3',
+            'se/$voiceDir/thirty.mp3',
+            'se/$voiceDir/minute.mp3',
           ]);
         }
       }
@@ -599,103 +597,122 @@ class _TimerScreenState extends State<TimerScreen>
                 style: TextStyle(color: Colors.grey[600]),
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                // まず承認ダイアログを閉じる
-                Navigator.of(dialogContext).pop();
-                // 次に、時間切れかどうかで処理を分岐
-                if (!_isTimeUp) {
-                  _confettiController.play();
-                  try {
-                    SfxManager.instance.playTimerWinSound();
-                  } catch (e) {
-                    print('再生エラー: $e');
-                  }
-                  await Future.delayed(const Duration(seconds: 2));
-
-                  // ◯◯がんばったね。
-                  final lang = AppLocalizations.of(context)!.localeName;
-                  if (_childFullName != null && _childFullName!.isNotEmpty) {
-                    await _speak('$_childFullName');
-                    await Future.delayed(
-                      Duration(milliseconds: 1300 * _namesListCount),
-                    );
-                  }
-
-                  if (lang == 'ja') {
+            BlinkingEffect(
+              isBlinking: _isFirstTimeBonus,
+              child: ElevatedButton(
+                onPressed: () async {
+                  // まず承認ダイアログを閉じる
+                  Navigator.of(dialogContext).pop();
+                  // 次に、時間切れかどうかで処理を分岐
+                  if (!_isTimeUp) {
+                    _confettiController.play();
                     try {
-                      SfxManager.instance.playTimerLoseSound();
+                      SfxManager.instance.playTimerWinSound();
                     } catch (e) {
                       print('再生エラー: $e');
+                    }
+                    await Future.delayed(const Duration(seconds: 2));
+
+                    // ◯◯がんばったね。
+                    final lang = AppLocalizations.of(context)!.localeName;
+                    if (_childFullName != null && _childFullName!.isNotEmpty) {
+                      await _speak('$_childFullName');
+                      await Future.delayed(
+                        Duration(milliseconds: 1300 * _namesListCount),
+                      );
+                    }
+
+                    if (lang == 'ja') {
+                      try {
+                        SfxManager.instance.playTimerLoseSound();
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                    } else {
+                      final String lang = AppLocalizations.of(
+                        context,
+                      )!.localeName;
+                      final String voiceDir = SfxManager.instance.getVoiceDir(
+                        lang,
+                      );
+                      final List<String> soundsToPlay = [];
+                      soundsToPlay.addAll([
+                        'se/$voiceDir/you_did_your_best.mp3',
+                      ]);
+                      try {
+                        SfxManager.instance.playSequentialSounds(soundsToPlay);
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                    }
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    try {
+                      SfxManager.instance.playTimerWinSound2();
+                    } catch (e) {
+                      print('再生エラー: $e');
+                    }
+                    await Future.delayed(const Duration(seconds: 4));
+                    // 時間内なら -> ルーレットへ
+                    if (mounted) {
+                      _showRouletteAndFinish();
                     }
                   } else {
-                    final List<String> soundsToPlay = [];
-                    soundsToPlay.addAll(['se/english/you_did_your_best.mp3']);
-                    try {
-                      SfxManager.instance.playSequentialSounds(soundsToPlay);
-                    } catch (e) {
-                      print('再生エラー: $e');
+                    final lang = AppLocalizations.of(context)!.localeName;
+                    if (_childFullName != null && _childFullName!.isNotEmpty) {
+                      await _speak('$_childFullName');
+                      await Future.delayed(
+                        Duration(milliseconds: 1300 * _namesListCount),
+                      );
+                    }
+
+                    if (lang == 'ja') {
+                      try {
+                        SfxManager.instance.playTimerLoseSound();
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                    } else {
+                      final String lang = AppLocalizations.of(
+                        context,
+                      )!.localeName;
+                      final String voiceDir = SfxManager.instance.getVoiceDir(
+                        lang,
+                      );
+                      final List<String> soundsToPlay = [];
+                      soundsToPlay.addAll([
+                        'se/$voiceDir/you_did_your_best.mp3',
+                      ]);
+                      try {
+                        SfxManager.instance.playSequentialSounds(soundsToPlay);
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                    }
+                    await Future.delayed(const Duration(seconds: 2));
+
+                    // 時間切れなら -> ポイント半分で終了
+                    if (mounted) {
+                      _finishPromise(pointMultiplier: 0.5, exp: 1);
                     }
                   }
-                  await Future.delayed(const Duration(seconds: 1));
-
-                  try {
-                    SfxManager.instance.playTimerWinSound2();
-                  } catch (e) {
-                    print('再生エラー: $e');
-                  }
-                  await Future.delayed(const Duration(seconds: 4));
-                  // 時間内なら -> ルーレットへ
-                  if (mounted) {
-                    _showRouletteAndFinish();
-                  }
-                } else {
-                  final lang = AppLocalizations.of(context)!.localeName;
-                  if (_childFullName != null && _childFullName!.isNotEmpty) {
-                    await _speak('$_childFullName');
-                    await Future.delayed(
-                      Duration(milliseconds: 1300 * _namesListCount),
-                    );
-                  }
-
-                  if (lang == 'ja') {
-                    try {
-                      SfxManager.instance.playTimerLoseSound();
-                    } catch (e) {
-                      print('再生エラー: $e');
-                    }
-                  } else {
-                    final List<String> soundsToPlay = [];
-                    soundsToPlay.addAll(['se/english/you_did_your_best.mp3']);
-                    try {
-                      SfxManager.instance.playSequentialSounds(soundsToPlay);
-                    } catch (e) {
-                      print('再生エラー: $e');
-                    }
-                  }
-                  await Future.delayed(const Duration(seconds: 2));
-
-                  // 時間切れなら -> ポイント半分で終了
-                  if (mounted) {
-                    _finishPromise(pointMultiplier: 0.5, exp: 1);
-                  }
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF7043), // オレンジ
-                foregroundColor: Colors.white,
-                side: const BorderSide(
-                  color: Color(0xFFFFCA28),
-                  width: 2,
-                ), // 黄色の輪郭
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF7043), // オレンジ
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(
+                    color: Color(0xFFFFCA28),
+                    width: 2,
+                  ), // 黄色の輪郭
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 4,
                 ),
-                elevation: 4,
-              ),
-              child: Text(
-                AppLocalizations.of(context)!.yesFinished,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                child: Text(
+                  AppLocalizations.of(context)!.yesFinished,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],
@@ -711,7 +728,10 @@ class _TimerScreenState extends State<TimerScreen>
     final multiplier = await showDialog<double>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => RouletteDialog(basePoints: basePoints),
+      builder: (context) => RouletteDialog(
+        basePoints: basePoints,
+        isFirstTimeBonus: _isFirstTimeBonus,
+      ),
     );
     if (!mounted) return;
     // ルーレットの結果（1倍か2倍か）で終了処理を呼ぶ
@@ -736,7 +756,7 @@ class _TimerScreenState extends State<TimerScreen>
   }
 
   // 応援フレーズのリスト
-  final List<String> _encouragements = [
+  final List<String> _encouragementsEn = [
     'Keep up the good work!',
     'Try your best!',
     'Go for it!',
@@ -744,17 +764,38 @@ class _TimerScreenState extends State<TimerScreen>
     'Keep it up!',
   ];
 
+  final List<String> _encouragementsHi = [
+    'अपना काम जारी रखें!',
+    'अपना सर्वश्रेष्ठ प्रयास करें!',
+    'इसके लिए जाओ!',
+    'आप यह कर सकते हैं!',
+    'इसे जारी रखें!',
+  ];
+
+  final List<String> _encouragementsJa = [
+    'そのまま頑張って！',
+    'ベストを尽くして！',
+    'ファイト！',
+    '君ならできる！',
+    'その調子！',
+  ];
+
   // ランダムな応援フレーズを返すメソッド
   String getRandomEncouragement() {
-    final random = Random();
-    final index = random.nextInt(
-      _encouragements.length,
-    ); // 0からリストの長さ-1までのランダムな整数を生成
-    return _encouragements[index]; // ランダムに選ばれたフレーズを返す
+    final lang = AppLocalizations.of(context)!.localeName;
+    List<String> list;
+    if (lang == 'ja') {
+      list = _encouragementsJa;
+    } else if (lang == 'hi') {
+      list = _encouragementsHi;
+    } else {
+      list = _encouragementsEn;
+    }
+    return list[Random().nextInt(list.length)];
   }
 
   // 悲しいフレーズリスト
-  final List<String> _sadPhrasesEnglish = [
+  final List<String> _sadPhrasesEn = [
     "Oh... that's too bad...",
     "Aww... I was hoping you'd finish...",
     "We'll get it next time!",
@@ -762,11 +803,34 @@ class _TimerScreenState extends State<TimerScreen>
     "That's okay, maybe next time.",
   ];
 
+  final List<String> _sadPhrasesHi = [
+    "ओह... यह बहुत बुरा हुआ...",
+    "ओह... मुझे उम्मीद थी कि आप इसे पूरा कर लेंगे...",
+    "अगली बार हम इसे कर लेंगे!",
+    "ओह नहीं...",
+    "कोई बात नहीं, शायद अगली बार।",
+  ];
+
+  final List<String> _sadPhrasesJa = [
+    "あらら…残念…",
+    "次はきっとできるよ！",
+    "どんまいどんまい！",
+    "ショック…次は頑張ろう！",
+    "次は成功させようね！",
+  ];
+
   // 悲しいフレーズを返却
-  String getRandomSadPhraseEnglish() {
-    final random = Random();
-    final index = random.nextInt(_sadPhrasesEnglish.length);
-    return _sadPhrasesEnglish[index];
+  String getRandomSadPhraseLocalized() {
+    final lang = AppLocalizations.of(context)!.localeName;
+    List<String> list;
+    if (lang == 'ja') {
+      list = _sadPhrasesJa;
+    } else if (lang == 'hi') {
+      list = _sadPhrasesHi;
+    } else {
+      list = _sadPhrasesEn;
+    }
+    return list[Random().nextInt(list.length)];
   }
 
   @override
@@ -793,17 +857,41 @@ class _TimerScreenState extends State<TimerScreen>
             )!.challengingPromise(widget.promise['title']),
           ),
           actions: [
-            Stack(
-              // ★ Stackでアイコンと吹き出しを重ねる準備
-              alignment: Alignment.topRight, // 吹き出しをアイコンの右上に配置
-              children: [
-                // 名前設定画面へのアイコンボタン
-                IconButton(
-                  icon: const Icon(Icons.face_retouching_natural),
-                  onPressed: _navigateToChildNameSettings,
-                ),
-              ],
-            ),
+            if (!_isFinishedButtonPressed)
+              Stack(
+                // ★ Stackでアイコンと吹き出しを重ねる準備
+                alignment: Alignment.topRight, // 吹き出しをアイコンの右上に配置
+                children: [
+                  // 名前設定画面へのアイコンボタン
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: InkWell(
+                      onTap: _navigateToChildNameSettings,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.face_retouching_natural),
+                            Text(
+                              AppLocalizations.of(context)!.nameSetting,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
         body: Stack(
@@ -904,48 +992,51 @@ class _TimerScreenState extends State<TimerScreen>
                     },
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
-                    onPressed: _isFinishedButtonPressed
-                        ? null
-                        : () {
-                            int elapsedSeconds = 0;
-                            if (_screenStartTime != null) {
-                              elapsedSeconds = DateTime.now()
-                                  .difference(_screenStartTime!)
-                                  .inSeconds;
-                            }
-                            FirebaseAnalytics.instance.logEvent(
-                              name: 'start_timer_finished',
-                              parameters: {'elapsed_seconds': elapsedSeconds},
-                            );
-                            setState(() {
-                              _isFinishedButtonPressed = true;
-                            });
-                            _timer?.cancel();
-                            _showApprovalDialog();
-                          },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF7043), // オレンジ
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(
-                        color: Color(0xFFFFCA28), // 黄色の輪郭
-                        width: 2,
+                  BlinkingEffect(
+                    isBlinking: _isFirstTimeBonus && !_isFinishedButtonPressed,
+                    child: ElevatedButton(
+                      // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
+                      onPressed: _isFinishedButtonPressed
+                          ? null
+                          : () {
+                              int elapsedSeconds = 0;
+                              if (_screenStartTime != null) {
+                                elapsedSeconds = DateTime.now()
+                                    .difference(_screenStartTime!)
+                                    .inSeconds;
+                              }
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_timer_finished',
+                                parameters: {'elapsed_seconds': elapsedSeconds},
+                              );
+                              setState(() {
+                                _isFinishedButtonPressed = true;
+                              });
+                              _timer?.cancel();
+                              _showApprovalDialog();
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF7043), // オレンジ
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(
+                          color: Color(0xFFFFCA28), // 黄色の輪郭
+                          width: 2,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 4,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 20,
+                        ),
+                        textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 4,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 20,
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      child: Text(AppLocalizations.of(context)!.finished),
                     ),
-                    child: Text(AppLocalizations.of(context)!.finished),
                   ),
                 ],
               ),
@@ -961,13 +1052,8 @@ class _TimerScreenState extends State<TimerScreen>
                     Row(
                       children: [
                         // 応援マークボタン
-                        IconButton(
-                          icon: const Icon(
-                            Icons.celebration,
-                            color: Colors.pinkAccent,
-                          ),
-                          iconSize: 40,
-                          onPressed: _isInteractionBusy
+                        InkWell(
+                          onTap: _isInteractionBusy
                               ? null
                               : () async {
                                   FirebaseAnalytics.instance.logEvent(
@@ -979,7 +1065,6 @@ class _TimerScreenState extends State<TimerScreen>
                                   try {
                                     BgmManager.instance.pause();
                                   } catch (e) {
-                                    // エラーが発生した場合
                                     print('再生エラー: $e');
                                   }
                                   if (_childFullName != null &&
@@ -991,15 +1076,17 @@ class _TimerScreenState extends State<TimerScreen>
                                       ),
                                     );
                                   }
-                                  final lang = AppLocalizations.of(
-                                    context,
-                                  )!.localeName;
-                                  if (lang == 'ja') {
+
+                                  if (AppLocalizations.of(
+                                        context,
+                                      )!.localeName ==
+                                      'ja') {
                                     await SfxManager.instance
                                         .playRandomCheerSound();
                                   } else {
                                     await _speak(getRandomEncouragement());
                                   }
+
                                   // 2秒後に元の状態に戻す
                                   Future.delayed(
                                     const Duration(seconds: 2),
@@ -1007,11 +1094,9 @@ class _TimerScreenState extends State<TimerScreen>
                                       try {
                                         BgmManager.instance.resume();
                                       } catch (e) {
-                                        // エラーが発生した場合
                                         print('再生エラー: $e');
                                       }
                                       if (mounted) {
-                                        // ★ 安全チェック
                                         setState(() {
                                           _isInteractionBusy = false;
                                         });
@@ -1019,16 +1104,32 @@ class _TimerScreenState extends State<TimerScreen>
                                     },
                                   );
                                 },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                const Icon(
+                                  Icons.celebration,
+                                  color: Colors.pinkAccent,
+                                  size: 40,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!.cheerLabel,
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.pinkAccent,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                         const SizedBox(width: 16),
                         // 悲しい顔マークボタン
-                        IconButton(
-                          icon: const Icon(
-                            Icons.sentiment_very_dissatisfied,
-                            color: Colors.blueAccent,
-                          ),
-                          iconSize: 40,
-                          onPressed: _isInteractionBusy
+                        InkWell(
+                          onTap: _isInteractionBusy
                               ? null
                               : () async {
                                   FirebaseAnalytics.instance.logEvent(
@@ -1041,9 +1142,9 @@ class _TimerScreenState extends State<TimerScreen>
                                   try {
                                     BgmManager.instance.pause();
                                   } catch (e) {
-                                    // エラーが発生した場合
                                     print('再生エラー: $e');
                                   }
+
                                   final lang = AppLocalizations.of(
                                     context,
                                   )!.localeName;
@@ -1051,8 +1152,9 @@ class _TimerScreenState extends State<TimerScreen>
                                     await SfxManager.instance
                                         .playRandomSadSound();
                                   } else {
-                                    await _speak(getRandomSadPhraseEnglish());
+                                    await _speak(getRandomSadPhraseLocalized());
                                   }
+
                                   // 3秒後に元の状態に戻す
                                   Future.delayed(
                                     const Duration(seconds: 3),
@@ -1060,7 +1162,6 @@ class _TimerScreenState extends State<TimerScreen>
                                       try {
                                         BgmManager.instance.resume();
                                       } catch (e) {
-                                        // エラーが発生した場合
                                         print('再生エラー: $e');
                                       }
                                       if (mounted) {
@@ -1072,45 +1173,31 @@ class _TimerScreenState extends State<TimerScreen>
                                     },
                                   );
                                 },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                const Icon(
+                                  Icons.sentiment_very_dissatisfied,
+                                  color: Colors.blueAccent,
+                                  size: 40,
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!.sadLabel,
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blueAccent,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ],
-                ),
-              ),
-
-            // ★ 初回のみ表示される吹き出し
-            if (_showNameSettingHint)
-              Positioned(
-                top: 0, // アイコンの上端に合わせる
-                right: 20, // アイコンの少し左に配置 (調整が必要)
-                child: IgnorePointer(
-                  // 吹き出し自体はタップできないように
-                  child: ScaleTransition(
-                    scale: _hintScaleAnimation, // ★ 作成したアニメーションを適用
-                    child: Container(
-                      // ★ 吹き出し本体（Stackや三角形は削除）
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.lightBlue[100]?.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        AppLocalizations.of(context)!.nameSettingHint,
-                        style: TextStyle(color: Colors.black87, fontSize: 12),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             const SizedBox(height: 8),
@@ -1140,11 +1227,13 @@ class _TimerScreenState extends State<TimerScreen>
           ],
         ),
         // 画面下部にバナーを設置（初回起動時は広告を表示しない）
-        bottomNavigationBar: _isFirstTimeBonus
-            ? Container(height: 50)
-            : _showAd
-            ? const AdBanner()
-            : Container(height: 50),
+        bottomNavigationBar:
+            //_isFirstTimeBonus
+            //? Container(height: 50)
+            //: _showAd
+            //?
+            const AdBanner(),
+        //: Container(height: 50),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart'; // SharedPrefsHelperをインポート
 import '../../l10n/app_localizations.dart'; // l10nを使う場合
@@ -88,6 +89,7 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: const CustomBackButton(),
         title: Text(
           AppLocalizations.of(context)!.childNameSettingsTitle,
         ), // l10n.childNameSettingsTitle

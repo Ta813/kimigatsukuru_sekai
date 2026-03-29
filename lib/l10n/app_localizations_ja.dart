@@ -817,7 +817,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get nameSettingHint => '名前を設定すると、応援のときに名前を呼んでもらえるよ！';
 
   @override
+  String get nameSetting => '名前設定';
+
+  @override
   String get nameAlreadyExists => '同じ名前と敬称の組み合わせはすでに登録されています。';
+
+  @override
+  String get backButtonLabel => '戻る';
+
+  @override
+  String get childNameLabel => '名前';
 
   @override
   String get childNameSettingsTitle => 'お子様の名前設定';
@@ -827,6 +836,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get addAction => '追加';
+
+  @override
+  String get editAction => '編集';
+
+  @override
+  String get deleteAction => '削除';
+
+  @override
+  String get howToUseLabel => 'つかいかた';
+
+  @override
+  String get promiseSettingsLabel => 'やくそく設定';
 
   @override
   String get registeredNamesLabel => '登録中の名前:';
@@ -1142,5 +1163,56 @@ class AppLocalizationsJa extends AppLocalizations {
   String get loginBonusCongrats => 'やったー！';
 
   @override
-  String get loginBonusReceive => 'うけとる！';
+  String get loginBonusReceive => 'もらう！';
+
+  @override
+  String get cheerLabel => '応援';
+
+  @override
+  String get sadLabel => '悲しい';
+
+  @override
+  String get backupRestoreTitle => 'データのバックアップと復元';
+
+  @override
+  String get backupServiceLinked => 'このサービスと連携済み';
+
+  @override
+  String get backupServiceGoogleDriveDesc => 'Google Driveにデータを保存します';
+
+  @override
+  String get backupAction => 'バックアップ';
+
+  @override
+  String get restoreAction => '復元';
+
+  @override
+  String get backupSuccess => 'バックアップが完了しました';
+
+  @override
+  String get backupFailure => 'バックアップに失敗しました';
+
+  @override
+  String get restoreSuccess => 'データを復元しました';
+
+  @override
+  String get restoreFailure => '復元に失敗しました';
+
+  @override
+  String get minutesLabel => '分';
+
+  @override
+  String get okAction => 'OK';
+
+  @override
+  String get notificationRequestTitle => 'お知らせをうけとる？🔔';
+
+  @override
+  String get notificationRequestMessage => '毎週のお子様のがんばり状況や、新しいアイテムなどのお知らせをスマホにお届けします！\n\n通知をオンにして、親子で楽しく続けよう✨';
+
+  @override
+  String get notificationLater => 'あとで';
+
+  @override
+  String get notificationAccept => 'うけとる！';
 }

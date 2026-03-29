@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/emergency_promise_screen.dart
 
 import 'package:flutter/material.dart';
+import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
 import '../../helpers/shared_prefs_helper.dart';
@@ -66,6 +67,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: const CustomBackButton(),
         title: Text(
           AppLocalizations.of(context)!.emergencyPromiseSettingsTitle,
         ),

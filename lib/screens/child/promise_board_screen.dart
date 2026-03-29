@@ -4,6 +4,7 @@ import 'timer_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/bgm_manager.dart';
 import '../../managers/sfx_manager.dart';
+import '../../widgets/custom_back_button.dart';
 import '../../l10n/app_localizations.dart';
 import '../../screens/parent/advice_screen.dart';
 import '../../screens/parent/regular_promise_settings_screen.dart';
@@ -158,19 +159,18 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: const CustomBackButton(),
         title: Text(AppLocalizations.of(context)!.promiseBoard),
         actions: [
           // ？ボタン (アドバイス画面へ)
-          IconButton(
-            icon: const Icon(Icons.question_mark_outlined),
-            onPressed: () {
+          InkWell(
+            onTap: () {
               FirebaseAnalytics.instance.logEvent(
                 name: 'start_promise_board_help',
               );
               try {
                 SfxManager.instance.playTapSound();
               } catch (e) {
-                // エラーが発生した場合
                 print('再生エラー: $e');
               }
               Navigator.push(
@@ -178,11 +178,40 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                 MaterialPageRoute(builder: (context) => const AdviceScreen()),
               );
             },
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.question_mark_outlined),
+                  Text(
+                    AppLocalizations.of(context)!.howToUseLabel,
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
           ),
           // ⚙ボタン (やくそく設定画面へ)
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: _navigateToAddPromise,
+          InkWell(
+            onTap: _navigateToAddPromise,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.settings),
+                  Text(
+                    AppLocalizations.of(context)!.promiseSettingsLabel,
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

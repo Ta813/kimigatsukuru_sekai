@@ -700,6 +700,25 @@ class SharedPrefsHelper {
   static const String tutorialStepParentSetupShownKey =
       'tutorial_step_parent_setup_shown';
 
+  static const String tutorialPurchasedItemKey = 'tutorial_purchased_item';
+  static const String tutorialPurchasedTypeKey = 'tutorial_purchased_type';
+
+  static Future<void> setTutorialPurchasedItem(String itemPath, String type) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(tutorialPurchasedItemKey, itemPath);
+    await prefs.setString(tutorialPurchasedTypeKey, type);
+  }
+
+  static Future<String?> getTutorialPurchasedItem() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(tutorialPurchasedItemKey);
+  }
+
+  static Future<String?> getTutorialPurchasedType() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(tutorialPurchasedTypeKey);
+  }
+
   static Future<bool> isTutorialStepShown(String stepKey) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(stepKey) ?? false;

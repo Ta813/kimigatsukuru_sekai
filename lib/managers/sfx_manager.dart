@@ -1,4 +1,4 @@
-// lib/sfx_manager.dart
+// lib/managers/sfx_manager.dart
 
 import 'dart:math';
 
@@ -58,51 +58,129 @@ class SfxManager {
     }
   }
 
+  // ロケールに基づいて、ボイス（音声）が入っているディレクトリ名を返します
+  String getVoiceDir(String localeName) {
+    if (localeName == 'hi') return 'hindi';
+    return 'english'; // デフォルトはenglish
+  }
+
+  // 言語に応じた効果音を再生するための汎用メソッド
+  void playLocalizedSound(String filename, String locale) {
+    if (locale == 'ja') {
+      // 日本語の場合は各メソッドで個別に定義（日本語特有のファイル名のため）
+      return;
+    }
+    final String dir = getVoiceDir(locale);
+    _playSound('se/$dir/$filename');
+  }
+
   // --- ここから再生用のメソッド ---
-  // 各メソッドが、ファイルパスを指定して共通メソッドを呼び出します
 
   void playTapSound() => _playSound('se/ボタン.mp3');
   void playSuccessSound() => _playSound('se/ポイントが入る音.mp3');
   void playStartSound() => _playSound('se/「スタート」.mp3');
-  void playStartSoundEnglish() => _playSound('se/english/lets_go.mp3');
+
+  void playStartSoundLocalized(String locale) {
+    if (locale == 'ja') {
+      playStartSound();
+    } else {
+      playLocalizedSound('lets_go.mp3', locale);
+    }
+  }
+
   void playRouletteMessageSound() => _playSound('se/「ボタンをタッチしてね」.mp3');
-  void playRouletteMessageSoundEnglish() =>
-      _playSound('se/english/please_touch_the_button.mp3');
+  void playRouletteMessageSoundLocalized(String locale) {
+    if (locale == 'ja') {
+      playRouletteMessageSound();
+    } else {
+      playLocalizedSound('please_touch_the_button.mp3', locale);
+    }
+  }
+
   void playRouletteWinSound() => _playSound('se/「大当たり～」.mp3');
-  void playRouletteWinSoundEnglish() => _playSound('se/english/jackpot.mp3');
+  void playRouletteWinSoundLocalized(String locale) {
+    if (locale == 'ja') {
+      playRouletteWinSound();
+    } else {
+      playLocalizedSound('jackpot.mp3', locale);
+    }
+  }
+
   void playRouletteLoseSound() => _playSound('se/「惜っしーい」.mp3');
-  void playRouletteLoseSoundEnglish() =>
-      _playSound('se/english/thats_a_shame.mp3');
+  void playRouletteLoseSoundLocalized(String locale) {
+    if (locale == 'ja') {
+      playRouletteLoseSound();
+    } else {
+      playLocalizedSound('thats_a_shame.mp3', locale);
+    }
+  }
+
   void playTimerLoseSound() => _playSound('se/「頑張ったね」.mp3');
-  void playTimerLoseSoundEnglish() =>
-      _playSound('se/english/you_did_your_best.mp3');
+  void playTimerLoseSoundLocalized(String locale) {
+    if (locale == 'ja') {
+      playTimerLoseSound();
+    } else {
+      playLocalizedSound('you_did_your_best.mp3', locale);
+    }
+  }
+
   void playTimerWinSound() => _playSound('se/ラッパのファンファーレ.mp3');
   void playShopInitSound() => _playSound('se/「いらっしゃいませ！」.mp3');
-  void playShopInitSoundEnglish() => _playSound('se/english/welcome.mp3');
+  void playShopInitSoundLocalized(String locale) {
+    if (locale == 'ja') {
+      playShopInitSound();
+    } else {
+      playLocalizedSound('welcome.mp3', locale);
+    }
+  }
+
   void playShopBuySound() => _playSound('se/「ありがとうございます！」.mp3');
-  void playShopBuySoundEnglish() =>
-      _playSound('se/english/thank_you_very_much.mp3');
+  void playShopBuySoundLocalized(String locale) {
+    if (locale == 'ja') {
+      playShopBuySound();
+    } else {
+      playLocalizedSound('thank_you_very_much.mp3', locale);
+    }
+  }
+
   void playTimerTimeUpSound() => _playSound('se/「タイムアップ」.mp3');
-  void playTimerTimeUpSoundEnglish() => _playSound('se/english/times_up.mp3');
+  void playTimerTimeUpSoundLocalized(String locale) {
+    if (locale == 'ja') {
+      playTimerTimeUpSound();
+    } else {
+      playLocalizedSound('times_up.mp3', locale);
+    }
+  }
+
   void playTimeAtoSound() => _playSound('se/「あと」.mp3');
   void playTimeYattaSound() => _playSound('se/「やったーー！」.mp3');
   void playRouletteSpinSound() => _playSound('se/ドラムロール.mp3');
   void playTimerWinSound2() => _playSound('se/歓声と拍手.mp3');
 
+  // 互換性のための既存メソッド（内部でLocalized版を呼ぶように修正）
+  void playStartSoundEnglish() => playLocalizedSound('lets_go.mp3', 'en');
+  void playRouletteMessageSoundEnglish() =>
+      playLocalizedSound('please_touch_the_button.mp3', 'en');
+  void playRouletteWinSoundEnglish() => playLocalizedSound('jackpot.mp3', 'en');
+  void playRouletteLoseSoundEnglish() =>
+      playLocalizedSound('thats_a_shame.mp3', 'en');
+  void playTimerLoseSoundEnglish() =>
+      playLocalizedSound('you_did_your_best.mp3', 'en');
+  void playShopInitSoundEnglish() => playLocalizedSound('welcome.mp3', 'en');
+  void playShopBuySoundEnglish() =>
+      playLocalizedSound('thank_you_very_much.mp3', 'en');
+  void playTimerTimeUpSoundEnglish() =>
+      playLocalizedSound('times_up.mp3', 'en');
+
   Future<void> playRandomCheerSound() async {
     try {
-      // 1. 再生したい音声ファイルのリストを作成
       final List<String> cheerSounds = [
         'se/「頑張って！」.mp3',
         'se/ganbare--.mp3',
         'se/「その調子その調子！」.mp3',
         'se/「フレーフレー」.mp3',
       ];
-
-      // 2. 0からリストの長さ-1までのランダムな整数を生成
       final randomIndex = Random().nextInt(cheerSounds.length);
-
-      // 3. ランダムに選ばれた音声ファイルを再生
       await _playSound(cheerSounds[randomIndex]);
     } catch (e) {
       print("再生エラー: $e");
@@ -111,17 +189,12 @@ class SfxManager {
 
   Future<void> playRandomSadSound() async {
     try {
-      // 1. 再生したい音声ファイルのリストを作成
       final List<String> cheerSounds = [
         'se/「ううっ…」.mp3',
         'se/「ショックー…」.mp3',
         'se/「そんなあー」.mp3',
       ];
-
-      // 2. 0からリストの長さ-1までのランダムな整数を生成
       final randomIndex = Random().nextInt(cheerSounds.length);
-
-      // 3. ランダムに選ばれた音声ファイルを再生
       await _playSound(cheerSounds[randomIndex]);
     } catch (e) {
       print("再生エラー: $e");

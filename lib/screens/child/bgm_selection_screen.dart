@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../managers/bgm_manager.dart';
 import '../../helpers/shared_prefs_helper.dart';
+import '../../widgets/custom_back_button.dart';
 import '../../l10n/app_localizations.dart';
 
 class BgmSelectionScreen extends StatefulWidget {
@@ -122,6 +123,7 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
       length: 2, // ★ タブの数を2に設定
       child: Scaffold(
         appBar: AppBar(
+          leading: const CustomBackButton(),
           title: Text(AppLocalizations.of(context)!.selectBgmTitle),
           // ★ AppBarの下にTabBarを設置
           bottom: TabBar(

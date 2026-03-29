@@ -69,6 +69,7 @@
 		FA0F47132EA6E29E00850FCC /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 		FA67F1AD2EA6DC6A005DF68C /* en */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; name = en; path = en.lproj/Info.plist; sourceTree = "<group>"; };
 		FA67F1AF2EA6DD5F005DF68C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ja; path = ja.lproj/Info.plist; sourceTree = "<group>"; };
+		FA67F1B12EA6DE12005DF68C /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = hi; path = hi.lproj/Info.plist; sourceTree = "<group>"; };
 		FA8EA9102EC13EE900FCC6A0 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -245,6 +246,7 @@
 				en,
 				Base,
 				ja,
+				hi,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
@@ -459,6 +461,7 @@
 			children = (
 				FA67F1AD2EA6DC6A005DF68C /* en */,
 				FA67F1AF2EA6DD5F005DF68C /* ja */,
+				FA67F1B12EA6DE12005DF68C /* hi */,
 				FA0F47132EA6E29E00850FCC /* Base */,
 			);
 			name = Info.plist;

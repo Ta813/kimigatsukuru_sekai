@@ -2,6 +2,7 @@
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import '../../widgets/custom_back_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
@@ -218,16 +219,37 @@ class _RegularPromiseSettingsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: const CustomBackButton(),
         title: Text(AppLocalizations.of(context)!.regularPromiseSettingsTitle),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
+          InkWell(
+            onTap: () {
               FirebaseAnalytics.instance.logEvent(
                 name: 'start_regular_promise_settings_add',
               );
               _navigateToAddScreen();
-            }, // 既存の追加処理をそのまま使う
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 4.0,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.add),
+                  Text(
+                    AppLocalizations.of(context)!.addAction,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -241,19 +263,17 @@ class _RegularPromiseSettingsScreenState
               child: ListTile(
                 title: Text(promise['title']),
                 subtitle: Text(
-                  '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}分 / ${promise['points']}${AppLocalizations.of(context)!.points}',
+                  '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
                 ),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min, // Rowが必要な分だけ幅をとるようにする
                   children: [
-                    // 編集ボタン（機能は後で追加）
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
+                    // 編集ボタン
+                    InkWell(
+                      onTap: () {
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
-                          // エラーが発生した場合
                           print('再生エラー: $e');
                         }
                         FirebaseAnalytics.instance.logEvent(
@@ -261,15 +281,35 @@ class _RegularPromiseSettingsScreenState
                         );
                         _navigateToEditScreen(index);
                       },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.edit),
+                            Text(
+                              AppLocalizations.of(context)!.editAction,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
+                    const SizedBox(width: 12),
                     // 削除ボタン
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red[400]),
-                      onPressed: () {
+                    InkWell(
+                      onTap: () {
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (e) {
-                          // エラーが発生した場合
                           print('再生エラー: $e');
                         }
                         FirebaseAnalytics.instance.logEvent(
@@ -277,6 +317,28 @@ class _RegularPromiseSettingsScreenState
                         );
                         _deletePromise(index);
                       },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.delete, color: Colors.red[400]),
+                            Text(
+                              AppLocalizations.of(context)!.deleteAction,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red[400],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),

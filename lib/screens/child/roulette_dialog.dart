@@ -7,10 +7,17 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
 
+import '../../widgets/blinking_effect.dart';
+
 class RouletteDialog extends StatefulWidget {
   final int basePoints;
+  final bool isFirstTimeBonus;
 
-  const RouletteDialog({super.key, required this.basePoints});
+  const RouletteDialog({
+    super.key,
+    required this.basePoints,
+    this.isFirstTimeBonus = false,
+  });
 
   @override
   State<RouletteDialog> createState() => _RouletteDialogState();
@@ -43,7 +50,8 @@ class _RouletteDialogState extends State<RouletteDialog> {
         }
       } else {
         final List<String> soundsToPlay = [];
-        soundsToPlay.addAll(['se/english/please_touch_the_button.mp3']);
+        final String voiceDir = SfxManager.instance.getVoiceDir(lang);
+        soundsToPlay.addAll(['se/$voiceDir/please_touch_the_button.mp3']);
         try {
           SfxManager.instance.playSequentialSounds(soundsToPlay);
         } catch (e) {
@@ -93,7 +101,8 @@ class _RouletteDialogState extends State<RouletteDialog> {
             }
           } else {
             final List<String> soundsToPlay = [];
-            soundsToPlay.addAll(['se/english/jackpot.mp3']);
+            final String voiceDir = SfxManager.instance.getVoiceDir(lang);
+            soundsToPlay.addAll(['se/$voiceDir/jackpot.mp3']);
             try {
               SfxManager.instance.playSequentialSounds(soundsToPlay);
             } catch (e) {
@@ -116,7 +125,8 @@ class _RouletteDialogState extends State<RouletteDialog> {
             }
           } else {
             final List<String> soundsToPlay = [];
-            soundsToPlay.addAll(['se/english/thats_a_shame.mp3']);
+            final String voiceDir = SfxManager.instance.getVoiceDir(lang);
+            soundsToPlay.addAll(['se/$voiceDir/thats_a_shame.mp3']);
             try {
               SfxManager.instance.playSequentialSounds(soundsToPlay);
             } catch (e) {
@@ -214,23 +224,26 @@ class _RouletteDialogState extends State<RouletteDialog> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _spin,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF7043), // オレンジ
-                        foregroundColor: Colors.white,
-                        side: const BorderSide(
-                          color: Color(0xFFFFCA28),
-                          width: 2,
-                        ), // 黄色の輪郭
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                    BlinkingEffect(
+                      isBlinking: widget.isFirstTimeBonus,
+                      child: ElevatedButton(
+                        onPressed: _spin,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF7043), // オレンジ
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(
+                            color: Color(0xFFFFCA28),
+                            width: 2,
+                          ), // 黄色の輪郭
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          elevation: 4,
                         ),
-                        elevation: 4,
-                      ),
-                      child: Text(
-                        AppLocalizations.of(context)!.rouletteSpin,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        child: Text(
+                          AppLocalizations.of(context)!.rouletteSpin,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ],

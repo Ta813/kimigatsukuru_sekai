@@ -71,6 +71,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   // 「はじめる」ボタンを点滅させるフラグ
   bool _showStartBlinking = false;
   bool _hasEnteredHouse = false; // 家に入ったことがあるかのローカルな旗
+  bool _isTutorialMoveCompleted = false; // 移動チュートリアルが完了したかどうか
   bool _showParentSettingsBlinking = false; // おやの設定ボタンを点滅させるフラグ
   bool _showShopBlinking = false; // おみせボタンを点滅させるフラグ（チュートリアル）
   bool _showCustomizeBlinking = false; // きせかえボタンを点滅させるフラグ（チュートリアル）
@@ -312,8 +313,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      // アプリが前面に戻ってきたら、日付のチェックとBGM再生を行う
-      _handleAppResumed();
+      // ★ 自分が現在表示されている画面の場合のみ、BGM再生を行う
+      if (ModalRoute.of(context)?.isCurrent ?? false) {
+        // アプリが前面に戻ってきたら、日付のチェックとBGM再生を行う
+        _handleAppResumed();
+      }
     } else {
       // アプリがバックグラウンドに回ったら、BGMを停止
       try {
@@ -634,6 +638,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       setState(() {
         _isWaitingForMove = false;
         _showDraggableBlinking = false;
+        _isTutorialMoveCompleted = true;
       });
 
       FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_parent_setup');
@@ -718,9 +723,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               ),
               elevation: 4,
             ),
-            child: const Text(
-              'OK',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            child: Text(
+              AppLocalizations.of(context)!.okAction,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -792,9 +797,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               ),
               elevation: 4,
             ),
-            child: const Text(
-              'OK',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            child: Text(
+              AppLocalizations.of(context)!.okAction,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -901,6 +906,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final items = await SharedPrefsHelper.loadEquippedItems();
     final isFirstAdvice = await SharedPrefsHelper.isFirstHomeAdvice();
     final isFirstRegular = await SharedPrefsHelper.isFirstHomeRegular();
+    final moveCompleted = await SharedPrefsHelper.isTutorialStepShown(
+      SharedPrefsHelper.tutorialStepMoveKey,
+    );
+    bool isShown = await SharedPrefsHelper.isGuideShown();
     bool wasParentSetupShown = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepParentSetupShownKey,
     );
@@ -954,6 +963,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     // 最後に、画面の状態を更新
     setState(() {
       _hasEnteredHouse = entered;
+      _isTutorialMoveCompleted = moveCompleted || isShown;
       _points = loadedPoints;
       _displayPromise = nextPromise;
       _isDisplayPromiseEmergency = isEmergency;
@@ -1030,21 +1040,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     }
 
     // ★タイマー画面に行く前に、集中BGMを再生
-    // ★ 保存されている集中BGM設定を読み込む
-    final trackName = await SharedPrefsHelper.loadSelectedFocusBgm();
-    final focusTrack = BgmTrack.values.firstWhere(
-      (e) => e.name == trackName,
-      orElse: () => BgmTrack.focus_original, // 保存されていなければデフォルト
-    );
-
-    // ★ タイマー画面に行く前に、"選択された"集中BGMを再生
+    // ★ タイマー画面に行く前にFirebaseイベントだけログ
     FirebaseAnalytics.instance.logEvent(name: 'start_child_home_start_promise');
-    try {
-      BgmManager.instance.play(focusTrack);
-    } catch (e) {
-      // エラーが発生した場合
-      print('再生エラー: $e');
-    }
+    // 注意：BGM再生は遷移先のTimerScreen.initStateで行われるため、ここでは呼ばない（二重再生防止）
 
     // タイマー画面に遷移し、結果（獲得ポイント）を待つ
     final result = await Navigator.push<Map<String, dynamic>?>(
@@ -1130,23 +1128,22 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
       // レベルアップの効果音を再生
 
-      final lang = AppLocalizations.of(context)!.localeName;
+      final List<String> soundsToPlay = [];
+      final String lang = AppLocalizations.of(context)!.localeName;
       if (lang == 'ja') {
         try {
           SfxManager.instance.playTimeYattaSound();
         } catch (e) {
-          // エラーが発生した場合
           print('再生エラー: $e');
         }
       } else {
-        final List<String> soundsToPlay = [];
-        soundsToPlay.addAll(['se/english/level_up.mp3']);
-        try {
-          SfxManager.instance.playSequentialSounds(soundsToPlay);
-        } catch (e) {
-          // エラーが発生した場合
-          print('再生エラー: $e');
-        }
+        final String voiceDir = SfxManager.instance.getVoiceDir(lang);
+        soundsToPlay.addAll(['se/$voiceDir/level_up.mp3']);
+      }
+      try {
+        SfxManager.instance.playSequentialSounds(soundsToPlay);
+      } catch (e) {
+        print('再生エラー: $e');
       }
 
       // ★ レベルアップしたことを伝えるダイアログなどを表示
@@ -1196,9 +1193,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 ),
                 elevation: 4,
               ),
-              child: const Text(
-                'OK',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              child: Text(
+                AppLocalizations.of(context)!.okAction,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -1263,10 +1260,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       context: context,
       barrierDismissible: false, // ダイアログの外側をタップして閉じられないようにする
       builder: (context) => AlertDialog(
-        title: const Text(
-          'お知らせをうけとる？🔔',
+        title: Text(
+          AppLocalizations.of(context)!.notificationRequestTitle,
           textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         content: Container(
           padding: const EdgeInsets.all(16),
@@ -1279,9 +1276,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
           ),
           // 週1回の通知と、将来の拡張を見据えた安心感のあるメッセージ
-          child: const Text(
-            '毎週のお子様のがんばり状況や、新しいアイテムなどのお知らせをスマホにお届けします！\n\n通知をオンにして、親子で楽しく続けよう✨',
-            style: TextStyle(fontSize: 15, height: 1.5),
+          child: Text(
+            AppLocalizations.of(context)!.notificationRequestMessage,
+            style: const TextStyle(fontSize: 15, height: 1.5),
           ),
         ),
         actionsAlignment: MainAxisAlignment.spaceEvenly,
@@ -1290,9 +1287,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           TextButton(
             onPressed: () => Navigator.pop(context, false), // falseを返す
             style: TextButton.styleFrom(foregroundColor: Colors.grey),
-            child: const Text(
-              'あとで',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            child: Text(
+              AppLocalizations.of(context)!.notificationLater,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           // ⭕️ 「うけとる！」ボタン（オレンジで目立たせる）
@@ -1318,9 +1315,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               ),
               elevation: 4,
             ),
-            child: const Text(
-              'うけとる！',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            child: Text(
+              AppLocalizations.of(context)!.notificationAccept,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -1709,10 +1706,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 setState(() {
                                   _showCustomizeBlinking = false;
                                 });
-                                // 終了フラグを立てる
-                                await SharedPrefsHelper.setTutorialStepShown(
-                                  SharedPrefsHelper.tutorialStepCustomizeKey,
-                                );
                                 FirebaseAnalytics.instance.logEvent(
                                   name: 'start_child_home_dress_up',
                                 );
@@ -1742,6 +1735,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   bool isShown =
                                       await SharedPrefsHelper.isGuideShown();
                                   if (!wasMoveShown && !isShown && mounted) {
+                                    // 終了フラグを立てる
+                                    await SharedPrefsHelper.setTutorialStepShown(
+                                      SharedPrefsHelper
+                                          .tutorialStepCustomizeKey,
+                                    );
                                     FirebaseAnalytics.instance.logEvent(
                                       name: 'start_tutorial_move_interaction',
                                     );
@@ -1812,10 +1810,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 setState(() {
                                   _showShopBlinking = false;
                                 });
-                                // 終了フラグを立てる
-                                await SharedPrefsHelper.setTutorialStepShown(
-                                  SharedPrefsHelper.tutorialStepShopKey,
-                                );
                                 FirebaseAnalytics.instance.logEvent(
                                   name: 'start_child_home_shop',
                                 );
@@ -1843,6 +1837,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   if (!wasCustomizeStepShown &&
                                       !isShown &&
                                       mounted) {
+                                    // 終了フラグを立てる
+                                    await SharedPrefsHelper.setTutorialStepShown(
+                                      SharedPrefsHelper.tutorialStepShopKey,
+                                    );
                                     FirebaseAnalytics.instance.logEvent(
                                       name: 'start_tutorial_dress_up',
                                     );
@@ -2096,8 +2094,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
           ),
 
-          // ★ まだ家に入ったことがない場合のみ表示
-          if (!_hasEnteredHouse)
+          // ★ まだ家に入ったことがなく、かつ移動チュートリアルが完了している場合のみ表示
+          if (!_hasEnteredHouse && _isTutorialMoveCompleted)
             Positioned(
               // ★ 家の画像の上あたりに位置を調整
               top: MediaQuery.of(context).size.height * 0.45,

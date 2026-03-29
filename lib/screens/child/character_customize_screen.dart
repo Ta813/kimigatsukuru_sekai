@@ -6,6 +6,8 @@ import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/blinking_effect.dart';
+import '../../widgets/custom_back_button.dart';
 
 class CharacterCustomizeScreen extends StatefulWidget {
   const CharacterCustomizeScreen({super.key});
@@ -22,10 +24,36 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   List<String> _equippedCharacters = [];
   List<String> _equippedItems = [];
 
+  bool _isTutorialStepCustomizeShown = true;
+  String? _tutorialPurchasedItemName;
+  String? _tutorialPurchasedItemType;
+  bool _showTabBlinking = false;
+  bool _showItemBlinking = false;
+  bool _showBackButtonBlinking = false;
+
   @override
   void initState() {
     super.initState();
     _loadEquippedItems();
+    _checkTutorialStep();
+  }
+
+  Future<void> _checkTutorialStep() async {
+    final isCustomizeShown = await SharedPrefsHelper.isTutorialStepShown(
+      SharedPrefsHelper.tutorialStepCustomizeKey,
+    );
+    bool isShown = await SharedPrefsHelper.isGuideShown();
+    final purchasedItemName =
+        await SharedPrefsHelper.getTutorialPurchasedItem();
+    final purchasedItemType =
+        await SharedPrefsHelper.getTutorialPurchasedType();
+    setState(() {
+      _isTutorialStepCustomizeShown = isShown || isCustomizeShown;
+      _tutorialPurchasedItemName = purchasedItemName;
+      _tutorialPurchasedItemType = purchasedItemType;
+      _showTabBlinking = !isShown && !isCustomizeShown;
+      _showItemBlinking = !isShown && !isCustomizeShown;
+    });
   }
 
   Future<void> _loadEquippedItems() async {
@@ -74,7 +102,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         final item = options[index];
         final isSelected = selected.contains(item.imagePath); // ★選択されているかチェック
 
-        return GestureDetector(
+        Widget itemWidget = GestureDetector(
           onTap: () async {
             FirebaseAnalytics.instance.logEvent(
               name: 'start_character_customize_equip',
@@ -97,6 +125,16 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               await SharedPrefsHelper.saveEquippedCharacters(selected);
             } else if (type == 'item') {
               await SharedPrefsHelper.saveEquippedItems(selected);
+            }
+
+            if (!_isTutorialStepCustomizeShown) {
+              if (mounted) {
+                setState(() {
+                  _showTabBlinking = false;
+                  _showItemBlinking = false;
+                  _showBackButtonBlinking = true;
+                });
+              }
             }
           },
           child: Container(
@@ -121,6 +159,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             child: Image.asset(item.imagePath, fit: BoxFit.contain),
           ),
         );
+
+        if (_showItemBlinking && _tutorialPurchasedItemName == item.name) {
+          return BlinkingEffect(isBlinking: true, child: itemWidget);
+        }
+        return itemWidget;
       },
     );
   }
@@ -133,6 +176,15 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       print('再生エラー: $e');
     }
     await SharedPrefsHelper.saveEquippedItem(item.type, item.imagePath);
+    if (!_isTutorialStepCustomizeShown) {
+      if (mounted) {
+        setState(() {
+          _showTabBlinking = false;
+          _showItemBlinking = false;
+          _showBackButtonBlinking = true;
+        });
+      }
+    }
     _loadEquippedItems(); // データを再読み込みして画面を更新
   }
 
@@ -168,47 +220,68 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
+          leading: BlinkingEffect(
+            isBlinking: _showBackButtonBlinking,
+            child: const CustomBackButton(),
+          ),
           title: Text(AppLocalizations.of(context)!.customizeTitle),
           bottom: TabBar(
             tabs: [
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.checkroom),
-                    SizedBox(width: 8), // アイコンとテキストの間のスペース
-                    Text(AppLocalizations.of(context)!.customizeTabClothes),
-                  ],
+              BlinkingEffect(
+                isBlinking:
+                    _showTabBlinking && _tutorialPurchasedItemType == 'clothes',
+                child: Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.checkroom),
+                      SizedBox(width: 8), // アイコンとテキストの間のスペース
+                      Text(AppLocalizations.of(context)!.customizeTabClothes),
+                    ],
+                  ),
                 ),
               ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.house),
-                    SizedBox(width: 8), // アイコンとテキストの間のスペース
-                    Text(AppLocalizations.of(context)!.customizeTabHouse),
-                  ],
+              BlinkingEffect(
+                isBlinking:
+                    _showTabBlinking && _tutorialPurchasedItemType == 'house',
+                child: Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.house),
+                      SizedBox(width: 8), // アイコンとテキストの間のスペース
+                      Text(AppLocalizations.of(context)!.customizeTabHouse),
+                    ],
+                  ),
                 ),
               ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.support_agent),
-                    SizedBox(width: 8), // アイコンとテキストの間のスペース
-                    Text(AppLocalizations.of(context)!.customizeTabCharacter),
-                  ],
+              BlinkingEffect(
+                isBlinking:
+                    _showTabBlinking &&
+                    _tutorialPurchasedItemType == 'character',
+                child: Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.support_agent),
+                      SizedBox(width: 8), // アイコンとテキストの間のスペース
+                      Text(AppLocalizations.of(context)!.customizeTabCharacter),
+                    ],
+                  ),
                 ),
               ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.star),
-                    SizedBox(width: 8), // アイコンとテキストの間のスペース
-                    Text(AppLocalizations.of(context)!.customizeTabItem),
-                  ],
+              BlinkingEffect(
+                isBlinking:
+                    _showTabBlinking && _tutorialPurchasedItemType == 'item',
+                child: Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.star),
+                      SizedBox(width: 8), // アイコンとテキストの間のスペース
+                      Text(AppLocalizations.of(context)!.customizeTabItem),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -249,7 +322,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         final item = items[index];
         final isEquipped = item.imagePath == equippedItemPath;
 
-        return Card(
+        Widget card = Card(
           shape: RoundedRectangleBorder(
             // 装備中なら枠線をつける
             side: BorderSide(
@@ -274,6 +347,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ),
           ),
         );
+
+        if (_showItemBlinking && _tutorialPurchasedItemName == item.name) {
+          return BlinkingEffect(isBlinking: true, child: card);
+        }
+        return card;
       },
     );
   }
