@@ -14,6 +14,8 @@ import 'providers/locale_provider.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:audio_session/audio_session.dart';
 import 'managers/notification_manager.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -93,6 +95,70 @@ Future<void> _initializeBackgroundServices() async {
     // await facebookAppEvents.setAdvertiserTracking(enabled: true);
   } catch (e) {
     print("Facebook SDKの初期化エラー: $e");
+  }
+
+  // ④ 広告の同意管理と初期化
+  try {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    final isOnline = connectivityResult != ConnectivityResult.none;
+    if (isOnline) {
+      await _initConsentAndLoadAds();
+    }
+  } catch (e) {
+    print("AdMob初期化エラー: $e");
+  }
+}
+
+// ----------------------------------------------------
+// 🌟 同意ステータスの確認 → 広告SDK初期化までの一連の流れ
+// ----------------------------------------------------
+Future<void> _initConsentAndLoadAds() async {
+  final params = ConsentRequestParameters();
+
+  ConsentInformation.instance.requestConsentInfoUpdate(
+    params,
+    () async {
+      // フォームが利用可能な場合、フォームをロード
+      if (await ConsentInformation.instance.isConsentFormAvailable()) {
+        _loadAndShowConsentForm();
+      } else {
+        // フォームが不要な地域（日本など）の場合はそのまま広告をロード
+        await _initializeAds();
+      }
+    },
+    (FormError error) {
+      // エラー発生時は、とりあえず広告の初期化へ進む（フェイルセーフ）
+      _initializeAds();
+    },
+  );
+}
+
+void _loadAndShowConsentForm() {
+  ConsentForm.loadConsentForm(
+    (ConsentForm consentForm) async {
+      var status = await ConsentInformation.instance.getConsentStatus();
+      // 同意が必須（未回答）の場合、フォームを表示
+      if (status == ConsentStatus.required) {
+        consentForm.show((FormError? formError) {
+          // ユーザーが回答し終わったら、広告を初期化してロード
+          _initializeAds();
+        });
+      } else {
+        // すでに回答済みなどの場合はそのまま広告初期化
+        await _initializeAds();
+      }
+    },
+    (FormError formError) {
+      _initializeAds();
+    },
+  );
+}
+
+Future<void> _initializeAds() async {
+  try {
+    await MobileAds.instance.initialize();
+  } catch (e) {
+    print('AdMob SDK 初期化エラー: $e');
   }
 }
 

@@ -21,8 +21,7 @@ import 'house_interior_screen.dart';
 import 'world_map_screen.dart';
 import 'package:flutter/services.dart';
 // import 'dart:io';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+
 import 'package:in_app_review/in_app_review.dart';
 import '../../managers/login_bonus_manager.dart';
 import '../../widgets/blinking_effect.dart';
@@ -180,8 +179,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   Timer? _midnightTimer;
   Timer? _tutorialMoveTimer; // ★ チュートリアル移動判定用タイマー
 
-  bool _isMobileAdsInitialized = false;
-
   @override
   void initState() {
     super.initState();
@@ -285,8 +282,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     _showGuideIfNeeded(); // 必要ならガイドを表示
 
     _scheduleMidnightRefresh(); // 日付変更チェックのスケジュール設定
-
-    _initializeMobileAds();
   }
 
   @override
@@ -318,46 +313,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         // アプリが前面に戻ってきたら、日付のチェックとBGM再生を行う
         _handleAppResumed();
       }
-    } else {
-      // アプリがバックグラウンドに回ったら、BGMを停止
+    } else if (state == AppLifecycleState.paused) {
+      // アプリが完全にバックグラウンドへ移行した時のみBGMを停止
+      // ※ inactive（ネイティブオーバーレイ表示中など）では止めない
       try {
         BgmManager.instance.stopBgm();
       } catch (e) {
         // エラーが発生した場合
         print('再生エラー: $e');
       }
-    }
-  }
-
-  // ★ AdMob初期化メソッド
-  Future<void> _initializeMobileAds() async {
-    // ★ ネットワーク接続チェック
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    final isOnline = connectivityResult != ConnectivityResult.none;
-
-    if (!isOnline) return; // オフラインなら初期化しない
-
-    try {
-      // まだ初期化されていなければ初期化する
-      if (!_isMobileAdsInitialized) {
-        await MobileAds.instance.initialize();
-        // RequestConfigurationの設定もここで行う(こども向け設定のため不要)
-        // final RequestConfiguration requestConfiguration = RequestConfiguration(
-        //   tagForChildDirectedTreatment: TagForChildDirectedTreatment.yes,
-        //   tagForUnderAgeOfConsent: TagForUnderAgeOfConsent.yes,
-        //   maxAdContentRating: MaxAdContentRating.g,
-        //   testDeviceIds: ["22B763D3FCD7BCD6A5A1411317E1D535"],
-        // );
-        // await MobileAds.instance.updateRequestConfiguration(
-        //   requestConfiguration,
-        // );
-        setState(() {
-          _isMobileAdsInitialized = true; // ★ 初期化完了フラグを立てる
-        });
-      }
-    } catch (e) {
-      // 初期化に失敗してもアプリは続行する
-      print('Failed to initialize network services (offline?): $e');
     }
   }
 
