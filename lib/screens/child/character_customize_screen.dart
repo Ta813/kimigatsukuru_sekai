@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
@@ -305,6 +306,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ],
           ),
         ),
+        // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+        bottomNavigationBar: const AdBanner(),
       ),
     );
   }

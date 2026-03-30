@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../models/shop_data.dart';
@@ -665,6 +666,8 @@ class _ShopScreenState extends State<ShopScreen> {
             children: tabViews, // 各タブの中身となるGridViewを、共通メソッドで生成します
           ),
         ),
+        // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+        bottomNavigationBar: const AdBanner(),
       ),
     );
   }
