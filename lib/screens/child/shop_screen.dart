@@ -635,11 +635,15 @@ class _ShopScreenState extends State<ShopScreen> {
       length: widget.mode == ShopMode.forGeneral ? 4 : 2, // ★タブの数
       child: Scaffold(
         appBar: AppBar(
+          toolbarHeight: 40, // ★ 高さを低く設定
           leading: BlinkingEffect(
             isBlinking: _showBackButtonBlinking,
             child: const CustomBackButton(),
           ),
-          title: Text(AppLocalizations.of(context)!.shopTitle),
+          title: Text(
+            AppLocalizations.of(context)!.shopTitle,
+            style: const TextStyle(fontSize: 18),
+          ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
@@ -647,17 +651,38 @@ class _ShopScreenState extends State<ShopScreen> {
                 child: Text(
                   '$_points ${AppLocalizations.of(context)!.points}',
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
           ],
-          // ★AppBarの下にTabBarを設置します
-          bottom: TabBar(
-            isScrollable: true, // タブが多くなってもスクロールできるようにする
-            tabs: tabs,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(40),
+            child: TabBar(
+              isScrollable: true,
+              tabs: tabs.map((tab) {
+                return Tab(
+                  height: 40,
+                  child:
+                      tab.child ??
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (tab.icon != null) ...[
+                            IconTheme(
+                              data: const IconThemeData(size: 18),
+                              child: tab.icon!,
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                          Text(tab.text ?? ""),
+                        ],
+                      ),
+                );
+              }).toList(),
+            ),
           ),
         ),
         // ★bodyをTabBarViewに変更します

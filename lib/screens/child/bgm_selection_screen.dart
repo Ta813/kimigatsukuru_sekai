@@ -124,20 +124,40 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
       length: 2, // ★ タブの数を2に設定
       child: Scaffold(
         appBar: AppBar(
+          toolbarHeight: 40, // ★ 高さを低く設定
           leading: const CustomBackButton(),
-          title: Text(AppLocalizations.of(context)!.selectBgmTitle),
-          // ★ AppBarの下にTabBarを設置
-          bottom: TabBar(
-            tabs: [
-              Tab(
-                text: AppLocalizations.of(context)!.normalBgm,
-                icon: Icon(Icons.music_note),
-              ),
-              Tab(
-                text: AppLocalizations.of(context)!.focusBgm,
-                icon: Icon(Icons.timer),
-              ),
-            ],
+          title: Text(
+            AppLocalizations.of(context)!.selectBgmTitle,
+            style: const TextStyle(fontSize: 18),
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(40),
+            child: TabBar(
+              tabs: [
+                Tab(
+                  height: 40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.music_note, size: 18),
+                      const SizedBox(width: 8),
+                      Text(AppLocalizations.of(context)!.normalBgm),
+                    ],
+                  ),
+                ),
+                Tab(
+                  height: 40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.timer, size: 18),
+                      const SizedBox(width: 8),
+                      Text(AppLocalizations.of(context)!.focusBgm),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         // ★ TabBarViewでタブの中身を作成

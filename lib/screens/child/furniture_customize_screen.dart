@@ -355,6 +355,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          toolbarHeight: 40, // ★ 高さを低く設定
           leading: const CustomBackButton(),
           title: Text(
             widget.mode == CustomizeMode.house
@@ -366,9 +367,30 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 : widget.mode == CustomizeMode.sky
                 ? AppLocalizations.of(context)!.skySettings
                 : AppLocalizations.of(context)!.spaceSettings,
+            style: const TextStyle(fontSize: 18),
           ),
-          bottom: TabBar(
-            tabs: tabs, // ★ 準備したタブリストを使用
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(40),
+            child: TabBar(
+              tabs: tabs.map((tab) {
+                return Tab(
+                  height: 40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (tab.icon != null) ...[
+                        IconTheme(
+                          data: const IconThemeData(size: 18),
+                          child: tab.icon!,
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      Text(tab.text ?? ""),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ),
         body: SafeArea(child: TabBarView(children: tabViews)),

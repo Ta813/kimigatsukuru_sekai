@@ -221,71 +221,85 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       length: 4,
       child: Scaffold(
         appBar: AppBar(
+          toolbarHeight: 40, // ★ 高さを低く設定
           leading: BlinkingEffect(
             isBlinking: _showBackButtonBlinking,
             child: const CustomBackButton(),
           ),
-          title: Text(AppLocalizations.of(context)!.customizeTitle),
-          bottom: TabBar(
-            tabs: [
-              BlinkingEffect(
-                isBlinking:
-                    _showTabBlinking && _tutorialPurchasedItemType == 'clothes',
-                child: Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.checkroom),
-                      SizedBox(width: 8), // アイコンとテキストの間のスペース
-                      Text(AppLocalizations.of(context)!.customizeTabClothes),
-                    ],
+          title: Text(
+            AppLocalizations.of(context)!.customizeTitle,
+            style: const TextStyle(fontSize: 18),
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(40),
+            child: TabBar(
+              tabs: [
+                BlinkingEffect(
+                  isBlinking:
+                      _showTabBlinking &&
+                      _tutorialPurchasedItemType == 'clothes',
+                  child: Tab(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.checkroom, size: 18),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.customizeTabClothes),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              BlinkingEffect(
-                isBlinking:
-                    _showTabBlinking && _tutorialPurchasedItemType == 'house',
-                child: Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.house),
-                      SizedBox(width: 8), // アイコンとテキストの間のスペース
-                      Text(AppLocalizations.of(context)!.customizeTabHouse),
-                    ],
+                BlinkingEffect(
+                  isBlinking:
+                      _showTabBlinking && _tutorialPurchasedItemType == 'house',
+                  child: Tab(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.house, size: 18),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.customizeTabHouse),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              BlinkingEffect(
-                isBlinking:
-                    _showTabBlinking &&
-                    _tutorialPurchasedItemType == 'character',
-                child: Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.support_agent),
-                      SizedBox(width: 8), // アイコンとテキストの間のスペース
-                      Text(AppLocalizations.of(context)!.customizeTabCharacter),
-                    ],
+                BlinkingEffect(
+                  isBlinking:
+                      _showTabBlinking &&
+                      _tutorialPurchasedItemType == 'character',
+                  child: Tab(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.support_agent, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          AppLocalizations.of(context)!.customizeTabCharacter,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              BlinkingEffect(
-                isBlinking:
-                    _showTabBlinking && _tutorialPurchasedItemType == 'item',
-                child: Tab(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.star),
-                      SizedBox(width: 8), // アイコンとテキストの間のスペース
-                      Text(AppLocalizations.of(context)!.customizeTabItem),
-                    ],
+                BlinkingEffect(
+                  isBlinking:
+                      _showTabBlinking && _tutorialPurchasedItemType == 'item',
+                  child: Tab(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.star, size: 18),
+                        const SizedBox(width: 8),
+                        Text(AppLocalizations.of(context)!.customizeTabItem),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         body: SafeArea(
