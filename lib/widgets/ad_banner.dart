@@ -70,11 +70,11 @@ class _AdBannerState extends State<AdBanner> {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      //return Container(height: 50);
+      return Container(height: 60);
     }
 
     // if (!Platform.isAndroid) {
-    //   return Container(height: 50);
+    //   return Container(height: 60);
     // }
 
     return Padding(
