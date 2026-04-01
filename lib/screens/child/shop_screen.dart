@@ -347,12 +347,12 @@ class _ShopScreenState extends State<ShopScreen> {
     required int crossAxisCount,
   }) {
     return GridView.builder(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount, // 1行に表示する数
         crossAxisSpacing: 1,
         mainAxisSpacing: 1,
-        childAspectRatio: 0.9, // アイテムの縦横比
+        childAspectRatio: 0.8, // アイテムの縦横比
       ),
       itemCount: items.length,
       itemBuilder: (context, index) {

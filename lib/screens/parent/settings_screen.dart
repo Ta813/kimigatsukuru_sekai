@@ -226,12 +226,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       currentValue = 'en';
     } else if (currentLocale == 'hi') {
       currentValue = 'hi';
+    } else if (currentLocale == 'ur') {
+      currentValue = 'ur';
     } else {
       // 手動設定がなければ、端末の言語で判断
       if (deviceLocale == 'ja') {
         currentValue = 'ja';
       } else if (deviceLocale == 'hi') {
         currentValue = 'hi';
+      } else if (deviceLocale == 'ur') {
+        currentValue = 'ur';
       } else {
         currentValue = 'en';
       }
@@ -269,6 +273,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             name: 'start_settings_language_hi',
                           );
                           localeProvider.setLocale(const Locale('hi'));
+                        } else if (newValue == 'ur') {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_settings_language_ur',
+                          );
+                          localeProvider.setLocale(const Locale('ur'));
                         }
                       },
                       // ★プルダウンの選択肢から「端末の設定」を削除
@@ -284,6 +293,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         DropdownMenuItem<String>(
                           value: 'hi',
                           child: Text('हिन्दी'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'ur',
+                          child: Text('اردو'),
                         ),
                       ],
                     ),

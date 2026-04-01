@@ -62,6 +62,7 @@ class SfxManager {
   // ロケールに基づいて、ボイス（音声）が入っているディレクトリ名を返します
   String getVoiceDir(String localeName) {
     if (localeName == 'hi') return 'hindi';
+    if (localeName == 'ur') return 'urdu';
     return 'english'; // デフォルトはenglish
   }
 

@@ -85,13 +85,11 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     String type,
   ) {
     return GridView.builder(
-      shrinkWrap: true, // GridViewが親の高さに合わせるようにする
-      physics: const NeverScrollableScrollPhysics(), // GridView自体のスクロールを無効にする
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 8, // 1行に表示するアイテム数
-        crossAxisSpacing: 20, // アイテム間の横スペース
-        mainAxisSpacing: 20, // アイテム間の縦スペース
-        childAspectRatio: 1.0, // アイテムの縦横比 (正方形)
+        crossAxisCount: 7, // 1行に表示するアイテム数
+        crossAxisSpacing: 10, // アイテム間の横スペース
+        mainAxisSpacing: 10, // アイテム間の縦スペース
+        childAspectRatio: 0.8, // アイテムの縦横比 (正方形)
       ),
       itemCount: options.length,
       itemBuilder: (context, index) {
@@ -158,7 +156,18 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                     ]
                   : [],
             ),
-            child: Image.asset(item.imagePath, fit: BoxFit.contain),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(child: Image.asset(item.imagePath)),
+                Text(
+                  item.getDisplayName(context),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
         );
       },

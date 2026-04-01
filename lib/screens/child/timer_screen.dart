@@ -265,6 +265,10 @@ class _TimerScreenState extends State<TimerScreen>
         await _flutterTts.setLanguage("ja-JP");
         await _flutterTts.setSpeechRate(0.4);
         await _flutterTts.setPitch(1.6);
+      } else if (lang == 'ur') {
+        await _flutterTts.setLanguage("ur-PK");
+        await _flutterTts.setSpeechRate(0.5);
+        await _flutterTts.setPitch(1.0);
       } else {
         await _flutterTts.setLanguage("en-US");
         await _flutterTts.setSpeechRate(0.6);
@@ -779,6 +783,13 @@ class _TimerScreenState extends State<TimerScreen>
     'आप यह कर सकते हैं!',
     'इसे जारी रखें!',
   ];
+  final List<String> _encouragementsUr = [
+    'اپنا کام جاری رکھیں!',
+    'اپنا بہترین کام کریں!',
+    'کوشش کریں!',
+    'آپ یہ کر سکتے ہیں!',
+    'اسی طرح لگے رہیں!',
+  ];
 
   final List<String> _encouragementsJa = [
     'そのまま頑張って！',
@@ -796,6 +807,8 @@ class _TimerScreenState extends State<TimerScreen>
       list = _encouragementsJa;
     } else if (lang == 'hi') {
       list = _encouragementsHi;
+    } else if (lang == 'ur') {
+      list = _encouragementsUr;
     } else {
       list = _encouragementsEn;
     }
@@ -826,6 +839,13 @@ class _TimerScreenState extends State<TimerScreen>
     "ショック…次は頑張ろう！",
     "次は成功させようね！",
   ];
+  final List<String> _sadPhrasesUr = [
+    "اوہ... یہ تو بہت برا ہوا...",
+    "اف... مجھے امید تھی کہ آپ اسے مکمل کر لیں گے...",
+    "اگلی بار ہم اسے کر لیں گے!",
+    "اوہ نہیں...",
+    "کوئی بات نہیں، شاید اگلی بار۔",
+  ];
 
   // 悲しいフレーズを返却
   String getRandomSadPhraseLocalized() {
@@ -835,6 +855,8 @@ class _TimerScreenState extends State<TimerScreen>
       list = _sadPhrasesJa;
     } else if (lang == 'hi') {
       list = _sadPhrasesHi;
+    } else if (lang == 'ur') {
+      list = _sadPhrasesUr;
     } else {
       list = _sadPhrasesEn;
     }

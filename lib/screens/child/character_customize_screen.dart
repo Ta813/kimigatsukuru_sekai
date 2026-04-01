@@ -84,19 +84,17 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     List<String> selected,
     String type,
   ) {
-    int crossAxisCount = 5;
+    int crossAxisCount = 6;
     if (type == 'item') {
       crossAxisCount = 8;
     }
 
     return GridView.builder(
-      shrinkWrap: true, // GridViewが親の高さに合わせるようにする
-      physics: const NeverScrollableScrollPhysics(), // GridView自体のスクロールを無効にする
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount, // 1行に表示するアイテム数
-        crossAxisSpacing: 20, // アイテム間の横スペース
-        mainAxisSpacing: 20, // アイテム間の縦スペース
-        childAspectRatio: 1.0, // アイテムの縦横比 (正方形)
+        crossAxisSpacing: 10, // アイテム間の横スペース
+        mainAxisSpacing: 10, // アイテム間の縦スペース
+        childAspectRatio: 0.8, // アイテムの縦横比 (正方形)
       ),
       itemCount: options.length,
       itemBuilder: (context, index) {
@@ -157,7 +155,18 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                     ]
                   : [],
             ),
-            child: Image.asset(item.imagePath, fit: BoxFit.contain),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(child: Image.asset(item.imagePath)),
+                Text(
+                  item.getDisplayName(context),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
         );
 
@@ -331,8 +340,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 5,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 0.8,
       ),
       itemCount: items.length,
       itemBuilder: (context, index) {
