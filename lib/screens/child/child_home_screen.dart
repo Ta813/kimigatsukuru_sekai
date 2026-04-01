@@ -662,35 +662,49 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              try {
-                SfxManager.instance.playTapSound();
-              } catch (e) {
-                // エラーが発生した場合
-                print('再生エラー: $e');
-              }
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop(true);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFF7043), // オレンジ
-              foregroundColor: Colors.white,
-              minimumSize: const Size(200, 60), // 横200、縦60。縦幅を出すのがポイント！
-              side: const BorderSide(
-                color: Color(0xFFFFCA28),
-                width: 2,
-              ), // 黄色の輪郭
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // 左側のキャラクター
+              Image.asset('assets/images/clothes_dress_red.gif', height: 60),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () {
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop(true);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF7043), // オレンジ
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(200, 60), // 横200、縦60。縦幅を出すのがポイント！
+                  side: const BorderSide(
+                    color: Color(0xFFFFCA28),
+                    width: 2,
+                  ), // 黄色の輪郭
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 4,
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.okAction,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              elevation: 4,
-            ),
-            child: Text(
-              AppLocalizations.of(context)!.okAction,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
+              const SizedBox(width: 8),
+              // 右側のキャラクター
+              Image.asset('assets/images/character_kuma.gif', height: 60),
+            ],
           ),
         ],
       ),
@@ -728,43 +742,58 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () {
-              // ★ falseを返してダイアログを閉じる
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop(false);
-              }
-            },
-            child: Text(AppLocalizations.of(context)!.skip), // TODO: l10n対応
-          ),
-          ElevatedButton(
-            onPressed: () {
-              try {
-                SfxManager.instance.playTapSound();
-              } catch (e) {
-                // エラーが発生した場合
-                print('再生エラー: $e');
-              }
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop(true);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFF7043), // オレンジ
-              foregroundColor: Colors.white,
-              side: const BorderSide(
-                color: Color(0xFFFFCA28),
-                width: 2,
-              ), // 黄色の輪郭
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // 左側のキャラクター
+              Image.asset('assets/images/clothes_dress_red.gif', height: 60),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    // ★ falseを返してダイアログを閉じる
+                    if (Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop(false);
+                    }
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.skip,
+                  ), // TODO: l10n対応
+                ),
               ),
-              elevation: 4,
-            ),
-            child: Text(
-              AppLocalizations.of(context)!.okAction,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+              ElevatedButton(
+                onPressed: () {
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {
+                    // エラーが発生した場合
+                    print('再生エラー: $e');
+                  }
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop(true);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF7043), // オレンジ
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(
+                    color: Color(0xFFFFCA28),
+                    width: 2,
+                  ), // 黄色の輪郭
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 4,
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.okAction,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(width: 8),
+              // 右側のキャラクター
+              Image.asset('assets/images/character_kuma.gif', height: 60),
+            ],
           ),
         ],
       ),
@@ -1011,7 +1040,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     // タイマー画面に遷移し、結果（獲得ポイント）を待つ
     final result = await Navigator.push<Map<String, dynamic>?>(
       context,
-      MaterialPageRoute(
+      MaterialPageRoute<Map<String, dynamic>?>(
         // TimerScreenに、緊急かどうかの情報も渡す
         builder: (context) => TimerScreen(
           promise: _displayPromise!,

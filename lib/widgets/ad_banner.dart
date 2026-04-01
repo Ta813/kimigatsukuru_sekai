@@ -70,26 +70,26 @@ class _AdBannerState extends State<AdBanner> {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      return Container(height: 60);
+      // return const Padding(
+      //   padding: EdgeInsets.only(top: 16.0),
+      //   child: SizedBox(height: 50),
+      // );
     }
 
     // if (!Platform.isAndroid) {
-    //   return Container(height: 60);
+    // return const Padding(
+    //   padding: EdgeInsets.only(top: 12.0),
+    //   child: SizedBox(height: 50, child: Center(child: Text('Ad Banner Placeholder'))),
+    // );
     // }
 
     return Padding(
-      // ★Paddingウィジェットで囲む
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: const EdgeInsets.only(top: 16.0),
       child: Container(
-        // ★常にContainerを返す
         alignment: Alignment.center,
-        // ★最初から標準バナー広告のサイズ分の領域を確保する
         width: AdSize.banner.width.toDouble(),
         height: AdSize.banner.height.toDouble(),
-        // 中身を、広告が読み込み済みかどうかで切り替える
-        child: _isLoaded && _bannerAd != null
-            ? AdWidget(ad: _bannerAd!) // ★読み込みが終わったら、広告を表示
-            : null, // 読み込み中は、中身は空（スペースだけ確保されている状態）
+        child: _isLoaded && _bannerAd != null ? AdWidget(ad: _bannerAd!) : null,
       ),
     );
   }

@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/settings_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -451,34 +452,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   //     ),
                   //   ),
                   const Divider(),
-                  // ここから寄付の導線を追加
-                  if (!Platform.isIOS)
-                    ListTile(
-                      leading: const Icon(Icons.favorite, color: Colors.pink),
-                      title: Text(l10n.supportThisApp), // 文言は規約を意識
-                      subtitle: Text(l10n.supportEncouragement),
-                      onTap: () async {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_settings_support',
-                        );
-                        // ★ 寄付ページのURLに書き換えてください
-                        final url = Uri.parse(
-                          'https://www.buymeacoffee.com/kotoapp',
-                        );
 
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(
-                            url,
-                            mode: LaunchMode.externalApplication,
-                          );
-                        } else {
-                          // URLが開けなかった場合の予備処理
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(l10n.supportPageOpenError)),
-                          );
-                        }
-                      },
-                    ),
+                  // ここから寄付の導線を追加
+                  ListTile(
+                    leading: const Icon(Icons.favorite, color: Colors.pink),
+                    title: Text(l10n.supportThisApp), // 文言は規約を意識
+                    subtitle: Text(l10n.supportEncouragement),
+                    onTap: () async {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'start_settings_support',
+                      );
+                      // ★ 寄付ページのURLに書き換えてください
+                      final url = Uri.parse(
+                        'https://www.buymeacoffee.com/kotoapp',
+                      );
+
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        );
+                      } else {
+                        // URLが開けなかった場合の予備処理
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(l10n.supportPageOpenError)),
+                        );
+                      }
+                    },
+                  ),
                   if (kDebugMode) ...[
                     // kDebugModeがtrueの時だけ以下のウィジェットを表示
                     const Divider(thickness: 2, color: Colors.red),
@@ -585,6 +586,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
             ),
+      // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

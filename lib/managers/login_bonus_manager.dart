@@ -107,6 +107,7 @@ class LoginBonusManager {
           ),
           // 縦方向にはみ出さないようにスクロール可能にする
           content: SingleChildScrollView(
+            clipBehavior: Clip.none,
             child: SizedBox(
               width: dialogWidth,
               child: LoginBonusStampCard(currentLoginCount: count),
@@ -114,45 +115,45 @@ class LoginBonusManager {
           ),
           actionsAlignment: MainAxisAlignment.center,
           actions: [
-            ElevatedButton(
-              onPressed: () {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'login_bonus_received',
-                  parameters: {'day': count, 'points_added': pointsToAdd},
-                );
-                Navigator.pop(context); // ダイアログを閉じる
-                // 受け取り処理などをここに書く
-              },
-              style: ElevatedButton.styleFrom(
-                // 🌟 1. 色：アプリのテーマカラーの中で、最も「明るく目立つ色」を選ぶ
-                backgroundColor: const Color(
-                  0xFFFF7043,
-                ), // または Colors.orange など
-                foregroundColor: Colors.white, // 文字の色は白でコントラストを高く
-                // 🌟 2. サイズ：とにかく大きく、押しやすく！（横幅いっぱいに近く）
-                minimumSize: const Size(200, 60), // 横200、縦60。縦幅を出すのがポイント！
-                // 🌟 3. 形：子供向けなので、丸みを強くしてポップに
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30), // 完全に丸い端っこ
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 左側の衣装画像
+                Image.asset('assets/images/clothes_dress_red.gif', height: 60),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'login_bonus_received',
+                      parameters: {'day': count, 'points_added': pointsToAdd},
+                    );
+                    Navigator.pop(context); // ダイアログを閉じる
+                    // 受け取り処理などをここに書く
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF7043),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(200, 60),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 8,
+                    shadowColor: const Color(0xFFFF7043).withOpacity(0.5),
+                    side: const BorderSide(color: Colors.white, width: 2),
+                  ),
+                  child: Text(
+                    l10n.loginBonusReceive,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0,
+                    ),
+                  ),
                 ),
-
-                // 🌟 4. 影（立体感）：ボタンが画面から浮き出ているように見せる
-                elevation: 8, // 影を強くして立体感を出す
-                shadowColor: const Color(
-                  0xFFFF7043,
-                ).withOpacity(0.5), // 影にも色をつけて光らせる
-                // 🌟 5. 境界線（オプション）：さらに強調したい場合
-                side: const BorderSide(color: Colors.white, width: 2),
-              ),
-              child: Text(
-                // 🌟 6. 文字：太く、大きく、ワクワクする言葉に！
-                l10n.loginBonusReceive, // 単なる「OK」ではなく、行動を促す言葉
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold, // 絶対に太字！
-                  letterSpacing: 2.0, // 文字間隔を広げて読みやすく
-                ),
-              ),
+                const SizedBox(width: 8),
+                // 右側のキャラクター画像
+                Image.asset('assets/images/character_kuma.gif', height: 60),
+              ],
             ),
           ],
         );

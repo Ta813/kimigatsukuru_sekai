@@ -27,7 +27,7 @@ class SfxManager {
   // 効果音を再生するための共通メソッド
   Future<void> _playSound(String assetPath) async {
     try {
-      // just_audioでは、アセットパスの先頭に'assets/'をつけます
+      await _player.stop();
       await _player.setAsset('assets/$assetPath');
       await _player.play();
     } catch (e) {
@@ -50,6 +50,7 @@ class SfxManager {
       );
 
       // プレイリストをプレイヤーにセットして再生
+      await _player.stop();
       await _player.setAudioSource(playlist);
       await _player.setSpeed(speed);
       await _player.play();

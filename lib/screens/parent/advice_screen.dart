@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/advice_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -55,6 +56,8 @@ class AdviceScreen extends StatelessWidget {
           ],
         ),
       ),
+      // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

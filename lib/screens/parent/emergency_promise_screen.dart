@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/emergency_promise_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
@@ -74,7 +75,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           child: Form(
             key: _formKey,
             child: Column(
@@ -86,6 +87,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                     labelText: AppLocalizations.of(
                       context,
                     )!.promiseNameExampleHint,
+                    isDense: true,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -94,20 +96,20 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
                 TextFormField(
                   controller: _durationController,
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.durationLabel,
+                    isDense: true,
                   ),
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
-                const SizedBox(height: 16),
                 TextFormField(
                   controller: _pointsController,
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.points,
+                    isDense: true,
                   ),
                   keyboardType: TextInputType.number,
                   maxLength: kDebugMode ? null : 2,
@@ -116,7 +118,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                     LengthLimitingTextInputFormatter(kDebugMode ? 10 : 2),
                   ],
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     FirebaseAnalytics.instance.logEvent(
@@ -125,7 +127,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                     _savePromise();
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.setThisPromiseButton,
@@ -136,6 +138,8 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
           ),
         ),
       ),
+      // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

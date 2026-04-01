@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/add_edit_promise_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/services.dart';
@@ -111,7 +112,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           // キーボード表示で画面がはみ出ないようにする
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Form(
             key: _formKey,
             child: Column(
@@ -121,6 +122,11 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                   controller: _titleController,
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.promiseNameLabel,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -129,12 +135,16 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
                 TextFormField(
                   controller: _startTimeController,
                   readOnly: true, // テキストの手入力を不可にする
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.startTimeLabel,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
+                    ),
                     suffixIcon: Icon(Icons.access_time), // 時計アイコンを追加
                   ),
                   onTap: () {
@@ -145,31 +155,50 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                     _selectTime(context);
                   },
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _durationController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.durationLabel,
-                  ),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ], // 数字のみ入力可
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _pointsController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.points,
-                  ),
-                  keyboardType: TextInputType.number,
-                  maxLength: kDebugMode ? null : 2,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(kDebugMode ? 10 : 2),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _durationController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(
+                            context,
+                          )!.durationLabel,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ], // 数字のみ入力可
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _pointsController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.points,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        maxLength: kDebugMode ? null : 2,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(kDebugMode ? 10 : 2),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 6),
                 ElevatedButton(
                   onPressed: () {
                     FirebaseAnalytics.instance.logEvent(
@@ -178,7 +207,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                     _savePromise();
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                   child: Text(AppLocalizations.of(context)!.registerButton),
                 ),
@@ -187,6 +216,8 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
           ),
         ),
       ),
+      // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

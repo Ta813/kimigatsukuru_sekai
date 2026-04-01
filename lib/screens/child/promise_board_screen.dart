@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'timer_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/bgm_manager.dart';
@@ -75,7 +76,7 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
 
     final result = await Navigator.push<Map<String, dynamic>?>(
       context,
-      MaterialPageRoute(
+      MaterialPageRoute<Map<String, dynamic>?>(
         builder: (context) => TimerScreen(promise: promise, isEmergency: false),
       ),
     );
@@ -180,7 +181,10 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
             },
             borderRadius: BorderRadius.circular(8),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 4.0,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -188,7 +192,10 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                   const Icon(Icons.question_mark_outlined),
                   Text(
                     AppLocalizations.of(context)!.howToUseLabel,
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -199,7 +206,10 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
             onTap: _navigateToAddPromise,
             borderRadius: BorderRadius.circular(8),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 4.0,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -207,7 +217,10 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                   const Icon(Icons.settings),
                   Text(
                     AppLocalizations.of(context)!.promiseSettingsLabel,
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -285,6 +298,8 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                 );
               },
             ),
+      // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

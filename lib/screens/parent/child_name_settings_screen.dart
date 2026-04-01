@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart'; // SharedPrefsHelperをインポート
@@ -95,7 +96,7 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
         ), // l10n.childNameSettingsTitle
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         child: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -121,6 +122,7 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
                             context,
                           )!.enterNameHint, // l10n.enterNameHint
                           border: OutlineInputBorder(),
+                          isDense: true,
                         ),
                       ),
                     ),
@@ -156,10 +158,16 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
                         );
                         _addChildName();
                       },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
 
                 // --- 登録済み名前リスト ---
                 Text(
@@ -213,6 +221,8 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
           ),
         ),
       ),
+      // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

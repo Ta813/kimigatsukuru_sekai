@@ -51,6 +51,7 @@ class _TimerScreenState extends State<TimerScreen>
   bool _isFinishedButtonPressed = false;
   bool _isCharacterSad = false;
   bool _isInteractionBusy = false;
+  bool _isCompleting = false; // 終了処理中フラグ
 
   final FlutterTts _flutterTts = FlutterTts();
   String? _childFullName; // 読み上げる名前（敬称付き）を保持
@@ -600,103 +601,110 @@ class _TimerScreenState extends State<TimerScreen>
             BlinkingEffect(
               isBlinking: _isFirstTimeBonus,
               child: ElevatedButton(
-                onPressed: () async {
-                  // まず承認ダイアログを閉じる
-                  Navigator.of(dialogContext).pop();
-                  // 次に、時間切れかどうかで処理を分岐
-                  if (!_isTimeUp) {
-                    _confettiController.play();
-                    try {
-                      SfxManager.instance.playTimerWinSound();
-                    } catch (e) {
-                      print('再生エラー: $e');
-                    }
-                    await Future.delayed(const Duration(seconds: 2));
+                onPressed: _isCompleting
+                    ? null
+                    : () async {
+                        setState(() => _isCompleting = true);
+                        // まず承認ダイアログを閉じる
+                        Navigator.of(dialogContext).pop();
+                        // 次に、時間切れかどうかで処理を分岐
+                        if (!_isTimeUp) {
+                          _confettiController.play();
+                          try {
+                            SfxManager.instance.playTimerWinSound();
+                          } catch (e) {
+                            print('再生エラー: $e');
+                          }
+                          await Future.delayed(const Duration(seconds: 2));
 
-                    // ◯◯がんばったね。
-                    final lang = AppLocalizations.of(context)!.localeName;
-                    if (_childFullName != null && _childFullName!.isNotEmpty) {
-                      await _speak('$_childFullName');
-                      await Future.delayed(
-                        Duration(milliseconds: 1300 * _namesListCount),
-                      );
-                    }
+                          // ◯◯がんばったね。
+                          final lang = AppLocalizations.of(context)!.localeName;
+                          if (_childFullName != null &&
+                              _childFullName!.isNotEmpty) {
+                            await _speak('$_childFullName');
+                            await Future.delayed(
+                              Duration(milliseconds: 1300 * _namesListCount),
+                            );
+                          }
 
-                    if (lang == 'ja') {
-                      try {
-                        SfxManager.instance.playTimerLoseSound();
-                      } catch (e) {
-                        print('再生エラー: $e');
-                      }
-                    } else {
-                      final String lang = AppLocalizations.of(
-                        context,
-                      )!.localeName;
-                      final String voiceDir = SfxManager.instance.getVoiceDir(
-                        lang,
-                      );
-                      final List<String> soundsToPlay = [];
-                      soundsToPlay.addAll([
-                        'se/$voiceDir/you_did_your_best.mp3',
-                      ]);
-                      try {
-                        SfxManager.instance.playSequentialSounds(soundsToPlay);
-                      } catch (e) {
-                        print('再生エラー: $e');
-                      }
-                    }
-                    await Future.delayed(const Duration(seconds: 1));
+                          if (lang == 'ja') {
+                            try {
+                              SfxManager.instance.playTimerLoseSound();
+                            } catch (e) {
+                              print('再生エラー: $e');
+                            }
+                          } else {
+                            final String lang = AppLocalizations.of(
+                              context,
+                            )!.localeName;
+                            final String voiceDir = SfxManager.instance
+                                .getVoiceDir(lang);
+                            final List<String> soundsToPlay = [];
+                            soundsToPlay.addAll([
+                              'se/$voiceDir/you_did_your_best.mp3',
+                            ]);
+                            try {
+                              SfxManager.instance.playSequentialSounds(
+                                soundsToPlay,
+                              );
+                            } catch (e) {
+                              print('再生エラー: $e');
+                            }
+                          }
+                          await Future.delayed(const Duration(seconds: 1));
 
-                    try {
-                      SfxManager.instance.playTimerWinSound2();
-                    } catch (e) {
-                      print('再生エラー: $e');
-                    }
-                    await Future.delayed(const Duration(seconds: 4));
-                    // 時間内なら -> ルーレットへ
-                    if (mounted) {
-                      _showRouletteAndFinish();
-                    }
-                  } else {
-                    final lang = AppLocalizations.of(context)!.localeName;
-                    if (_childFullName != null && _childFullName!.isNotEmpty) {
-                      await _speak('$_childFullName');
-                      await Future.delayed(
-                        Duration(milliseconds: 1300 * _namesListCount),
-                      );
-                    }
+                          try {
+                            SfxManager.instance.playTimerWinSound2();
+                          } catch (e) {
+                            print('再生エラー: $e');
+                          }
+                          await Future.delayed(const Duration(seconds: 4));
+                          // 時間内なら -> ルーレットへ
+                          if (mounted) {
+                            _showRouletteAndFinish();
+                          }
+                        } else {
+                          final lang = AppLocalizations.of(context)!.localeName;
+                          if (_childFullName != null &&
+                              _childFullName!.isNotEmpty) {
+                            await _speak('$_childFullName');
+                            await Future.delayed(
+                              Duration(milliseconds: 1300 * _namesListCount),
+                            );
+                          }
 
-                    if (lang == 'ja') {
-                      try {
-                        SfxManager.instance.playTimerLoseSound();
-                      } catch (e) {
-                        print('再生エラー: $e');
-                      }
-                    } else {
-                      final String lang = AppLocalizations.of(
-                        context,
-                      )!.localeName;
-                      final String voiceDir = SfxManager.instance.getVoiceDir(
-                        lang,
-                      );
-                      final List<String> soundsToPlay = [];
-                      soundsToPlay.addAll([
-                        'se/$voiceDir/you_did_your_best.mp3',
-                      ]);
-                      try {
-                        SfxManager.instance.playSequentialSounds(soundsToPlay);
-                      } catch (e) {
-                        print('再生エラー: $e');
-                      }
-                    }
-                    await Future.delayed(const Duration(seconds: 2));
+                          if (lang == 'ja') {
+                            try {
+                              SfxManager.instance.playTimerLoseSound();
+                            } catch (e) {
+                              print('再生エラー: $e');
+                            }
+                          } else {
+                            final String lang = AppLocalizations.of(
+                              context,
+                            )!.localeName;
+                            final String voiceDir = SfxManager.instance
+                                .getVoiceDir(lang);
+                            final List<String> soundsToPlay = [];
+                            soundsToPlay.addAll([
+                              'se/$voiceDir/you_did_your_best.mp3',
+                            ]);
+                            try {
+                              SfxManager.instance.playSequentialSounds(
+                                soundsToPlay,
+                              );
+                            } catch (e) {
+                              print('再生エラー: $e');
+                            }
+                          }
+                          await Future.delayed(const Duration(seconds: 2));
 
-                    // 時間切れなら -> ポイント半分で終了
-                    if (mounted) {
-                      _finishPromise(pointMultiplier: 0.5, exp: 1);
-                    }
-                  }
-                },
+                          // 時間切れなら -> ポイント半分で終了
+                          if (mounted) {
+                            _finishPromise(pointMultiplier: 0.5, exp: 1);
+                          }
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF7043), // オレンジ
                   foregroundColor: Colors.white,
@@ -747,7 +755,7 @@ class _TimerScreenState extends State<TimerScreen>
       await SharedPrefsHelper.saveEmergencyPromise(null);
     }
     if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop({
+      Navigator.of(context).pop<Map<String, dynamic>>({
         'points': pointsAwarded,
         'exp': exp,
         'isFirstTimeBonus': _isFirstTimeBonus,
