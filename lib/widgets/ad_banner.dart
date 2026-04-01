@@ -70,10 +70,10 @@ class _AdBannerState extends State<AdBanner> {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      // return const Padding(
-      //   padding: EdgeInsets.only(top: 16.0),
-      //   child: SizedBox(height: 50),
-      // );
+      return const Padding(
+        padding: EdgeInsets.only(top: 16.0),
+        child: SizedBox(height: 50),
+      );
     }
 
     // if (!Platform.isAndroid) {
