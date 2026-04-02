@@ -293,13 +293,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     _pointsAddedAnimationController.dispose();
     // ★アプリの状態変化の監視を終了
     WidgetsBinding.instance.removeObserver(this);
-    // ★BGMマネージャーのリソースを解放
-    try {
-      BgmManager.instance.dispose();
-    } catch (e) {
-      // エラーが発生した場合
-      print('再生エラー: $e');
-    }
     super.dispose();
   }
 
@@ -1165,31 +1158,46 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           ),
           actionsAlignment: MainAxisAlignment.center,
           actions: [
-            ElevatedButton(
-              onPressed: () {
-                try {
-                  SfxManager.instance.playTapSound();
-                } catch (e) {
-                  print('再生エラー: $e');
-                }
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF7043), // オレンジ
-                foregroundColor: Colors.white,
-                side: const BorderSide(
-                  color: Color(0xFFFFCA28),
-                  width: 2,
-                ), // 黄色の輪郭
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 左側のキャラクター
+                Image.asset('assets/images/clothes_dress_red.gif', height: 60),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (e) {
+                      print('再生エラー: $e');
+                    }
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF7043), // オレンジ
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(200, 60), // 横200、縦60。縦幅を出すのがポイント！
+                    side: const BorderSide(
+                      color: Color(0xFFFFCA28),
+                      width: 2,
+                    ), // 黄色の輪郭
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    elevation: 4,
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context)!.okAction,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                elevation: 4,
-              ),
-              child: Text(
-                AppLocalizations.of(context)!.okAction,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+                const SizedBox(width: 8),
+                // 右側のキャラクター
+                Image.asset('assets/images/character_kuma.gif', height: 60),
+              ],
             ),
           ],
         ),

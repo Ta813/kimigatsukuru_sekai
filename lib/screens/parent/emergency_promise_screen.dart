@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/emergency_promise_screen.dart
 
 import 'package:flutter/material.dart';
+import '../child/child_home_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -57,9 +58,10 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
             ),
           ),
         );
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
-        }
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const ChildHomeScreen()),
+          (route) => false,
+        );
       }
     }
   }
