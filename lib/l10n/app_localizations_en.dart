@@ -1215,4 +1215,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationAccept => 'Sure!';
+
+  @override
+  String get resetPromisesAction => 'Reset Promises to Defaults';
+
+  @override
+  String get resetPromisesConfirm => 'Are you sure you want to reset all regular promises to their default values? This cannot be undone.';
+
+  @override
+  String get resetPromisesSuccess => 'Regular promises have been reset.';
 }

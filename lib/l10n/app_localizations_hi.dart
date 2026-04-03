@@ -1215,4 +1215,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get notificationAccept => 'ज़रूर!';
+
+  @override
+  String get resetPromisesAction => 'वादे रीसेट करें';
+
+  @override
+  String get resetPromisesConfirm => 'کیا آپ تمام باقاعدہ وعدوں کو ان کی اصل حالت میں واپس لانا چاہتے ہیں؟ اس عمل کو واپس نہیں لیا جا سکتا۔';
+
+  @override
+  String get resetPromisesSuccess => 'नियमित वादे रीसेट कर दिए गए हैं।';
 }

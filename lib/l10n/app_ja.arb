@@ -507,5 +507,8 @@
   "notificationRequestTitle": "お知らせをうけとる？🔔",
   "notificationRequestMessage": "毎週のお子様のがんばり状況や、新しいアイテムなどのお知らせをスマホにお届けします！\n\n通知をオンにして、親子で楽しく続けよう✨",
   "notificationLater": "あとで",
-  "notificationAccept": "うけとる！"
+  "notificationAccept": "うけとる！",
+  "resetPromisesAction": "やくそくを初期値に戻す",
+  "resetPromisesConfirm": "すべての「通常のやくそく」を初期値に戻しますか？この操作は取り消せません。",
+  "resetPromisesSuccess": "やくそくを初期値に戻しました。"
 }

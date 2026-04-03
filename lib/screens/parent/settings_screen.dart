@@ -594,6 +594,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    ListTile(
+                      leading: const Icon(Icons.refresh, color: Colors.orange),
+                      title: Text(l10n.resetPromisesAction),
+                      onTap: () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(l10n.confirmation),
+                            content: Text(l10n.resetPromisesConfirm),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: Text(l10n.cancelAction),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: Text(l10n.okAction),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed == true) {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_settings_reset_promises',
+                          );
+                          await SharedPrefsHelper.resetToDefaultRegularPromises(
+                            context,
+                          );
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.resetPromisesSuccess),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 20),
                     const Divider(thickness: 2, color: Colors.red),
                   ],
                 ],

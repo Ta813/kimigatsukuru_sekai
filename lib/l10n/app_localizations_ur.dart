@@ -30,99 +30,85 @@ class AppLocalizationsUr extends AppLocalizations {
   String get guideWelcomeTitle => 'آئیے ایک بچے کے نقطہ نظر سے کھیلیں!';
 
   @override
-  String get guideWelcomeDesc =>
-      'آئیے تجربہ کریں کہ آپ کا بچہ کس طرح \'وعدہ\' نبھاتا ہے!\nہم نے نیچے دی گئی بار میں ایک \'آزمائشی وعدہ\' تیار کیا ہے۔\nفوراً \'شروع کریں\' دبائیں اور ایک بچے کے طور پر کھیل کر دیکھیں!';
+  String get guideWelcomeDesc => 'آئیے تجربہ کریں کہ آپ کا بچہ کس طرح \'وعدہ\' نبھاتا ہے!\nہم نے نیچے دی گئی بار میں ایک \'آزمائشی وعدہ\' تیار کیا ہے۔\nفوراً \'شروع کریں\' دبائیں اور ایک بچے کے طور پر کھیل کر دیکھیں!';
 
   @override
   String get guideSettingsTitle => 'والدین کی ترتیبات (اوپر بائیں ⚙️ آئیکن)';
 
   @override
-  String get guideSettingsDesc =>
-      'یہ وہ جگہ ہے جہاں والدین وعدے شامل یا تبدیل کر سکتے ہیں۔\nپہلے اپنے بچے کے ساتھ مل کر وعدے طے کرنے کی کوشش کریں!';
+  String get guideSettingsDesc => 'یہ وہ جگہ ہے جہاں والدین وعدے شامل یا تبدیل کر سکتے ہیں۔\nپہلے اپنے بچے کے ساتھ مل کر وعدے طے کرنے کی کوشش کریں!';
 
   @override
   String get tutorialShopTitle => '100 پوائنٹس ملے! ✨';
 
   @override
-  String get tutorialShopDesc =>
-      'آپ نے پوائنٹس جمع کر لیے ہیں!\nآئیے دائیں طرف موجود 🏠 بٹن سے \'دکان\' پر جائیں اور کوئی چیز خریدیں!';
+  String get tutorialShopDesc => 'آپ نے پوائنٹس جمع کر لیے ہیں!\nآئیے دائیں طرف موجود 🏠 بٹن سے \'دکان\' پر جائیں اور کوئی چیز خریدیں!';
 
   @override
   String get tutorialCustomizeTitle => 'ایک تحفہ ملا! 🎁';
 
   @override
-  String get tutorialCustomizeDesc =>
-      'آپ کو ایک چیز ملی ہے!\nاب، دائیں طرف موجود ☺ بٹن کا استعمال کرتے ہوئے \'اپنی پسند سے سجائیں\' میں جا کر کمرے کو سجائیں!';
+  String get tutorialCustomizeDesc => 'آپ کو ایک چیز ملی ہے!\nاب، دائیں طرف موجود ☺ بٹن کا استعمال کرتے ہوئے \'اپنی پسند سے سجائیں\' میں جا کر کمرے کو سجائیں!';
 
   @override
   String get tutorialParentSetupTitle => 'تیار! 🎉';
 
   @override
-  String get tutorialParentSetupDesc =>
-      'آپ اپنے بچے کو خوش کرنے کے لیے بالکل تیار ہیں!\nآئیے فوراً روزانہ کے \'وعدے\' طے کریں اور شروع کریں!';
+  String get tutorialParentSetupDesc => 'آپ اپنے بچے کو خوش کرنے کے لیے بالکل تیار ہیں!\nآئیے فوراً روزانہ کے \'وعدے\' طے کریں اور شروع کریں!';
 
   @override
   String get tutorialMoveTitle => 'آئیے انہیں حرکت دیں! ✨';
 
   @override
-  String get tutorialMoveDesc =>
-      'کپڑے بدلنے یا اپنی پسند سے سجانے کے لیے آپ نے جو چیزیں منتخب کی ہیں، انہیں انگلی سے ہلایا جا سکتا ہے!\nانہیں جہاں چاہیں رکھیں۔';
+  String get tutorialMoveDesc => 'کپڑے بدلنے یا اپنی پسند سے سجانے کے لیے آپ نے جو چیزیں منتخب کی ہیں، انہیں انگلی سے ہلایا جا سکتا ہے!\nانہیں جہاں چاہیں رکھیں۔';
 
   @override
   String get guideTrialPromiseTitle => 'والدین، اسے آزمائیں! ✨';
 
   @override
-  String get guideTrialPromiseDesc =>
-      'آئیے تجربہ کریں کہ آپ کا بچہ کس طرح \'وعدہ\' نبھاتا ہے!\n\nہم نے نیچے دی گئی بار میں ایک \'آزمائشی وعدہ\' تیار کیا ہے۔\nفوراً \'شروع کریں\' دبائیں اور ایک بچے کے طور پر کھیل کر دیکھیں!';
+  String get guideTrialPromiseDesc => 'آئیے تجربہ کریں کہ آپ کا بچہ کس طرح \'وعدہ\' نبھاتا ہے!\n\nہم نے نیچے دی گئی بار میں ایک \'آزمائشی وعدہ\' تیار کیا ہے۔\nفوراً \'شروع کریں\' دبائیں اور ایک بچے کے طور پر کھیل کر دیکھیں!';
 
   @override
   String get guideNextPromiseTitle => 'اگلا وعدہ (نیچے دی گئی بار)';
 
   @override
-  String get guideNextPromiseDesc =>
-      'آپ کو جو اگلا وعدہ کرنا ہے وہ یہاں دکھایا گیا ہے۔\nچیلنج شروع کرنے کے لیے \'شروع کریں\' دبائیں!';
+  String get guideNextPromiseDesc => 'آپ کو جو اگلا وعدہ کرنا ہے وہ یہاں دکھایا گیا ہے۔\nچیلنج شروع کرنے کے لیے \'شروع کریں\' دبائیں!';
 
   @override
   String get guidePromiseBoardTitle => 'وعدہ بورڈ (دائیں 📄 آئیکن)';
 
   @override
-  String get guidePromiseBoardDesc =>
-      'آپ یہاں آج کے وعدوں کی فہرست دیکھ سکتے ہیں۔\nآپ کا مقصد \'مکمل!\' کے نشانات جمع کرنا ہے!';
+  String get guidePromiseBoardDesc => 'آپ یہاں آج کے وعدوں کی فہرست دیکھ سکتے ہیں۔\nآپ کا مقصد \'مکمل!\' کے نشانات جمع کرنا ہے!';
 
   @override
   String get guidePointsTitle => 'پوائنٹس (اوپر دائیں ★)';
 
   @override
-  String get guidePointsDesc =>
-      'جب آپ کوئی وعدہ پورا کرتے ہیں، تو آپ کو یہاں پوائنٹس ملتے ہیں!\nبہت سارے جمع کریں اور انہیں انعامات کے بدلے استعمال کریں۔';
+  String get guidePointsDesc => 'جب آپ کوئی وعدہ پورا کرتے ہیں، تو آپ کو یہاں پوائنٹس ملتے ہیں!\nبہت سارے جمع کریں اور انہیں انعامات کے بدلے استعمال کریں۔';
 
   @override
   String get guideShopTitle => 'انعامی دکان (دائیں 🏠 آئیکن)';
 
   @override
-  String get guideShopDesc =>
-      'یہ وہ جگہ ہے جہاں آپ اپنے جمع کردہ پوائنٹس کے بدلے نئے کپڑے اور گھر حاصل کر سکتے ہیں!';
+  String get guideShopDesc => 'یہ وہ جگہ ہے جہاں آپ اپنے جمع کردہ پوائنٹس کے بدلے نئے کپڑے اور گھر حاصل کر سکتے ہیں!';
 
   @override
   String get guideCustomizeTitle => 'اپنی پسند سے سجائیں (دائیں ☺ آئیکن)';
 
   @override
-  String get guideCustomizeDesc =>
-      'آپ اپنی خریدی ہوئی چیزوں سے اپنے اوتار کے کپڑے اور گھر بدل سکتے ہیں۔\nاپنی ایک الگ دنیا بنائیں!';
+  String get guideCustomizeDesc => 'آپ اپنی خریدی ہوئی چیزوں سے اپنے اوتار کے کپڑے اور گھر بدل سکتے ہیں۔\nاپنی ایک الگ دنیا بنائیں!';
 
   @override
   String get guideBgmButtonTitle => 'پس منظر کی موسیقی (دائیں طرف ♪ آئیکن)';
 
   @override
-  String get guideBgmButtonDesc =>
-      'اپنی پسندیدہ موسیقی چننے کے لیے یہاں دبائیں۔ کسی اچھے گانے کے ساتھ موڈ بدلیں!';
+  String get guideBgmButtonDesc => 'اپنی پسندیدہ موسیقی چننے کے لیے یہاں دبائیں۔ کسی اچھے گانے کے ساتھ موڈ بدلیں!';
 
   @override
   String get guideWorldMapButtonTitle => 'بیرونی دنیا (دائیں طرف 🌎 آئیکن)';
 
   @override
-  String get guideWorldMapButtonDesc =>
-      'پوری دنیا کا نقشہ دیکھنے کے لیے یہ بٹن دبائیں۔ جیسے جیسے آپ کا لیول بڑھے گا، ہو سکتا ہے آپ کے لیے نئی جگہیں کھل جائیں!';
+  String get guideWorldMapButtonDesc => 'پوری دنیا کا نقشہ دیکھنے کے لیے یہ بٹن دبائیں۔ جیسے جیسے آپ کا لیول بڑھے گا، ہو سکتا ہے آپ کے لیے نئی جگہیں کھل جائیں!';
 
   @override
   String get emergency => 'ہنگامی حال!';
@@ -263,43 +249,37 @@ class AppLocalizationsUr extends AppLocalizations {
   String get adviceScreenTitle => 'وعدہ طے کرنے کے مشورے';
 
   @override
-  String get adviceMainTitle =>
-      '\"میں نے کر دکھایا!\" کے لمحات بڑھانے کے مشورے 💡';
+  String get adviceMainTitle => '\"میں نے کر دکھایا!\" کے لمحات بڑھانے کے مشورے 💡';
 
   @override
   String get advice1Title => 'بچے کے ساتھ مل کر وعدے طے کریں';
 
   @override
-  String get advice1Desc =>
-      'اپنے بچے کے ساتھ مل کر یہ طے کریں کہ \"کیا کرنا ہے،\" \"کب تک،\" اور \"کتنے پوائنٹس کے لیے۔\" جن اصولوں کو بنانے میں وہ خود شامل ہوں، انہیں پورا کرنے کا شوق بھی ان میں زیادہ ہوتا ہے۔';
+  String get advice1Desc => 'اپنے بچے کے ساتھ مل کر یہ طے کریں کہ \"کیا کرنا ہے،\" \"کب تک،\" اور \"کتنے پوائنٹس کے لیے۔\" جن اصولوں کو بنانے میں وہ خود شامل ہوں، انہیں پورا کرنے کا شوق بھی ان میں زیادہ ہوتا ہے۔';
 
   @override
   String get advice2Title => 'پہلے \"آسان\" کاموں سے شروع کریں';
 
   @override
-  String get advice2Desc =>
-      'ایسے سادہ وعدوں سے شروع کریں جنہیں آپ کا بچہ یقینی طور پر پورا کر سکے۔ \"میں نے کر دکھایا!\" کے کامیاب تجربات سے ان کا اعتماد بڑھتا ہے۔';
+  String get advice2Desc => 'ایسے سادہ وعدوں سے شروع کریں جنہیں آپ کا بچہ یقینی طور پر پورا کر سکے۔ \"میں نے کر دکھایا!\" کے کامیاب تجربات سے ان کا اعتماد بڑھتا ہے۔';
 
   @override
   String get advice3Title => 'وقت تھوڑا \"زیادہ\" رکھیں';
 
   @override
-  String get advice3Desc =>
-      'انہیں جلدی مچانے کے بجائے، شروع میں وقت تھوڑا زیادہ رکھیں تاکہ وہ \"میں نے وقت کے اندر کر دکھایا!\" کی خوشی محسوس کر سکیں۔';
+  String get advice3Desc => 'انہیں جلدی مچانے کے بجائے، شروع میں وقت تھوڑا زیادہ رکھیں تاکہ وہ \"میں نے وقت کے اندر کر دکھایا!\" کی خوشی محسوس کر سکیں۔';
 
   @override
   String get advice4Title => 'پوائنٹس کو \"خاص\" بنائیں';
 
   @override
-  String get advice4Desc =>
-      'مشکل وعدوں کے لیے پوائنٹس تھوڑا زیادہ رکھیں۔ یہ محسوس کرنا کہ \"یہ مشن خاص ہے!\" آپ کے بچے کے شوق کو بڑھائے گا۔';
+  String get advice4Desc => 'مشکل وعدوں کے لیے پوائنٹس تھوڑا زیادہ رکھیں۔ یہ محسوس کرنا کہ \"یہ مشن خاص ہے!\" آپ کے بچے کے شوق کو بڑھائے گا۔';
 
   @override
   String get advice5Title => 'بہترین انعام \"تعریف\" ہے';
 
   @override
-  String get advice5Desc =>
-      'اگرچہ ایپ میں پوائنٹس اہم ہیں، لیکن جب آپ کا بچہ وعدہ پورا کرے تو براہ کرم خود ان کی تعریف کریں، جیسے کہ \"شاباش!\" یا \"کمال کر دیا!\"۔ یہ ان کے لیے سب سے بڑی توانائی ہوگی۔';
+  String get advice5Desc => 'اگرچہ ایپ میں پوائنٹس اہم ہیں، لیکن جب آپ کا بچہ وعدہ پورا کرے تو براہ کرم خود ان کی تعریف کریں، جیسے کہ \"شاباش!\" یا \"کمال کر دیا!\"۔ یہ ان کے لیے سب سے بڑی توانائی ہوگی۔';
 
   @override
   String emergencyPromiseSet(String promiseTitle) {
@@ -478,8 +458,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get insideTheHouse => 'گھر کے اندر';
 
   @override
-  String get roomIsEmpty =>
-      'ایسا لگتا ہے کہ یہاں ابھی کچھ نہیں ہے...\nہمیں کیسا کمرہ بنانا چاہیے؟';
+  String get roomIsEmpty => 'ایسا لگتا ہے کہ یہاں ابھی کچھ نہیں ہے...\nہمیں کیسا کمرہ بنانا چاہیے؟';
 
   @override
   String get furniture => 'فرنیچر';
@@ -644,8 +623,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get supportThisApp => 'اس ایپ کی مدد کریں';
 
   @override
-  String get supportEncouragement =>
-      'آپ کی مدد ہمیں مزید بہتری کے لیے حوصلہ دیتی ہے!';
+  String get supportEncouragement => 'آپ کی مدد ہمیں مزید بہتری کے لیے حوصلہ دیتی ہے!';
 
   @override
   String get supportPageOpenError => 'صفحہ نہیں کھل سکا';
@@ -695,22 +673,19 @@ class AppLocalizationsUr extends AppLocalizations {
   String get worldMapGuideTitle1 => 'خوش آمدید!';
 
   @override
-  String get worldMapGuideContent1 =>
-      'یہ دنیا کا نقشہ ہے!\nجیسے جیسے آپ کا لیول بڑھے گا، آپ کے لیے مزید جگہیں کھل جائیں گی۔';
+  String get worldMapGuideContent1 => 'یہ دنیا کا نقشہ ہے!\nجیسے جیسے آپ کا لیول بڑھے گا، آپ کے لیے مزید جگہیں کھل جائیں گی۔';
 
   @override
   String get worldMapGuideTitle2 => 'وسطی جزیرہ';
 
   @override
-  String get worldMapGuideContent2 =>
-      'لیول 5 پر پہنچنے کے بعد، آپ جزیرے میں داخل ہونے کے لیے یہاں ٹیپ کر سکیں گے۔';
+  String get worldMapGuideContent2 => 'لیول 5 پر پہنچنے کے بعد، آپ جزیرے میں داخل ہونے کے لیے یہاں ٹیپ کر سکیں گے۔';
 
   @override
   String get worldMapGuideTitle3 => 'بڑھتی ہوئی دنیا';
 
   @override
-  String get worldMapGuideContent3 =>
-      'ہو سکتا ہے کسی دن آپ نیچے سمندر یا بہت اوپر خلا کی سیر بھی کر سکیں...؟\nجڑے رہیں!';
+  String get worldMapGuideContent3 => 'ہو سکتا ہے کسی دن آپ نیچے سمندر یا بہت اوپر خلا کی سیر بھی کر سکیں...؟\nجڑے رہیں!';
 
   @override
   String get seaAreaLocked => 'آپ لیول 10 پر داخل ہو سکیں گے!';
@@ -830,8 +805,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get disclosureTitle => 'آپ کے ڈیٹا کے بارے میں';
 
   @override
-  String get disclosureMessage =>
-      'اشتہارات دکھانے اور ایپ کی کارکردگی بہتر بنانے کے لیے، یہ ایپ انسٹال شدہ ایپس اور آپ کے آلے کی اشتہاری آئی ڈی کے بارے میں معلومات جمع اور شیئر کر سکتی ہے۔';
+  String get disclosureMessage => 'اشتہارات دکھانے اور ایپ کی کارکردگی بہتر بنانے کے لیے، یہ ایپ انسٹال شدہ ایپس اور آپ کے آلے کی اشتہاری آئی ڈی کے بارے میں معلومات جمع اور شیئر کر سکتی ہے۔';
 
   @override
   String get disagreeAction => 'متفق نہیں';
@@ -840,8 +814,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get agreeAction => 'متفق ہوں اور جاری رکھیں';
 
   @override
-  String get nameSettingHint =>
-      'کوئی نام رکھیں تاکہ کردار آپ کی حوصلہ افزائی کر سکے!';
+  String get nameSettingHint => 'کوئی نام رکھیں تاکہ کردار آپ کی حوصلہ افزائی کر سکے!';
 
   @override
   String get nameSetting => 'نام کی ترتیب';
@@ -1132,8 +1105,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get samplePromiseTitle => 'براہ کرم وعدے طے کریں!';
 
   @override
-  String get samplePromiseDesc =>
-      'ہم نے آپ کے لیے کچھ نمونہ \'وعدے\' تیار کیے ہیں! براہ کرم اپنے بچے کے مطابق ترتیبات تبدیل کریں۔';
+  String get samplePromiseDesc => 'ہم نے آپ کے لیے کچھ نمونہ \'وعدے\' تیار کیے ہیں! براہ کرم اپنے بچے کے مطابق ترتیبات تبدیل کریں۔';
 
   @override
   String get gotIt => 'سمجھ گیا';
@@ -1236,12 +1208,20 @@ class AppLocalizationsUr extends AppLocalizations {
   String get notificationRequestTitle => 'اطلاعات موصول کریں؟ 🔔';
 
   @override
-  String get notificationRequestMessage =>
-      'ہم آپ کو آپ کے بچے کی ترقی کے بارے میں ہفتہ وار اپ ڈیٹس اور نئی چیزوں کے بارے میں خبریں بھیجیں گے!\n\nاطلاعات آن کریں اور اس سفر سے ایک ساتھ لطف اٹھائیں! ✨';
+  String get notificationRequestMessage => 'ہم آپ کو آپ کے بچے کی ترقی کے بارے میں ہفتہ وار اپ ڈیٹس اور نئی چیزوں کے بارے میں خبریں بھیجیں گے!\n\nاطلاعات آن کریں اور اس سفر سے ایک ساتھ لطف اٹھائیں! ✨';
 
   @override
   String get notificationLater => 'بعد میں';
 
   @override
   String get notificationAccept => 'ضرور!';
+
+  @override
+  String get resetPromisesAction => 'وعدے دوبارہ ترتیب دیں';
+
+  @override
+  String get resetPromisesConfirm => 'کیا آپ تمام باقاعدہ وعدوں کو ان کی اصل حالت میں واپس لانا چاہتے ہیں؟ اس عمل کو واپس نہیں لیا جا سکتا۔';
+
+  @override
+  String get resetPromisesSuccess => 'باقاعدہ وعدے دوبارہ ترتیب دے دیے گئے ہیں۔';
 }

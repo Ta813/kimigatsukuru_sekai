@@ -2450,6 +2450,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sure!'**
   String get notificationAccept;
+
+  /// No description provided for @resetPromisesAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Promises to Defaults'**
+  String get resetPromisesAction;
+
+  /// No description provided for @resetPromisesConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to reset all regular promises to their default values? This cannot be undone.'**
+  String get resetPromisesConfirm;
+
+  /// No description provided for @resetPromisesSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular promises have been reset.'**
+  String get resetPromisesSuccess;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

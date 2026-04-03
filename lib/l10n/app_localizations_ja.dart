@@ -1215,4 +1215,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get notificationAccept => 'うけとる！';
+
+  @override
+  String get resetPromisesAction => 'やくそくを初期値に戻す';
+
+  @override
+  String get resetPromisesConfirm => 'すべての「通常のやくそく」を初期値に戻しますか？この操作は取り消せません。';
+
+  @override
+  String get resetPromisesSuccess => 'やくそくを初期値に戻しました。';
 }

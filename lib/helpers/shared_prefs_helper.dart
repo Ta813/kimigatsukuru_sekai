@@ -13,6 +13,48 @@ class SharedPrefsHelper {
   // SharedPreferencesのインスタンスを取得するためのキー
   static const String _regularPromisesKey = 'regular_promises';
 
+  static List<Map<String, dynamic>> _getDefaultPromises(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      {
+        'title': l10n.promiseDefault1Title,
+        'time': '07:00',
+        'duration': 30,
+        'points': 20,
+      },
+      {
+        'title': l10n.promiseDefault2Title,
+        'time': '07:30',
+        'duration': 10,
+        'points': 10,
+      },
+      {
+        'title': l10n.promiseDefault3Title,
+        'time': '18:00',
+        'duration': 10,
+        'points': 10,
+      },
+      {
+        'title': l10n.promiseDefault4Title,
+        'time': '19:00',
+        'duration': 30,
+        'points': 20,
+      },
+      {
+        'title': l10n.promiseDefault5Title,
+        'time': '19:30',
+        'duration': 10,
+        'points': 10,
+      },
+      {
+        'title': l10n.promiseDefault6Title,
+        'time': '20:00',
+        'duration': 10,
+        'points': 10,
+      },
+    ];
+  }
+
   static Future<List<Map<String, dynamic>>> checkAndSaveDefaultPromises(
     BuildContext context,
   ) async {
@@ -21,45 +63,7 @@ class SharedPrefsHelper {
 
     // もし何も保存されていなかったら（初回起動時など）
     if (stringList == null || stringList.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
-      final defaultPromises = [
-        {
-          'title': l10n.promiseDefault1Title,
-          'time': '07:00',
-          'duration': 30,
-          'points': 20,
-        },
-        {
-          'title': l10n.promiseDefault2Title,
-          'time': '07:30',
-          'duration': 10,
-          'points': 10,
-        },
-        {
-          'title': l10n.promiseDefault3Title,
-          'time': '18:00',
-          'duration': 10,
-          'points': 10,
-        },
-        {
-          'title': l10n.promiseDefault4Title,
-          'time': '19:00',
-          'duration': 30,
-          'points': 20,
-        },
-        {
-          'title': l10n.promiseDefault5Title,
-          'time': '19:30',
-          'duration': 10,
-          'points': 10,
-        },
-        {
-          'title': l10n.promiseDefault6Title,
-          'time': '20:00',
-          'duration': 10,
-          'points': 10,
-        },
-      ];
+      final defaultPromises = _getDefaultPromises(context);
       // デフォルトのサンプルやくそくをSharedPreferencesに保存
       await saveRegularPromises(defaultPromises);
       return defaultPromises;
@@ -69,6 +73,13 @@ class SharedPrefsHelper {
     return stringList
         .map((string) => json.decode(string) as Map<String, dynamic>)
         .toList();
+  }
+
+  static Future<void> resetToDefaultRegularPromises(
+    BuildContext context,
+  ) async {
+    final defaultPromises = _getDefaultPromises(context);
+    await saveRegularPromises(defaultPromises);
   }
 
   // やくそくリストを保存する

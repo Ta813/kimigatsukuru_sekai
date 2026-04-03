@@ -507,5 +507,8 @@
   "notificationRequestTitle": "Receive notifications? 🔔",
   "notificationRequestMessage": "We'll send you weekly updates on your child's progress and news about new items to your phone!\n\nTurn on notifications and enjoy the journey together! ✨",
   "notificationLater": "Later",
-  "notificationAccept": "Sure!"
+  "notificationAccept": "Sure!",
+  "resetPromisesAction": "Reset Promises to Defaults",
+  "resetPromisesConfirm": "Are you sure you want to reset all regular promises to their default values? This cannot be undone.",
+  "resetPromisesSuccess": "Regular promises have been reset."
 }

@@ -507,5 +507,8 @@
   "notificationRequestTitle": "اطلاعات موصول کریں؟ 🔔",
   "notificationRequestMessage": "ہم آپ کو آپ کے بچے کی ترقی کے بارے میں ہفتہ وار اپ ڈیٹس اور نئی چیزوں کے بارے میں خبریں بھیجیں گے!\n\nاطلاعات آن کریں اور اس سفر سے ایک ساتھ لطف اٹھائیں! ✨",
   "notificationLater": "بعد میں",
-  "notificationAccept": "ضرور!"
+  "notificationAccept": "ضرور!",
+  "resetPromisesAction": "وعدے دوبارہ ترتیب دیں",
+  "resetPromisesConfirm": "کیا آپ تمام باقاعدہ وعدوں کو ان کی اصل حالت میں واپس لانا چاہتے ہیں؟ اس عمل کو واپس نہیں لیا جا سکتا۔",
+  "resetPromisesSuccess": "باقاعدہ وعدے دوبارہ ترتیب دے دیے گئے ہیں۔"
 }

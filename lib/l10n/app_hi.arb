@@ -461,5 +461,8 @@
   "notificationRequestTitle": "सूचनाएं प्राप्त करें? 🔔",
   "notificationRequestMessage": "हम आपके बच्चे की साप्ताहिक प्रगति और नए आइटम के बारे में आपके फोन पर सूचनाएं भेजेंगे!\n\nसूचनाएं चालू करें और एक साथ यात्रा का आनंद लें! ✨",
   "notificationLater": "बाद में",
-  "notificationAccept": "ज़रूर!"
+  "notificationAccept": "ज़रूर!",
+  "resetPromisesAction": "वादे रीसेट करें",
+  "resetPromisesConfirm": "کیا آپ تمام باقاعدہ وعدوں کو ان کی اصل حالت میں واپس لانا چاہتے ہیں؟ اس عمل کو واپس نہیں لیا جا سکتا۔",
+  "resetPromisesSuccess": "नियमित वादे रीसेट कर दिए गए हैं।"
 }
