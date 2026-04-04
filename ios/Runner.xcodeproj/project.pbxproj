@@ -553,10 +553,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.kotoapp.kimigatsukuru-sekai";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kotoapp.kimigatsukurusekai.v2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "KimigatsukuruSekai AppStore Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "KimigatsukuruSekai AppStore Profile V2";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -750,10 +750,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.kotoapp.kimigatsukuru-sekai";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kotoapp.kimigatsukurusekai.v2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "KimigatsukuruSekai AppStore Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "KimigatsukuruSekai AppStore Profile V2";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -785,10 +785,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.kotoapp.kimigatsukuru-sekai";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kotoapp.kimigatsukurusekai.v2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "KimigatsukuruSekai AppStore Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "KimigatsukuruSekai AppStore Profile V2";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

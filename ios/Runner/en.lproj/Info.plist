@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Used to show you personalized ads based on your interests.</string>
 	<key>LSApplicationCategoryType</key>
 	<string>Privacy - Access to a File Provide Domain Usage Description</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>

@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>LSApplicationCategoryType</key>
-	<string>Privacy - Access to a File Provide Domain Usage Description</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -24,12 +22,47 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.1059611862340-hqiha49toaqflgpls1sr8jbj0cvn1lif</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FacebookAppID</key>
+	<string>2210361479492024</string>
+	<key>FacebookClientToken</key>
+	<string>55600afd30e0755ffa3a615ee96fe8be</string>
+	<key>FacebookDisplayName</key>
+	<string>KimigatsukuruSekai</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-2333753292729105~5017725942</string>
+	<key>LSApplicationCategoryType</key>
+	<string>Privacy - Access to a File Provide Domain Usage Description</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>広告の最適化や、音声付き動画広告の再生のためにマイクへのアクセス許可を求めることがあります。音声が録音・保存されることはありません。</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Used to show you personalized ads based on your interests.</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -49,36 +82,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>広告の最適化や、音声付き動画広告の再生のためにマイクへのアクセス許可を求めることがあります。音声が録音・保存されることはありません。</string>
-	<key>SKAdNetworkItems</key>
-	<array>
-		<dict>
-			<key>SKAdNetworkIdentifier</key>
-			<string>cstr6suwn9.skadnetwork</string>
-		</dict>
-	</array>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>https</string>
-		<string>http</string>
-	</array>
-	<key>CFBundleURLTypes</key>
-    <array>
-	    <dict>
-		    <key>CFBundleTypeRole</key>
-		    <string>Editor</string>
-		    <key>CFBundleURLSchemes</key>
-		    <array>
-		    	<string>com.googleusercontent.apps.1059611862340-hqiha49toaqflgpls1sr8jbj0cvn1lif</string>
-		    </array>
-	    </dict>
-    </array>
-	<key>FacebookAppID</key>
-    <string>2210361479492024</string>
-    <key>FacebookClientToken</key>
-    <string>55600afd30e0755ffa3a615ee96fe8be</string>
-    <key>FacebookDisplayName</key>
-    <string>KimigatsukuruSekai</string>
 </dict>
 </plist>
