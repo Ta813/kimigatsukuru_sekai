@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1059611862340-hqiha49toaqflgpls1sr8jbj0cvn1lif.apps.googleusercontent.com</string>
+	<string>1059611862340-m41jqraftr85946u8i26nkspotnf4rtb.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1059611862340-hqiha49toaqflgpls1sr8jbj0cvn1lif</string>
+	<string>com.googleusercontent.apps.1059611862340-m41jqraftr85946u8i26nkspotnf4rtb</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>1059611862340-a05alti34jioer01smve1abo1c8rcbnl.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.kotoapp.kimigatsukuruSekai</string>
+	<string>com.kotoapp.kimigatsukurusekai.v2</string>
 	<key>PROJECT_ID</key>
 	<string>kimigatsukuru-sekai</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1059611862340:ios:50156e3f99e260596de311</string>
+	<string>1:1059611862340:ios:a1006189d0f84c8b6de311</string>
 </dict>
 </plist>
