@@ -228,6 +228,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       currentValue = 'hi';
     } else if (currentLocale == 'ur') {
       currentValue = 'ur';
+    } else if (currentLocale == 'bn') {
+      currentValue = 'bn';
     } else {
       // 手動設定がなければ、端末の言語で判断
       if (deviceLocale == 'ja') {
@@ -236,6 +238,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         currentValue = 'hi';
       } else if (deviceLocale == 'ur') {
         currentValue = 'ur';
+      } else if (deviceLocale == 'bn') {
+        currentValue = 'bn';
       } else {
         currentValue = 'en';
       }
@@ -278,6 +282,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             name: 'start_settings_language_ur',
                           );
                           localeProvider.setLocale(const Locale('ur'));
+                        } else if (newValue == 'bn') {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_settings_language_bn',
+                          );
+                          localeProvider.setLocale(const Locale('bn'));
                         }
                       },
                       // ★プルダウンの選択肢から「端末の設定」を削除
@@ -297,6 +306,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         DropdownMenuItem<String>(
                           value: 'ur',
                           child: Text('اردو'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'bn',
+                          child: Text('বাংলা'),
                         ),
                       ],
                     ),
@@ -590,6 +603,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                       child: const Text(
                         '【テスト】最終ログインを「昨日」にする',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    // チュートリアルリセットボタン
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                      ),
+                      onPressed: () async {
+                        await SharedPrefsHelper.resetTutorialStatus();
+
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                '✨ チュートリアルとガイドをリセットしました！\nアプリを再起動すると最初から始まります。',
+                              ),
+                              backgroundColor: Colors.redAccent,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text(
+                        '【デバッグ】チュートリアルをリセット',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

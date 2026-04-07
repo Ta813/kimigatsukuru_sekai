@@ -27,34 +27,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customizeTabItem => 'Items';
 
   @override
-  String get guideWelcomeTitle => 'Let\'s play from a child\'s perspective!';
+  String get guideWelcomeTitle => 'First, let\'s play like a child!';
 
   @override
-  String get guideWelcomeDesc => 'Let\'s experience how your child takes on a \'Promise\'!\n\nWe have prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing from a child\'s perspective!';
+  String get guideWelcomeDesc => 'Experience for yourself how \'Promises\' work!\nI\'ve prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing like a child!';
 
   @override
-  String get guideSettingsTitle => 'Parent Settings (Top-left ⚙️ icon)';
+  String get guideSettingsTitle => 'Grown-up Settings (Top-left ⚙️ icon)';
 
   @override
-  String get guideSettingsDesc => 'This is where parents can add or edit promises.\nTry deciding on the promises together with your child first!';
+  String get guideSettingsDesc => 'This is where grown-ups can add or edit promises.\nLet\'s decide on some \'Promises\' together with your child here first!';
 
   @override
-  String get tutorialShopTitle => 'Got 100 points! ✨';
+  String get tutorialShopTitle => 'You got 100 points! ✨';
 
   @override
-  String get tutorialShopDesc => 'You have saved up points!\nLet\'s go to the \'Shop\' from the 🏠 button on the right and buy an item!';
+  String get tutorialShopDesc => 'You\'ve saved up points!\nLet\'s go buy items at the \'Shop\' using the 🏠 button on the right!';
 
   @override
-  String get tutorialCustomizeTitle => 'Got an item! 🎁';
+  String get tutorialCustomizeTitle => 'You got an item! 🎁';
 
   @override
-  String get tutorialCustomizeDesc => 'You got an item!\nNext, let\'s decorate the room from \'Customize\' using the ☺ button on the right!';
+  String get tutorialCustomizeDesc => 'You got an item!\nNext, using the ☺ button on the right, let\'s decorate your room in \'Customize\'!';
 
   @override
-  String get tutorialParentSetupTitle => 'Ready! 🎉';
+  String get tutorialParentSetupTitle => 'All ready! 🎉';
 
   @override
-  String get tutorialParentSetupDesc => 'You\'re all set to make your child happy!\nLet\'s set up the daily \'Promises\' right away and get started!';
+  String get tutorialParentSetupDesc => 'We\'re all set to make them happy!\nLet\'s set up the daily \'Promises\' right away and get started!';
 
   @override
   String get tutorialMoveTitle => 'Let\'s Move Them! ✨';
@@ -63,16 +63,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialMoveDesc => 'The items you picked in Dress-up/Customize can be moved with your finger!\nPut them wherever you like.';
 
   @override
-  String get guideTrialPromiseTitle => 'Parents, try it out! ✨';
+  String get tutorialBtnStart => 'Let\'s do this!';
 
   @override
-  String get guideTrialPromiseDesc => 'Let\'s experience how your child takes on a \'Promise\'!\n\nWe have prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing from a child\'s perspective!';
+  String get tutorialBtnShop => 'Go to Shop!';
 
   @override
-  String get guideNextPromiseTitle => 'Next Promise (Bottom bar)';
+  String get tutorialBtnCustomize => 'Go Customize!';
 
   @override
-  String get guideNextPromiseDesc => 'The next promise you need to do is displayed here.\nPress \'Start\' to begin the challenge!';
+  String get tutorialBtnMove => 'Got it!';
+
+  @override
+  String get tutorialBtnParent => 'Create a Promise!';
+
+  @override
+  String get guideTrialPromiseTitle => 'Moms and Dads, try it out! ✨';
+
+  @override
+  String get guideTrialPromiseDesc => 'Experience for yourself how \'Promises\' work!\nI\'ve prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing like a child!';
+
+  @override
+  String get guideNextPromiseTitle => 'Next Promise (Bottom board)';
+
+  @override
+  String get guideNextPromiseDesc => 'The next \'Promise\' to challenge will be shown here.\nPress \'Start\' and keep challenging them!';
 
   @override
   String get guidePromiseBoardTitle => 'Promise Board (Right 📄 icon)';
@@ -1224,4 +1239,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetPromisesSuccess => 'Regular promises have been reset.';
+
+  @override
+  String get tutorialStartBubble => 'Starting your\n\'Promise\' here!';
+
+  @override
+  String get tutorialShopBubble => 'Let\'s go\nshopping!';
+
+  @override
+  String get tutorialCustomizeBubble => 'You can change\nclothes here!';
+
+  @override
+  String get helpMenuTitle => 'How to Play';
+
+  @override
+  String get helpMenuYakusoku => 'Promise';
+
+  @override
+  String get helpMenuShop => 'Shop';
+
+  @override
+  String get helpMenuCustomize => 'Dress-up';
+
+  @override
+  String get helpMenuOthers => 'Others (Settings, etc.)';
+
+  @override
+  String get helpMenuClose => 'Close';
 }

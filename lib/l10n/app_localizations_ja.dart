@@ -27,10 +27,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get customizeTabItem => 'アイテム';
 
   @override
-  String get guideWelcomeTitle => 'まずは子供の気分になって遊んでみよう！';
+  String get guideWelcomeTitle => 'まずは**こどもの気分**になって遊んでみよう！';
 
   @override
-  String get guideWelcomeDesc => 'お子様がどんな風に「やくそく」にチャレンジするのか、実際に体験してみましょう！\n\n下のバーに「お試しのやくそく」をご用意しました。\nさっそく『スタート』を押して、お子様の気分で遊んでみてください！';
+  String get guideWelcomeDesc => 'どんな風に「やくそく」にチャレンジするのか、実際に体験してみてね！\n下のバーに**『お試しのやくそく』**を用意したよ。\nさっそく『スタート』を押して、こどもの気分で遊んでみてね！';
 
   @override
   String get guideSettingsTitle => 'おうちのひと設定「左上の⚙マーク」';
@@ -39,40 +39,55 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideSettingsDesc => 'やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！';
 
   @override
-  String get tutorialShopTitle => '100ポイントゲット！✨';
+  String get tutorialShopTitle => '100ポイントゲットだね！✨';
 
   @override
-  String get tutorialShopDesc => 'ポイントが貯まりました！\nさっそく右の🏠ボタンから「おみせ」でアイテムを買ってみましょう！';
+  String get tutorialShopDesc => 'ポイントがたまったよ！\nさっそく右の🏠ボタンから**「おみせ」**でアイテムをかってみよう！';
 
   @override
-  String get tutorialCustomizeTitle => 'アイテムをゲット！🎁';
+  String get tutorialCustomizeTitle => 'アイテムをゲットしたね！🎁';
 
   @override
-  String get tutorialCustomizeDesc => 'アイテムを手に入れましたね！\n次は右の☺ボタンから「きせかえ・もようがえ」でお部屋に飾ってみましょう！';
+  String get tutorialCustomizeDesc => 'アイテムをてにいれたね！\n次は右の☺ボタンから**「きせかえ・もようがえ」**で、おへやにかざってみよう！';
 
   @override
-  String get tutorialParentSetupTitle => '準備完了！🎉';
+  String get tutorialParentSetupTitle => 'じゅんび完了！🎉';
 
   @override
-  String get tutorialParentSetupDesc => 'お子様が喜ぶ準備ができました！\nさっそく、毎日の『やくそく』を設定して始めましょう！';
+  String get tutorialParentSetupDesc => 'こどもによろこんでもらう準備ができたよ！\nさっそく、毎日の**『やくそく』**を設定してはじめよう！';
 
   @override
   String get tutorialMoveTitle => 'うごかしてみよう！✨';
 
   @override
-  String get tutorialMoveDesc => '「きせかえ・もようがえ」で　えらんだものは、ゆびで　うごかせるよ！\nすきな場所に　おいてみてね。';
+  String get tutorialMoveDesc => '「きせかえ・もようがえ」でえらんだものは、ゆびで**うごかせるよ**！\nすきな場所においてみてね。';
 
   @override
-  String get guideTrialPromiseTitle => 'パパ・ママも体験してみよう！✨';
+  String get tutorialBtnStart => 'やってみる！';
 
   @override
-  String get guideTrialPromiseDesc => 'お子様がどんな風に「やくそく」にチャレンジするのか、実際に体験してみましょう！\n\n下のバーに「お試しのやくそく」をご用意しました。\nさっそく『スタート』を押して、お子様の気分で遊んでみてください！';
+  String get tutorialBtnShop => 'おみせへGO！';
+
+  @override
+  String get tutorialBtnCustomize => 'きせかえへGO！';
+
+  @override
+  String get tutorialBtnMove => 'わかった！';
+
+  @override
+  String get tutorialBtnParent => 'やくそくを作る！';
+
+  @override
+  String get guideTrialPromiseTitle => 'パパ・ママも体験してみてね！✨';
+
+  @override
+  String get guideTrialPromiseDesc => 'どんな風に「やくそく」にチャレンジするのか、実際に体験してみてね！\n\n下のバーに「お試しのやくそく」を用意したよ。\nさっそく『スタート』を押して、こどもの気分で遊んでみてね！';
 
   @override
   String get guideNextPromiseTitle => 'つぎのやくそく「下のボード」';
 
   @override
-  String get guideNextPromiseDesc => '次にやるべきやくそくが表示されるよ。\n「はじめる」を押して挑戦しよう！';
+  String get guideNextPromiseDesc => 'つぎに挑戦する「やくそく」が表示されるよ。\n「はじめる」を押してどんどんチャレンジしてね！';
 
   @override
   String get guidePromiseBoardTitle => 'やくそくボード「右の📄マーク」';
@@ -1224,4 +1239,31 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get resetPromisesSuccess => 'やくそくを初期値に戻しました。';
+
+  @override
+  String get tutorialStartBubble => 'ここから\n「やくそく」をはじめるよ！';
+
+  @override
+  String get tutorialShopBubble => 'おみせで\nおかいものしよう！';
+
+  @override
+  String get tutorialCustomizeBubble => 'ここで\nきせかえができるよ！';
+
+  @override
+  String get helpMenuTitle => 'あそびかた';
+
+  @override
+  String get helpMenuYakusoku => 'やくそく';
+
+  @override
+  String get helpMenuShop => 'おかいもの';
+
+  @override
+  String get helpMenuCustomize => 'きせかえ';
+
+  @override
+  String get helpMenuOthers => 'その他(せってい等)';
+
+  @override
+  String get helpMenuClose => 'とじる';
 }

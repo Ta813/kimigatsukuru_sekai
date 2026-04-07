@@ -739,4 +739,30 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(stepKey, true);
   }
+
+  // --- チュートリアルとガイドのリセット（デバッグ用） ---
+  static Future<void> resetTutorialStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // チュートリアルステップのフラグを削除
+    await prefs.remove(tutorialStepPromiseKey);
+    await prefs.remove(tutorialStepShopKey);
+    await prefs.remove(tutorialStepCustomizeKey);
+    await prefs.remove(tutorialStepMoveKey);
+    await prefs.remove(tutorialStepParentSetupShownKey);
+    await prefs.remove(tutorialPurchasedItemKey);
+    await prefs.remove(tutorialPurchasedTypeKey);
+
+    // ホーム画面のアドバイスフラグをリセット（trueに戻す）
+    await prefs.remove('is_first_home_advice');
+    await prefs.remove('is_first_home_regular');
+
+    // 'guide_' で始まる全てのキーを削除
+    final allKeys = prefs.getKeys();
+    for (String key in allKeys) {
+      if (key.startsWith('guide_')) {
+        await prefs.remove(key);
+      }
+    }
+  }
 }

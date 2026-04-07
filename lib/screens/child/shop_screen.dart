@@ -131,10 +131,17 @@ class _ShopScreenState extends State<ShopScreen> {
           actionsAlignment: MainAxisAlignment.center,
           actions: [
             TextButton(
-              onPressed: () {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'start_shop_cancel_buy',
-                );
+              onPressed: () async {
+                // チュートリアルで「やめる」ボタンを押したかチェック
+                final isTutorialStepShown =
+                    await SharedPrefsHelper.isTutorialStepShown(
+                      SharedPrefsHelper.tutorialStepShopKey,
+                    );
+                if (!isTutorialStepShown) {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'tutorial_tap_shop_cancel_buy',
+                  );
+                }
                 try {
                   SfxManager.instance.playTapSound();
                 } catch (e) {
@@ -149,6 +156,16 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                // チュートリアルで「買う」ボタンを押したかチェック
+                final isTutorialStepShown =
+                    await SharedPrefsHelper.isTutorialStepShown(
+                      SharedPrefsHelper.tutorialStepShopKey,
+                    );
+                if (!isTutorialStepShown) {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'tutorial_tap_shop_confirm_buy',
+                  );
+                }
                 FirebaseAnalytics.instance.logEvent(
                   name: 'start_shop_confirm_buy',
                 );
@@ -248,7 +265,17 @@ class _ShopScreenState extends State<ShopScreen> {
         // ★購入済みなら、タップできないようにする (onTap: null)
         onTap: (isLocked || isPurchased)
             ? null
-            : () {
+            : () async {
+                // チュートリアルで「アイテム」をタップしたかチェック
+                final isTutorialStepShown =
+                    await SharedPrefsHelper.isTutorialStepShown(
+                      SharedPrefsHelper.tutorialStepShopKey,
+                    );
+                if (!isTutorialStepShown) {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'tutorial_tap_item',
+                  );
+                }
                 FirebaseAnalytics.instance.logEvent(
                   name: 'start_shop_buy_item',
                   parameters: {'item_name': item.name},

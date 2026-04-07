@@ -585,7 +585,17 @@ class _TimerScreenState extends State<TimerScreen>
           actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                // チュートリアルで「まだだよ」ボタンを押したかチェック
+                final isTutorialStepShown =
+                    await SharedPrefsHelper.isTutorialStepShown(
+                      SharedPrefsHelper.tutorialStepPromiseKey,
+                    );
+                if (!isTutorialStepShown) {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'tutorial_tap_not_yet_finish_button',
+                  );
+                }
                 try {
                   SfxManager.instance.playTapSound();
                 } catch (e) {
@@ -611,6 +621,17 @@ class _TimerScreenState extends State<TimerScreen>
                         setState(() => _isCompleting = true);
                         // まず承認ダイアログを閉じる
                         Navigator.of(dialogContext).pop();
+
+                        // チュートリアルで「おわった！」ボタンを押したかチェック
+                        final isTutorialStepShown =
+                            await SharedPrefsHelper.isTutorialStepShown(
+                              SharedPrefsHelper.tutorialStepPromiseKey,
+                            );
+                        if (!isTutorialStepShown) {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'tutorial_tap_yes_finished_button',
+                          );
+                        }
                         // 次に、時間切れかどうかで処理を分岐
                         if (!_isTimeUp) {
                           _confettiController.play();
@@ -755,13 +776,16 @@ class _TimerScreenState extends State<TimerScreen>
     final basePoints = _basePoints;
     int pointsAwarded = (basePoints * pointMultiplier).toInt();
 
+    // ポイントが0の場合は経験値も0にする（ガイド用など）
+    final int finalExp = basePoints == 0 ? 0 : exp;
+
     if (widget.isEmergency) {
       await SharedPrefsHelper.saveEmergencyPromise(null);
     }
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop<Map<String, dynamic>>({
         'points': pointsAwarded,
-        'exp': exp,
+        'exp': finalExp,
         'isFirstTimeBonus': _isFirstTimeBonus,
       });
     }
@@ -790,6 +814,13 @@ class _TimerScreenState extends State<TimerScreen>
     'آپ یہ کر سکتے ہیں!',
     'اسی طرح لگے رہیں!',
   ];
+  final List<String> _encouragementsBn = [
+    'শুভকামনা রইল!',
+    'অব্যাহত রাখুন!',
+    'এগিয়ে চলুন!',
+    'আপনি এটি পারবেন!',
+    'চেষ্টা চালিয়ে যান!',
+  ];
 
   final List<String> _encouragementsJa = [
     'そのまま頑張って！',
@@ -809,6 +840,8 @@ class _TimerScreenState extends State<TimerScreen>
       list = _encouragementsHi;
     } else if (lang == 'ur') {
       list = _encouragementsUr;
+    } else if (lang == 'bn') {
+      list = _encouragementsBn;
     } else {
       list = _encouragementsEn;
     }
@@ -846,6 +879,13 @@ class _TimerScreenState extends State<TimerScreen>
     "اوہ نہیں...",
     "کوئی بات نہیں، شاید اگلی بار۔",
   ];
+  final List<String> _sadPhrasesBn = [
+    "ওহ... এটি বেশ দুঃখজনক...",
+    "আহ... আমি আশা করেছিলাম আপনি শেষ করবেন...",
+    "পরের বার আমরা এটি করব!",
+    "ওহ না...",
+    "ঠিক আছে, হয়তো পরের বার হবে।",
+  ];
 
   // 悲しいフレーズを返却
   String getRandomSadPhraseLocalized() {
@@ -857,6 +897,8 @@ class _TimerScreenState extends State<TimerScreen>
       list = _sadPhrasesHi;
     } else if (lang == 'ur') {
       list = _sadPhrasesUr;
+    } else if (lang == 'bn') {
+      list = _sadPhrasesBn;
     } else {
       list = _sadPhrasesEn;
     }
@@ -980,41 +1022,45 @@ class _TimerScreenState extends State<TimerScreen>
                                   height: 1.0, // 縦の隙間を詰めめる
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              _isTimeUp
-                                  ? Text(
-                                      AppLocalizations.of(context)!.pointsHalf(
-                                            (_basePoints / 2)
-                                                .floor()
-                                                .toString(),
-                                          ) +
-                                          '\n' +
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.timerExpFailure,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.red[700],
+                              if (_basePoints > 0) ...[
+                                const SizedBox(height: 4),
+                                _isTimeUp
+                                    ? Text(
+                                        AppLocalizations.of(
+                                              context,
+                                            )!.pointsHalf(
+                                              (_basePoints / 2)
+                                                  .floor()
+                                                  .toString(),
+                                            ) +
+                                            '\n' +
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.timerExpFailure,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red[700],
+                                        ),
+                                      )
+                                    : Text(
+                                        (_isFirstTimeBonus
+                                                ? '${AppLocalizations.of(context)!.firstTimeBonus}\n'
+                                                : '') +
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.pointsChance(_basePoints) +
+                                            '\n' +
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.timerExpChance,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600],
+                                        ),
                                       ),
-                                    )
-                                  : Text(
-                                      (_isFirstTimeBonus
-                                              ? '${AppLocalizations.of(context)!.firstTimeBonus}\n'
-                                              : '') +
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.pointsChance(_basePoints) +
-                                          '\n' +
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.timerExpChance,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
+                              ],
                             ],
                           ),
                         ],
@@ -1028,7 +1074,7 @@ class _TimerScreenState extends State<TimerScreen>
                       // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
                       onPressed: _isFinishedButtonPressed
                           ? null
-                          : () {
+                          : () async {
                               int elapsedSeconds = 0;
                               if (_screenStartTime != null) {
                                 elapsedSeconds = DateTime.now()
@@ -1039,6 +1085,16 @@ class _TimerScreenState extends State<TimerScreen>
                                 name: 'start_timer_finished',
                                 parameters: {'elapsed_seconds': elapsedSeconds},
                               );
+                              //チュートリアルで「おわった！」ボタンを押したか
+                              final isTutorialStepShown =
+                                  await SharedPrefsHelper.isTutorialStepShown(
+                                    SharedPrefsHelper.tutorialStepPromiseKey,
+                                  );
+                              if (isTutorialStepShown) {
+                                FirebaseAnalytics.instance.logEvent(
+                                  name: 'tutorial_tap_finished_button',
+                                );
+                              }
                               setState(() {
                                 _isFinishedButtonPressed = true;
                               });
@@ -1046,22 +1102,22 @@ class _TimerScreenState extends State<TimerScreen>
                               _showApprovalDialog();
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF7043), // オレンジ
+                        backgroundColor: Colors.blue, // 「はじめる」ボタンと同じ青色
                         foregroundColor: Colors.white,
-                        side: const BorderSide(
-                          color: Color(0xFFFFCA28), // 黄色の輪郭
-                          width: 2,
+                        side: BorderSide(
+                          color: Colors.blue.shade100, // 薄い青色の輪郭
+                          width: 3,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(24),
                         ),
-                        elevation: 4,
+                        elevation: 8,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 40,
                           vertical: 20,
                         ),
                         textStyle: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

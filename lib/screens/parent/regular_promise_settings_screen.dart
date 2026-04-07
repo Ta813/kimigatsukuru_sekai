@@ -54,62 +54,154 @@ class _RegularPromiseSettingsScreenState
         if (!mounted) return;
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: Text(
-              AppLocalizations.of(context)!.samplePromiseTitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+          barrierDismissible: false,
+          builder: (context) => Dialog(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            insetPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 14,
             ),
-            content: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF3E0), // ピーチクリーム
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
-                  width: 2,
-                ),
-              ),
-              child: Text(
-                AppLocalizations.of(context)!.samplePromiseDesc,
-                style: const TextStyle(fontSize: 16, height: 1.5),
-              ),
-            ),
-            actionsAlignment: MainAxisAlignment.center,
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  try {
-                    SfxManager.instance.playTapSound();
-                  } catch (e) {
-                    print('再生エラー: $e');
-                  }
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF7043), // オレンジ
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(
-                    color: Color(0xFFFFCA28),
-                    width: 2,
-                  ), // 黄色の輪郭
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // キャラクター
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Image.asset(
+                        'assets/images/clothes_dress_red.gif',
+                        height: 90,
+                      ),
+                      const SizedBox(width: 16),
+                      Image.asset(
+                        'assets/images/character_kuma.gif',
+                        height: 90,
+                      ),
+                    ],
                   ),
-                  elevation: 4,
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.gotIt,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                  // 吹き出しのしっぽ
+                  ClipPath(
+                    clipper: _SpeechBubbleTailClipper(),
+                    child: Container(
+                      width: 24,
+                      height: 16,
+                      color: const Color(0xFFFFF7E6),
+                    ),
+                  ),
+                  // 吹き出し本体
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 22,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF7E6),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        _buildRichText(
+                          AppLocalizations.of(context)!.samplePromiseTitle,
+                          isTitle: true,
+                        ),
+                        const SizedBox(height: 10),
+                        _buildRichText(
+                          AppLocalizations.of(context)!.samplePromiseDesc,
+                          isTitle: false,
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (e) {
+                              print('再生エラー: $e');
+                            }
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF7043),
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(220, 64),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                            elevation: 8,
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)!.gotIt,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       });
       // 次回からは出さないようにフラグを更新
       await prefs.setBool('is_first_yakusoku', false);
     }
+  }
+
+  Widget _buildRichText(
+    String text, {
+    required bool isTitle,
+    TextAlign textAlign = TextAlign.center,
+  }) {
+    final List<TextSpan> spans = [];
+    final regex = RegExp(r'\*\*(.*?)\*\*');
+    int lastMatchEnd = 0;
+
+    for (final match in regex.allMatches(text)) {
+      if (match.start > lastMatchEnd) {
+        spans.add(TextSpan(text: text.substring(lastMatchEnd, match.start)));
+      }
+      spans.add(
+        TextSpan(
+          text: match.group(1),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFFE64A19), // 濃いオレンジ / 赤み
+            fontSize: isTitle ? 18 : 16,
+          ),
+        ),
+      );
+      lastMatchEnd = match.end;
+    }
+    if (lastMatchEnd < text.length) {
+      spans.add(TextSpan(text: text.substring(lastMatchEnd)));
+    }
+
+    return RichText(
+      textAlign: textAlign,
+      text: TextSpan(
+        style: TextStyle(
+          fontSize: isTitle ? 18 : 16,
+          fontWeight: isTitle ? FontWeight.bold : FontWeight.normal,
+          color: Colors.black87,
+          height: 1.5,
+        ),
+        children: spans,
+      ),
+    );
   }
 
   // やくそくを削除する処理
@@ -353,4 +445,20 @@ class _RegularPromiseSettingsScreenState
       bottomNavigationBar: const AdBanner(),
     );
   }
+}
+
+class _SpeechBubbleTailClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    // 逆三角形を描く (上向き)
+    path.moveTo(0, size.height);
+    path.lineTo(size.width / 2, 0);
+    path.lineTo(size.width, size.height);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

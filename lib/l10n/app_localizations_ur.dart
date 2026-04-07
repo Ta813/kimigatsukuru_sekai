@@ -27,34 +27,34 @@ class AppLocalizationsUr extends AppLocalizations {
   String get customizeTabItem => 'چیزیں';
 
   @override
-  String get guideWelcomeTitle => 'آئیے ایک بچے کے نقطہ نظر سے کھیلیں!';
+  String get guideWelcomeTitle => 'سب سے پہلے، ایک بچے کی طرح کھیلتے ہیں!';
 
   @override
-  String get guideWelcomeDesc => 'آئیے تجربہ کریں کہ آپ کا بچہ کس طرح \'وعدہ\' نبھاتا ہے!\nہم نے نیچے دی گئی بار میں ایک \'آزمائشی وعدہ\' تیار کیا ہے۔\nفوراً \'شروع کریں\' دبائیں اور ایک بچے کے طور پر کھیل کر دیکھیں!';
+  String get guideWelcomeDesc => 'خود تجربہ کریں کہ \'وعدے\' کیسے کام کرتے ہیں!\nمیں نے نیچے دی گئی بار میں ایک \'آزمائشی وعدہ\' رکھا ہے۔\nفوراً \'شروع کریں\' دبائیں اور ایک بچے کی طرح کھیلنے کی کوشش کریں!';
 
   @override
-  String get guideSettingsTitle => 'والدین کی ترتیبات (اوپر بائیں ⚙️ آئیکن)';
+  String get guideSettingsTitle => 'بڑوں کی ترتیبات (اوپر بائیں ⚙️ آئیکن)';
 
   @override
-  String get guideSettingsDesc => 'یہ وہ جگہ ہے جہاں والدین وعدے شامل یا تبدیل کر سکتے ہیں۔\nپہلے اپنے بچے کے ساتھ مل کر وعدے طے کرنے کی کوشش کریں!';
+  String get guideSettingsDesc => 'یہ بٹن بڑوں کے لیے ہے تاکہ وہ وعدے شامل کرنے یا بدلنے جیسی ترتیبات کر سکیں۔\nآئیے پہلے یہاں اپنے بچے کے ساتھ مل کر کچھ \'وعدے\' طے کرتے ہیں!';
 
   @override
-  String get tutorialShopTitle => '100 پوائنٹس ملے! ✨';
+  String get tutorialShopTitle => 'آپ کو 100 پوائنٹس ملے! ✨';
 
   @override
-  String get tutorialShopDesc => 'آپ نے پوائنٹس جمع کر لیے ہیں!\nآئیے دائیں طرف موجود 🏠 بٹن سے \'دکان\' پر جائیں اور کوئی چیز خریدیں!';
+  String get tutorialShopDesc => 'آپ نے پوائنٹس جمع کر لیے ہیں!\nآئیے دائیں طرف موجود 🏠 بٹن سے \'دکان\' پر جا کر کچھ چیزیں خریدیں!';
 
   @override
-  String get tutorialCustomizeTitle => 'ایک تحفہ ملا! 🎁';
+  String get tutorialCustomizeTitle => 'آپ کو ایک چیز ملی! 🎁';
 
   @override
-  String get tutorialCustomizeDesc => 'آپ کو ایک چیز ملی ہے!\nاب، دائیں طرف موجود ☺ بٹن کا استعمال کرتے ہوئے \'اپنی پسند سے سجائیں\' میں جا کر کمرے کو سجائیں!';
+  String get tutorialCustomizeDesc => 'آپ کو ایک چیز ملی!\nاب، دائیں طرف موجود ☺ بٹن کا استعمال کرتے ہوئے، آئیے \'اپنی پسند سے سجائیں\' میں جا کر آپ کا کمرہ سجاتے ہیں!';
 
   @override
-  String get tutorialParentSetupTitle => 'تیار! 🎉';
+  String get tutorialParentSetupTitle => 'سب تیار! 🎉';
 
   @override
-  String get tutorialParentSetupDesc => 'آپ اپنے بچے کو خوش کرنے کے لیے بالکل تیار ہیں!\nآئیے فوراً روزانہ کے \'وعدے\' طے کریں اور شروع کریں!';
+  String get tutorialParentSetupDesc => 'ہم انہیں خوش کرنے کے لیے بالکل تیار ہیں!\nآئیے فوراً روزانہ کے \'وعدے\' طے کریں اور شروع کریں!';
 
   @override
   String get tutorialMoveTitle => 'آئیے انہیں حرکت دیں! ✨';
@@ -63,16 +63,31 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tutorialMoveDesc => 'کپڑے بدلنے یا اپنی پسند سے سجانے کے لیے آپ نے جو چیزیں منتخب کی ہیں، انہیں انگلی سے ہلایا جا سکتا ہے!\nانہیں جہاں چاہیں رکھیں۔';
 
   @override
-  String get guideTrialPromiseTitle => 'والدین، اسے آزمائیں! ✨';
+  String get tutorialBtnStart => 'چلیں شروع کریں!';
 
   @override
-  String get guideTrialPromiseDesc => 'آئیے تجربہ کریں کہ آپ کا بچہ کس طرح \'وعدہ\' نبھاتا ہے!\n\nہم نے نیچے دی گئی بار میں ایک \'آزمائشی وعدہ\' تیار کیا ہے۔\nفوراً \'شروع کریں\' دبائیں اور ایک بچے کے طور پر کھیل کر دیکھیں!';
+  String get tutorialBtnShop => 'دکان پر جائیں!';
 
   @override
-  String get guideNextPromiseTitle => 'اگلا وعدہ (نیچے دی گئی بار)';
+  String get tutorialBtnCustomize => 'اپنی مرضی کے مطابق بنائیں!';
 
   @override
-  String get guideNextPromiseDesc => 'آپ کو جو اگلا وعدہ کرنا ہے وہ یہاں دکھایا گیا ہے۔\nچیلنج شروع کرنے کے لیے \'شروع کریں\' دبائیں!';
+  String get tutorialBtnMove => 'سمجھ گیا!';
+
+  @override
+  String get tutorialBtnParent => 'وعدہ بنائیں!';
+
+  @override
+  String get guideTrialPromiseTitle => 'ممی اور پاپا، اسے آزمائیں! ✨';
+
+  @override
+  String get guideTrialPromiseDesc => 'خود تجربہ کریں کہ \'وعدے\' کیسے کام کرتے ہیں!\nمیں نے نیچے دی گئی بار میں ایک \'آزمائشی وعدہ\' رکھا ہے۔\nفوراً \'شروع کریں\' دبائیں اور ایک بچے کی طرح کھیلنے کی کوشش کریں!';
+
+  @override
+  String get guideNextPromiseTitle => 'اگلا وعدہ (نیچے کا بورڈ)';
+
+  @override
+  String get guideNextPromiseDesc => 'چیلنج کے لیے اگلا \'وعدہ\' یہاں دکھایا جائے گا۔\n\'شروع کریں\' دبائیں اور چیلنجز پورے کرتے رہیں!';
 
   @override
   String get guidePromiseBoardTitle => 'وعدہ بورڈ (دائیں 📄 آئیکن)';
@@ -1224,4 +1239,31 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get resetPromisesSuccess => 'باقاعدہ وعدے دوبارہ ترتیب دے دیے گئے ہیں۔';
+
+  @override
+  String get tutorialStartBubble => 'यहाँ سے آپ کے \'وعدے\' کا\nآغاز ہو رہا ہے!';
+
+  @override
+  String get tutorialShopBubble => 'چلو\nخریداری کریں!';
+
+  @override
+  String get tutorialCustomizeBubble => 'یہاں آپ آبا\nتبدیل کر سکتے ہیں!';
+
+  @override
+  String get helpMenuTitle => 'کیسے کھیلیں';
+
+  @override
+  String get helpMenuYakusoku => 'وعدہ';
+
+  @override
+  String get helpMenuShop => 'خریداری';
+
+  @override
+  String get helpMenuCustomize => 'کپڑے بدلنا';
+
+  @override
+  String get helpMenuOthers => 'دیگر (ترتیبات وغیرہ)';
+
+  @override
+  String get helpMenuClose => 'بند کریں';
 }

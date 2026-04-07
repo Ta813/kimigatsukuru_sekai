@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
@@ -77,6 +78,13 @@ class _RouletteDialogState extends State<RouletteDialog> {
   }
 
   void _spin() async {
+    // チュートリアルで「まわす！」ボタンを押したかチェック
+    final isTutorialStepShown = await SharedPrefsHelper.isTutorialStepShown(
+      SharedPrefsHelper.tutorialStepPromiseKey,
+    );
+    if (!isTutorialStepShown) {
+      FirebaseAnalytics.instance.logEvent(name: 'tutorial_tap_spin_button');
+    }
     SfxManager.instance.playRouletteSpinSound();
 
     setState(() {

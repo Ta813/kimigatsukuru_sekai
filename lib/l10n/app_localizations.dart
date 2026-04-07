@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_bn.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_hi.dart';
 import 'app_localizations_ja.dart';
@@ -93,6 +94,7 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('bn'),
     Locale('en'),
     Locale('hi'),
     Locale('ja'),
@@ -138,61 +140,61 @@ abstract class AppLocalizations {
   /// No description provided for @guideWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s play from a child\'s perspective!'**
+  /// **'First, let\'s play like a child!'**
   String get guideWelcomeTitle;
 
   /// No description provided for @guideWelcomeDesc.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s experience how your child takes on a \'Promise\'!\n\nWe have prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing from a child\'s perspective!'**
+  /// **'Experience for yourself how \'Promises\' work!\nI\'ve prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing like a child!'**
   String get guideWelcomeDesc;
 
   /// No description provided for @guideSettingsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Parent Settings (Top-left ⚙️ icon)'**
+  /// **'Grown-up Settings (Top-left ⚙️ icon)'**
   String get guideSettingsTitle;
 
   /// No description provided for @guideSettingsDesc.
   ///
   /// In en, this message translates to:
-  /// **'This is where parents can add or edit promises.\nTry deciding on the promises together with your child first!'**
+  /// **'This is where grown-ups can add or edit promises.\nLet\'s decide on some \'Promises\' together with your child here first!'**
   String get guideSettingsDesc;
 
   /// No description provided for @tutorialShopTitle.
   ///
   /// In en, this message translates to:
-  /// **'Got 100 points! ✨'**
+  /// **'You got 100 points! ✨'**
   String get tutorialShopTitle;
 
   /// No description provided for @tutorialShopDesc.
   ///
   /// In en, this message translates to:
-  /// **'You have saved up points!\nLet\'s go to the \'Shop\' from the 🏠 button on the right and buy an item!'**
+  /// **'You\'ve saved up points!\nLet\'s go buy items at the \'Shop\' using the 🏠 button on the right!'**
   String get tutorialShopDesc;
 
   /// No description provided for @tutorialCustomizeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Got an item! 🎁'**
+  /// **'You got an item! 🎁'**
   String get tutorialCustomizeTitle;
 
   /// No description provided for @tutorialCustomizeDesc.
   ///
   /// In en, this message translates to:
-  /// **'You got an item!\nNext, let\'s decorate the room from \'Customize\' using the ☺ button on the right!'**
+  /// **'You got an item!\nNext, using the ☺ button on the right, let\'s decorate your room in \'Customize\'!'**
   String get tutorialCustomizeDesc;
 
   /// No description provided for @tutorialParentSetupTitle.
   ///
   /// In en, this message translates to:
-  /// **'Ready! 🎉'**
+  /// **'All ready! 🎉'**
   String get tutorialParentSetupTitle;
 
   /// No description provided for @tutorialParentSetupDesc.
   ///
   /// In en, this message translates to:
-  /// **'You\'re all set to make your child happy!\nLet\'s set up the daily \'Promises\' right away and get started!'**
+  /// **'We\'re all set to make them happy!\nLet\'s set up the daily \'Promises\' right away and get started!'**
   String get tutorialParentSetupDesc;
 
   /// No description provided for @tutorialMoveTitle.
@@ -207,28 +209,58 @@ abstract class AppLocalizations {
   /// **'The items you picked in Dress-up/Customize can be moved with your finger!\nPut them wherever you like.'**
   String get tutorialMoveDesc;
 
+  /// No description provided for @tutorialBtnStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s do this!'**
+  String get tutorialBtnStart;
+
+  /// No description provided for @tutorialBtnShop.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Shop!'**
+  String get tutorialBtnShop;
+
+  /// No description provided for @tutorialBtnCustomize.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Customize!'**
+  String get tutorialBtnCustomize;
+
+  /// No description provided for @tutorialBtnMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it!'**
+  String get tutorialBtnMove;
+
+  /// No description provided for @tutorialBtnParent.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a Promise!'**
+  String get tutorialBtnParent;
+
   /// No description provided for @guideTrialPromiseTitle.
   ///
   /// In en, this message translates to:
-  /// **'Parents, try it out! ✨'**
+  /// **'Moms and Dads, try it out! ✨'**
   String get guideTrialPromiseTitle;
 
   /// No description provided for @guideTrialPromiseDesc.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s experience how your child takes on a \'Promise\'!\n\nWe have prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing from a child\'s perspective!'**
+  /// **'Experience for yourself how \'Promises\' work!\nI\'ve prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing like a child!'**
   String get guideTrialPromiseDesc;
 
   /// No description provided for @guideNextPromiseTitle.
   ///
   /// In en, this message translates to:
-  /// **'Next Promise (Bottom bar)'**
+  /// **'Next Promise (Bottom board)'**
   String get guideNextPromiseTitle;
 
   /// No description provided for @guideNextPromiseDesc.
   ///
   /// In en, this message translates to:
-  /// **'The next promise you need to do is displayed here.\nPress \'Start\' to begin the challenge!'**
+  /// **'The next \'Promise\' to challenge will be shown here.\nPress \'Start\' and keep challenging them!'**
   String get guideNextPromiseDesc;
 
   /// No description provided for @guidePromiseBoardTitle.
@@ -2468,6 +2500,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Regular promises have been reset.'**
   String get resetPromisesSuccess;
+
+  /// No description provided for @tutorialStartBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting your\n\'Promise\' here!'**
+  String get tutorialStartBubble;
+
+  /// No description provided for @tutorialShopBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s go\nshopping!'**
+  String get tutorialShopBubble;
+
+  /// No description provided for @tutorialCustomizeBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change\nclothes here!'**
+  String get tutorialCustomizeBubble;
+
+  /// No description provided for @helpMenuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Play'**
+  String get helpMenuTitle;
+
+  /// No description provided for @helpMenuYakusoku.
+  ///
+  /// In en, this message translates to:
+  /// **'Promise'**
+  String get helpMenuYakusoku;
+
+  /// No description provided for @helpMenuShop.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get helpMenuShop;
+
+  /// No description provided for @helpMenuCustomize.
+  ///
+  /// In en, this message translates to:
+  /// **'Dress-up'**
+  String get helpMenuCustomize;
+
+  /// No description provided for @helpMenuOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'Others (Settings, etc.)'**
+  String get helpMenuOthers;
+
+  /// No description provided for @helpMenuClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get helpMenuClose;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -2479,7 +2565,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'hi', 'ja', 'ur'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['bn', 'en', 'hi', 'ja', 'ur'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2490,6 +2576,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
 
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'bn': return AppLocalizationsBn();
     case 'en': return AppLocalizationsEn();
     case 'hi': return AppLocalizationsHi();
     case 'ja': return AppLocalizationsJa();

@@ -63,6 +63,7 @@ class SfxManager {
   String getVoiceDir(String localeName) {
     if (localeName == 'hi') return 'hindi';
     if (localeName == 'ur') return 'urdu';
+    if (localeName == 'bn') return 'bengali';
     return 'english'; // デフォルトはenglish
   }
 

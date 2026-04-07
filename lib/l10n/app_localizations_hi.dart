@@ -27,34 +27,34 @@ class AppLocalizationsHi extends AppLocalizations {
   String get customizeTabItem => 'वस्तुएं';
 
   @override
-  String get guideWelcomeTitle => 'बच्चे के नजरिए से खेलें!';
+  String get guideWelcomeTitle => 'सबसे पहले, चलो एक बच्चे की तरह खेलें!';
 
   @override
-  String get guideWelcomeDesc => 'आइए देखें कि आपका बच्चा \'वादा\' कैसे निभाता है!\nहमने नीचे की पट्टी में एक \'ट्रायल वादा\' तैयार किया है।\nतुरंत \'शुरू करें\' दबाएं और बच्चे के नजरिए से खेलने का प्रयास करें!';
+  String get guideWelcomeDesc => 'खुद अनुभव करके देखें कि \'वादे\' कैसे काम करते हैं!\nमैंने नीचे की पट्टी पर एक \'ट्रायल वादा\' रखा है।\nतुरंत \'शुरू करें\' दबाएं और एक बच्चे की तरह खेलने की कोशिश करें!';
 
   @override
-  String get guideSettingsTitle => 'अभिभावक सेटिंग्स (ऊपर-बाएँ ⚙️ आइकन)';
+  String get guideSettingsTitle => 'बड़ों की सेटिंग्स (ऊपर-बाएं ⚙️ आइकन)';
 
   @override
-  String get guideSettingsDesc => 'यह वह जगह है जहाँ माता-पिता वादे जोड़ या संपादित कर सकते हैं।\nपहले अपने बच्चे के साथ मिलकर वादे तय करने का प्रयास करें!';
+  String get guideSettingsDesc => 'यह बटन बड़ों के लिए है ताकि वे वादे जोड़ने या बदलने जैसी सेटिंग्स कर सकें।\nचलो पहले यहाँ अपने बच्चे के साथ मिलकर कुछ \'वादे\' तय करते हैं!';
 
   @override
-  String get tutorialShopTitle => '100 अंक मिले! ✨';
+  String get tutorialShopTitle => 'तुम्हें 100 अंक मिले! ✨';
 
   @override
-  String get tutorialShopDesc => 'आपने अंक बचा लिए हैं!\nआइए दाईं ओर के 🏠 बटन से \'दुकान\' पर जाएं और एक वस्तु खरीदें!';
+  String get tutorialShopDesc => 'तुमने अंक जमा कर लिए हैं!\nचलो दाईं ओर 🏠 बटन से \'दुकान\' पर जाकर कुछ चीजें खरीदें!';
 
   @override
-  String get tutorialCustomizeTitle => 'एक वस्तु मिली! 🎁';
+  String get tutorialCustomizeTitle => 'तुम्हें एक चीज़ मिली! 🎁';
 
   @override
-  String get tutorialCustomizeDesc => 'आपको एक वस्तु मिली!\nअगले, दाईं ओर के ☺ बटन का उपयोग करके \'अनुकूलित करें\' से कमरे को सजाएं!';
+  String get tutorialCustomizeDesc => 'तुम्हें एक चीज़ मिली!\nअब, दाईं ओर ☺ बटन का उपयोग करके, चलो \'कस्टमाइज़\' में तुम्हारे कमरे को सजाते हैं!';
 
   @override
-  String get tutorialParentSetupTitle => 'तैयार! 🎉';
+  String get tutorialParentSetupTitle => 'सब तैयार! 🎉';
 
   @override
-  String get tutorialParentSetupDesc => 'आप अपने बच्चे को खुश करने के लिए तैयार हैं!\nआइए तुरंत दैनिक \'वादे\' सेट करें और शुरू करें!';
+  String get tutorialParentSetupDesc => 'हम उन्हें खुश करने के लिए पूरी तरह तैयार हैं!\nचलो तुरंत रोज के \'वादे\' सेट करते हैं और शुरू करते हैं!';
 
   @override
   String get tutorialMoveTitle => 'उन्हें चलाएं! ✨';
@@ -63,16 +63,31 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tutorialMoveDesc => 'ड्रेस-अप/अनुकूलित करें में आपके द्वारा चुनी गई वस्तुओं को अपनी उंगली से चलाया जा सकता है!\nउन्हें जहाँ चाहें वहाँ रखें।';
 
   @override
-  String get guideTrialPromiseTitle => 'माता-पिता, इसे आजमाएं! ✨';
+  String get tutorialBtnStart => 'चलो शुरू करें!';
 
   @override
-  String get guideTrialPromiseDesc => 'आइए देखें कि आपका बच्चा \'वादा\' कैसे निभाता है!\n\nहमने नीचे की पट्टी में एक \'ट्रायल वादा\' तैयार किया है।\nतुरंत \'शुरू करें\' दबाएं और बच्चे के नजरिए से खेलने का प्रयास करें!';
+  String get tutorialBtnShop => 'दुकान पर जाएं!';
 
   @override
-  String get guideNextPromiseTitle => 'अगला वादा (नीचे की पट्टी)';
+  String get tutorialBtnCustomize => 'कस्टमाइज़ करें!';
 
   @override
-  String get guideNextPromiseDesc => 'अगला वादा जो आपको करना है वह यहाँ प्रदर्शित है।\nचुनौती शुरू करने के लिए \'शुरू करें\' दबाएं!';
+  String get tutorialBtnMove => 'समझ गया!';
+
+  @override
+  String get tutorialBtnParent => 'प्रॉमिस बनाएं!';
+
+  @override
+  String get guideTrialPromiseTitle => 'मम्मी और पापा, इसे आज़माएं! ✨';
+
+  @override
+  String get guideTrialPromiseDesc => 'खुद अनुभव करके देखें कि \'वादे\' कैसे काम करते हैं!\nमैंने नीचे की पट्टी पर एक \'ट्रायल वादा\' रखा है।\nतुरंत \'शुरू करें\' दबाएं और एक बच्चे की तरह खेलने की कोशिश करें!';
+
+  @override
+  String get guideNextPromiseTitle => 'अगला वादा (नीचे का बोर्ड)';
+
+  @override
+  String get guideNextPromiseDesc => 'चुनौती के लिए अगला \'वादा\' यहाँ दिखेगा।\n\'शुरू करें\' दबाएं और चुनौतियां पूरी करते रहें!';
 
   @override
   String get guidePromiseBoardTitle => 'वादा बोर्ड (दायां 📄 आइकन)';
@@ -1220,8 +1235,35 @@ class AppLocalizationsHi extends AppLocalizations {
   String get resetPromisesAction => 'वादे रीसेट करें';
 
   @override
-  String get resetPromisesConfirm => 'کیا آپ تمام باقاعدہ وعدوں کو ان کی اصل حالت میں واپس لانا چاہتے ہیں؟ اس عمل کو واپس نہیں لیا جا سکتا۔';
+  String get resetPromisesConfirm => 'क्या आप सभी नियमित वादों को उनकी मूल स्थिति में वापस लाना चाहते हैं? इस प्रक्रिया को वापस नहीं लिया जा सकता।';
 
   @override
   String get resetPromisesSuccess => 'नियमित वादे रीसेट कर दिए गए हैं।';
+
+  @override
+  String get tutorialStartBubble => 'यहाँ आपके \'वादे\' की\nशुरुआत हो रही है!';
+
+  @override
+  String get tutorialShopBubble => 'चलो\nखरीदारी करें!';
+
+  @override
+  String get tutorialCustomizeBubble => 'यहाँ आप कपड़े\nबदल सकते हैं!';
+
+  @override
+  String get helpMenuTitle => 'कैसे खेलें';
+
+  @override
+  String get helpMenuYakusoku => 'वादा';
+
+  @override
+  String get helpMenuShop => 'खरीदारी';
+
+  @override
+  String get helpMenuCustomize => 'वेषभूषा';
+
+  @override
+  String get helpMenuOthers => 'अन्य (सेटिंग्स आदि)';
+
+  @override
+  String get helpMenuClose => 'बंद करें';
 }

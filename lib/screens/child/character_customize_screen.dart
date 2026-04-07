@@ -179,6 +179,13 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   void _equipItem(ShopItem item) async {
+    // チュートリアルで「アイテム」を選択したかチェック
+    final isTutorialStepShown = await SharedPrefsHelper.isTutorialStepShown(
+      SharedPrefsHelper.tutorialStepCustomizeKey,
+    );
+    if (!isTutorialStepShown) {
+      FirebaseAnalytics.instance.logEvent(name: 'tutorial_tap_customize_item');
+    }
     try {
       SfxManager.instance.playTapSound();
     } catch (e) {
