@@ -822,6 +822,14 @@ class _TimerScreenState extends State<TimerScreen>
     'চেষ্টা চালিয়ে যান!',
   ];
 
+  final List<String> _encouragementsAr = [
+    'بالتوفيق!',
+    'استمر هكذا!',
+    'افعلها!',
+    'يمكنك فعل ذلك!',
+    'استمر في المحاولة!',
+  ];
+
   final List<String> _encouragementsJa = [
     'そのまま頑張って！',
     'ベストを尽くして！',
@@ -842,6 +850,8 @@ class _TimerScreenState extends State<TimerScreen>
       list = _encouragementsUr;
     } else if (lang == 'bn') {
       list = _encouragementsBn;
+    } else if (lang == 'ar') {
+      list = _encouragementsAr;
     } else {
       list = _encouragementsEn;
     }
@@ -887,6 +897,14 @@ class _TimerScreenState extends State<TimerScreen>
     "ঠিক আছে, হয়তো পরের বার হবে।",
   ];
 
+  final List<String> _sadPhrasesAr = [
+    "أوه... هذا سيء للغاية...",
+    "أوه... كنت آمل أن تنتهي...",
+    "سنفعلها في المرة القادمة!",
+    "أوه لا...",
+    "لا بأس، ربما في المرة القادمة.",
+  ];
+
   // 悲しいフレーズを返却
   String getRandomSadPhraseLocalized() {
     final lang = AppLocalizations.of(context)!.localeName;
@@ -899,6 +917,8 @@ class _TimerScreenState extends State<TimerScreen>
       list = _sadPhrasesUr;
     } else if (lang == 'bn') {
       list = _sadPhrasesBn;
+    } else if (lang == 'ar') {
+      list = _sadPhrasesAr;
     } else {
       list = _sadPhrasesEn;
     }

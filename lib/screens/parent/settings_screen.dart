@@ -230,6 +230,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       currentValue = 'ur';
     } else if (currentLocale == 'bn') {
       currentValue = 'bn';
+    } else if (currentLocale == 'ar') {
+      currentValue = 'ar';
     } else {
       // 手動設定がなければ、端末の言語で判断
       if (deviceLocale == 'ja') {
@@ -240,6 +242,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         currentValue = 'ur';
       } else if (deviceLocale == 'bn') {
         currentValue = 'bn';
+      } else if (deviceLocale == 'ar') {
+        currentValue = 'ar';
       } else {
         currentValue = 'en';
       }
@@ -287,6 +291,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             name: 'start_settings_language_bn',
                           );
                           localeProvider.setLocale(const Locale('bn'));
+                        } else if (newValue == 'ar') {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_settings_language_ar',
+                          );
+                          localeProvider.setLocale(const Locale('ar'));
                         }
                       },
                       // ★プルダウンの選択肢から「端末の設定」を削除
@@ -310,6 +319,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         DropdownMenuItem<String>(
                           value: 'bn',
                           child: Text('বাংলা'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'ar',
+                          child: Text('العربية'),
                         ),
                       ],
                     ),

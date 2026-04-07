@@ -2451,8 +2451,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             ),
                             if (_showCustomizeBlinking)
                               Positioned(
-                                left: -160, // ボタンの左に配置
-                                child: Row(
+                                top: -60, // ボタンの上に配置
+                                left: -30, // 中央寄せのための調整（吹き出し幅に合わせる）
+                                child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Container(
@@ -2484,10 +2485,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       ),
                                     ),
                                     ClipPath(
-                                      clipper: _SpeechBubbleTailRightClipper(),
+                                      clipper: _SpeechBubbleTailDownClipper(),
                                       child: Container(
-                                        width: 8,
-                                        height: 16,
+                                        width: 16,
+                                        height: 8,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -2642,8 +2643,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             ),
                             if (_showShopBlinking)
                               Positioned(
-                                left: -160, // ボタンの左に配置
-                                child: Row(
+                                top: -60, // ボタンの上に配置
+                                left: -30, // 中央寄せのための調整
+                                child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Container(
@@ -2675,10 +2677,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       ),
                                     ),
                                     ClipPath(
-                                      clipper: _SpeechBubbleTailRightClipper(),
+                                      clipper: _SpeechBubbleTailDownClipper(),
                                       child: Container(
-                                        width: 8,
-                                        height: 16,
+                                        width: 16,
+                                        height: 8,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -2968,21 +2970,6 @@ class _SpeechBubbleTailDownClipper extends CustomClipper<Path> {
     path.moveTo(0, 0); // トップ左
     path.lineTo(size.width, 0); // トップ右
     path.lineTo(size.width / 2, size.height); // ボトム中央
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
-class _SpeechBubbleTailRightClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.moveTo(0, 0); // 左上
-    path.lineTo(size.width, size.height / 2); // 右中央
-    path.lineTo(0, size.height); // 左下
     path.close();
     return path;
   }

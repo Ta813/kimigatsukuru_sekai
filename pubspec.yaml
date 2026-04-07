@@ -108,6 +108,7 @@ flutter:
     - assets/se/hindi/
     - assets/se/urdu/
     - assets/se/bengali/
+    - assets/se/arabic/
     - assets/fonts/
   
   fonts:

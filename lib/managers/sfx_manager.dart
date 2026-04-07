@@ -64,6 +64,7 @@ class SfxManager {
     if (localeName == 'hi') return 'hindi';
     if (localeName == 'ur') return 'urdu';
     if (localeName == 'bn') return 'bengali';
+    if (localeName == 'ar') return 'arabic';
     return 'english'; // デフォルトはenglish
   }
 
