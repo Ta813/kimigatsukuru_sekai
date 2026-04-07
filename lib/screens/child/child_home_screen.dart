@@ -1966,7 +1966,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 ),
                 // ★ レベル表示（順番をボトムバーの前に移動）
                 Positioned(
-                  top: 30, // ポイント表示の下あたり
+                  top: 10, // ポイント表示の下あたり
                   left: 0, // 左端を画面の左端に合わせる
                   right: 0, // 右端を画面の右端に合わせる
                   child: Center(
