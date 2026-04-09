@@ -73,6 +73,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   bool _hasEnteredHouse = false; // 家に入ったことがあるかのローカルな旗
   bool _isTutorialMoveCompleted = false; // 移動チュートリアルが完了したかどうか
   bool _showParentSettingsBlinking = false; // おやの設定ボタンを点滅させるフラグ
+  bool _isTutorialParentSettingsFocus = false; // チュートリアルでおやの設定へ誘導中か
   bool _showShopBlinking = false; // おみせボタンを点滅させるフラグ（チュートリアル）
   bool _showCustomizeBlinking = false; // きせかえボタンを点滅させるフラグ（チュートリアル）
   bool _showDraggableBlinking = false; // キャラ・アイテムを点滅させるフラグ（チュートリアル）
@@ -183,11 +184,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   @override
   void initState() {
     super.initState();
-
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft, // 横向き左
-      DeviceOrientation.landscapeRight, // 横向き右
-    ]);
 
     // ★ 吹き出し用のヒントアニメーションコントローラーを初期化
     _hintAnimationController = AnimationController(
@@ -627,12 +623,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         content: AppLocalizations.of(context)!.tutorialParentSetupDesc,
         buttonText: AppLocalizations.of(context)!.tutorialBtnParent,
       );
-      // 終了フラグを立てる
-      await SharedPrefsHelper.setTutorialStepShown(
-        SharedPrefsHelper.tutorialStepParentSetupShownKey,
-      );
-      await SharedPrefsHelper.setGuideShown();
-      await _openParentModeFromTutorial();
+      // おやの設定画面へ誘導
+      setState(() {
+        _showParentSettingsBlinking = true;
+        _isTutorialParentSettingsFocus = true;
+      });
       return;
     }
   }
@@ -654,6 +649,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _isWaitingForMove = false;
         _showDraggableBlinking = false;
         _isTutorialMoveCompleted = true;
+
+        // ★ おやの設定へ誘導開始（紫点滅 + 吹き出し）
+        _showParentSettingsBlinking = true;
+        _isTutorialParentSettingsFocus = true;
       });
 
       FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_parent_setup');
@@ -661,14 +660,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       await _showTutorialDialog(
         title: AppLocalizations.of(context)!.tutorialParentSetupTitle,
         content: AppLocalizations.of(context)!.tutorialParentSetupDesc,
-        buttonText: AppLocalizations.of(context)!.tutorialBtnParent,
+        buttonText: AppLocalizations.of(context)!.gotIt,
       );
-      // 終了フラグを立てる
-      await SharedPrefsHelper.setTutorialStepShown(
-        SharedPrefsHelper.tutorialStepParentSetupShownKey,
-      );
-      await SharedPrefsHelper.setGuideShown();
-      await _openParentModeFromTutorial();
     });
   }
 
@@ -952,19 +945,24 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     return result ?? false;
   }
 
-  // チュートリアルから親モード（設定画面）を開く共通メソッド
-  Future<void> _openParentModeFromTutorial() async {
-    if (!mounted) return;
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ParentTopScreen()),
-    ).then((_) async {
-      await _loadAndDetermineDisplayPromise();
-    });
-  }
-
   // ★ 親モード（設定画面）を開く共通メソッド
   Future<void> _openParentMode() async {
+    // チュートリアル中の場合
+    if (_isTutorialParentSettingsFocus) {
+      if (!mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ParentTopScreen(isTutorial: true),
+        ),
+      );
+      // 戻ってきたらチュートリアル完了
+      if (mounted) {
+        await _onParentTutorialCompleted();
+      }
+      return;
+    }
+
     // ★ 保存されているロックモードを読み込む
     final lockMode = await SharedPrefsHelper.loadLockMode();
 
@@ -1000,6 +998,34 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _loadAndDetermineDisplayPromise();
       });
     }
+  }
+
+  /// 親チュートリアル完了時の処理
+  Future<void> _onParentTutorialCompleted() async {
+    if (!mounted) return;
+    // フラグを立てる
+    await SharedPrefsHelper.setTutorialStepShown(
+      SharedPrefsHelper.tutorialStepParentSetupShownKey,
+    );
+    // チュートリアル完了のフラグを立てる
+    await SharedPrefsHelper.setGuideShown();
+    // 画面状態をリセット
+    if (mounted) {
+      setState(() {
+        _showParentSettingsBlinking = false;
+        _isTutorialParentSettingsFocus = false;
+      });
+    }
+    // 完了ダイアログを表示
+    if (mounted) {
+      await _showTutorialDialog(
+        title: AppLocalizations.of(context)!.tutorialParentCompleteTitle,
+        content: AppLocalizations.of(context)!.tutorialParentCompleteDesc,
+        buttonText: AppLocalizations.of(context)!.gotIt,
+      );
+    }
+    // プロミスを再読み込む
+    _loadAndDetermineDisplayPromise();
   }
 
   // データを読み込み、表示するやくそくを決定する
@@ -1048,15 +1074,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final house = await SharedPrefsHelper.loadEquippedHouse();
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
     final items = await SharedPrefsHelper.loadEquippedItems();
-    final isFirstAdvice = await SharedPrefsHelper.isFirstHomeAdvice();
-    final isFirstRegular = await SharedPrefsHelper.isFirstHomeRegular();
     final moveCompleted = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepMoveKey,
     );
     bool isShown = await SharedPrefsHelper.isGuideShown();
-    bool wasParentSetupShown = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepParentSetupShownKey,
-    );
 
     final orientation = MediaQuery.of(context).orientation;
 
@@ -1143,8 +1164,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _itemPositionsMap[itemPath] =
             loadedPositions[itemPath] ?? Offset(100, 190); // 読み込んだ位置を保存
       }
-      _showParentSettingsBlinking =
-          wasParentSetupShown && (isFirstAdvice || isFirstRegular);
       _level = level;
       _experience = experience;
       _requiredExpForNextLevel = (_level < requiredExpForLevelUp.length)
@@ -1563,7 +1582,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     // ★ チュートリアル中（いずれかのボタンが点滅中）かどうか
     final bool isAnyTutorialBlinking =
-        _showShopBlinking || _showCustomizeBlinking;
+        _showShopBlinking ||
+        _showCustomizeBlinking ||
+        _showParentSettingsBlinking;
 
     // Scaffoldが画面全体の基本的な骨組みです
     return Scaffold(
@@ -1853,117 +1874,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   ),
                 ),
 
-                // 2. 左上の「おやが見る画面へ」ボタン
-                Positioned(
-                  top: 10,
-                  left: 10,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        BlinkingEffect(
-                          isBlinking: _showParentSettingsBlinking,
-                          child: Material(
-                            color: const Color(0xFFFF7043).withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(8),
-                            child: InkWell(
-                              onTap: () async {
-                                FirebaseAnalytics.instance.logEvent(
-                                  name: 'start_child_home_parent_settings',
-                                );
-                                try {
-                                  SfxManager.instance.playTapSound();
-                                } catch (e) {
-                                  // エラーが発生した場合
-                                  print('再生エラー: $e');
-                                }
-                                await _openParentMode();
-                              },
-                              borderRadius: BorderRadius.circular(
-                                8,
-                              ), // タップした時の波紋の丸み
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  width: 64, // 幅を固定
-                                  child: Column(
-                                    mainAxisSize:
-                                        MainAxisSize.min, // 最小限のサイズにする
-                                    children: [
-                                      const Icon(
-                                        Icons.settings,
-                                        size: 28, // アイコンのサイズ
-                                        color: Color(0xFFFFCA28), // アイコンの色
-                                      ),
-                                      const SizedBox(height: 4), // アイコンと文字の間の隙間
-                                      Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.parentSettings,
-                                        style: const TextStyle(
-                                          fontSize: 12, // 文字は少し小さめがスッキリします
-                                          color: Color(0xFFFFCA28),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center, // 中央揃え
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10), // ボタンの間に少し隙間をあける
-                        Material(
-                          color: const Color(0xFFFF7043).withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(8),
-                          child: InkWell(
-                            onTap: () {
-                              FirebaseAnalytics.instance.logEvent(
-                                name: 'start_child_home_help',
-                              );
-                              try {
-                                SfxManager.instance.playTapSound();
-                              } catch (e) {
-                                // エラーが発生した場合
-                                print('再生エラー: $e');
-                              }
-                              _onHelpButtonPressed();
-                            },
-                            borderRadius: BorderRadius.circular(8),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                width: 64, // 幅を固定
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.question_mark,
-                                      size: 28,
-                                      color: Color(0xFFFFCA28),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      AppLocalizations.of(context)!.help,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFFFFCA28),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center, // 中央揃え
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
                 // ★ レベル表示（順番をボトムバーの前に移動）
                 Positioned(
                   top: 10, // ポイント表示の下あたり
@@ -2694,6 +2604,173 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     ),
                   ),
                 ),
+                // 2. 左上の「おやが見る画面へ」ボタン
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            BlinkingEffect(
+                              isBlinking: _showParentSettingsBlinking,
+                              child: Material(
+                                color: const Color(0xFFFF7043).withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(8),
+                                child: InkWell(
+                                  onTap:
+                                      isAnyTutorialBlinking &&
+                                          !_showParentSettingsBlinking
+                                      ? null // 他のボタン点滅中は無効
+                                      : () async {
+                                          FirebaseAnalytics.instance.logEvent(
+                                            name:
+                                                'start_child_home_parent_settings',
+                                          );
+                                          try {
+                                            SfxManager.instance.playTapSound();
+                                          } catch (e) {
+                                            print('再生エラー: $e');
+                                          }
+                                          await _openParentMode();
+                                        },
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SizedBox(
+                                      width: 64,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.settings,
+                                            size: 28,
+                                            color: Color(0xFFFFCA28),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.parentSettings,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Color(0xFFFFCA28),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // 吹き出し
+                            if (_isTutorialParentSettingsFocus)
+                              Positioned(
+                                top: 10, // ボタンの下に表示
+                                left: 90,
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFFFF9C4), // 薄い黄色
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: Colors.orange,
+                                        width: 2,
+                                      ),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          blurRadius: 4,
+                                          color: Colors.black26,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.tutorialParentSettingsBubble,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 10), // ボタンの間に少し隙間をあける
+                        IgnorePointer(
+                          ignoring: isAnyTutorialBlinking,
+                          child: Opacity(
+                            opacity: isAnyTutorialBlinking ? 0.6 : 1.0,
+                            child: Material(
+                              color: const Color(0xFFFF7043).withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(8),
+                              child: InkWell(
+                                onTap: () {
+                                  FirebaseAnalytics.instance.logEvent(
+                                    name: 'start_child_home_help',
+                                  );
+                                  try {
+                                    SfxManager.instance.playTapSound();
+                                  } catch (e) {
+                                    print('再生エラー: $e');
+                                  }
+                                  _onHelpButtonPressed();
+                                },
+                                borderRadius: BorderRadius.circular(8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SizedBox(
+                                    width: 64,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.question_mark,
+                                          size: 28,
+                                          color: Color(0xFFFFCA28),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          AppLocalizations.of(context)!.help,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFFFFCA28),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -2774,7 +2851,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   Text(
                                     _isDisplayPromiseEmergency
                                         ? '${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}'
-                                        : '${_displayPromise!['time']}〜 ${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}',
+                                        : '${_displayPromise!['time']}〜 ${_displayPromise!['icon']} ${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
