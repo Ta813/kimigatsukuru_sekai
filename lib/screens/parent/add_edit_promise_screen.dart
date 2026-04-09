@@ -29,8 +29,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
 
   TimeOfDay? _selectedTime;
 
-  // ▼ 追加: アイコンの選択肢を定義（キー名：アイコンデータ）
-  // データベースにはこの「キー名（文字列）」を保存します。
+  // アイコンの選択肢を定義（キー名：アイコンデータ）
   final Map<String, IconData> _iconMap = {
     'star': Icons.star,
     'school': Icons.school,
@@ -42,13 +41,13 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
     'music': Icons.music_note,
   };
 
-  // ▼ 追加: 現在選択されているアイコンのキー（デフォルトは星）
+  // 現在選択されているアイコンのキー（デフォルトは星）
   String _selectedIconKey = 'star';
 
   @override
   void initState() {
     super.initState();
-    // ★もし編集モードなら (initialPromiseがnullでなければ)
+    // もし編集モードなら (initialPromiseがnullでなければ)
     if (widget.initialPromise != null) {
       // 各コントローラーに初期値を設定する
       _titleController.text = widget.initialPromise!['title'] ?? '';
@@ -58,7 +57,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
       _pointsController.text =
           widget.initialPromise!['points']?.toString() ?? '';
 
-      // ▼ 追加: アイコンの初期値を設定
+      // アイコンの初期値を設定
       _selectedIconKey = widget.initialPromise!['icon'] ?? 'star';
     }
   }
@@ -90,7 +89,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
         // intに変換。失敗したら0にする
         'duration': int.tryParse(_durationController.text) ?? 0,
         'points': int.tryParse(_pointsController.text) ?? 0,
-        // ▼ 追加: 選択されたアイコンのキーを保存
+        // 選択されたアイコンのキーを保存
         'icon': _selectedIconKey,
       };
       // "結果"として新しいやくそくのデータを渡しつつ、前の画面に戻る
@@ -139,45 +138,66 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                TextFormField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.promiseNameLabel,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
+                // ▼ 変更: やくそくの名前と開始時間を横並びにする
+                Row(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // エラーテキスト表示時に上端を揃える
+                  children: [
+                    Expanded(
+                      flex: 3, // 少し名前の方を広めにとる
+                      child: TextFormField(
+                        controller: _titleController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(
+                            context,
+                          )!.promiseNameLabel,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 12,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppLocalizations.of(
+                              context,
+                            )!.promiseNameHint;
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context)!.promiseNameHint;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 12),
-                TextFormField(
-                  controller: _startTimeController,
-                  readOnly: true, // テキストの手入力を不可にする
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.startTimeLabel,
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2, // 時間は少し狭くてもOK
+                      child: TextFormField(
+                        controller: _startTimeController,
+                        readOnly: true, // テキストの手入力を不可にする
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(
+                            context,
+                          )!.startTimeLabel,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 4,
+                            horizontal: 12,
+                          ),
+                          suffixIcon: const Icon(
+                            Icons.access_time,
+                          ), // 時計アイコンを追加
+                        ),
+                        onTap: () {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_add_edit_promise_time_picker',
+                          );
+                          // タップされたら、タイムピッカーを呼び出す
+                          _selectTime(context);
+                        },
+                      ),
                     ),
-                    suffixIcon: const Icon(Icons.access_time), // 時計アイコンを追加
-                  ),
-                  onTap: () {
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'start_add_edit_promise_time_picker',
-                    );
-                    // タップされたら、タイムピッカーを呼び出す
-                    _selectTime(context);
-                  },
+                  ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 5),
                 Row(
                   children: [
                     Expanded(
@@ -189,7 +209,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                           )!.durationLabel,
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(
-                            vertical: 8,
+                            vertical: 4,
                             horizontal: 12,
                           ),
                         ),
@@ -207,7 +227,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                           labelText: AppLocalizations.of(context)!.points,
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(
-                            vertical: 8,
+                            vertical: 4,
                             horizontal: 12,
                           ),
                         ),
@@ -222,15 +242,15 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                   ],
                 ),
 
-                // ▼ 追加: アイコン選択エリア
-                const SizedBox(height: 16),
+                // アイコン選択エリア
+                const SizedBox(height: 5),
                 Text(
                   'アイコン', // 多言語対応する場合は AppLocalizations に追加してください
                   style: Theme.of(
                     context,
                   ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade700),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 5),
                 Wrap(
                   spacing: 12.0,
                   runSpacing: 12.0,
@@ -262,14 +282,14 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                           color: isSelected
                               ? Colors.white
                               : Colors.grey.shade600,
-                          size: 28,
+                          size: 20,
                         ),
                       ),
                     );
                   }).toList(),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 15),
                 ElevatedButton(
                   onPressed: () {
                     FirebaseAnalytics.instance.logEvent(
