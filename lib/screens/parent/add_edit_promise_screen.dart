@@ -29,6 +29,22 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
 
   TimeOfDay? _selectedTime;
 
+  // ▼ 追加: アイコンの選択肢を定義（キー名：アイコンデータ）
+  // データベースにはこの「キー名（文字列）」を保存します。
+  final Map<String, IconData> _iconMap = {
+    'star': Icons.star,
+    'school': Icons.school,
+    'book': Icons.menu_book,
+    'sports': Icons.sports_baseball,
+    'game': Icons.sports_esports,
+    'clean': Icons.cleaning_services,
+    'pets': Icons.pets,
+    'music': Icons.music_note,
+  };
+
+  // ▼ 追加: 現在選択されているアイコンのキー（デフォルトは星）
+  String _selectedIconKey = 'star';
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +57,9 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
           widget.initialPromise!['duration']?.toString() ?? '';
       _pointsController.text =
           widget.initialPromise!['points']?.toString() ?? '';
+
+      // ▼ 追加: アイコンの初期値を設定
+      _selectedIconKey = widget.initialPromise!['icon'] ?? 'star';
     }
   }
 
@@ -71,6 +90,8 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
         // intに変換。失敗したら0にする
         'duration': int.tryParse(_durationController.text) ?? 0,
         'points': int.tryParse(_pointsController.text) ?? 0,
+        // ▼ 追加: 選択されたアイコンのキーを保存
+        'icon': _selectedIconKey,
       };
       // "結果"として新しいやくそくのデータを渡しつつ、前の画面に戻る
       if (Navigator.of(context).canPop()) {
@@ -135,6 +156,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 12),
                 TextFormField(
                   controller: _startTimeController,
                   readOnly: true, // テキストの手入力を不可にする
@@ -145,7 +167,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                       vertical: 8,
                       horizontal: 12,
                     ),
-                    suffixIcon: Icon(Icons.access_time), // 時計アイコンを追加
+                    suffixIcon: const Icon(Icons.access_time), // 時計アイコンを追加
                   ),
                   onTap: () {
                     FirebaseAnalytics.instance.logEvent(
@@ -155,6 +177,7 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                     _selectTime(context);
                   },
                 ),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     Expanded(
@@ -198,7 +221,55 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+
+                // ▼ 追加: アイコン選択エリア
+                const SizedBox(height: 16),
+                Text(
+                  'アイコン', // 多言語対応する場合は AppLocalizations に追加してください
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade700),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 12.0,
+                  runSpacing: 12.0,
+                  children: _iconMap.entries.map((entry) {
+                    final isSelected = _selectedIconKey == entry.key;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedIconKey = entry.key;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Theme.of(context).primaryColor
+                              : Colors.transparent,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey.shade400,
+                            width: isSelected ? 2 : 1,
+                          ),
+                        ),
+                        child: Icon(
+                          entry.value,
+                          color: isSelected
+                              ? Colors.white
+                              : Colors.grey.shade600,
+                          size: 28,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+
+                const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
                     FirebaseAnalytics.instance.logEvent(
