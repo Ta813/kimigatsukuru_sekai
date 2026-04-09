@@ -2,16 +2,29 @@
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
+import '../../widgets/blinking_effect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
 
+/// チュートリアルのフェーズ
+enum _TutorialPhase { add, delete, finish, done }
+
+/// チュートリアル用のおためしテンプレート
+const Map<String, dynamic> _trialTemplate = {
+  'title': 'やくそく（おためし）',
+  'icon': '⭐',
+  'time': '06:00',
+  'duration': 5,
+  'points': 5,
+};
+
 class RegularPromiseSettingsScreen extends StatefulWidget {
-  const RegularPromiseSettingsScreen({super.key});
+  final bool isTutorial;
+  const RegularPromiseSettingsScreen({super.key, this.isTutorial = false});
 
   @override
   State<RegularPromiseSettingsScreen> createState() =>
@@ -23,12 +36,151 @@ class _RegularPromiseSettingsScreenState
   // 定例のやくそくリストを管理するためのデータ
   List<Map<String, dynamic>> _regularPromises = [];
 
-  // 画面が最初に表示された時に、保存されているデータを読み込む
+  // チュートリアルフェーズ
+  _TutorialPhase _tutorialPhase = _TutorialPhase.add;
+
+  // おすすめのやくそくテンプレート
+  final List<Map<String, dynamic>> _recommendedTemplates = [
+    {
+      'title': 'トイレにいく',
+      'icon': '🚽',
+      'time': '06:50', // 朝起きてすぐの習慣づけに
+      'duration': 10,
+      'points': 10,
+    },
+    {
+      'title': 'あさごはん',
+      'icon': '🍳',
+      'time': '07:00',
+      'duration': 30,
+      'points': 20,
+    },
+    {
+      'title': 'はみがき（あさ）',
+      'icon': '🪥',
+      'time': '07:30',
+      'duration': 10,
+      'points': 10,
+    },
+    {
+      'title': 'おきがえ',
+      'icon': '👕',
+      'time': '07:45',
+      'duration': 10,
+      'points': 10,
+    },
+    {
+      'title': 'くつそろえ',
+      'icon': '👟',
+      'time': '08:00',
+      'duration': 5,
+      'points': 5,
+    },
+    {
+      'title': 'ひるごはん',
+      'icon': '🍱',
+      'time': '12:00',
+      'duration': 30,
+      'points': 20,
+    },
+    {
+      'title': 'てあらい',
+      'icon': '🧼',
+      'time': '15:30',
+      'duration': 5,
+      'points': 5,
+    },
+    {
+      'title': 'しゅくだい',
+      'icon': '✍️',
+      'time': '16:00',
+      'duration': 30,
+      'points': 20,
+    },
+    {
+      'title': 'おけいこ・れんしゅう',
+      'icon': '🎹', // ピアノやスポーツの練習などに
+      'time': '16:45',
+      'duration': 20,
+      'points': 15,
+    },
+    {
+      'title': 'どくしょ',
+      'icon': '📚',
+      'time': '17:00',
+      'duration': 20,
+      'points': 10,
+    },
+    {
+      'title': 'おてつだい',
+      'icon': '✨',
+      'time': '17:30',
+      'duration': 15,
+      'points': 15,
+    },
+    {
+      'title': 'おかたづけ',
+      'icon': '🧸',
+      'time': '18:30',
+      'duration': 15,
+      'points': 10,
+    },
+    {
+      'title': 'おふろ',
+      'icon': '🛀',
+      'time': '18:00',
+      'duration': 30,
+      'points': 20,
+    },
+    {
+      'title': 'パジャマにきがえる',
+      'icon': '👚',
+      'time': '18:40', // お風呂あがりに
+      'duration': 10,
+      'points': 10,
+    },
+    {
+      'title': 'よるごはん',
+      'icon': '🍛',
+      'time': '19:00',
+      'duration': 30,
+      'points': 20,
+    },
+    {
+      'title': 'はみがき（よる）',
+      'icon': '🪥',
+      'time': '19:30',
+      'duration': 10,
+      'points': 10,
+    },
+    {
+      'title': 'あしたのじゅんび',
+      'icon': '🎒',
+      'time': '19:45', // 寝る前にランドセルやカバンを用意する
+      'duration': 15,
+      'points': 15,
+    },
+    {
+      'title': 'ねる',
+      'icon': '💤',
+      'time': '20:00',
+      'duration': 10,
+      'points': 10,
+    },
+  ];
+
   @override
   void initState() {
     super.initState();
     _loadPromises();
-    _checkFirstYakusoku();
+    if (widget.isTutorial) {
+      // チュートリアルモード: 初回ダイアログ（ステップ3）を表示
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showTutorialStep3Dialog();
+      });
+    } else {
+      _checkFirstYakusoku();
+    }
   }
 
   Future<void> _loadPromises() async {
@@ -49,7 +201,6 @@ class _RegularPromiseSettingsScreenState
     final bool isFirst = prefs.getBool('is_first_yakusoku') ?? true;
 
     if (isFirst) {
-      // 画面描画後にダイアログを表示
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         showDialog(
@@ -66,7 +217,6 @@ class _RegularPromiseSettingsScreenState
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // キャラクター
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -82,7 +232,6 @@ class _RegularPromiseSettingsScreenState
                       ),
                     ],
                   ),
-                  // 吹き出しのしっぽ
                   ClipPath(
                     clipper: _SpeechBubbleTailClipper(),
                     child: Container(
@@ -91,7 +240,6 @@ class _RegularPromiseSettingsScreenState
                       color: const Color(0xFFFFF7E6),
                     ),
                   ),
-                  // 吹き出し本体
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
@@ -123,11 +271,7 @@ class _RegularPromiseSettingsScreenState
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {
-                            try {
-                              SfxManager.instance.playTapSound();
-                            } catch (e) {
-                              print('再生エラー: $e');
-                            }
+                            _playTapSound();
                             Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
@@ -156,7 +300,6 @@ class _RegularPromiseSettingsScreenState
           ),
         );
       });
-      // 次回からは出さないようにフラグを更新
       await prefs.setBool('is_first_yakusoku', false);
     }
   }
@@ -179,7 +322,7 @@ class _RegularPromiseSettingsScreenState
           text: match.group(1),
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: const Color(0xFFE64A19), // 濃いオレンジ / 赤み
+            color: const Color(0xFFE64A19),
             fontSize: isTitle ? 18 : 16,
           ),
         ),
@@ -204,63 +347,52 @@ class _RegularPromiseSettingsScreenState
     );
   }
 
-  // やくそくを削除する処理
   void _deletePromise(int index) {
-    // 削除する前に対象のやくそく名を取得しておきます
     final String deletedPromiseTitle = _regularPromises[index]['title'];
-
     setState(() {
       _regularPromises.removeAt(index);
     });
-
-    // 変更後のリストを保存
     SharedPrefsHelper.saveRegularPromises(_regularPromises);
 
-    // 古いSnackBarが残っている可能性があれば消去します
+    // チュートリアル中にやくそく（おためし）を削除したらステップ5へ
+    if (widget.isTutorial &&
+        _tutorialPhase == _TutorialPhase.delete &&
+        deletedPromiseTitle == _trialTemplate['title']) {
+      setState(() => _tutorialPhase = _TutorialPhase.finish);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showTutorialStep5Dialog();
+      });
+      return;
+    }
+
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    // 画面下部に新しいメッセージ（SnackBar）を表示します
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        // 表示するメッセージ
         content: Text(
           AppLocalizations.of(context)!.promiseDeleted(deletedPromiseTitle),
         ),
-        // メッセージの表示時間
         duration: const Duration(seconds: 2),
       ),
     );
   }
 
-  // 「＋」ボタンが押された時の処理
   void _navigateToAddScreen() async {
-    try {
-      SfxManager.instance.playTapSound();
-    } catch (e) {
-      // エラーが発生した場合
-      print('再生エラー: $e');
-    }
-    // まず、追加画面のファイルをインポートするのを忘れないようにしましょう
-    // import 'add_edit_promise_screen.dart';
-
+    _playTapSound();
     final newPromise = await Navigator.push<Map<String, dynamic>>(
       context,
       MaterialPageRoute(builder: (context) => const AddEditPromiseScreen()),
     );
 
-    // もし、新しいやくそくのデータを持って戻ってきたら
     if (newPromise != null) {
       setState(() {
         _regularPromises.add(newPromise);
-
         _regularPromises.sort((a, b) {
           final timeA = a['time'] ?? '00:00';
           final timeB = b['time'] ?? '00:00';
           return timeA.compareTo(timeB);
         });
       });
-      // 変更後のリストを保存
       SharedPrefsHelper.saveRegularPromises(_regularPromises);
-      // 追加したことをユーザーに知らせるメッセージ
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -275,26 +407,24 @@ class _RegularPromiseSettingsScreenState
 
   void _navigateToEditScreen(int index) async {
     final promiseToEdit = _regularPromises[index];
-
     final updatedPromise = await Navigator.push<Map<String, dynamic>>(
       context,
       MaterialPageRoute(
-        // ★編集対象のデータを渡して画面を開く
         builder: (context) =>
             AddEditPromiseScreen(initialPromise: promiseToEdit),
       ),
     );
 
-    // もし、更新されたデータを持って戻ってきたら
     if (updatedPromise != null) {
       setState(() {
-        // リストの該当箇所を、新しいデータに置き換える
         _regularPromises[index] = updatedPromise;
+        _regularPromises.sort((a, b) {
+          final timeA = a['time'] ?? '00:00';
+          final timeB = b['time'] ?? '00:00';
+          return timeA.compareTo(timeB);
+        });
       });
-      // SharedPreferencesに保存
       SharedPrefsHelper.saveRegularPromises(_regularPromises);
-
-      // ユーザーに知らせるメッセージ
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -308,141 +438,689 @@ class _RegularPromiseSettingsScreenState
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: const CustomBackButton(),
-        title: Text(AppLocalizations.of(context)!.regularPromiseSettingsTitle),
-        actions: [
-          InkWell(
-            onTap: () {
-              FirebaseAnalytics.instance.logEvent(
-                name: 'start_regular_promise_settings_add',
-              );
-              _navigateToAddScreen();
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 4.0,
-              ),
-              child: Column(
+  void _addRecommendedPromise(Map<String, dynamic> template) {
+    bool exists = _regularPromises.any((p) => p['title'] == template['title']);
+    if (exists) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${template['title']}は既に追加されています'),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _regularPromises.add({
+        'title': template['title'],
+        'icon': template['icon'],
+        'time': template['time'],
+        'duration': template['duration'],
+        'points': template['points'],
+      });
+      _regularPromises.sort((a, b) {
+        final timeA = a['time'] ?? '00:00';
+        final timeB = b['time'] ?? '00:00';
+        return timeA.compareTo(timeB);
+      });
+    });
+
+    // チュートリアル中におためしを追加したらフェーズをdeleteへ
+    if (widget.isTutorial &&
+        _tutorialPhase == _TutorialPhase.add &&
+        template['title'] == _trialTemplate['title']) {
+      setState(() => _tutorialPhase = _TutorialPhase.delete);
+      return;
+    }
+
+    SharedPrefsHelper.saveRegularPromises(_regularPromises);
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          AppLocalizations.of(context)!.promiseAdded(template['title']),
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  // ---- チュートリアルダイアログ ----
+
+  Future<void> _showTutorialStep3Dialog() async {
+    if (!mounted) return;
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const Icon(Icons.add),
-                  Text(
-                    AppLocalizations.of(context)!.addAction,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Image.asset(
+                    'assets/images/clothes_dress_red.gif',
+                    height: 90,
                   ),
+                  const SizedBox(width: 16),
+                  Image.asset('assets/images/character_kuma.gif', height: 90),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: ListView.builder(
-          itemCount: _regularPromises.length,
-          itemBuilder: (context, index) {
-            final promise = _regularPromises[index];
-            return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: ListTile(
-                dense: true,
-                title: Text(promise['title']),
-                subtitle: Text(
-                  '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
+              ClipPath(
+                clipper: _SpeechBubbleTailClipper(),
+                child: Container(
+                  width: 24,
+                  height: 16,
+                  color: const Color(0xFFFFF7E6),
                 ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min, // Rowが必要な分だけ幅をとるようにする
-                  children: [
-                    // 編集ボタン
-                    InkWell(
-                      onTap: () {
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          print('再生エラー: $e');
-                        }
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_regular_promise_settings_edit',
-                        );
-                        _navigateToEditScreen(index);
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                          vertical: 4.0,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.edit),
-                            Text(
-                              AppLocalizations.of(context)!.editAction,
-                              style: const TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 22,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF7E6),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
                     ),
-                    const SizedBox(width: 12),
-                    // 削除ボタン
-                    InkWell(
-                      onTap: () {
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildRichText(
+                      AppLocalizations.of(ctx)!.tutorialParentStep3Title,
+                      isTitle: true,
+                    ),
+                    const SizedBox(height: 10),
+                    _buildRichText(
+                      AppLocalizations.of(ctx)!.tutorialParentStep3Desc,
+                      isTitle: false,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
                         try {
                           SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          print('再生エラー: $e');
-                        }
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_regular_promise_settings_delete',
-                        );
-                        _deletePromise(index);
+                        } catch (_) {}
+                        Navigator.of(ctx).pop();
                       },
-                      borderRadius: BorderRadius.circular(8),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                          vertical: 4.0,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF7043),
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(220, 56),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.delete, color: Colors.red[400]),
-                            Text(
-                              AppLocalizations.of(context)!.deleteAction,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red[400],
-                              ),
-                            ),
-                          ],
+                        elevation: 8,
+                      ),
+                      child: Text(
+                        AppLocalizations.of(ctx)!.gotIt,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-            );
-          },
+            ],
+          ),
         ),
       ),
-      // 画面下部にバナーを設置（初回起動時は広告を表示しない）
-      bottomNavigationBar: const AdBanner(),
+    );
+  }
+
+  Future<void> _showTutorialStep5Dialog() async {
+    if (!mounted) return;
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Image.asset(
+                    'assets/images/clothes_dress_red.gif',
+                    height: 90,
+                  ),
+                  const SizedBox(width: 16),
+                  Image.asset('assets/images/character_kuma.gif', height: 90),
+                ],
+              ),
+              ClipPath(
+                clipper: _SpeechBubbleTailClipper(),
+                child: Container(
+                  width: 24,
+                  height: 16,
+                  color: const Color(0xFFFFF7E6),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 22,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF7E6),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildRichText(
+                      AppLocalizations.of(ctx)!.tutorialParentStep5Title,
+                      isTitle: true,
+                    ),
+                    const SizedBox(height: 10),
+                    _buildRichText(
+                      AppLocalizations.of(ctx)!.tutorialParentStep5Desc,
+                      isTitle: false,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (_) {}
+                        Navigator.of(ctx).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF7043),
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(220, 56),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        elevation: 8,
+                      ),
+                      child: Text(
+                        AppLocalizations.of(ctx)!.gotIt,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _playTapSound() {
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (e) {
+      debugPrint('再生エラー: $e');
+    }
+  }
+
+  Widget _buildRecommendedCard(
+    Map<String, dynamic> template, {
+    bool isDragging = false,
+  }) {
+    final bool isTutorialTrialCard =
+        widget.isTutorial &&
+        _tutorialPhase == _TutorialPhase.add &&
+        template['title'] == _trialTemplate['title'];
+    final bool isDisabledInTutorial =
+        widget.isTutorial &&
+        (_tutorialPhase == _TutorialPhase.add ||
+            _tutorialPhase == _TutorialPhase.delete) &&
+        template['title'] != _trialTemplate['title'];
+
+    final card = Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      elevation: isDragging ? 8 : 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        leading: Text(template['icon'], style: const TextStyle(fontSize: 28)),
+        title: Text(
+          template['title'],
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+        subtitle: Text(
+          '${template['time']} / ${template['duration']}分 / ${template['points']}pt',
+          style: const TextStyle(fontSize: 10),
+        ),
+        trailing: isTutorialTrialCard
+            ? Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  BlinkingEffect(
+                    isBlinking: true,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.add_circle,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: () {
+                        if (widget.isTutorial) {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_promise_add_tutorial',
+                          );
+                        }
+                        _playTapSound();
+                        _addRecommendedPromise(template);
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    right: 46,
+                    top: 20,
+                    child: _buildBubble(
+                      AppLocalizations.of(context)!.tutorialParentAddBubble,
+                      alignRight: true,
+                    ),
+                  ),
+                ],
+              )
+            : IgnorePointer(
+                ignoring: isDisabledInTutorial,
+                child: Opacity(
+                  opacity: isDisabledInTutorial ? 0.4 : 1.0,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.add_circle,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onPressed: () {
+                      _playTapSound();
+                      _addRecommendedPromise(template);
+                    },
+                  ),
+                ),
+              ),
+      ),
+    );
+    return card;
+  }
+
+  Widget _buildCurrentPromiseCard(Map<String, dynamic> promise, int index) {
+    final iconEmoji = promise['icon'] ?? '✨';
+    final bool isTutorialTrialCard =
+        widget.isTutorial &&
+        _tutorialPhase == _TutorialPhase.delete &&
+        promise['title'] == _trialTemplate['title'];
+
+    Widget deleteButton;
+    if (isTutorialTrialCard) {
+      deleteButton = Stack(
+        clipBehavior: Clip.none,
+        children: [
+          BlinkingEffect(
+            isBlinking: true,
+            child: IconButton(
+              icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
+              onPressed: () {
+                _playTapSound();
+                _deletePromise(index);
+              },
+            ),
+          ),
+          Positioned(
+            right: 44,
+            top: -4,
+            child: _buildBubble(
+              AppLocalizations.of(context)!.tutorialParentDeleteBubble,
+              alignRight: true,
+            ),
+          ),
+        ],
+      );
+    } else {
+      final bool disabled =
+          widget.isTutorial &&
+          (_tutorialPhase == _TutorialPhase.add ||
+              _tutorialPhase == _TutorialPhase.delete);
+      deleteButton = IgnorePointer(
+        ignoring: disabled,
+        child: Opacity(
+          opacity: disabled ? 0.4 : 1.0,
+          child: IconButton(
+            icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
+            onPressed: () {
+              if (widget.isTutorial) {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'start_promise_delete_tutorial',
+                );
+              }
+              _playTapSound();
+              _deletePromise(index);
+            },
+          ),
+        ),
+      );
+    }
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: ListTile(
+        dense: true,
+        leading: Text(iconEmoji, style: const TextStyle(fontSize: 24)),
+        title: Text(
+          promise['title'],
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
+          style: const TextStyle(fontSize: 11),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IgnorePointer(
+              ignoring:
+                  widget.isTutorial &&
+                  (_tutorialPhase == _TutorialPhase.add ||
+                      _tutorialPhase == _TutorialPhase.delete),
+              child: Opacity(
+                opacity:
+                    widget.isTutorial &&
+                        (_tutorialPhase == _TutorialPhase.add ||
+                            _tutorialPhase == _TutorialPhase.delete)
+                    ? 0.4
+                    : 1.0,
+                child: IconButton(
+                  icon: const Icon(Icons.edit, size: 20),
+                  onPressed: () {
+                    _playTapSound();
+                    _navigateToEditScreen(index);
+                  },
+                ),
+              ),
+            ),
+            deleteButton,
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 吹き出しウィジェット
+  Widget _buildBubble(String text, {bool alignRight = false}) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 140),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF9C4),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.orange, width: 2),
+        boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black26)],
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // チュートリアル中の場合はおためしテンプレートを先頭に追加
+    final baseTemplates =
+        widget.isTutorial && _tutorialPhase == _TutorialPhase.add
+        ? [_trialTemplate, ..._recommendedTemplates]
+        : _recommendedTemplates;
+
+    // 現在のやくそくに「無い」テンプレートだけを抽出する
+    final availableTemplates = baseTemplates.where((template) {
+      return !_regularPromises.any(
+        (promise) => promise['title'] == template['title'],
+      );
+    }).toList();
+
+    // チュートリアル finish フェーズ: 戻るボタン点滅、他はすべて操作可能
+    final bool isFinishPhase =
+        widget.isTutorial && _tutorialPhase == _TutorialPhase.finish;
+    // チュートリアル add/delete フェーズ: 他のボタンをブロック
+    final bool blockOtherButtons =
+        widget.isTutorial &&
+        (_tutorialPhase == _TutorialPhase.add ||
+            _tutorialPhase == _TutorialPhase.delete);
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: isFinishPhase
+            ? BlinkingEffect(
+                isBlinking: true,
+                borderRadius: 8,
+                child: BackButton(
+                  onPressed: () {
+                    if (widget.isTutorial) {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'finish_regular_promise_settings_tutorial',
+                      );
+                    }
+                    if (Navigator.of(context).canPop())
+                      Navigator.of(context).pop();
+                  },
+                ),
+              )
+            : IgnorePointer(
+                ignoring: blockOtherButtons,
+                child: const CustomBackButton(),
+              ),
+        title: Text(AppLocalizations.of(context)!.regularPromiseSettingsTitle),
+        actions: [
+          IgnorePointer(
+            ignoring:
+                widget.isTutorial &&
+                _tutorialPhase != _TutorialPhase.done &&
+                _tutorialPhase != _TutorialPhase.finish,
+            child: Opacity(
+              opacity:
+                  widget.isTutorial &&
+                      _tutorialPhase != _TutorialPhase.done &&
+                      _tutorialPhase != _TutorialPhase.finish
+                  ? 0.4
+                  : 1.0,
+              child: InkWell(
+                onTap: () {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_regular_promise_settings_add',
+                  );
+                  _navigateToAddScreen();
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 4.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.add),
+                      const Text(
+                        'カスタム追加',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Row(
+          children: [
+            // 左側：おすすめのやくそく
+            Expanded(
+              flex: 4,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.5),
+                  border: Border(
+                    right: BorderSide(
+                      color: Theme.of(context).primaryColor.withOpacity(0.2),
+                    ),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      child: Text(
+                        '💡 おすすめ',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: availableTemplates.length,
+                        itemBuilder: (context, index) {
+                          final template = availableTemplates[index];
+                          // チュートリアルのadd以外フェーズでは左側全体をブロック
+                          final bool disableLeft =
+                              widget.isTutorial &&
+                              _tutorialPhase != _TutorialPhase.add &&
+                              _tutorialPhase != _TutorialPhase.finish;
+                          return IgnorePointer(
+                            ignoring: disableLeft,
+                            child: LongPressDraggable<Map<String, dynamic>>(
+                              data: template,
+                              feedback: Material(
+                                color: Colors.transparent,
+                                child: _buildRecommendedCard(
+                                  template,
+                                  isDragging: true,
+                                ),
+                              ),
+                              childWhenDragging: Opacity(
+                                opacity: 0.5,
+                                child: _buildRecommendedCard(template),
+                              ),
+                              child: _buildRecommendedCard(template),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // 右側：今のやくそく
+            Expanded(
+              flex: 6,
+              child: DragTarget<Map<String, dynamic>>(
+                onWillAcceptWithDetails: (details) => true,
+                onAcceptWithDetails: (details) {
+                  _addRecommendedPromise(details.data);
+                },
+                builder: (context, candidateData, rejectedData) {
+                  final isHovered = candidateData.isNotEmpty;
+                  return Container(
+                    color: isHovered
+                        ? Theme.of(context).primaryColor.withOpacity(0.1)
+                        : Colors.transparent,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          child: Text(
+                            '📝 今のやくそく',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: _regularPromises.isEmpty
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_back,
+                                        size: 48,
+                                        color: Colors.grey[400],
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        '左からドラッグして\n追加してね！',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : ListView.builder(
+                                  itemCount: _regularPromises.length,
+                                  itemBuilder: (context, index) {
+                                    final promise = _regularPromises[index];
+                                    return _buildCurrentPromiseCard(
+                                      promise,
+                                      index,
+                                    );
+                                  },
+                                ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -451,7 +1129,6 @@ class _SpeechBubbleTailClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    // 逆三角形を描く (上向き)
     path.moveTo(0, size.height);
     path.lineTo(size.width / 2, 0);
     path.lineTo(size.width, size.height);
