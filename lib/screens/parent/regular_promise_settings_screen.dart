@@ -2,6 +2,7 @@
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/blinking_effect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -354,6 +355,9 @@ class _RegularPromiseSettingsScreenState
     });
     SharedPrefsHelper.saveRegularPromises(_regularPromises);
 
+    // ★ 修正: リスト全体を渡して通知を再設定する
+    NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
+
     // チュートリアル中にやくそく（おためし）を削除したらステップ5へ
     if (widget.isTutorial &&
         _tutorialPhase == _TutorialPhase.delete &&
@@ -393,6 +397,10 @@ class _RegularPromiseSettingsScreenState
         });
       });
       SharedPrefsHelper.saveRegularPromises(_regularPromises);
+
+      // ★ 修正: リスト全体を渡して通知を再設定する
+      NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
+
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -425,6 +433,10 @@ class _RegularPromiseSettingsScreenState
         });
       });
       SharedPrefsHelper.saveRegularPromises(_regularPromises);
+
+      // ★ 修正: リスト全体を渡して通知を再設定する
+      NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
+
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -475,6 +487,10 @@ class _RegularPromiseSettingsScreenState
     }
 
     SharedPrefsHelper.saveRegularPromises(_regularPromises);
+
+    // ★ 修正: リスト全体を渡して通知を再設定する
+    NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
+
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
