@@ -16,18 +16,13 @@ class NotificationManager {
 
   // 初期化処理
   Future<void> init() async {
-    // タイムゾーンの初期化（日本時間に設定）
     tz.initializeTimeZones();
-    // 🌟 端末のローカルタイムゾーンを自動取得して設定！
     final timeZoneInfo = await FlutterTimezone.getLocalTimezone();
-
     tz.setLocalLocation(tz.getLocation(timeZoneInfo.identifier));
 
-    // Androidの設定（アイコンはアプリのデフォルトアイコンを使用）
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('ic_notification');
 
-    // iOSの設定（通知の許可を求める）
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
           requestAlertPermission: false,
@@ -47,12 +42,86 @@ class NotificationManager {
     );
   }
 
-  // 毎週月曜日の11時に通知をスケジュールするメソッド
-  Future<void> scheduleWeeklyMonday11AM() async {
-    // 🌟 端末の言語設定が日本語かどうかを判定
+  // --- 追加: やくそくリストに基づいて通知をすべて再設定する ---
+  Future<void> scheduleAllRegularPromises(
+    List<Map<String, dynamic>> promises,
+  ) async {
+    // 1. やくそく関連の通知（ID 100以降とする）を一度すべてキャンセル
+    // IDが重複しないように管理するため、まずはリセットします
+    for (int i = 100; i < 200; i++) {
+      await _flutterLocalNotificationsPlugin.cancel(id: i);
+    }
+
     final bool isJapanese = Platform.localeName.startsWith('ja');
 
-    // 言語に合わせてタイトルと本文を切り替え
+    // 2. リストをループして各時間を予約
+    for (int i = 0; i < promises.length; i++) {
+      final promise = promises[i];
+      final String title = promise['title'] ?? '';
+      final String timeStr = promise['time'] ?? ''; // "07:30" 形式
+      final String icon = promise['icon'] ?? '⭐';
+
+      if (timeStr.isEmpty) continue;
+
+      final notificationTitle = isJapanese
+          ? '「$title」のじかんだよ！'
+          : 'Time for "$title"!';
+      final notificationBody = isJapanese
+          ? '$icon やくそくを はじめよう！'
+          : '$icon Let\'s start your promise!';
+
+      try {
+        await _flutterLocalNotificationsPlugin.zonedSchedule(
+          id: 100 + i, // IDを100, 101...とする
+          title: notificationTitle,
+          body: notificationBody,
+          scheduledDate: _nextInstanceOfTime(timeStr),
+          notificationDetails: const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'promise_reminder_channel',
+              'Promise Reminders',
+              channelDescription: 'Notifications for each promise time',
+              importance: Importance.high,
+              priority: Priority.high,
+            ),
+            iOS: DarwinNotificationDetails(),
+          ),
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          matchDateTimeComponents: DateTimeComponents.time, // 毎日その時間に鳴らす
+        );
+      } catch (e) {
+        print("❌ 通知の予約に失敗しました ($title): $e");
+      }
+    }
+    print("✅ ${promises.length}件のやくそく通知を再設定しました");
+  }
+
+  // 指定された時刻（HH:mm）の「次の発生タイミング」を計算する
+  tz.TZDateTime _nextInstanceOfTime(String timeStr) {
+    final parts = timeStr.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
+
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
+
+    // すでにその時間を過ぎている場合は翌日に設定
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
+  }
+
+  // 毎週月曜日の11時に通知をスケジュールするメソッド（既存）
+  Future<void> scheduleWeeklyMonday11AM() async {
+    final bool isJapanese = Platform.localeName.startsWith('ja');
     final String title = isJapanese
         ? '今週の「やくそく」はいかがですか？🌟'
         : 'How are this week\'s Promises? 🌟';
@@ -62,34 +131,28 @@ class NotificationManager {
 
     try {
       await _flutterLocalNotificationsPlugin.zonedSchedule(
-        id: 0, // 通知ID（固定でOK）
-        title: title, // 通知のタイトル
-        body: body, // 通知のメッセージ
-        scheduledDate: _nextInstanceOfMonday11AM(), // 次の月曜11時の時間を計算
+        id: 0, // ID 0 は月曜通知用
+        title: title,
+        body: body,
+        scheduledDate: _nextInstanceOfMonday11AM(),
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
-            'weekly_reminder_channel', // チャンネルID
-            'Weekly Reminder', // チャンネル名
-            channelDescription: 'Notification for Monday 11 AM',
+            'weekly_reminder_channel',
+            'Weekly Reminder',
             importance: Importance.high,
             priority: Priority.high,
           ),
           iOS: DarwinNotificationDetails(),
         ),
-        androidScheduleMode: AndroidScheduleMode
-            .inexactAllowWhileIdle, // Android 12以降で時間に合わせて鳴らす設定
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       );
-      print("✅ [成功] 1分後の通知スケジュールをOSに登録しました！");
     } catch (e) {
-      // 🌟 もしAndroidに弾かれたらここにエラーが出ます！
-      print("❌ [失敗] スケジュール登録でエラーが発生しました: $e");
+      print("❌ 月曜通知の登録エラー: $e");
     }
   }
 
-  // 次の「月曜日の11時」を計算するロジック
   tz.TZDateTime _nextInstanceOfMonday11AM() {
     tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    // 今日の11時に設定
     tz.TZDateTime scheduledDate = tz.TZDateTime(
       tz.local,
       now.year,
@@ -98,11 +161,8 @@ class NotificationManager {
       11,
       0,
     );
-
-    // もし今日が月曜じゃない、または今日が月曜だけどすでに11時を過ぎている場合
     while (scheduledDate.weekday != DateTime.monday ||
         scheduledDate.isBefore(now)) {
-      // 1日ずつ足して次の月曜11時を探す
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
     return scheduledDate;
