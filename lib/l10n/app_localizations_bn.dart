@@ -156,7 +156,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get promiseBoard => 'প্রতিশ্রুতি বোর্ড';
 
   @override
-  String get noRegularPromises => 'এখনও কোনো নিয়মিত প্রতিশ্রুতি নেই';
+  String get noRegularPromises => 'এখনও কোনো প্রতিশ্রুতি নেই';
 
   @override
   String get untitled => 'শিরোনামহীন';
@@ -240,7 +240,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get finished => 'শেষ হয়েছে!';
 
   @override
-  String get addRegularPromiseTitle => 'নতুন নিয়মিত প্রতিশ্রুতি';
+  String get addRegularPromiseTitle => 'নতুন প্রতিশ্রুতি';
 
   @override
   String get editRegularPromiseTitle => 'প্রতিশ্রুতি সম্পাদনা';
@@ -317,7 +317,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get readFirstButton => 'প্রথমে আমাকে পড়ুন';
 
   @override
-  String get regularPromiseSettingsButton => 'নিয়মিত প্রতিশ্রুতি সেটিংস';
+  String get regularPromiseSettingsButton => 'প্রতিশ্রুতি সেটিংস';
 
   @override
   String get emergencyPromiseSettingsButton => 'জরুরি প্রতিশ্রুতি সেটিংস';
@@ -338,7 +338,7 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get regularPromiseSettingsTitle => 'নিয়মিত প্রতিশ্রুতি সেটিংস';
+  String get regularPromiseSettingsTitle => 'প্রতিশ্রুতি সেটিংস';
 
   @override
   String get timeLabel => 'সময়';
@@ -446,19 +446,22 @@ class AppLocalizationsBn extends AppLocalizations {
   String get promiseDefault1Title => 'সকালের নাস্তা';
 
   @override
-  String get promiseDefault2Title => 'স্কুলের জন্য তৈরি হওয়া';
+  String get promiseDefault2Title => 'দাঁত মাজা (সকাল)';
 
   @override
-  String get promiseDefault3Title => 'স্নানের প্রস্তুতি';
+  String get promiseDefault3Title => 'পোশাক পরিবর্তন';
 
   @override
-  String get promiseDefault4Title => 'রাতের খাবার';
+  String get promiseDefault4Title => 'গোসল';
 
   @override
-  String get promiseDefault5Title => 'দাঁত মাজা';
+  String get promiseDefault5Title => 'রাতের খাবার';
 
   @override
-  String get promiseDefault6Title => 'ঘুমের প্রস্তুতি';
+  String get promiseDefault6Title => 'দাঁত মাজা (রাত)';
+
+  @override
+  String get promiseDefault7Title => 'ঘুমানো';
 
   @override
   String get settingsTitle => 'সেটিংস';
@@ -1238,7 +1241,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get resetPromisesConfirm => 'আপনি কি নিশ্চিত যে আপনি সব নিয়মিত প্রতিশ্রুতি রিসেট করতে চান? এটি আর ফেরানো যাবে না।';
 
   @override
-  String get resetPromisesSuccess => 'নিয়মিত প্রতিশ্রুতি রিসেট করা হয়েছে।';
+  String get resetPromisesSuccess => 'নিয়মিত প্রতিশ্রুতি রিসেট করা হয়েছে.';
 
   @override
   String get tutorialStartBubble => 'আপনার \'প্রতিশ্রুতি\' এখানে\nশুরু হচ্ছে!';
@@ -1247,7 +1250,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tutorialShopBubble => 'আসুন\nকেনাকাটা করি!';
 
   @override
-  String get tutorialCustomizeBubble => 'আপনি এখানে সাজসজ্জা\nপরিবর্তন করতে পারেন!';
+  String get tutorialCustomizeBubble => 'আপনি এখানে\nজামাকাপড় পরিবর্তন করতে পারেন!';
+
+  @override
+  String get tutorialParentSettingsBubble => 'এখান থেকে আপনার প্রতিশ্রুতি তৈরি করুন!';
 
   @override
   String get helpMenuTitle => 'কীভাবে খেলবেন';
@@ -1266,4 +1272,135 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get helpMenuClose => 'বন্ধ করুন';
+
+  @override
+  String get tutorialParentRegularBubble => 'এখান থেকে\nপ্রতিশ্রুতি সেট করুন!';
+
+  @override
+  String get tutorialParentAddBubble => 'এই বোতামে ট্যাপ করুন\nপ্রতিশ্রুতি যোগ করতে!';
+
+  @override
+  String get tutorialParentDeleteBubble => 'এই বোতামে ট্যাপ করুন\nপ্রতিশ্রুতি মুছতে!';
+
+  @override
+  String get tutorialParentBackBubble => 'এখান থেকে\nফিরে যান!';
+
+  @override
+  String get tutorialParentStep3Title => 'নমুনা প্রতিশ্রুতি দিয়ে চেষ্টা করুন!';
+
+  @override
+  String get tutorialParentStep3Desc => 'বাম দিকের **+ বোতাম** ট্যাপ করে প্রতিশ্রুতি যোগ করুন।\n**\"ট্রায়াল প্রতিশ্রুতি\"** যোগ করে দেখুন!';
+
+  @override
+  String get tutorialParentStep5Title => 'প্রতিশ্রুতি সেট করার সময়!';
+
+  @override
+  String get tutorialParentStep5Desc => 'সাজেশন বা \"কাস্টম যোগ\" ব্যবহার করে **আপনার সন্তানের জন্য প্রতিশ্রুতি** সেট করুন।\nশেষ হলে **\"ফিরে যান\"** ট্যাপ করুন!';
+
+  @override
+  String get tutorialParentCompleteTitle => 'প্রতিশ্রুতি প্রস্তুত!';
+
+  @override
+  String get tutorialParentCompleteDesc => '**প্রতিশ্রুতি সেটআপ** সম্পন্ন!\nহোম স্ক্রিনে প্রতিশ্রুতি চেষ্টা করুন!';
+
+  @override
+  String promiseNotificationTitle(String title) {
+    return '\"$title\" এর সময় হয়েছে!';
+  }
+
+  @override
+  String promiseNotificationBody(String icon) {
+    return '$icon চলুন আপনার প্রতিশ্রুতি শুরু করি!';
+  }
+
+  @override
+  String get weeklyNotificationTitle => 'এই সপ্তাহের প্রতিশ্রুতিগুলো কেমন চলছে? 🌟';
+
+  @override
+  String get weeklyNotificationBody => 'একটু বিরতি নিচ্ছেন? ☕️ চলুন অ্যাপে আপনার সন্তানের অগ্রগতি পরীক্ষা করি!';
+
+  @override
+  String alreadyAddedPromise(String title) {
+    return '\"$title\" ইতিমধ্যে যোগ করা হয়েছে';
+  }
+
+  @override
+  String get customAdd => 'কাস্টম যোগ করুন';
+
+  @override
+  String get recommendedTitle => 'প্রস্তাবিত';
+
+  @override
+  String get currentPromiseTitle => 'বর্তমান প্রতিশ্রুতি';
+
+  @override
+  String get dragToAddInstruction => 'যোগ করতে বাম থেকে\nটেনে আনুন!';
+
+  @override
+  String get recPromiseToilet => 'টয়লেটে যাও';
+
+  @override
+  String get recPromiseBreakfast => 'সকালের নাস্তা';
+
+  @override
+  String get recPromiseBrushTeethMorning => 'দাঁত মাজা (সকাল)';
+
+  @override
+  String get recPromiseGetDressed => 'পোশাক পরা';
+
+  @override
+  String get recPromiseShoes => 'জুতো সাজানো';
+
+  @override
+  String get recPromiseLunch => 'দুপুরের খাবার';
+
+  @override
+  String get recPromiseWashHands => 'হাত ধোয়া';
+
+  @override
+  String get recPromiseHomework => 'বাড়ির কাজ';
+
+  @override
+  String get recPromisePractice => 'অনুশীলন / পাঠ';
+
+  @override
+  String get recPromiseReading => 'পড়া';
+
+  @override
+  String get recPromiseHelp => 'সাহায্য করা';
+
+  @override
+  String get recPromiseCleanUp => 'পরিষ্কার করা';
+
+  @override
+  String get recPromiseBath => 'গোসল করা';
+
+  @override
+  String get recPromisePajamas => 'পাজামা পরা';
+
+  @override
+  String get recPromiseDinner => 'রাতের খাবার';
+
+  @override
+  String get recPromiseBrushTeethNight => 'দাঁত মাজা (রাত)';
+
+  @override
+  String get recPromisePrepareNextDay => 'আগামীকালের প্রস্তুতি';
+
+  @override
+  String get recPromiseSleep => 'ঘুমানো';
+
+  @override
+  String get recPromiseReadBook => 'বই পড়া';
+
+  @override
+  String get recPromiseBathCleaning => 'বাথরুম পরিষ্কার করা';
+
+  @override
+  String get recPromiseErrand => 'কাজ করা';
+
+  @override
+  String durationAndPoints(String duration, String points) {
+    return '$duration মিনিট / $points পয়েন্ট';
+  }
 }

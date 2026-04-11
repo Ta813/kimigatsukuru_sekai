@@ -1,3 +1,5 @@
+// lib/screens/parent_mode/promise_board_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
@@ -249,9 +251,22 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                       promise['time'] ?? '',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    title: Text(
-                      promise['title'] ??
-                          AppLocalizations.of(context)!.untitled,
+                    // ▼ 変更: タイトルと一緒にアイコン（絵文字）を表示
+                    title: Row(
+                      children: [
+                        Text(
+                          promise['icon'] ?? '⭐', // 保存されていなければデフォルトの星
+                          style: const TextStyle(fontSize: 22),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            promise['title'] ??
+                                AppLocalizations.of(context)!.untitled,
+                            overflow: TextOverflow.ellipsis, // 長い名前は「...」で省略
+                          ),
+                        ),
+                      ],
                     ),
                     trailing: isCompleted
                         ? const Icon(

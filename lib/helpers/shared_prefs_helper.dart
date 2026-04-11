@@ -18,36 +18,49 @@ class SharedPrefsHelper {
     return [
       {
         'title': l10n.promiseDefault1Title,
+        'icon': '🍳',
         'time': '07:00',
         'duration': 30,
         'points': 20,
       },
       {
         'title': l10n.promiseDefault2Title,
+        'icon': '🪥',
         'time': '07:30',
         'duration': 10,
         'points': 10,
       },
       {
         'title': l10n.promiseDefault3Title,
-        'time': '18:00',
+        'icon': '👕',
+        'time': '07:45',
         'duration': 10,
         'points': 10,
       },
       {
         'title': l10n.promiseDefault4Title,
-        'time': '19:00',
+        'icon': '🛀',
+        'time': '18:00',
         'duration': 30,
         'points': 20,
       },
       {
         'title': l10n.promiseDefault5Title,
+        'icon': '🍛',
+        'time': '19:00',
+        'duration': 30,
+        'points': 20,
+      },
+      {
+        'title': l10n.promiseDefault6Title,
+        'icon': '🪥',
         'time': '19:30',
         'duration': 10,
         'points': 10,
       },
       {
-        'title': l10n.promiseDefault6Title,
+        'title': l10n.promiseDefault7Title,
+        'icon': '💤',
         'time': '20:00',
         'duration': 10,
         'points': 10,
@@ -714,7 +727,10 @@ class SharedPrefsHelper {
   static const String tutorialPurchasedItemKey = 'tutorial_purchased_item';
   static const String tutorialPurchasedTypeKey = 'tutorial_purchased_type';
 
-  static Future<void> setTutorialPurchasedItem(String itemPath, String type) async {
+  static Future<void> setTutorialPurchasedItem(
+    String itemPath,
+    String type,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(tutorialPurchasedItemKey, itemPath);
     await prefs.setString(tutorialPurchasedTypeKey, type);

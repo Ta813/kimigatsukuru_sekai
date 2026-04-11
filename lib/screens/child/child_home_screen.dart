@@ -1,3 +1,5 @@
+// lib/screens/child_home_screen.dart
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -314,51 +316,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       }
     }
   }
-
-  // ★ 同意ダイアログ表示メソッド(こども向け設定のため不要)
-  // Future<void> _showDisclosureDialogIfNeeded() async {
-  //   final hasConsented = await SharedPrefsHelper.hasConsentedToDataCollection();
-
-  //   // まだ同意していない場合のみダイアログを表示
-  //   if (!hasConsented && mounted) {
-  //     final l10n = AppLocalizations.of(context)!;
-
-  //     await showDialog<void>(
-  //       context: context,
-  //       barrierDismissible: false, // ダイアログの外をタップしても閉じない
-  //       builder: (context) => AlertDialog(
-  //         title: Text(l10n.disclosureTitle),
-  //         content: SingleChildScrollView(
-  //           child: Text(
-  //             // Googleが要求する文言のテンプレートに沿った文章
-  //             l10n.disclosureMessage,
-  //           ),
-  //         ),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             child: Text(l10n.disagreeAction),
-  //             onPressed: () {
-  //               // 同意しない場合はアプリを終了する
-  //               SystemNavigator.pop();
-  //             },
-  //           ),
-  //           ElevatedButton(
-  //             child: Text(l10n.agreeAction),
-  //             onPressed: () async {
-  //               // 同意したことを記録
-  //               await SharedPrefsHelper.setDataCollectionConsent(true);
-  //               if (mounted) {
-  //                 if (Navigator.of(context).canPop()) {
-  //                   Navigator.of(context).pop();
-  //                 }
-  //               }
-  //             },
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //   }
-  // }
 
   void _scheduleMidnightRefresh() {
     _midnightTimer?.cancel(); // 既存のタイマーがあればキャンセル
@@ -1023,6 +980,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         content: AppLocalizations.of(context)!.tutorialParentCompleteDesc,
         buttonText: AppLocalizations.of(context)!.gotIt,
       );
+
+      // ★ 追加: チュートリアル完了のダイアログ後に、通知の許可ダイアログを呼び出す
+      if (mounted) {
+        // forceShow: true を指定してレベルの条件を無視して表示する
+        await _requestNotificationPermission(context, _level, forceShow: true);
+      }
     }
     // プロミスを再読み込む
     _loadAndDetermineDisplayPromise();
@@ -1428,8 +1391,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   // 通知の許可を求める一連の処理（プレ・ダイアログ → OSのダイアログ）
   Future<bool> _requestNotificationPermission(
     BuildContext context,
-    int level,
-  ) async {
+    int level, {
+    bool forceShow = false, // ★ 追加: レベルの条件を無視して表示するためのフラグ
+  }) async {
     // 🌟 1. セーブデータを読み込み、「すでに表示したか？」をチェック
     final prefs = await SharedPreferences.getInstance();
     final hasShown = prefs.getBool('has_shown_notification_dialog') ?? false;
@@ -1439,8 +1403,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       return false;
     }
 
-    // レベル2以下なら通知の許可を求めない
-    if (level <= 2) return false;
+    // レベル2以下なら通知の許可を求めない（forceShowがtrueの場合は無視）
+    if (level <= 2 && !forceShow) return false;
+
     // 1. 現在の通知許可のステータスを取得
     PermissionStatus status = await Permission.notification.status;
 
@@ -1478,7 +1443,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         actions: [
           // ❌ 「あとで」ボタン（グレーで目立たせない）
           TextButton(
-            onPressed: () => Navigator.pop(context, false), // falseを返す
+            onPressed: () {
+              if (forceShow) {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'tutorial_notification_later',
+                );
+              }
+              Navigator.pop(context, false); // falseを返す
+            },
             style: TextButton.styleFrom(foregroundColor: Colors.grey),
             child: Text(
               AppLocalizations.of(context)!.notificationLater,
@@ -1488,6 +1460,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           // ⭕️ 「うけとる！」ボタン（オレンジで目立たせる）
           ElevatedButton(
             onPressed: () {
+              if (forceShow) {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'tutorial_notification_force',
+                );
+              }
               // 必要に応じてタップ音を鳴らす
               try {
                 // SfxManager.instance.playTapSound();

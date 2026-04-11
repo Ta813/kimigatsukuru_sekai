@@ -156,7 +156,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get promiseBoard => 'やくそくボード';
 
   @override
-  String get noRegularPromises => '定例のやくそくがまだありません';
+  String get noRegularPromises => 'やくそくがまだありません';
 
   @override
   String get untitled => '名称未設定';
@@ -240,7 +240,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get finished => 'おわった！';
 
   @override
-  String get addRegularPromiseTitle => 'あたらしい定例やくそく';
+  String get addRegularPromiseTitle => '新しいやくそく';
 
   @override
   String get editRegularPromiseTitle => 'やくそくを編集';
@@ -317,7 +317,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get readFirstButton => '最初にお読みください';
 
   @override
-  String get regularPromiseSettingsButton => '定例のやくそく設定';
+  String get regularPromiseSettingsButton => 'やくそく設定';
 
   @override
   String get emergencyPromiseSettingsButton => '緊急のやくそく設定';
@@ -338,7 +338,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get regularPromiseSettingsTitle => '定例のやくそく設定';
+  String get regularPromiseSettingsTitle => 'やくそく設定';
 
   @override
   String get timeLabel => '時間';
@@ -446,19 +446,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get promiseDefault1Title => 'あさごはん';
 
   @override
-  String get promiseDefault2Title => 'ようちえんのじゅんび';
+  String get promiseDefault2Title => 'はみがき（あさ）';
 
   @override
-  String get promiseDefault3Title => 'おふろじゅんび';
+  String get promiseDefault3Title => 'おきがえ';
 
   @override
-  String get promiseDefault4Title => 'よるごはん';
+  String get promiseDefault4Title => 'おふろ';
 
   @override
-  String get promiseDefault5Title => 'はみがき';
+  String get promiseDefault5Title => 'よるごはん';
 
   @override
-  String get promiseDefault6Title => 'ねるじゅんび';
+  String get promiseDefault6Title => 'はみがき（よる）';
+
+  @override
+  String get promiseDefault7Title => 'ねる';
 
   @override
   String get settingsTitle => '設定';
@@ -1250,6 +1253,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialCustomizeBubble => 'ここで\nきせかえができるよ！';
 
   @override
+  String get tutorialParentSettingsBubble => 'ここから やくそくをつくってね！';
+
+  @override
   String get helpMenuTitle => 'あそびかた';
 
   @override
@@ -1266,4 +1272,135 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get helpMenuClose => 'とじる';
+
+  @override
+  String get tutorialParentRegularBubble => 'ここからやくそくを\n設定してください';
+
+  @override
+  String get tutorialParentAddBubble => 'このボタンで\nやくそくに追加できます';
+
+  @override
+  String get tutorialParentDeleteBubble => 'このボタンで\nやくそくから削除できます';
+
+  @override
+  String get tutorialParentBackBubble => 'ここから\nもどれます';
+
+  @override
+  String get tutorialParentStep3Title => 'サンプルのやくそくで\nためしてみよう！';
+
+  @override
+  String get tutorialParentStep3Desc => '左の「**＋ボタン**」でやくそくを追加できます。\nためしに「**やくそく（おためし）**」を追加してみてね！';
+
+  @override
+  String get tutorialParentStep5Title => 'やくそくの設定をしよう！';
+
+  @override
+  String get tutorialParentStep5Desc => 'おすすめや「カスタム追加」で、**お子さまに合ったやくそく**を設定してください。\n設定が終わったら「**もどる**」でホーム画面に戻ってね！';
+
+  @override
+  String get tutorialParentCompleteTitle => 'やくそくの準備ができたよ！';
+
+  @override
+  String get tutorialParentCompleteDesc => 'これで**やくそく設定**は完了です！\nホーム画面でやくそくに挑戦してみよう！';
+
+  @override
+  String promiseNotificationTitle(String title) {
+    return '「$title」のじかんだよ！';
+  }
+
+  @override
+  String promiseNotificationBody(String icon) {
+    return '$icon やくそくを はじめよう！';
+  }
+
+  @override
+  String get weeklyNotificationTitle => '今週の「やくそく」はいかがですか？🌟';
+
+  @override
+  String get weeklyNotificationBody => '毎日の育児お疲れ様です☕️ お子様の習慣づくりをアプリでチェックしてみましょう！';
+
+  @override
+  String alreadyAddedPromise(String title) {
+    return '「$title」は既に追加されています';
+  }
+
+  @override
+  String get customAdd => 'カスタム追加';
+
+  @override
+  String get recommendedTitle => 'おすすめ';
+
+  @override
+  String get currentPromiseTitle => '今のやくそく';
+
+  @override
+  String get dragToAddInstruction => '左からドラッグして\n追加してね！';
+
+  @override
+  String get recPromiseToilet => 'トイレにいく';
+
+  @override
+  String get recPromiseBreakfast => 'あさごはん';
+
+  @override
+  String get recPromiseBrushTeethMorning => 'はみがき（あさ）';
+
+  @override
+  String get recPromiseGetDressed => 'おきがえ';
+
+  @override
+  String get recPromiseShoes => 'くつそろえ';
+
+  @override
+  String get recPromiseLunch => 'ひるごはん';
+
+  @override
+  String get recPromiseWashHands => 'てあらい';
+
+  @override
+  String get recPromiseHomework => 'しゅくだい';
+
+  @override
+  String get recPromisePractice => 'おけいこ・れんしゅう';
+
+  @override
+  String get recPromiseReading => 'どくしょ';
+
+  @override
+  String get recPromiseHelp => 'おてつだい';
+
+  @override
+  String get recPromiseCleanUp => 'おかたづけ';
+
+  @override
+  String get recPromiseBath => 'おふろ';
+
+  @override
+  String get recPromisePajamas => 'パジャマにきがえる';
+
+  @override
+  String get recPromiseDinner => 'よるごはん';
+
+  @override
+  String get recPromiseBrushTeethNight => 'はみがき（よる）';
+
+  @override
+  String get recPromisePrepareNextDay => 'あしたのじゅんび';
+
+  @override
+  String get recPromiseSleep => 'ねる';
+
+  @override
+  String get recPromiseReadBook => 'ほんをよむ';
+
+  @override
+  String get recPromiseBathCleaning => 'おふろそうじ';
+
+  @override
+  String get recPromiseErrand => 'おつかい';
+
+  @override
+  String durationAndPoints(String duration, String points) {
+    return '$duration分 / $pointsポイント';
+  }
 }

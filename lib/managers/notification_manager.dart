@@ -1,10 +1,14 @@
 // lib/managers/notification_manager.dart
 
 import 'dart:io';
+import 'dart:ui'; // ★追加: Localeを使用するため
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
+import '../../l10n/app_localizations.dart'; // ★追加: 多言語の文字列を取得するため
+import '../../helpers/shared_prefs_helper.dart'; // ★追加: 保存された言語設定を取得するため
 
 class NotificationManager {
   static final NotificationManager instance = NotificationManager._internal();
@@ -42,17 +46,43 @@ class NotificationManager {
     );
   }
 
-  // --- 追加: やくそくリストに基づいて通知をすべて再設定する ---
+  // ★追加: 現在の言語設定に基づいて AppLocalizations を取得するヘルパーメソッド
+  Future<AppLocalizations> _getL10n() async {
+    String langCode = 'en'; // デフォルトは英語
+
+    try {
+      // 1. まずアプリ内の手動設定（歯車マークで設定した言語）を探す
+      final savedLocale = await SharedPrefsHelper.loadLocale();
+      if (savedLocale != null && savedLocale.isNotEmpty) {
+        langCode = savedLocale;
+      } else {
+        // 2. なければスマホ本体の言語設定を取得する
+        langCode = Platform.localeName.split('_')[0];
+      }
+    } catch (e) {
+      print('言語設定の取得エラー: $e');
+    }
+
+    // サポートしている言語以外だったら英語にフォールバック
+    if (!['ja', 'en', 'hi', 'ur', 'bn', 'ar'].contains(langCode)) {
+      langCode = 'en';
+    }
+
+    // ContextなしでAppLocalizationsを読み込む
+    return await AppLocalizations.delegate.load(Locale(langCode));
+  }
+
+  // --- やくそくリストに基づいて通知をすべて再設定する ---
   Future<void> scheduleAllRegularPromises(
     List<Map<String, dynamic>> promises,
   ) async {
     // 1. やくそく関連の通知（ID 100以降とする）を一度すべてキャンセル
-    // IDが重複しないように管理するため、まずはリセットします
     for (int i = 100; i < 200; i++) {
       await _flutterLocalNotificationsPlugin.cancel(id: i);
     }
 
-    final bool isJapanese = Platform.localeName.startsWith('ja');
+    // ★翻訳データの読み込み
+    final l10n = await _getL10n();
 
     // 2. リストをループして各時間を予約
     for (int i = 0; i < promises.length; i++) {
@@ -63,12 +93,9 @@ class NotificationManager {
 
       if (timeStr.isEmpty) continue;
 
-      final notificationTitle = isJapanese
-          ? '「$title」のじかんだよ！'
-          : 'Time for "$title"!';
-      final notificationBody = isJapanese
-          ? '$icon やくそくを はじめよう！'
-          : '$icon Let\'s start your promise!';
+      // ★ ローカライズされた文字列を適用
+      final notificationTitle = l10n.promiseNotificationTitle(title);
+      final notificationBody = l10n.promiseNotificationBody(icon);
 
       try {
         await _flutterLocalNotificationsPlugin.zonedSchedule(
@@ -121,13 +148,12 @@ class NotificationManager {
 
   // 毎週月曜日の11時に通知をスケジュールするメソッド（既存）
   Future<void> scheduleWeeklyMonday11AM() async {
-    final bool isJapanese = Platform.localeName.startsWith('ja');
-    final String title = isJapanese
-        ? '今週の「やくそく」はいかがですか？🌟'
-        : 'How are this week\'s Promises? 🌟';
-    final String body = isJapanese
-        ? '毎日の育児お疲れ様です☕️ お子様の習慣づくりをアプリでチェックしてみましょう！'
-        : 'Taking a quick break? ☕️ Let\'s check your child\'s progress in the app!';
+    // ★翻訳データの読み込み
+    final l10n = await _getL10n();
+
+    // ★ ローカライズされた文字列を適用
+    final String title = l10n.weeklyNotificationTitle;
+    final String body = l10n.weeklyNotificationBody;
 
     try {
       await _flutterLocalNotificationsPlugin.zonedSchedule(

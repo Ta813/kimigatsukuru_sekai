@@ -1,10 +1,9 @@
 // lib/screens/parent_mode/parent_top_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
+import '../../widgets/blinking_effect.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'regular_promise_settings_screen.dart';
 import 'emergency_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
@@ -12,230 +11,407 @@ import 'advice_screen.dart';
 import '../../l10n/app_localizations.dart';
 import 'settings_screen.dart';
 import 'child_name_settings_screen.dart';
-import '../../widgets/blinking_effect.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+enum _ParentTutorialPhase { regular, back, done }
 
 class ParentTopScreen extends StatefulWidget {
-  const ParentTopScreen({super.key});
+  final bool isTutorial;
+  const ParentTopScreen({super.key, this.isTutorial = false});
 
   @override
   State<ParentTopScreen> createState() => _ParentTopScreenState();
 }
 
 class _ParentTopScreenState extends State<ParentTopScreen> {
-  // ボタンごとの初回フラグ
-  bool _isFirstAdvice = false; // 「最初にお読みください」
-  bool _isFirstRegular = false; // 「定例のやくそく設定」
-
-  @override
-  void initState() {
-    super.initState();
-    _checkFirstTime();
-  }
-
-  Future<void> _checkFirstTime() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        _isFirstAdvice = prefs.getBool('is_first_home_advice') ?? true;
-        _isFirstRegular = prefs.getBool('is_first_home_regular') ?? true;
-      });
-    }
-  }
-
-  /// 「最初にお読みください」を押したら点滅解除
-  Future<void> _markAdviceDone() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('is_first_home_advice', false);
-    if (mounted) setState(() => _isFirstAdvice = false);
-  }
-
-  /// 「定例のやくそく設定」を押したら点滅解除
-  Future<void> _markRegularDone() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('is_first_home_regular', false);
-    if (mounted) setState(() => _isFirstRegular = false);
-  }
-
+  _ParentTutorialPhase _tutorialPhase = _ParentTutorialPhase.regular;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const CustomBackButton(),
+        leading:
+            widget.isTutorial && _tutorialPhase == _ParentTutorialPhase.back
+            ? BlinkingEffect(
+                isBlinking: true,
+                borderRadius: 8,
+                child: BackButton(
+                  onPressed: () {
+                    if (Navigator.of(context).canPop())
+                      Navigator.of(context).pop();
+                  },
+                ),
+              )
+            : IgnorePointer(
+                ignoring:
+                    widget.isTutorial &&
+                    _tutorialPhase == _ParentTutorialPhase.regular,
+                child: const CustomBackButton(),
+              ),
         title: Text(AppLocalizations.of(context)!.parentScreenTitle),
         actions: [
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ChildNameSettingsScreen(),
-                ),
-              );
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 4.0,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.face_retouching_natural),
-                  Text(
-                    AppLocalizations.of(context)!.nameSetting,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
+          IgnorePointer(
+            ignoring: widget.isTutorial,
+            child: Opacity(
+              opacity: widget.isTutorial ? 0.4 : 1.0,
+              child: InkWell(
+                onTap: () {
+                  if (widget.isTutorial) {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'finish_tutorial',
+                    );
+                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ChildNameSettingsScreen(),
                     ),
+                  );
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 4.0,
                   ),
-                ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.face_retouching_natural),
+                      Text(
+                        AppLocalizations.of(context)!.nameSetting,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 4.0,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.settings),
-                  Text(
-                    AppLocalizations.of(context)!.settingsTitle,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
+          IgnorePointer(
+            ignoring: widget.isTutorial,
+            child: Opacity(
+              opacity: widget.isTutorial ? 0.4 : 1.0,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
                     ),
+                  );
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 4.0,
                   ),
-                ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.settings),
+                      Text(
+                        AppLocalizations.of(context)!.settingsTitle,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
         ],
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            // 画面いっぱいに広げる
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 「最初にお読みください」ボタン
-              BlinkingEffect(
-                isBlinking: _isFirstAdvice,
-                borderRadius: 4,
-                child: OutlinedButton.icon(
-                  icon: const Icon(Icons.lightbulb_outline),
-                  label: Text(AppLocalizations.of(context)!.readFirstButton),
-                  onPressed: () {
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'start_parent_top_read_first',
-                    );
-                    // 押した瞬間に点滅解除
-                    _markAdviceDone();
-                    try {
-                      SfxManager.instance.playTapSound();
-                    } catch (e) {
-                      // エラーが発生した場合
-                      print('再生エラー: $e');
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AdviceScreen(),
-                      ),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    textStyle: const TextStyle(fontSize: 16),
-                    foregroundColor: Theme.of(context).primaryColor,
-                    side: BorderSide(color: Theme.of(context).primaryColor),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              // 「定例のやくそく設定」ボタン
-              BlinkingEffect(
-                isBlinking: _isFirstRegular,
-                borderRadius: 4,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'start_parent_top_regular_promise',
-                    );
-                    // 押した瞬間に点滅解除
-                    await _markRegularDone();
-                    try {
-                      SfxManager.instance.playTapSound();
-                    } catch (e) {
-                      // エラーが発生した場合
-                      print('再生エラー: $e');
-                    }
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const RegularPromiseSettingsScreen(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    // main.dartで設定したテーマカラーが適用されます
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    textStyle: const TextStyle(fontSize: 18),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.regularPromiseSettingsButton,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              // 「緊急のやくそく設定」ボタン
-              ElevatedButton(
-                onPressed: () {
-                  FirebaseAnalytics.instance.logEvent(
-                    name: 'start_parent_top_emergency_promise',
-                  );
-                  try {
-                    SfxManager.instance.playTapSound();
-                  } catch (e) {
-                    // エラーが発生した場合
-                    print('再生エラー: $e');
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EmergencyPromiseScreen(),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              // 画面いっぱいに広げる
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 「最初にお読みください」ボタン
+                IgnorePointer(
+                  ignoring:
+                      widget.isTutorial &&
+                      (_tutorialPhase == _ParentTutorialPhase.regular ||
+                          _tutorialPhase == _ParentTutorialPhase.back),
+                  child: Opacity(
+                    opacity:
+                        widget.isTutorial &&
+                            (_tutorialPhase == _ParentTutorialPhase.regular ||
+                                _tutorialPhase == _ParentTutorialPhase.back)
+                        ? 0.4
+                        : 1.0,
+                    child: _buildMenuCard(
+                      context: context,
+                      label: AppLocalizations.of(context)!.readFirstButton,
+                      icon: FontAwesomeIcons.bookOpenReader,
+                      color: Colors.teal.shade400,
+                      onPressed: () {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_parent_top_read_first',
+                        );
+                        _playTapSound();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AdviceScreen(),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  textStyle: const TextStyle(fontSize: 18),
+                  ),
                 ),
-                child: Text(
-                  AppLocalizations.of(context)!.emergencyPromiseSettingsButton,
+                const SizedBox(height: 12),
+                // 下段：2列レイアウト
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 「定例のやくそく設定」ボタン
+                    Expanded(
+                      child:
+                          widget.isTutorial &&
+                              _tutorialPhase == _ParentTutorialPhase.regular
+                          ? Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                BlinkingEffect(
+                                  isBlinking: true,
+                                  borderRadius: 16,
+                                  child: _buildMenuCard(
+                                    context: context,
+                                    label: AppLocalizations.of(
+                                      context,
+                                    )!.regularPromiseSettingsButton,
+                                    icon: FontAwesomeIcons.calendarCheck,
+                                    color: Theme.of(context).primaryColor,
+                                    onPressed: () async {
+                                      if (widget.isTutorial) {
+                                        FirebaseAnalytics.instance.logEvent(
+                                          name:
+                                              'start_parent_top_regular_promise_tutorial',
+                                        );
+                                      } else {
+                                        FirebaseAnalytics.instance.logEvent(
+                                          name:
+                                              'start_parent_top_regular_promise',
+                                        );
+                                      }
+                                      _playTapSound();
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RegularPromiseSettingsScreen(
+                                                isTutorial: true,
+                                              ),
+                                        ),
+                                      );
+                                      if (mounted) {
+                                        setState(
+                                          () => _tutorialPhase =
+                                              _ParentTutorialPhase.back,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Positioned(
+                                  top: -50,
+                                  left: 0,
+                                  right: 0,
+                                  child: Center(
+                                    child: _buildBubble(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.tutorialParentRegularBubble,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : IgnorePointer(
+                              ignoring:
+                                  widget.isTutorial &&
+                                  _tutorialPhase == _ParentTutorialPhase.back,
+                              child: Opacity(
+                                opacity:
+                                    widget.isTutorial &&
+                                        _tutorialPhase ==
+                                            _ParentTutorialPhase.back
+                                    ? 0.4
+                                    : 1.0,
+                                child: _buildMenuCard(
+                                  context: context,
+                                  label: AppLocalizations.of(
+                                    context,
+                                  )!.regularPromiseSettingsButton,
+                                  icon: FontAwesomeIcons.calendarCheck,
+                                  color: Theme.of(context).primaryColor,
+                                  onPressed: () async {
+                                    FirebaseAnalytics.instance.logEvent(
+                                      name: 'start_parent_top_regular_promise',
+                                    );
+                                    _playTapSound();
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const RegularPromiseSettingsScreen(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                    ),
+                    const SizedBox(width: 12),
+                    // 「緊急のやくそく設定」ボタン
+                    Expanded(
+                      child: IgnorePointer(
+                        ignoring:
+                            widget.isTutorial &&
+                            _tutorialPhase != _ParentTutorialPhase.done,
+                        child: Opacity(
+                          opacity:
+                              widget.isTutorial &&
+                                  _tutorialPhase != _ParentTutorialPhase.done
+                              ? 0.4
+                              : 1.0,
+                          child: _buildMenuCard(
+                            context: context,
+                            label: AppLocalizations.of(
+                              context,
+                            )!.emergencyPromiseSettingsButton,
+                            icon: FontAwesomeIcons.bell,
+                            color: Colors.deepOrangeAccent,
+                            onPressed: () {
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_parent_top_emergency_promise',
+                              );
+                              _playTapSound();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EmergencyPromiseScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-      // 画面下部にバナーを設置（初回起動時は広告を表示しない）
-      bottomNavigationBar: const AdBanner(),
+    );
+  }
+
+  void _playTapSound() {
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (e) {
+      debugPrint('再生エラー: $e');
+    }
+  }
+
+  /// 吹き出しウィジェット
+  Widget _buildBubble(String text) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 180),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF9C4),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.orange, width: 2),
+        boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black26)],
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _buildMenuCard({
+    required BuildContext context,
+    required String label,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.5), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: FaIcon(icon, size: 24, color: color),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right,
+                  size: 16,
+                  color: color.withOpacity(0.5),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

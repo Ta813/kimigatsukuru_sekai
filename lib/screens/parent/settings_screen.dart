@@ -34,6 +34,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int _currentExperience = 0;
   final _expController = TextEditingController();
 
+  // ▼ 追加: ポイント管理用変数とコントローラー
+  int _currentPoints = 0;
+  final _pointsController = TextEditingController();
+
   BackupServiceKbn _linkedService = BackupServiceKbn.none; // ★ 連携状態を管理
   bool _isLoading = false; // ★ バックアップ/復元中のローディングフラグ
 
@@ -48,14 +52,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final passcode = await SharedPrefsHelper.loadPasscode();
     final level = await SharedPrefsHelper.loadLevel();
     final experience = await SharedPrefsHelper.loadExperience();
+    // ▼ 追加: ポイントを読み込む
+    final points = await SharedPrefsHelper.loadPoints();
+
     final service = await SharedPrefsHelper.loadBackupService();
     if (mounted) {
       setState(() {
         _selectedLockMode = lockMode;
         _currentPasscode = passcode;
         _currentLevel = level;
+
         _currentExperience = experience;
         _expController.text = _currentExperience.toString();
+
+        // ▼ 追加: 読み込んだポイントをセット
+        _currentPoints = points;
+        _pointsController.text = _currentPoints.toString();
+
         _linkedService = service;
       });
     }
@@ -463,33 +476,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
 
-                  // --- iCloud ボタン (iOSのみ, Google Drive未連携時のみ) ---
-                  // if (Platform.isIOS &&
-                  //     _linkedService != BackupServiceKbn.googleDrive)
-                  //   ListTile(
-                  //     leading: const Icon(Icons.cloud_queue_rounded),
-                  //     title: const Text('iCloud'),
-                  //     subtitle: Text(
-                  //       _linkedService == BackupServiceKbn.icloud
-                  //           ? 'このサービスと連携済み' // l10n
-                  //           : 'iCloudにデータを保存します (iPhone/iPad間のみ)', // l10n
-                  //     ),
-                  //     trailing: Row(
-                  //       mainAxisSize: MainAxisSize.min,
-                  //       children: [
-                  //         TextButton(
-                  //           child: const Text('バックアップ'),
-                  //           onPressed: () =>
-                  //               _handleBackup(BackupServiceKbn.icloud),
-                  //         ),
-                  //         TextButton(
-                  //           child: const Text('復元'),
-                  //           onPressed: () =>
-                  //               _handleRestore(BackupServiceKbn.icloud),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
                   const Divider(),
 
                   // ここから寄付の導線を追加
@@ -533,6 +519,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
 
+                    // --- ポイント操作 ---
+                    const Text('ポイント設定'),
+                    TextField(
+                      controller: _pointsController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(suffixText: 'P'),
+                      onSubmitted: (String value) async {
+                        final newPoints = int.tryParse(value) ?? 0;
+                        setState(() {
+                          _currentPoints = newPoints;
+                        });
+                        await SharedPrefsHelper.savePoints(newPoints);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('ポイントを $newPoints P に変更しました！'),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 10),
+
                     // --- レベル操作 ---
                     Text('レベル設定: $_currentLevel'),
                     Slider(
@@ -558,13 +567,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     TextField(
                       controller: _expController,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(suffix: Text('EXP')),
+                      decoration: InputDecoration(suffixText: 'EXP'),
                       onSubmitted: (String value) async {
                         final newExp = int.tryParse(value) ?? 0;
                         setState(() {
                           _currentExperience = newExp;
                         });
                         await SharedPrefsHelper.saveExperience(newExp);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('経験値を $newExp EXP に変更しました！'),
+                            ),
+                          );
+                        }
                       },
                     ),
                     const SizedBox(height: 20),

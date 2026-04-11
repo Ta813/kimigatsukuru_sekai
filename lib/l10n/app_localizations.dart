@@ -400,7 +400,7 @@ abstract class AppLocalizations {
   /// No description provided for @noRegularPromises.
   ///
   /// In en, this message translates to:
-  /// **'No regular promises yet'**
+  /// **'No promises yet'**
   String get noRegularPromises;
 
   /// No description provided for @untitled.
@@ -544,7 +544,7 @@ abstract class AppLocalizations {
   /// No description provided for @addRegularPromiseTitle.
   ///
   /// In en, this message translates to:
-  /// **'New Regular Promise'**
+  /// **'New Promise'**
   String get addRegularPromiseTitle;
 
   /// No description provided for @editRegularPromiseTitle.
@@ -694,7 +694,7 @@ abstract class AppLocalizations {
   /// No description provided for @regularPromiseSettingsButton.
   ///
   /// In en, this message translates to:
-  /// **'Regular Promise Settings'**
+  /// **'Promise Settings'**
   String get regularPromiseSettingsButton;
 
   /// No description provided for @emergencyPromiseSettingsButton.
@@ -724,7 +724,7 @@ abstract class AppLocalizations {
   /// No description provided for @regularPromiseSettingsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Regular Promise Settings'**
+  /// **'Promise Settings'**
   String get regularPromiseSettingsTitle;
 
   /// No description provided for @timeLabel.
@@ -940,32 +940,38 @@ abstract class AppLocalizations {
   /// No description provided for @promiseDefault2Title.
   ///
   /// In en, this message translates to:
-  /// **'Get Ready for School'**
+  /// **'Brushing Teeth (Morning)'**
   String get promiseDefault2Title;
 
   /// No description provided for @promiseDefault3Title.
   ///
   /// In en, this message translates to:
-  /// **'Get Ready for Bath'**
+  /// **'Getting Dressed'**
   String get promiseDefault3Title;
 
   /// No description provided for @promiseDefault4Title.
   ///
   /// In en, this message translates to:
-  /// **'Dinner'**
+  /// **'Bath'**
   String get promiseDefault4Title;
 
   /// No description provided for @promiseDefault5Title.
   ///
   /// In en, this message translates to:
-  /// **'Brush Teeth'**
+  /// **'Dinner'**
   String get promiseDefault5Title;
 
   /// No description provided for @promiseDefault6Title.
   ///
   /// In en, this message translates to:
-  /// **'Get Ready for Bed'**
+  /// **'Brushing Teeth (Night)'**
   String get promiseDefault6Title;
+
+  /// No description provided for @promiseDefault7Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Bedtime'**
+  String get promiseDefault7Title;
 
   /// No description provided for @settingsTitle.
   ///
@@ -2521,6 +2527,12 @@ abstract class AppLocalizations {
   /// **'You can change\nclothes here!'**
   String get tutorialCustomizeBubble;
 
+  /// No description provided for @tutorialParentSettingsBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your promises from here!'**
+  String get tutorialParentSettingsBubble;
+
   /// No description provided for @helpMenuTitle.
   ///
   /// In en, this message translates to:
@@ -2556,6 +2568,252 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close'**
   String get helpMenuClose;
+
+  /// No description provided for @tutorialParentRegularBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Set promises\nfrom here!'**
+  String get tutorialParentRegularBubble;
+
+  /// No description provided for @tutorialParentAddBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap this button\nto add a promise!'**
+  String get tutorialParentAddBubble;
+
+  /// No description provided for @tutorialParentDeleteBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap this button\nto remove a promise!'**
+  String get tutorialParentDeleteBubble;
+
+  /// No description provided for @tutorialParentBackBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back\nfrom here!'**
+  String get tutorialParentBackBubble;
+
+  /// No description provided for @tutorialParentStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Try with a sample promise!'**
+  String get tutorialParentStep3Title;
+
+  /// No description provided for @tutorialParentStep3Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the **+ button** on the left to add a promise.\nTry adding **\"Trial promise\"**!'**
+  String get tutorialParentStep3Desc;
+
+  /// No description provided for @tutorialParentStep5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to set up promises!'**
+  String get tutorialParentStep5Title;
+
+  /// No description provided for @tutorialParentStep5Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the suggestions or \"Custom Add\" to set up **promises that suit your child**.\nWhen you\'re done, tap **\"Back\"** to return to the home screen!'**
+  String get tutorialParentStep5Desc;
+
+  /// No description provided for @tutorialParentCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Promises are ready!'**
+  String get tutorialParentCompleteTitle;
+
+  /// No description provided for @tutorialParentCompleteDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The **promise setup** is complete!\nLet\'s try the promises on the home screen!'**
+  String get tutorialParentCompleteDesc;
+
+  /// No description provided for @promiseNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time for \"{title}\"!'**
+  String promiseNotificationTitle(String title);
+
+  /// No description provided for @promiseNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{icon} Let\'s start your promise!'**
+  String promiseNotificationBody(String icon);
+
+  /// No description provided for @weeklyNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How are this week\'s Promises? 🌟'**
+  String get weeklyNotificationTitle;
+
+  /// No description provided for @weeklyNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Taking a quick break? ☕️ Let\'s check your child\'s progress in the app!'**
+  String get weeklyNotificationBody;
+
+  /// No description provided for @alreadyAddedPromise.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" is already added'**
+  String alreadyAddedPromise(String title);
+
+  /// No description provided for @customAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Add'**
+  String get customAdd;
+
+  /// No description provided for @recommendedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended'**
+  String get recommendedTitle;
+
+  /// No description provided for @currentPromiseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Promises'**
+  String get currentPromiseTitle;
+
+  /// No description provided for @dragToAddInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag from the left\nto add!'**
+  String get dragToAddInstruction;
+
+  /// No description provided for @recPromiseToilet.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to the toilet'**
+  String get recPromiseToilet;
+
+  /// No description provided for @recPromiseBreakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get recPromiseBreakfast;
+
+  /// No description provided for @recPromiseBrushTeethMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Brush teeth (Morning)'**
+  String get recPromiseBrushTeethMorning;
+
+  /// No description provided for @recPromiseGetDressed.
+  ///
+  /// In en, this message translates to:
+  /// **'Get dressed'**
+  String get recPromiseGetDressed;
+
+  /// No description provided for @recPromiseShoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrange shoes'**
+  String get recPromiseShoes;
+
+  /// No description provided for @recPromiseLunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get recPromiseLunch;
+
+  /// No description provided for @recPromiseWashHands.
+  ///
+  /// In en, this message translates to:
+  /// **'Wash hands'**
+  String get recPromiseWashHands;
+
+  /// No description provided for @recPromiseHomework.
+  ///
+  /// In en, this message translates to:
+  /// **'Homework'**
+  String get recPromiseHomework;
+
+  /// No description provided for @recPromisePractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice / Lessons'**
+  String get recPromisePractice;
+
+  /// No description provided for @recPromiseReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading'**
+  String get recPromiseReading;
+
+  /// No description provided for @recPromiseHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help out'**
+  String get recPromiseHelp;
+
+  /// No description provided for @recPromiseCleanUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean up'**
+  String get recPromiseCleanUp;
+
+  /// No description provided for @recPromiseBath.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a bath'**
+  String get recPromiseBath;
+
+  /// No description provided for @recPromisePajamas.
+  ///
+  /// In en, this message translates to:
+  /// **'Change to pajamas'**
+  String get recPromisePajamas;
+
+  /// No description provided for @recPromiseDinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get recPromiseDinner;
+
+  /// No description provided for @recPromiseBrushTeethNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Brush teeth (Night)'**
+  String get recPromiseBrushTeethNight;
+
+  /// No description provided for @recPromisePrepareNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare for tomorrow'**
+  String get recPromisePrepareNextDay;
+
+  /// No description provided for @recPromiseSleep.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep'**
+  String get recPromiseSleep;
+
+  /// No description provided for @recPromiseReadBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Read a book'**
+  String get recPromiseReadBook;
+
+  /// No description provided for @recPromiseBathCleaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean the bath'**
+  String get recPromiseBathCleaning;
+
+  /// No description provided for @recPromiseErrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Run an errand'**
+  String get recPromiseErrand;
+
+  /// No description provided for @durationAndPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'{duration} min / {points} pt'**
+  String durationAndPoints(String duration, String points);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

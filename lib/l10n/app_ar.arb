@@ -49,7 +49,7 @@
   "lockIncorrectAnswer": "عذرًا، هذا ليس صحيحًا",
   "cancel": "إلغاء",
   "promiseBoard": "لوحة الوعود",
-  "noRegularPromises": "لا توجد وعود منتظمة بعد",
+  "noRegularPromises": "لا توجد وعود بعد",
   "untitled": "بدون عنوان",
   "rouletteCongrats": "تهانينا!\nضعف النقاط!",
   "rouletteTryAgain": "حاول مرة أخرى في المرة القادمة\n",
@@ -115,7 +115,7 @@
     }
   },
   "finished": "انتهى!",
-  "addRegularPromiseTitle": "وعد منتظم جديد",
+  "addRegularPromiseTitle": "وعد جديد",
   "editRegularPromiseTitle": "تعديل الوعد",
   "promiseNameLabel": "اسم الوعد",
   "promiseNameHint": "يرجى إدخال اسم للوعد",
@@ -147,7 +147,7 @@
   "setThisPromiseButton": "ضبط هذا الوعد",
   "parentScreenTitle": "وضع الوالدين",
   "readFirstButton": "اقرأني أولاً",
-  "regularPromiseSettingsButton": "إعدادات الوعود المنتظمة",
+  "regularPromiseSettingsButton": "إعدادات الوعود",
   "emergencyPromiseSettingsButton": "إعدادات وعود الطوارئ",
   "promiseDeleted": "تم حذف \"{promiseTitle}\".",
   "@promiseDeleted": {
@@ -173,7 +173,7 @@
       }
     }
   },
-  "regularPromiseSettingsTitle": "إعدادات الوعود المنتظمة",
+  "regularPromiseSettingsTitle": "إعدادات الوعود",
   "timeLabel": "الوقت",
   "itemClothesBlue": "ملابس زرقاء",
   "itemClothesRed": "ملابس حمراء",
@@ -209,11 +209,12 @@
   "itemBicycle": "دراجة",
   "itemCar": "سيارة",
   "promiseDefault1Title": "الفطور",
-  "promiseDefault2Title": "الاستعداد للمدرسة",
-  "promiseDefault3Title": "الاستعداد للاستحمام",
-  "promiseDefault4Title": "العشاء",
-  "promiseDefault5Title": "تنظيف الأسنان",
-  "promiseDefault6Title": "الاستعداد للنوم",
+  "promiseDefault2Title": "تنظيف الأسنان (صباحاً)",
+  "promiseDefault3Title": "تغيير الملابس",
+  "promiseDefault4Title": "الاستحمام",
+  "promiseDefault5Title": "العشاء",
+  "promiseDefault6Title": "تنظيف الأسنان (ليلاً)",
+  "promiseDefault7Title": "النوم",
   "settingsTitle": "الإعدادات",
   "languageSetting": "اللغة",
   "longPressToEnter": "اضغط مطولاً للدخول!",
@@ -510,7 +511,7 @@
   "minutesLabel": "دقيقة",
   "okAction": "موافق",
   "notificationRequestTitle": "هل تود استلام إشعارات؟ 🔔",
-  "notificationRequestMessage": "سنرسل لك تحديثات أسبوعية حول تقدم طفلك وأخباراً عن العناصر الجديدة على هاتفك!\n\nقم بتفعيل الإشعارات واستمتع بالرحلة معاً! ✨",
+  "notificationRequestMessage": "ستتلقى إشعارًا عندما يحين وقت الوعد!\nقم بتشغيل الإشعارات واستمتعوا معًا✨",
   "notificationLater": "لاحقاً",
   "notificationAccept": "بالتأكيد!",
   "resetPromisesAction": "إعادة ضبط الوعود إلى الافتراضي",
@@ -519,10 +520,77 @@
   "tutorialStartBubble": "بدء 'الوعد' الخاص بك\nمن هنا!",
   "tutorialShopBubble": "لنذهب\nللتسوق!",
   "tutorialCustomizeBubble": "يمكنك تغيير\nالملابس هنا!",
+  "tutorialParentSettingsBubble": "أنشئ وعودك من هنا!",
   "helpMenuTitle": "كيفية اللعب",
   "helpMenuYakusoku": "وعد",
   "helpMenuShop": "متجر",
   "helpMenuCustomize": "تغيير الملابس",
   "helpMenuOthers": "أخرى (إعدادات، إلخ)",
-  "helpMenuClose": "إغلاق"
+  "helpMenuClose": "إغلاق",
+  "tutorialParentRegularBubble": "اضبط الوعود\nمن هنا!",
+  "tutorialParentAddBubble": "اضغط هذا الزر\nلإضافة وعد!",
+  "tutorialParentDeleteBubble": "اضغط هذا الزر\nلحذف الوعد!",
+  "tutorialParentBackBubble": "ارجع\nمن هنا!",
+  "tutorialParentStep3Title": "جرّب مع وعد نموذجي!",
+  "tutorialParentStep3Desc": "اضغط **زر +** على اليسار لإضافة وعد.\nجرّب إضافة **\"وعد تجريبي\"**!",
+  "tutorialParentStep5Title": "حان وقت إعداد الوعود!",
+  "tutorialParentStep5Desc": "استخدم الاقتراحات أو \"إضافة مخصصة\" لإعداد **وعود تناسب طفلك**.\nعند الانتهاء، اضغط **\"رجوع\"** للعودة!",
+  "tutorialParentCompleteTitle": "الوعود جاهزة!",
+  "tutorialParentCompleteDesc": "اكتمل **إعداد الوعود**!\nلنجرب الوعود في الشاشة الرئيسية!",
+  "promiseNotificationTitle": "حان وقت \"{title}\"!",
+  "@promiseNotificationTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseNotificationBody": "{icon} لنبدأ وعدك!",
+  "@promiseNotificationBody": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyNotificationTitle": "كيف حال وعود هذا الأسبوع؟ 🌟",
+  "weeklyNotificationBody": "تأخذ استراحة سريعة؟ ☕️ دعنا نتحقق من تقدم طفلك في التطبيق!",
+  "alreadyAddedPromise": "\"{title}\" تمت إضافته بالفعل",
+  "@alreadyAddedPromise": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "customAdd": "إضافة مخصصة",
+  "recommendedTitle": "موصى به",
+  "currentPromiseTitle": "الوعود الحالية",
+  "dragToAddInstruction": "اسحب من اليسار\nللإضافة!",
+  "recPromiseToilet": "الذهاب إلى المرحاض",
+  "recPromiseBreakfast": "الفطور",
+  "recPromiseBrushTeethMorning": "تفريش الأسنان (صباحاً)",
+  "recPromiseGetDressed": "ارتداء الملابس",
+  "recPromiseShoes": "ترتيب الأحذية",
+  "recPromiseLunch": "الغداء",
+  "recPromiseWashHands": "غسل اليدين",
+  "recPromiseHomework": "الواجب المنزلي",
+  "recPromisePractice": "التدريب / الدروس",
+  "recPromiseReading": "القراءة",
+  "recPromiseHelp": "المساعدة",
+  "recPromiseCleanUp": "الترتيب",
+  "recPromiseBath": "الاستحمام",
+  "recPromisePajamas": "تغيير لملابس النوم",
+  "recPromiseDinner": "العشاء",
+  "recPromiseBrushTeethNight": "تفريش الأسنان (ليلاً)",
+  "recPromisePrepareNextDay": "التحضير للغد",
+  "recPromiseSleep": "النوم",
+  "recPromiseReadBook": "قراءة كتاب",
+  "recPromiseBathCleaning": "تنظيف الحمام",
+  "recPromiseErrand": "قضاء حاجة",
+  "durationAndPoints": "{duration} دقيقة / {points} نقطة",
+  "@durationAndPoints": {
+    "placeholders": {
+      "duration": { "type": "String" },
+      "points": { "type": "String" }
+    }
+  }
 }

@@ -50,7 +50,7 @@
   "lockIncorrectAnswer": "معاف کیجئے گا، یہ درست نہیں ہے",
   "cancel": "منسوخ کریں",
   "promiseBoard": "وعدہ بورڈ",
-  "noRegularPromises": "ابھی تک کوئی باقاعدہ وعدہ نہیں ہے",
+  "noRegularPromises": "ابھی تک کوئی وعدے نہیں ہیں",
   "untitled": "بغیر عنوان",
   "rouletteCongrats": "مبارک ہو!\nدوگنا پوائنٹس!",
   "rouletteTryAgain": "اگلی بار پھر کوشش کریں\n",
@@ -116,7 +116,7 @@
     }
   },
   "finished": "مکمل ہو گیا!",
-  "addRegularPromiseTitle": "نیا باقاعدہ وعدہ",
+  "addRegularPromiseTitle": "نیا وعدہ",
   "editRegularPromiseTitle": "وعدہ تبدیل کریں",
   "promiseNameLabel": "وعدے کا نام",
   "promiseNameHint": "براہ کرم وعدے کا نام درج کریں",
@@ -148,7 +148,7 @@
   "setThisPromiseButton": "یہ وعدہ طے کریں",
   "parentScreenTitle": "والدین کا موڈ",
   "readFirstButton": "پہلے مجھے پڑھیں",
-  "regularPromiseSettingsButton": "باقاعدہ وعدے کی ترتیبات",
+  "regularPromiseSettingsButton": "وعدہ کی ترتیبات",
   "emergencyPromiseSettingsButton": "ہنگامی وعدے کی ترتیبات",
   "promiseDeleted": "\"{promiseTitle}\" حذف کر دیا گیا۔",
   "@promiseDeleted": {
@@ -174,7 +174,7 @@
       }
     }
   },
-  "regularPromiseSettingsTitle": "باقاعدہ وعدے کی ترتیبات",
+  "regularPromiseSettingsTitle": "وعدہ کی ترتیبات",
   "timeLabel": "وقت",
   "itemClothesBlue": "نیلے کپڑے",
   "itemClothesRed": "سرخ کپڑے",
@@ -210,11 +210,12 @@
   "itemBicycle": "سائیکل",
   "itemCar": "کاروں",
   "promiseDefault1Title": "ناشتہ",
-  "promiseDefault2Title": "سکول کی تیاری",
-  "promiseDefault3Title": "نہانے کی تیاری",
-  "promiseDefault4Title": "رات کا کھانا",
-  "promiseDefault5Title": "دانت صاف کرنا",
-  "promiseDefault6Title": "سونے کی تیاری",
+  "promiseDefault2Title": "دانت صاف کرنا (صبح)",
+  "promiseDefault3Title": "کپڑے بدلنا",
+  "promiseDefault4Title": "نہانا",
+  "promiseDefault5Title": "رات کا کھانا",
+  "promiseDefault6Title": "دانت صاف کرنا (رات)",
+  "promiseDefault7Title": "سونا",
   "settingsTitle": "ترتیبات",
   "languageSetting": "زبان",
   "longPressToEnter": "داخل ہونے کے لیے تھوڑی دیر دبائیں!",
@@ -511,7 +512,7 @@
   "minutesLabel": "منٹ",
   "okAction": "ٹھیک ہے",
   "notificationRequestTitle": "اطلاعات موصول کریں؟ 🔔",
-  "notificationRequestMessage": "ہم آپ کو آپ کے بچے کی ترقی کے بارے میں ہفتہ وار اپ ڈیٹس اور نئی چیزوں کے بارے میں خبریں بھیجیں گے!\n\nاطلاعات آن کریں اور اس سفر سے ایک ساتھ لطف اٹھائیں! ✨",
+  "notificationRequestMessage": "جب وعدے کا وقت ہوگا تو آپ کو ایک اطلاع ملے گی!\nاطلاعات آن کریں اور ایک ساتھ مزے کرتے رہیں✨",
   "notificationLater": "بعد میں",
   "notificationAccept": "ضرور!",
   "resetPromisesAction": "وعدے دوبارہ ترتیب دیں",
@@ -519,11 +520,78 @@
   "resetPromisesSuccess": "باقاعدہ وعدے دوبارہ ترتیب دے دیے گئے ہیں۔",
   "tutorialStartBubble": "यहाँ سے آپ کے 'وعدے' کا\nآغاز ہو رہا ہے!",
   "tutorialShopBubble": "چلو\nخریداری کریں!",
-  "tutorialCustomizeBubble": "یہاں آپ آبا\nتبدیل کر سکتے ہیں!",
+  "tutorialCustomizeBubble": "آپ یہاں\nکپڑے تبدیل کر سکتے ہیں!",
+  "tutorialParentSettingsBubble": "یہاں سے اپنے وعدے بنائیں!",
   "helpMenuTitle": "کیسے کھیلیں",
   "helpMenuYakusoku": "وعدہ",
   "helpMenuShop": "خریداری",
   "helpMenuCustomize": "کپڑے بدلنا",
   "helpMenuOthers": "دیگر (ترتیبات وغیرہ)",
-  "helpMenuClose": "بند کریں"
+  "helpMenuClose": "بند کریں",
+  "tutorialParentRegularBubble": "یہاں سے\nوعدے ترتیب دیں!",
+  "tutorialParentAddBubble": "یہ بٹن دبائیں\nوعدہ شامل کرنے کے لیے!",
+  "tutorialParentDeleteBubble": "یہ بٹن دبائیں\nوعدہ حذف کرنے کے لیے!",
+  "tutorialParentBackBubble": "یہاں سے\nواپس جائیں!",
+  "tutorialParentStep3Title": "نمونہ وعدے سے آزمائیں!",
+  "tutorialParentStep3Desc": "بائیں طرف **+ بٹن** دبا کر وعدہ شامل کریں۔\n**\"آزمائشی وعدہ\"** شامل کر کے دیکھیں!",
+  "tutorialParentStep5Title": "وعدے ترتیب دینے کا وقت!",
+  "tutorialParentStep5Desc": "سجیشنز یا \"کسٹم شامل کریں\" سے **اپنے بچے کے لیے وعدے** ترتیب دیں۔\nمکمل ہونے پر **\"واپس\"** دبائیں!",
+  "tutorialParentCompleteTitle": "وعدے تیار ہیں!",
+  "tutorialParentCompleteDesc": "**وعدہ ترتیب** مکمل ہو گیا!\nہوم اسکرین پر وعدے آزمائیں!",
+  "promiseNotificationTitle": "\"{title}\" کا وقت ہو گیا!",
+  "@promiseNotificationTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseNotificationBody": "{icon} چلیں اپنا وعدہ شروع کریں!",
+  "@promiseNotificationBody": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyNotificationTitle": "اس ہفتے کے وعدے کیسے چل رہے ہیں؟ 🌟",
+  "weeklyNotificationBody": "تھوڑا وقفہ لے رہے ہیں؟ ☕️ آئیے ایپ میں اپنے بچے کی پیشرفت چیک کریں!",
+  "alreadyAddedPromise": "\"{title}\" پہلے ہی شامل کیا جا چکا ہے",
+  "@alreadyAddedPromise": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "customAdd": "اپنی مرضی سے شامل کریں",
+  "recommendedTitle": "تجویز کردہ",
+  "currentPromiseTitle": "موجودہ وعدے",
+  "dragToAddInstruction": "شامل کرنے کے لیے\nبائیں سے کھینچیں!",
+  "recPromiseToilet": "بیت الخلا جائیں",
+  "recPromiseBreakfast": "ناشتہ",
+  "recPromiseBrushTeethMorning": "دانت صاف کریں (صبح)",
+  "recPromiseGetDressed": "کپڑے پہنیں",
+  "recPromiseShoes": "جوتے ترتیب دیں",
+  "recPromiseLunch": "دوپہر کا کھانا",
+  "recPromiseWashHands": "ہاتھ دھوئیں",
+  "recPromiseHomework": "ہوم ورک",
+  "recPromisePractice": "مشق / اسباق",
+  "recPromiseReading": "پڑھنا",
+  "recPromiseHelp": "مدد کریں",
+  "recPromiseCleanUp": "صاف صفائی",
+  "recPromiseBath": "نہانا",
+  "recPromisePajamas": "پاجامہ پہنیں",
+  "recPromiseDinner": "رات کا کھانا",
+  "recPromiseBrushTeethNight": "دانت صاف کریں (رات)",
+  "recPromisePrepareNextDay": "کل کی تیاری",
+  "recPromiseSleep": "سونا",
+  "recPromiseReadBook": "کتاب پڑھنا",
+  "recPromiseBathCleaning": "غسل خانہ صاف کرنا",
+  "recPromiseErrand": "کام سے جانا",
+  "durationAndPoints": "{duration} منٹ / {points} پوائنٹس",
+  "@durationAndPoints": {
+    "placeholders": {
+      "duration": { "type": "String" },
+      "points": { "type": "String" }
+    }
+  }
 }

@@ -1,5 +1,6 @@
 // lib/bgm_manager.dart
 
+import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 
 enum BgmTrack {
@@ -22,16 +23,42 @@ enum BgmTrack {
 class BgmManager {
   static final BgmManager instance = BgmManager._internal();
 
-  // just_audioのプレイヤーを遅延初期化します
+  // just_audioのプレイヤーを管理します
   AudioPlayer? _bgmPlayer;
-  BgmTrack? _currentTrack;
+  bool _isInitializing = false;
 
-  AudioPlayer get _player {
-    if (_bgmPlayer == null) {
-      print("BgmManager: AudioPlayerを新規作成します");
-      _bgmPlayer = AudioPlayer();
+  // 外部からのアクセス用ゲッターは修正
+  // プレイヤーが必要な場合は await _ensurePlayer() を使うように統一します
+  Future<AudioPlayer> _ensurePlayer() async {
+    if (_bgmPlayer != null) return _bgmPlayer!;
+
+    if (_isInitializing) {
+      // 初期化完了まで短時間待機
+      while (_isInitializing && _bgmPlayer == null) {
+        await Future.delayed(const Duration(milliseconds: 50));
+      }
+      if (_bgmPlayer != null) return _bgmPlayer!;
     }
-    return _bgmPlayer!;
+
+    _isInitializing = true;
+    try {
+      print("BgmManager: AudioPlayerを新規作成します");
+      final player = AudioPlayer();
+      _bgmPlayer = player;
+      return player;
+    } on PlatformException catch (e) {
+      print("BgmManager: AudioPlayer作成中にプラットフォーム例外が発生しました: $e");
+      if (e.message?.contains('already exists') ?? false) {
+        // すでに存在する場合、少し待って再試行、あるいは既存のものを期待する
+        print("BgmManager: 'already exists' エラーを検知しました。リカバリを試みます...");
+      }
+      rethrow;
+    } catch (e) {
+      print("BgmManager: AudioPlayer作成中に予期せぬエラーが発生しました: $e");
+      rethrow;
+    } finally {
+      _isInitializing = false;
+    }
   }
 
   factory BgmManager() {
@@ -74,27 +101,24 @@ class BgmManager {
   Future<void> play(BgmTrack track) async {
     try {
       print("BgmManager.play: $track");
-
-      // 曲のパスを取得
       final trackPath = _getTrackPath(track);
 
       if (trackPath == null) {
-        print("BgmManager.play: トラックパスがnullのため停止します ($track)");
         await stopBgm();
-        _currentTrack = track;
         return;
       }
 
-      // 一旦完全に停止してリセットする
-      await stopBgm();
+      // 再生前にプレイヤーを確保
+      final player = await _ensurePlayer();
 
-      // just_audioでは、assetsからの読み込みにsetAssetを使います
+      // 一旦停止
+      await player.stop();
+
       print("BgmManager.play: アセットをロード中... $trackPath");
-      await _player.setAsset(trackPath);
-      // ループ再生を設定
-      await _player.setLoopMode(LoopMode.one);
-      await _player.play();
-      _currentTrack = track;
+      await player.setAsset(trackPath);
+      await player.setLoopMode(LoopMode.one);
+      await player.play();
+
       print("BgmManager.play: 再生開始しました: $track");
     } catch (e) {
       print("BGMの再生エラー ($track): $e");
@@ -113,19 +137,18 @@ class BgmManager {
 
   Future<void> resume() async {
     try {
-      await _player.play();
+      final player = await _ensurePlayer();
+      await player.play();
     } catch (e) {
-      print("BGMの再生エラー: $e");
+      print("BGMの再開エラー: $e");
     }
   }
 
   Future<void> stopBgm() async {
     try {
-      print("BgmManager.stopBgm (current: $_currentTrack)");
       if (_bgmPlayer != null) {
         await _bgmPlayer!.stop();
       }
-      _currentTrack = null;
     } catch (e) {
       print("BGMの停止エラー: $e");
     }
@@ -135,12 +158,13 @@ class BgmManager {
     try {
       if (_bgmPlayer != null) {
         print("BgmManager: AudioPlayerを破棄します");
-        await _bgmPlayer!.stop();
-        await _bgmPlayer!.dispose();
-        _bgmPlayer = null;
+        final playerToDispose = _bgmPlayer!;
+        _bgmPlayer = null; // 先に参照を切る
+        await playerToDispose.stop();
+        await playerToDispose.dispose();
       }
     } catch (e) {
-      print("BGMの停止エラー: $e");
+      print("BGMの破棄エラー: $e");
     }
   }
 }

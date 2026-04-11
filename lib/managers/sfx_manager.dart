@@ -2,21 +2,42 @@
 
 import 'dart:math';
 
+import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 
 class SfxManager {
   // Singleton（このクラスの唯一のインスタンス）を生成
   static final SfxManager instance = SfxManager._internal();
 
-  // 効果音専用のプレイヤーを遅延初期化します
+  // 効果音専用のプレイヤーを管理します
   AudioPlayer? _sfxPlayer;
+  bool _isInitializing = false;
 
-  AudioPlayer get _player {
-    if (_sfxPlayer == null) {
-      print("SfxManager: AudioPlayerを新規作成します");
-      _sfxPlayer = AudioPlayer();
+  Future<AudioPlayer> _ensurePlayer() async {
+    if (_sfxPlayer != null) return _sfxPlayer!;
+
+    if (_isInitializing) {
+      while (_isInitializing && _sfxPlayer == null) {
+        await Future.delayed(const Duration(milliseconds: 50));
+      }
+      if (_sfxPlayer != null) return _sfxPlayer!;
     }
-    return _sfxPlayer!;
+
+    _isInitializing = true;
+    try {
+      print("SfxManager: AudioPlayerを新規作成します");
+      final player = AudioPlayer();
+      _sfxPlayer = player;
+      return player;
+    } on PlatformException catch (e) {
+      print("SfxManager: AudioPlayer作成中にプラットフォーム例外が発生しました: $e");
+      rethrow;
+    } catch (e) {
+      print("SfxManager: AudioPlayer作成中に予期せぬエラーが発生しました: $e");
+      rethrow;
+    } finally {
+      _isInitializing = false;
+    }
   }
 
   factory SfxManager() {
@@ -27,9 +48,10 @@ class SfxManager {
   // 効果音を再生するための共通メソッド
   Future<void> _playSound(String assetPath) async {
     try {
-      await _player.stop();
-      await _player.setAsset('assets/$assetPath');
-      await _player.play();
+      final player = await _ensurePlayer();
+      await player.stop();
+      await player.setAsset('assets/$assetPath');
+      await player.play();
     } catch (e) {
       // もしエラーが出た場合、コンソールに表示
       print("効果音の再生エラー ($assetPath): $e");
@@ -42,6 +64,7 @@ class SfxManager {
     double speed = 1.0,
   }) async {
     try {
+      final player = await _ensurePlayer();
       // プレイリストを作成
       final playlist = ConcatenatingAudioSource(
         children: assetPaths
@@ -50,10 +73,10 @@ class SfxManager {
       );
 
       // プレイリストをプレイヤーにセットして再生
-      await _player.stop();
-      await _player.setAudioSource(playlist);
-      await _player.setSpeed(speed);
-      await _player.play();
+      await player.stop();
+      await player.setAudioSource(playlist);
+      await player.setSpeed(speed);
+      await player.play();
     } catch (e) {
       print("連続再生エラー: $e");
     }
@@ -210,9 +233,10 @@ class SfxManager {
     try {
       if (_sfxPlayer != null) {
         print("SfxManager: AudioPlayerを破棄します");
-        await _sfxPlayer!.stop();
-        await _sfxPlayer!.dispose();
+        final playerToDispose = _sfxPlayer!;
         _sfxPlayer = null;
+        await playerToDispose.stop();
+        await playerToDispose.dispose();
       }
     } catch (e) {
       print("効果音プレイヤーの停止エラー: $e");

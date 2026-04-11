@@ -1101,10 +1101,6 @@ class _TimerScreenState extends State<TimerScreen>
                                     .difference(_screenStartTime!)
                                     .inSeconds;
                               }
-                              FirebaseAnalytics.instance.logEvent(
-                                name: 'start_timer_finished',
-                                parameters: {'elapsed_seconds': elapsedSeconds},
-                              );
                               //チュートリアルで「おわった！」ボタンを押したか
                               final isTutorialStepShown =
                                   await SharedPrefsHelper.isTutorialStepShown(
@@ -1113,6 +1109,13 @@ class _TimerScreenState extends State<TimerScreen>
                               if (isTutorialStepShown) {
                                 FirebaseAnalytics.instance.logEvent(
                                   name: 'tutorial_tap_finished_button',
+                                );
+                              } else {
+                                FirebaseAnalytics.instance.logEvent(
+                                  name: 'start_timer_finished',
+                                  parameters: {
+                                    'elapsed_seconds': elapsedSeconds,
+                                  },
                                 );
                               }
                               setState(() {

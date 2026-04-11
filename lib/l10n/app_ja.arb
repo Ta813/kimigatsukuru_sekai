@@ -49,7 +49,7 @@
   "lockIncorrectAnswer": "ざんねん、ちがうみたい",
   "cancel": "やめる",
   "promiseBoard": "やくそくボード",
-  "noRegularPromises": "定例のやくそくがまだありません",
+  "noRegularPromises": "やくそくがまだありません",
   "untitled": "名称未設定",
   "rouletteCongrats": "おめでとう！\nポイント2ばい！",
   "rouletteTryAgain": "またチャレンジしてね\n",
@@ -115,7 +115,7 @@
     }
   },
   "finished": "おわった！",
-  "addRegularPromiseTitle": "あたらしい定例やくそく",
+  "addRegularPromiseTitle": "新しいやくそく",
   "editRegularPromiseTitle": "やくそくを編集",
   "promiseNameLabel": "やくそくの名前",
   "promiseNameHint": "やくそくの名前を入力してください",
@@ -147,7 +147,7 @@
   "setThisPromiseButton": "このやくそくをセットする",
   "parentScreenTitle": "おやが見る画面",
   "readFirstButton": "最初にお読みください",
-  "regularPromiseSettingsButton": "定例のやくそく設定",
+  "regularPromiseSettingsButton": "やくそく設定",
   "emergencyPromiseSettingsButton": "緊急のやくそく設定",
   "promiseDeleted": "「{promiseTitle}」を削除しました。",
   "@promiseDeleted": {
@@ -173,7 +173,7 @@
       }
     }
   },
-  "regularPromiseSettingsTitle": "定例のやくそく設定",
+  "regularPromiseSettingsTitle": "やくそく設定",
   "timeLabel": "時間",
   "itemClothesBlue": "あおいふく",
   "itemClothesRed": "あかいふく",
@@ -209,11 +209,12 @@
   "itemBicycle": "じてんしゃ",
   "itemCar": "くるま",
   "promiseDefault1Title": "あさごはん",
-  "promiseDefault2Title": "ようちえんのじゅんび",
-  "promiseDefault3Title": "おふろじゅんび",
-  "promiseDefault4Title": "よるごはん",
-  "promiseDefault5Title": "はみがき",
-  "promiseDefault6Title": "ねるじゅんび",
+  "promiseDefault2Title": "はみがき（あさ）",
+  "promiseDefault3Title": "おきがえ",
+  "promiseDefault4Title": "おふろ",
+  "promiseDefault5Title": "よるごはん",
+  "promiseDefault6Title": "はみがき（よる）",
+  "promiseDefault7Title": "ねる",
   "settingsTitle": "設定",
   "languageSetting": "言語設定",
   "longPressToEnter": "長押しで入れるよ！",
@@ -510,7 +511,7 @@
   "minutesLabel": "分",
   "okAction": "OK",
   "notificationRequestTitle": "お知らせをうけとる？🔔",
-  "notificationRequestMessage": "毎週のお子様のがんばり状況や、新しいアイテムなどのお知らせをスマホにお届けします！\n\n通知をオンにして、親子で楽しく続けよう✨",
+  "notificationRequestMessage": "やくそくの時間になると、通知が鳴るよ！\n通知をオンにして、親子で楽しく続けよう✨",
   "notificationLater": "あとで",
   "notificationAccept": "うけとる！",
   "resetPromisesAction": "やくそくを初期値に戻す",
@@ -519,10 +520,77 @@
   "tutorialStartBubble": "ここから\n「やくそく」をはじめるよ！",
   "tutorialShopBubble": "おみせで\nおかいものしよう！",
   "tutorialCustomizeBubble": "ここで\nきせかえができるよ！",
+  "tutorialParentSettingsBubble": "ここから やくそくをつくってね！",
   "helpMenuTitle": "あそびかた",
   "helpMenuYakusoku": "やくそく",
   "helpMenuShop": "おかいもの",
   "helpMenuCustomize": "きせかえ",
   "helpMenuOthers": "その他(せってい等)",
-  "helpMenuClose": "とじる"
+  "helpMenuClose": "とじる",
+  "tutorialParentRegularBubble": "ここからやくそくを\n設定してください",
+  "tutorialParentAddBubble": "このボタンで\nやくそくに追加できます",
+  "tutorialParentDeleteBubble": "このボタンで\nやくそくから削除できます",
+  "tutorialParentBackBubble": "ここから\nもどれます",
+  "tutorialParentStep3Title": "サンプルのやくそくで\nためしてみよう！",
+  "tutorialParentStep3Desc": "左の「**＋ボタン**」でやくそくを追加できます。\nためしに「**やくそく（おためし）**」を追加してみてね！",
+  "tutorialParentStep5Title": "やくそくの設定をしよう！",
+  "tutorialParentStep5Desc": "おすすめや「カスタム追加」で、**お子さまに合ったやくそく**を設定してください。\n設定が終わったら「**もどる**」でホーム画面に戻ってね！",
+  "tutorialParentCompleteTitle": "やくそくの準備ができたよ！",
+  "tutorialParentCompleteDesc": "これで**やくそく設定**は完了です！\nホーム画面でやくそくに挑戦してみよう！",
+  "promiseNotificationTitle": "「{title}」のじかんだよ！",
+  "@promiseNotificationTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseNotificationBody": "{icon} やくそくを はじめよう！",
+  "@promiseNotificationBody": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyNotificationTitle": "今週の「やくそく」はいかがですか？🌟",
+  "weeklyNotificationBody": "毎日の育児お疲れ様です☕️ お子様の習慣づくりをアプリでチェックしてみましょう！",
+  "alreadyAddedPromise": "「{title}」は既に追加されています",
+  "@alreadyAddedPromise": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "customAdd": "カスタム追加",
+  "recommendedTitle": "おすすめ",
+  "currentPromiseTitle": "今のやくそく",
+  "dragToAddInstruction": "左からドラッグして\n追加してね！",
+  "recPromiseToilet": "トイレにいく",
+  "recPromiseBreakfast": "あさごはん",
+  "recPromiseBrushTeethMorning": "はみがき（あさ）",
+  "recPromiseGetDressed": "おきがえ",
+  "recPromiseShoes": "くつそろえ",
+  "recPromiseLunch": "ひるごはん",
+  "recPromiseWashHands": "てあらい",
+  "recPromiseHomework": "しゅくだい",
+  "recPromisePractice": "おけいこ・れんしゅう",
+  "recPromiseReading": "どくしょ",
+  "recPromiseHelp": "おてつだい",
+  "recPromiseCleanUp": "おかたづけ",
+  "recPromiseBath": "おふろ",
+  "recPromisePajamas": "パジャマにきがえる",
+  "recPromiseDinner": "よるごはん",
+  "recPromiseBrushTeethNight": "はみがき（よる）",
+  "recPromisePrepareNextDay": "あしたのじゅんび",
+  "recPromiseSleep": "ねる",
+  "recPromiseReadBook": "ほんをよむ",
+  "recPromiseBathCleaning": "おふろそうじ",
+  "recPromiseErrand": "おつかい",
+  "durationAndPoints": "{duration}分 / {points}ポイント",
+  "@durationAndPoints": {
+    "placeholders": {
+      "duration": { "type": "String" },
+      "points": { "type": "String" }
+    }
+  }
 }

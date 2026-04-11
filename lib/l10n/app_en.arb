@@ -49,7 +49,7 @@
   "lockIncorrectAnswer": "Sorry, that's not right",
   "cancel": "Cancel",
   "promiseBoard": "Promise Board",
-  "noRegularPromises": "No regular promises yet",
+  "noRegularPromises": "No promises yet",
   "untitled": "Untitled",
   "rouletteCongrats": "Congratulations!\n2x Points!",
   "rouletteTryAgain": "Try Again Next Time\n",
@@ -115,7 +115,7 @@
     }
   },
   "finished": "Finished!",
-  "addRegularPromiseTitle": "New Regular Promise",
+  "addRegularPromiseTitle": "New Promise",
   "editRegularPromiseTitle": "Edit Promise",
   "promiseNameLabel": "Promise Name",
   "promiseNameHint": "Please enter a name for the promise",
@@ -147,7 +147,7 @@
   "setThisPromiseButton": "Set This Promise",
   "parentScreenTitle": "Parent Mode",
   "readFirstButton": "Read Me First",
-  "regularPromiseSettingsButton": "Regular Promise Settings",
+  "regularPromiseSettingsButton": "Promise Settings",
   "emergencyPromiseSettingsButton": "Emergency Promise Settings",
   "promiseDeleted": "Deleted \"{promiseTitle}\".",
   "@promiseDeleted": {
@@ -173,7 +173,7 @@
       }
     }
   },
-  "regularPromiseSettingsTitle": "Regular Promise Settings",
+  "regularPromiseSettingsTitle": "Promise Settings",
   "timeLabel": "Time",
   "itemClothesBlue": "Blue Clothes",
   "itemClothesRed": "Red Clothes",
@@ -209,11 +209,12 @@
   "itemBicycle": "Bicycle",
   "itemCar": "Car",
   "promiseDefault1Title": "Breakfast",
-  "promiseDefault2Title": "Get Ready for School",
-  "promiseDefault3Title": "Get Ready for Bath",
-  "promiseDefault4Title": "Dinner",
-  "promiseDefault5Title": "Brush Teeth",
-  "promiseDefault6Title": "Get Ready for Bed",
+  "promiseDefault2Title": "Brushing Teeth (Morning)",
+  "promiseDefault3Title": "Getting Dressed",
+  "promiseDefault4Title": "Bath",
+  "promiseDefault5Title": "Dinner",
+  "promiseDefault6Title": "Brushing Teeth (Night)",
+  "promiseDefault7Title": "Bedtime",
   "settingsTitle": "Settings",
   "languageSetting": "Language",
   "longPressToEnter": "Long press to enter!",
@@ -510,7 +511,7 @@
   "minutesLabel": "min",
   "okAction": "OK",
   "notificationRequestTitle": "Receive notifications? 🔔",
-  "notificationRequestMessage": "We'll send you weekly updates on your child's progress and news about new items to your phone!\n\nTurn on notifications and enjoy the journey together! ✨",
+  "notificationRequestMessage": "You'll get a notification when it's time for a promise!\nTurn on notifications and keep having fun together✨",
   "notificationLater": "Later",
   "notificationAccept": "Sure!",
   "resetPromisesAction": "Reset Promises to Defaults",
@@ -519,10 +520,77 @@
   "tutorialStartBubble": "Starting your\n'Promise' here!",
   "tutorialShopBubble": "Let's go\nshopping!",
   "tutorialCustomizeBubble": "You can change\nclothes here!",
+  "tutorialParentSettingsBubble": "Create your promises from here!",
   "helpMenuTitle": "How to Play",
   "helpMenuYakusoku": "Promise",
   "helpMenuShop": "Shop",
   "helpMenuCustomize": "Dress-up",
   "helpMenuOthers": "Others (Settings, etc.)",
-  "helpMenuClose": "Close"
+  "helpMenuClose": "Close",
+  "tutorialParentRegularBubble": "Set promises\nfrom here!",
+  "tutorialParentAddBubble": "Tap this button\nto add a promise!",
+  "tutorialParentDeleteBubble": "Tap this button\nto remove a promise!",
+  "tutorialParentBackBubble": "Go back\nfrom here!",
+  "tutorialParentStep3Title": "Try with a sample promise!",
+  "tutorialParentStep3Desc": "Tap the **+ button** on the left to add a promise.\nTry adding **\"Trial promise\"**!",
+  "tutorialParentStep5Title": "Time to set up promises!",
+  "tutorialParentStep5Desc": "Use the suggestions or \"Custom Add\" to set up **promises that suit your child**.\nWhen you're done, tap **\"Back\"** to return to the home screen!",
+  "tutorialParentCompleteTitle": "Promises are ready!",
+  "tutorialParentCompleteDesc": "The **promise setup** is complete!\nLet's try the promises on the home screen!",
+  "promiseNotificationTitle": "Time for \"{title}\"!",
+  "@promiseNotificationTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseNotificationBody": "{icon} Let's start your promise!",
+  "@promiseNotificationBody": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
+  "weeklyNotificationTitle": "How are this week's Promises? 🌟",
+  "weeklyNotificationBody": "Taking a quick break? ☕️ Let's check your child's progress in the app!",
+  "alreadyAddedPromise": "\"{title}\" is already added",
+  "@alreadyAddedPromise": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "customAdd": "Custom Add",
+  "recommendedTitle": "Recommended",
+  "currentPromiseTitle": "Current Promises",
+  "dragToAddInstruction": "Drag from the left\nto add!",
+  "recPromiseToilet": "Go to the toilet",
+  "recPromiseBreakfast": "Breakfast",
+  "recPromiseBrushTeethMorning": "Brush teeth (Morning)",
+  "recPromiseGetDressed": "Get dressed",
+  "recPromiseShoes": "Arrange shoes",
+  "recPromiseLunch": "Lunch",
+  "recPromiseWashHands": "Wash hands",
+  "recPromiseHomework": "Homework",
+  "recPromisePractice": "Practice / Lessons",
+  "recPromiseReading": "Reading",
+  "recPromiseHelp": "Help out",
+  "recPromiseCleanUp": "Clean up",
+  "recPromiseBath": "Take a bath",
+  "recPromisePajamas": "Change to pajamas",
+  "recPromiseDinner": "Dinner",
+  "recPromiseBrushTeethNight": "Brush teeth (Night)",
+  "recPromisePrepareNextDay": "Prepare for tomorrow",
+  "recPromiseSleep": "Sleep",
+  "recPromiseReadBook": "Read a book",
+  "recPromiseBathCleaning": "Clean the bath",
+  "recPromiseErrand": "Run an errand",
+  "durationAndPoints": "{duration} min / {points} pt",
+  "@durationAndPoints": {
+    "placeholders": {
+      "duration": { "type": "String" },
+      "points": { "type": "String" }
+    }
+  }
 }

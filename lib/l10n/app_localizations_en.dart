@@ -156,7 +156,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promiseBoard => 'Promise Board';
 
   @override
-  String get noRegularPromises => 'No regular promises yet';
+  String get noRegularPromises => 'No promises yet';
 
   @override
   String get untitled => 'Untitled';
@@ -240,7 +240,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get finished => 'Finished!';
 
   @override
-  String get addRegularPromiseTitle => 'New Regular Promise';
+  String get addRegularPromiseTitle => 'New Promise';
 
   @override
   String get editRegularPromiseTitle => 'Edit Promise';
@@ -317,7 +317,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get readFirstButton => 'Read Me First';
 
   @override
-  String get regularPromiseSettingsButton => 'Regular Promise Settings';
+  String get regularPromiseSettingsButton => 'Promise Settings';
 
   @override
   String get emergencyPromiseSettingsButton => 'Emergency Promise Settings';
@@ -338,7 +338,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get regularPromiseSettingsTitle => 'Regular Promise Settings';
+  String get regularPromiseSettingsTitle => 'Promise Settings';
 
   @override
   String get timeLabel => 'Time';
@@ -446,19 +446,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promiseDefault1Title => 'Breakfast';
 
   @override
-  String get promiseDefault2Title => 'Get Ready for School';
+  String get promiseDefault2Title => 'Brushing Teeth (Morning)';
 
   @override
-  String get promiseDefault3Title => 'Get Ready for Bath';
+  String get promiseDefault3Title => 'Getting Dressed';
 
   @override
-  String get promiseDefault4Title => 'Dinner';
+  String get promiseDefault4Title => 'Bath';
 
   @override
-  String get promiseDefault5Title => 'Brush Teeth';
+  String get promiseDefault5Title => 'Dinner';
 
   @override
-  String get promiseDefault6Title => 'Get Ready for Bed';
+  String get promiseDefault6Title => 'Brushing Teeth (Night)';
+
+  @override
+  String get promiseDefault7Title => 'Bedtime';
 
   @override
   String get settingsTitle => 'Settings';
@@ -1250,6 +1253,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialCustomizeBubble => 'You can change\nclothes here!';
 
   @override
+  String get tutorialParentSettingsBubble => 'Create your promises from here!';
+
+  @override
   String get helpMenuTitle => 'How to Play';
 
   @override
@@ -1266,4 +1272,135 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpMenuClose => 'Close';
+
+  @override
+  String get tutorialParentRegularBubble => 'Set promises\nfrom here!';
+
+  @override
+  String get tutorialParentAddBubble => 'Tap this button\nto add a promise!';
+
+  @override
+  String get tutorialParentDeleteBubble => 'Tap this button\nto remove a promise!';
+
+  @override
+  String get tutorialParentBackBubble => 'Go back\nfrom here!';
+
+  @override
+  String get tutorialParentStep3Title => 'Try with a sample promise!';
+
+  @override
+  String get tutorialParentStep3Desc => 'Tap the **+ button** on the left to add a promise.\nTry adding **\"Trial promise\"**!';
+
+  @override
+  String get tutorialParentStep5Title => 'Time to set up promises!';
+
+  @override
+  String get tutorialParentStep5Desc => 'Use the suggestions or \"Custom Add\" to set up **promises that suit your child**.\nWhen you\'re done, tap **\"Back\"** to return to the home screen!';
+
+  @override
+  String get tutorialParentCompleteTitle => 'Promises are ready!';
+
+  @override
+  String get tutorialParentCompleteDesc => 'The **promise setup** is complete!\nLet\'s try the promises on the home screen!';
+
+  @override
+  String promiseNotificationTitle(String title) {
+    return 'Time for \"$title\"!';
+  }
+
+  @override
+  String promiseNotificationBody(String icon) {
+    return '$icon Let\'s start your promise!';
+  }
+
+  @override
+  String get weeklyNotificationTitle => 'How are this week\'s Promises? 🌟';
+
+  @override
+  String get weeklyNotificationBody => 'Taking a quick break? ☕️ Let\'s check your child\'s progress in the app!';
+
+  @override
+  String alreadyAddedPromise(String title) {
+    return '\"$title\" is already added';
+  }
+
+  @override
+  String get customAdd => 'Custom Add';
+
+  @override
+  String get recommendedTitle => 'Recommended';
+
+  @override
+  String get currentPromiseTitle => 'Current Promises';
+
+  @override
+  String get dragToAddInstruction => 'Drag from the left\nto add!';
+
+  @override
+  String get recPromiseToilet => 'Go to the toilet';
+
+  @override
+  String get recPromiseBreakfast => 'Breakfast';
+
+  @override
+  String get recPromiseBrushTeethMorning => 'Brush teeth (Morning)';
+
+  @override
+  String get recPromiseGetDressed => 'Get dressed';
+
+  @override
+  String get recPromiseShoes => 'Arrange shoes';
+
+  @override
+  String get recPromiseLunch => 'Lunch';
+
+  @override
+  String get recPromiseWashHands => 'Wash hands';
+
+  @override
+  String get recPromiseHomework => 'Homework';
+
+  @override
+  String get recPromisePractice => 'Practice / Lessons';
+
+  @override
+  String get recPromiseReading => 'Reading';
+
+  @override
+  String get recPromiseHelp => 'Help out';
+
+  @override
+  String get recPromiseCleanUp => 'Clean up';
+
+  @override
+  String get recPromiseBath => 'Take a bath';
+
+  @override
+  String get recPromisePajamas => 'Change to pajamas';
+
+  @override
+  String get recPromiseDinner => 'Dinner';
+
+  @override
+  String get recPromiseBrushTeethNight => 'Brush teeth (Night)';
+
+  @override
+  String get recPromisePrepareNextDay => 'Prepare for tomorrow';
+
+  @override
+  String get recPromiseSleep => 'Sleep';
+
+  @override
+  String get recPromiseReadBook => 'Read a book';
+
+  @override
+  String get recPromiseBathCleaning => 'Clean the bath';
+
+  @override
+  String get recPromiseErrand => 'Run an errand';
+
+  @override
+  String durationAndPoints(String duration, String points) {
+    return '$duration min / $points pt';
+  }
 }

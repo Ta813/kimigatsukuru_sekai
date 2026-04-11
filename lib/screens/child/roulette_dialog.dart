@@ -91,20 +91,24 @@ class _RouletteDialogState extends State<RouletteDialog> {
       _isSpinning = true;
     });
 
-    // 2秒間、回転アニメーションを見せる
+    // 2秒間、回転アニメーションを見せる（現在は4秒設定）
     Timer(const Duration(seconds: 4), () {
+      if (!mounted) return;
+
       // 50%の確率で「あたり」を決定
       final bool isWin = Random().nextBool();
 
       setState(() {
         _isSpinning = false;
+        final l10n = AppLocalizations.of(context);
+        if (l10n == null) return;
+
+        final lang = l10n.localeName;
         if (isWin) {
-          final lang = AppLocalizations.of(context)!.localeName;
           if (lang == 'ja') {
             try {
               SfxManager.instance.playRouletteWinSound();
             } catch (e) {
-              // エラーが発生した場合
               print('再生エラー: $e');
             }
           } else {
@@ -114,21 +118,18 @@ class _RouletteDialogState extends State<RouletteDialog> {
             try {
               SfxManager.instance.playSequentialSounds(soundsToPlay);
             } catch (e) {
-              // エラーが発生した場合
               print('再生エラー: $e');
             }
           }
-          _resultText = AppLocalizations.of(context)!.rouletteCongrats;
+          _resultText = l10n.rouletteCongrats;
 
           // レベルに応じて倍率を決定
           _pointMultiplier = _winPointMultiplier;
         } else {
-          final lang = AppLocalizations.of(context)!.localeName;
           if (lang == 'ja') {
             try {
               SfxManager.instance.playRouletteLoseSound();
             } catch (e) {
-              // エラーが発生した場合
               print('再生エラー: $e');
             }
           } else {
@@ -138,11 +139,10 @@ class _RouletteDialogState extends State<RouletteDialog> {
             try {
               SfxManager.instance.playSequentialSounds(soundsToPlay);
             } catch (e) {
-              // エラーが発生した場合
               print('再生エラー: $e');
             }
           }
-          _resultText = AppLocalizations.of(context)!.rouletteTryAgain;
+          _resultText = l10n.rouletteTryAgain;
           _pointMultiplier = 1; // はずれなら1倍
         }
       });

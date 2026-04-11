@@ -156,7 +156,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get promiseBoard => 'لوحة الوعود';
 
   @override
-  String get noRegularPromises => 'لا توجد وعود منتظمة بعد';
+  String get noRegularPromises => 'لا توجد وعود بعد';
 
   @override
   String get untitled => 'بدون عنوان';
@@ -240,7 +240,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get finished => 'انتهى!';
 
   @override
-  String get addRegularPromiseTitle => 'وعد منتظم جديد';
+  String get addRegularPromiseTitle => 'وعد جديد';
 
   @override
   String get editRegularPromiseTitle => 'تعديل الوعد';
@@ -317,7 +317,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get readFirstButton => 'اقرأني أولاً';
 
   @override
-  String get regularPromiseSettingsButton => 'إعدادات الوعود المنتظمة';
+  String get regularPromiseSettingsButton => 'إعدادات الوعود';
 
   @override
   String get emergencyPromiseSettingsButton => 'إعدادات وعود الطوارئ';
@@ -338,7 +338,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get regularPromiseSettingsTitle => 'إعدادات الوعود المنتظمة';
+  String get regularPromiseSettingsTitle => 'إعدادات الوعود';
 
   @override
   String get timeLabel => 'الوقت';
@@ -446,19 +446,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get promiseDefault1Title => 'الفطور';
 
   @override
-  String get promiseDefault2Title => 'الاستعداد للمدرسة';
+  String get promiseDefault2Title => 'تنظيف الأسنان (صباحاً)';
 
   @override
-  String get promiseDefault3Title => 'الاستعداد للاستحمام';
+  String get promiseDefault3Title => 'تغيير الملابس';
 
   @override
-  String get promiseDefault4Title => 'العشاء';
+  String get promiseDefault4Title => 'الاستحمام';
 
   @override
-  String get promiseDefault5Title => 'تنظيف الأسنان';
+  String get promiseDefault5Title => 'العشاء';
 
   @override
-  String get promiseDefault6Title => 'الاستعداد للنوم';
+  String get promiseDefault6Title => 'تنظيف الأسنان (ليلاً)';
+
+  @override
+  String get promiseDefault7Title => 'النوم';
 
   @override
   String get settingsTitle => 'الإعدادات';
@@ -1250,6 +1253,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialCustomizeBubble => 'يمكنك تغيير\nالملابس هنا!';
 
   @override
+  String get tutorialParentSettingsBubble => 'أنشئ وعودك من هنا!';
+
+  @override
   String get helpMenuTitle => 'كيفية اللعب';
 
   @override
@@ -1266,4 +1272,135 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpMenuClose => 'إغلاق';
+
+  @override
+  String get tutorialParentRegularBubble => 'اضبط الوعود\nمن هنا!';
+
+  @override
+  String get tutorialParentAddBubble => 'اضغط هذا الزر\nلإضافة وعد!';
+
+  @override
+  String get tutorialParentDeleteBubble => 'اضغط هذا الزر\nلحذف الوعد!';
+
+  @override
+  String get tutorialParentBackBubble => 'ارجع\nمن هنا!';
+
+  @override
+  String get tutorialParentStep3Title => 'جرّب مع وعد نموذجي!';
+
+  @override
+  String get tutorialParentStep3Desc => 'اضغط **زر +** على اليسار لإضافة وعد.\nجرّب إضافة **\"وعد تجريبي\"**!';
+
+  @override
+  String get tutorialParentStep5Title => 'حان وقت إعداد الوعود!';
+
+  @override
+  String get tutorialParentStep5Desc => 'استخدم الاقتراحات أو \"إضافة مخصصة\" لإعداد **وعود تناسب طفلك**.\nعند الانتهاء، اضغط **\"رجوع\"** للعودة!';
+
+  @override
+  String get tutorialParentCompleteTitle => 'الوعود جاهزة!';
+
+  @override
+  String get tutorialParentCompleteDesc => 'اكتمل **إعداد الوعود**!\nلنجرب الوعود في الشاشة الرئيسية!';
+
+  @override
+  String promiseNotificationTitle(String title) {
+    return 'حان وقت \"$title\"!';
+  }
+
+  @override
+  String promiseNotificationBody(String icon) {
+    return '$icon لنبدأ وعدك!';
+  }
+
+  @override
+  String get weeklyNotificationTitle => 'كيف حال وعود هذا الأسبوع؟ 🌟';
+
+  @override
+  String get weeklyNotificationBody => 'تأخذ استراحة سريعة؟ ☕️ دعنا نتحقق من تقدم طفلك في التطبيق!';
+
+  @override
+  String alreadyAddedPromise(String title) {
+    return '\"$title\" تمت إضافته بالفعل';
+  }
+
+  @override
+  String get customAdd => 'إضافة مخصصة';
+
+  @override
+  String get recommendedTitle => 'موصى به';
+
+  @override
+  String get currentPromiseTitle => 'الوعود الحالية';
+
+  @override
+  String get dragToAddInstruction => 'اسحب من اليسار\nللإضافة!';
+
+  @override
+  String get recPromiseToilet => 'الذهاب إلى المرحاض';
+
+  @override
+  String get recPromiseBreakfast => 'الفطور';
+
+  @override
+  String get recPromiseBrushTeethMorning => 'تفريش الأسنان (صباحاً)';
+
+  @override
+  String get recPromiseGetDressed => 'ارتداء الملابس';
+
+  @override
+  String get recPromiseShoes => 'ترتيب الأحذية';
+
+  @override
+  String get recPromiseLunch => 'الغداء';
+
+  @override
+  String get recPromiseWashHands => 'غسل اليدين';
+
+  @override
+  String get recPromiseHomework => 'الواجب المنزلي';
+
+  @override
+  String get recPromisePractice => 'التدريب / الدروس';
+
+  @override
+  String get recPromiseReading => 'القراءة';
+
+  @override
+  String get recPromiseHelp => 'المساعدة';
+
+  @override
+  String get recPromiseCleanUp => 'الترتيب';
+
+  @override
+  String get recPromiseBath => 'الاستحمام';
+
+  @override
+  String get recPromisePajamas => 'تغيير لملابس النوم';
+
+  @override
+  String get recPromiseDinner => 'العشاء';
+
+  @override
+  String get recPromiseBrushTeethNight => 'تفريش الأسنان (ليلاً)';
+
+  @override
+  String get recPromisePrepareNextDay => 'التحضير للغد';
+
+  @override
+  String get recPromiseSleep => 'النوم';
+
+  @override
+  String get recPromiseReadBook => 'قراءة كتاب';
+
+  @override
+  String get recPromiseBathCleaning => 'تنظيف الحمام';
+
+  @override
+  String get recPromiseErrand => 'قضاء حاجة';
+
+  @override
+  String durationAndPoints(String duration, String points) {
+    return '$duration دقيقة / $points نقطة';
+  }
 }

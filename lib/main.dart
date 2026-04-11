@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'screens/child/child_home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,6 +20,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
 
   // 🌟 1. 画面の描画（UI）に絶対必要なもの「だけ」を先に待つ
   // 多言語対応の初期化
@@ -32,13 +37,20 @@ Future<void> main() async {
     );
 
     // クラッシュレポートの設定
-    PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      return true;
-    };
-    FlutterError.onError = (errorDetails) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-    };
+    if (kDebugMode) {
+      // デバッグモード時はクラッシュレポートを無効化
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+    } else {
+      // リリースモード時は有効化し、エラー捕捉を設定
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+      PlatformDispatcher.instance.onError = (error, stack) {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        return true;
+      };
+      FlutterError.onError = (errorDetails) {
+        FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+      };
+    }
   } catch (e) {
     print('Firebaseの初期化に失敗しました: $e');
   }

@@ -156,7 +156,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get promiseBoard => 'वादा बोर्ड';
 
   @override
-  String get noRegularPromises => 'अभी तक कोई नियमित वादा नहीं है';
+  String get noRegularPromises => 'अभी तक कोई वादे नहीं हैं';
 
   @override
   String get untitled => 'बिना शीर्षक वाला';
@@ -240,7 +240,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get finished => 'हो गया!';
 
   @override
-  String get addRegularPromiseTitle => 'नया नियमित वादा';
+  String get addRegularPromiseTitle => 'नया वादा';
 
   @override
   String get editRegularPromiseTitle => 'वादा संपादित करें';
@@ -317,7 +317,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get readFirstButton => 'पहले मुझे पढ़ें';
 
   @override
-  String get regularPromiseSettingsButton => 'नियमित वादा सेटिंग्स';
+  String get regularPromiseSettingsButton => 'वादा सेटिंग्स';
 
   @override
   String get emergencyPromiseSettingsButton => 'आपातकालीन वादा सेटिंग्स';
@@ -338,7 +338,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get regularPromiseSettingsTitle => 'नियमित वादा सेटिंग्स';
+  String get regularPromiseSettingsTitle => 'वादा सेटिंग्स';
 
   @override
   String get timeLabel => 'समय';
@@ -446,19 +446,22 @@ class AppLocalizationsHi extends AppLocalizations {
   String get promiseDefault1Title => 'नाश्ता';
 
   @override
-  String get promiseDefault2Title => 'स्कूल के लिए तैयार हों';
+  String get promiseDefault2Title => 'दाँत साफ़ करना (सुबह)';
 
   @override
-  String get promiseDefault3Title => 'स्नान के लिए तैयार हों';
+  String get promiseDefault3Title => 'कपड़े बदलना';
 
   @override
-  String get promiseDefault4Title => 'रात का खाना';
+  String get promiseDefault4Title => 'नहाना';
 
   @override
-  String get promiseDefault5Title => 'दांत साफ करें';
+  String get promiseDefault5Title => 'रात का खाना';
 
   @override
-  String get promiseDefault6Title => 'सोने के लिए तैयार हों';
+  String get promiseDefault6Title => 'दाँत साफ़ करना (रात)';
+
+  @override
+  String get promiseDefault7Title => 'सोना';
 
   @override
   String get settingsTitle => 'सेटिंग्स';
@@ -1247,7 +1250,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tutorialShopBubble => 'चलो\nखरीदारी करें!';
 
   @override
-  String get tutorialCustomizeBubble => 'यहाँ आप कपड़े\nबदल सकते हैं!';
+  String get tutorialCustomizeBubble => 'आप यहाँ\nकपड़े बदल सकते हैं!';
+
+  @override
+  String get tutorialParentSettingsBubble => 'यहाँ से अपने वादे बनाएँ!';
 
   @override
   String get helpMenuTitle => 'कैसे खेलें';
@@ -1266,4 +1272,135 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get helpMenuClose => 'बंद करें';
+
+  @override
+  String get tutorialParentRegularBubble => 'यहाँ से\nवादे सेट करें!';
+
+  @override
+  String get tutorialParentAddBubble => 'यह बटन दबाएँ\nवादा जोड़ने के लिए!';
+
+  @override
+  String get tutorialParentDeleteBubble => 'यह बटन दबाएँ\nवादा हटाने के लिए!';
+
+  @override
+  String get tutorialParentBackBubble => 'यहाँ से\nवापस जाएँ!';
+
+  @override
+  String get tutorialParentStep3Title => 'नमूना वादे से प्रयास करें!';
+
+  @override
+  String get tutorialParentStep3Desc => 'बाईं ओर **+ बटन** दबाकर वादा जोड़ें।\n**\"ट्रायल वादा\"** जोड़कर देखें!';
+
+  @override
+  String get tutorialParentStep5Title => 'वादे सेट करने का समय!';
+
+  @override
+  String get tutorialParentStep5Desc => 'सुझाव या \"कस्टम जोड़ें\" से **अपने बच्चे के लिए वादे** सेट करें।\nपूरा होने पर **\"वापस\"** दबाएँ!';
+
+  @override
+  String get tutorialParentCompleteTitle => 'वादे तैयार हैं!';
+
+  @override
+  String get tutorialParentCompleteDesc => '**वादा सेटअप** पूरा हो गया!\nहोम स्क्रीन पर वादे आज़माएँ!';
+
+  @override
+  String promiseNotificationTitle(String title) {
+    return '\"$title\" का समय हो गया!';
+  }
+
+  @override
+  String promiseNotificationBody(String icon) {
+    return '$icon चलो अपना वादा शुरू करें!';
+  }
+
+  @override
+  String get weeklyNotificationTitle => 'इस हफ़्ते के वादे कैसे चल रहे हैं? 🌟';
+
+  @override
+  String get weeklyNotificationBody => 'थोड़ा ब्रेक ले रहे हैं? ☕️ आइए ऐप में अपने बच्चे की प्रगति देखें!';
+
+  @override
+  String alreadyAddedPromise(String title) {
+    return '\"$title\" पहले से ही जोड़ा गया है';
+  }
+
+  @override
+  String get customAdd => 'कस्टम जोड़ें';
+
+  @override
+  String get recommendedTitle => 'सुझाए गए';
+
+  @override
+  String get currentPromiseTitle => 'वर्तमान वादे';
+
+  @override
+  String get dragToAddInstruction => 'जोड़ने के लिए बाएं से\nखींचें!';
+
+  @override
+  String get recPromiseToilet => 'शौचालय जाएं';
+
+  @override
+  String get recPromiseBreakfast => 'नाश्ता';
+
+  @override
+  String get recPromiseBrushTeethMorning => 'दांत ब्रश करें (सुबह)';
+
+  @override
+  String get recPromiseGetDressed => 'कपड़े पहनें';
+
+  @override
+  String get recPromiseShoes => 'जूते व्यवस्थित करें';
+
+  @override
+  String get recPromiseLunch => 'दोपहर का भोजन';
+
+  @override
+  String get recPromiseWashHands => 'हाथ धोएं';
+
+  @override
+  String get recPromiseHomework => 'होमवर्क';
+
+  @override
+  String get recPromisePractice => 'अभ्यास / पाठ';
+
+  @override
+  String get recPromiseReading => 'पढ़ना';
+
+  @override
+  String get recPromiseHelp => 'मदद करना';
+
+  @override
+  String get recPromiseCleanUp => 'साफ-सफाई';
+
+  @override
+  String get recPromiseBath => 'नहाना';
+
+  @override
+  String get recPromisePajamas => 'पजामा पहनना';
+
+  @override
+  String get recPromiseDinner => 'रात का खाना';
+
+  @override
+  String get recPromiseBrushTeethNight => 'दांत ब्रश करें (रात)';
+
+  @override
+  String get recPromisePrepareNextDay => 'कल की तैयारी';
+
+  @override
+  String get recPromiseSleep => 'सोना';
+
+  @override
+  String get recPromiseReadBook => 'किताब पढ़ना';
+
+  @override
+  String get recPromiseBathCleaning => 'बाथरूम साफ करना';
+
+  @override
+  String get recPromiseErrand => 'काम से जाना';
+
+  @override
+  String durationAndPoints(String duration, String points) {
+    return '$duration मिनट / $points अंक';
+  }
 }

@@ -14,15 +14,6 @@ import '../../l10n/app_localizations.dart';
 /// チュートリアルのフェーズ
 enum _TutorialPhase { add, delete, finish, done }
 
-/// チュートリアル用のおためしテンプレート
-const Map<String, dynamic> _trialTemplate = {
-  'title': 'やくそく（おためし）',
-  'icon': '⭐',
-  'time': '06:00',
-  'duration': 5,
-  'points': 5,
-};
-
 class RegularPromiseSettingsScreen extends StatefulWidget {
   final bool isTutorial;
   const RegularPromiseSettingsScreen({super.key, this.isTutorial = false});
@@ -40,135 +31,150 @@ class _RegularPromiseSettingsScreenState
   // チュートリアルフェーズ
   _TutorialPhase _tutorialPhase = _TutorialPhase.add;
 
-  // おすすめのやくそくテンプレート
-  final List<Map<String, dynamic>> _recommendedTemplates = [
-    {
-      'title': 'トイレにいく',
-      'icon': '🚽',
-      'time': '06:50', // 朝起きてすぐの習慣づけに
-      'duration': 10,
-      'points': 10,
-    },
-    {
-      'title': 'あさごはん',
-      'icon': '🍳',
-      'time': '07:00',
-      'duration': 30,
-      'points': 20,
-    },
-    {
-      'title': 'はみがき（あさ）',
-      'icon': '🪥',
-      'time': '07:30',
-      'duration': 10,
-      'points': 10,
-    },
-    {
-      'title': 'おきがえ',
-      'icon': '👕',
-      'time': '07:45',
-      'duration': 10,
-      'points': 10,
-    },
-    {
-      'title': 'くつそろえ',
-      'icon': '👟',
-      'time': '08:00',
+  // ▼ 追加: チュートリアル用のおためしテンプレートを取得するメソッド
+  Map<String, dynamic> _getTrialTemplate(BuildContext context) {
+    return {
+      // child_home_screen.dartなどで使っている既存キーを再利用
+      'title': AppLocalizations.of(context)!.trialPromiseTitle,
+      'icon': '⭐',
+      'time': '06:00',
       'duration': 5,
       'points': 5,
-    },
-    {
-      'title': 'ひるごはん',
-      'icon': '🍱',
-      'time': '12:00',
-      'duration': 30,
-      'points': 20,
-    },
-    {
-      'title': 'てあらい',
-      'icon': '🧼',
-      'time': '15:30',
-      'duration': 5,
-      'points': 5,
-    },
-    {
-      'title': 'しゅくだい',
-      'icon': '✍️',
-      'time': '16:00',
-      'duration': 30,
-      'points': 20,
-    },
-    {
-      'title': 'おけいこ・れんしゅう',
-      'icon': '🎹', // ピアノやスポーツの練習などに
-      'time': '16:45',
-      'duration': 20,
-      'points': 15,
-    },
-    {
-      'title': 'どくしょ',
-      'icon': '📚',
-      'time': '17:00',
-      'duration': 20,
-      'points': 10,
-    },
-    {
-      'title': 'おてつだい',
-      'icon': '✨',
-      'time': '17:30',
-      'duration': 15,
-      'points': 15,
-    },
-    {
-      'title': 'おかたづけ',
-      'icon': '🧸',
-      'time': '18:30',
-      'duration': 15,
-      'points': 10,
-    },
-    {
-      'title': 'おふろ',
-      'icon': '🛀',
-      'time': '18:00',
-      'duration': 30,
-      'points': 20,
-    },
-    {
-      'title': 'パジャマにきがえる',
-      'icon': '👚',
-      'time': '18:40', // お風呂あがりに
-      'duration': 10,
-      'points': 10,
-    },
-    {
-      'title': 'よるごはん',
-      'icon': '🍛',
-      'time': '19:00',
-      'duration': 30,
-      'points': 20,
-    },
-    {
-      'title': 'はみがき（よる）',
-      'icon': '🪥',
-      'time': '19:30',
-      'duration': 10,
-      'points': 10,
-    },
-    {
-      'title': 'あしたのじゅんび',
-      'icon': '🎒',
-      'time': '19:45', // 寝る前にランドセルやカバンを用意する
-      'duration': 15,
-      'points': 15,
-    },
-    {
-      'title': 'ねる',
-      'icon': '💤',
-      'time': '20:00',
-      'duration': 10,
-      'points': 10,
-    },
-  ];
+    };
+  }
+
+  // ▼ 変更: ハードコードされていたおすすめリストを、ローカライズ対応のメソッドに変更
+  List<Map<String, dynamic>> _getRecommendedTemplates(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      {
+        'title': l10n.recPromiseToilet,
+        'icon': '🚽',
+        'time': '06:50',
+        'duration': 10,
+        'points': 10,
+      },
+      {
+        'title': l10n.promiseDefault1Title,
+        'icon': '🍳',
+        'time': '07:00',
+        'duration': 30,
+        'points': 20,
+      },
+      {
+        'title': l10n.promiseDefault2Title,
+        'icon': '🪥',
+        'time': '07:30',
+        'duration': 10,
+        'points': 10,
+      },
+      {
+        'title': l10n.promiseDefault3Title,
+        'icon': '👕',
+        'time': '07:45',
+        'duration': 10,
+        'points': 10,
+      },
+      {
+        'title': l10n.recPromiseShoes,
+        'icon': '👟',
+        'time': '08:00',
+        'duration': 5,
+        'points': 5,
+      },
+      {
+        'title': l10n.recPromiseLunch,
+        'icon': '🍱',
+        'time': '12:00',
+        'duration': 30,
+        'points': 20,
+      },
+      {
+        'title': l10n.recPromiseWashHands,
+        'icon': '🧼',
+        'time': '15:30',
+        'duration': 5,
+        'points': 5,
+      },
+      {
+        'title': l10n.recPromiseHomework,
+        'icon': '✍️',
+        'time': '16:00',
+        'duration': 30,
+        'points': 20,
+      },
+      {
+        'title': l10n.recPromisePractice,
+        'icon': '🎹',
+        'time': '16:45',
+        'duration': 20,
+        'points': 15,
+      },
+      {
+        'title': l10n.recPromiseReading,
+        'icon': '📚',
+        'time': '17:00',
+        'duration': 20,
+        'points': 10,
+      },
+      {
+        'title': l10n.recPromiseHelp,
+        'icon': '✨',
+        'time': '17:30',
+        'duration': 15,
+        'points': 15,
+      },
+      {
+        'title': l10n.recPromiseCleanUp,
+        'icon': '🧸',
+        'time': '18:30',
+        'duration': 15,
+        'points': 10,
+      },
+      {
+        'title': l10n.promiseDefault4Title,
+        'icon': '🛀',
+        'time': '18:00',
+        'duration': 30,
+        'points': 20,
+      },
+      {
+        'title': l10n.recPromisePajamas,
+        'icon': '👚',
+        'time': '18:40',
+        'duration': 10,
+        'points': 10,
+      },
+      {
+        'title': l10n.promiseDefault5Title,
+        'icon': '🍛',
+        'time': '19:00',
+        'duration': 30,
+        'points': 20,
+      },
+      {
+        'title': l10n.promiseDefault6Title,
+        'icon': '🪥',
+        'time': '19:30',
+        'duration': 10,
+        'points': 10,
+      },
+      {
+        'title': l10n.recPromisePrepareNextDay,
+        'icon': '🎒',
+        'time': '19:45',
+        'duration': 15,
+        'points': 15,
+      },
+      {
+        'title': l10n.promiseDefault7Title,
+        'icon': '💤',
+        'time': '20:00',
+        'duration': 10,
+        'points': 10,
+      },
+    ];
+  }
 
   @override
   void initState() {
@@ -355,13 +361,12 @@ class _RegularPromiseSettingsScreenState
     });
     SharedPrefsHelper.saveRegularPromises(_regularPromises);
 
-    // ★ 修正: リスト全体を渡して通知を再設定する
     NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
 
     // チュートリアル中にやくそく（おためし）を削除したらステップ5へ
     if (widget.isTutorial &&
         _tutorialPhase == _TutorialPhase.delete &&
-        deletedPromiseTitle == _trialTemplate['title']) {
+        deletedPromiseTitle == _getTrialTemplate(context)['title']) {
       setState(() => _tutorialPhase = _TutorialPhase.finish);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showTutorialStep5Dialog();
@@ -398,7 +403,6 @@ class _RegularPromiseSettingsScreenState
       });
       SharedPrefsHelper.saveRegularPromises(_regularPromises);
 
-      // ★ 修正: リスト全体を渡して通知を再設定する
       NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
 
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -434,7 +438,6 @@ class _RegularPromiseSettingsScreenState
       });
       SharedPrefsHelper.saveRegularPromises(_regularPromises);
 
-      // ★ 修正: リスト全体を渡して通知を再設定する
       NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
 
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -456,7 +459,12 @@ class _RegularPromiseSettingsScreenState
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${template['title']}は既に追加されています'),
+          // ▼ 変更: 多言語対応
+          content: Text(
+            AppLocalizations.of(
+              context,
+            )!.alreadyAddedPromise(template['title']),
+          ),
           duration: const Duration(seconds: 1),
         ),
       );
@@ -481,14 +489,13 @@ class _RegularPromiseSettingsScreenState
     // チュートリアル中におためしを追加したらフェーズをdeleteへ
     if (widget.isTutorial &&
         _tutorialPhase == _TutorialPhase.add &&
-        template['title'] == _trialTemplate['title']) {
+        template['title'] == _getTrialTemplate(context)['title']) {
       setState(() => _tutorialPhase = _TutorialPhase.delete);
       return;
     }
 
     SharedPrefsHelper.saveRegularPromises(_regularPromises);
 
-    // ★ 修正: リスト全体を渡して通知を再設定する
     NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -711,12 +718,12 @@ class _RegularPromiseSettingsScreenState
     final bool isTutorialTrialCard =
         widget.isTutorial &&
         _tutorialPhase == _TutorialPhase.add &&
-        template['title'] == _trialTemplate['title'];
+        template['title'] == _getTrialTemplate(context)['title'];
     final bool isDisabledInTutorial =
         widget.isTutorial &&
         (_tutorialPhase == _TutorialPhase.add ||
             _tutorialPhase == _TutorialPhase.delete) &&
-        template['title'] != _trialTemplate['title'];
+        template['title'] != _getTrialTemplate(context)['title'];
 
     final card = Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -791,7 +798,7 @@ class _RegularPromiseSettingsScreenState
     final bool isTutorialTrialCard =
         widget.isTutorial &&
         _tutorialPhase == _TutorialPhase.delete &&
-        promise['title'] == _trialTemplate['title'];
+        promise['title'] == _getTrialTemplate(context)['title'];
 
     Widget deleteButton;
     if (isTutorialTrialCard) {
@@ -912,11 +919,15 @@ class _RegularPromiseSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final trialTemplate = _getTrialTemplate(context);
+    final recommendedTemplates = _getRecommendedTemplates(context);
+
     // チュートリアル中の場合はおためしテンプレートを先頭に追加
     final baseTemplates =
         widget.isTutorial && _tutorialPhase == _TutorialPhase.add
-        ? [_trialTemplate, ..._recommendedTemplates]
-        : _recommendedTemplates;
+        ? [trialTemplate, ...recommendedTemplates]
+        : recommendedTemplates;
 
     // 現在のやくそくに「無い」テンプレートだけを抽出する
     final availableTemplates = baseTemplates.where((template) {
@@ -956,7 +967,7 @@ class _RegularPromiseSettingsScreenState
                 ignoring: blockOtherButtons,
                 child: const CustomBackButton(),
               ),
-        title: Text(AppLocalizations.of(context)!.regularPromiseSettingsTitle),
+        title: Text(l10n.regularPromiseSettingsTitle),
         actions: [
           IgnorePointer(
             ignoring:
@@ -988,9 +999,10 @@ class _RegularPromiseSettingsScreenState
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(Icons.add),
-                      const Text(
-                        'カスタム追加',
-                        style: TextStyle(
+                      Text(
+                        // ▼ 変更: 多言語対応
+                        l10n.customAdd,
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -1023,7 +1035,8 @@ class _RegularPromiseSettingsScreenState
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12.0),
                       child: Text(
-                        '💡 おすすめ',
+                        // ▼ 変更: 多言語対応
+                        '💡 ${l10n.recommendedTitle}',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -1086,7 +1099,8 @@ class _RegularPromiseSettingsScreenState
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: Text(
-                            '📝 今のやくそく',
+                            // ▼ 変更: 多言語対応
+                            '📝 ${l10n.currentPromiseTitle}',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -1107,7 +1121,8 @@ class _RegularPromiseSettingsScreenState
                                       ),
                                       const SizedBox(height: 16),
                                       Text(
-                                        '左からドラッグして\n追加してね！',
+                                        // ▼ 変更: 多言語対応
+                                        l10n.dragToAddInstruction,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Colors.grey[600],

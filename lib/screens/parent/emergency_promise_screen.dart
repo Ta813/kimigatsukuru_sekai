@@ -21,7 +21,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
   // やくそくの名前用コントローラー
   final _titleController = TextEditingController();
 
-  // ▼ 追加: 各ドロップダウン用の選択肢リストを生成
+  // 各ドロップダウン用の選択肢リストを生成
   final List<String> _durationOptions = List.generate(
     120,
     (index) => (index + 1).toString(),
@@ -31,19 +31,47 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
     (index) => (index + 1).toString(),
   ); // 1〜100ポイント
 
-  // ▼ 追加: 選択中の値を保持する変数（初期値は10）
+  // 選択中の値を保持する変数（初期値は10）
   String _selectedDuration = '10';
   String _selectedPoints = '10';
 
-  // おすすめのリスト
-  final List<Map<String, dynamic>> _recommendedPromises = [
-    {'icon': '✨', 'title': 'おてつだい', 'duration': 15, 'points': 15},
-    {'icon': '✍️', 'title': 'しゅくだい', 'duration': 30, 'points': 20},
-    {'icon': '🧸', 'title': 'おかたづけ', 'duration': 10, 'points': 10},
-    {'icon': '📚', 'title': 'ほんをよむ', 'duration': 20, 'points': 10},
-    {'icon': '🛁', 'title': 'おふろそうじ', 'duration': 10, 'points': 15},
-    {'icon': '🛍️', 'title': 'おつかい', 'duration': 20, 'points': 20},
-  ];
+  // ▼ 変更: ハードコードされていたおすすめリストを、ローカライズ対応のメソッドに変更
+  List<Map<String, dynamic>> _getRecommendedPromises(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      {'icon': '✨', 'title': l10n.recPromiseHelp, 'duration': 15, 'points': 15},
+      {
+        'icon': '✍️',
+        'title': l10n.recPromiseHomework,
+        'duration': 30,
+        'points': 20,
+      },
+      {
+        'icon': '🧸',
+        'title': l10n.recPromiseCleanUp,
+        'duration': 10,
+        'points': 10,
+      },
+      {
+        'icon': '📚',
+        'title': l10n.recPromiseReadBook,
+        'duration': 20,
+        'points': 10,
+      },
+      {
+        'icon': '🛁',
+        'title': l10n.recPromiseBathCleaning,
+        'duration': 10,
+        'points': 15,
+      },
+      {
+        'icon': '🛍️',
+        'title': l10n.recPromiseErrand,
+        'duration': 20,
+        'points': 20,
+      },
+    ];
+  }
 
   @override
   void dispose() {
@@ -61,7 +89,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
 
     setState(() {
       _titleController.text = promise['title'] as String;
-      // ▼ 変更: ドロップダウンの選択値を更新
+      // ドロップダウンの選択値を更新
       _selectedDuration = promise['duration'].toString();
       _selectedPoints = promise['points'].toString();
     });
@@ -77,7 +105,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
     if (_formKey.currentState!.validate()) {
       final emergencyPromise = {
         'title': _titleController.text,
-        // ▼ 変更: 選択されている値を数値に変換して保存
+        // 選択されている値を数値に変換して保存
         'duration': int.tryParse(_selectedDuration) ?? 10,
         'points': int.tryParse(_selectedPoints) ?? 10,
       };
@@ -104,12 +132,13 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final recommendedPromises = _getRecommendedPromises(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: const CustomBackButton(),
-        title: Text(
-          AppLocalizations.of(context)!.emergencyPromiseSettingsTitle,
-        ),
+        title: Text(l10n.emergencyPromiseSettingsTitle),
       ),
       body: SafeArea(
         child: Row(
@@ -135,7 +164,8 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12.0),
                       child: Text(
-                        '💡 おすすめ',
+                        // ▼ 変更: 多言語対応
+                        '💡 ${l10n.recommendedTitle}',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -146,9 +176,9 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                     const SizedBox(height: 8),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: _recommendedPromises.length,
+                        itemCount: recommendedPromises.length,
                         itemBuilder: (context, index) {
-                          final promise = _recommendedPromises[index];
+                          final promise = recommendedPromises[index];
                           return Card(
                             margin: const EdgeInsets.only(bottom: 8.0),
                             elevation: 1,
@@ -172,7 +202,11 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               subtitle: Text(
-                                '${promise['duration']}分 / ${promise['points']}ポイント',
+                                // ▼ 変更: 多言語対応
+                                l10n.durationAndPoints(
+                                  promise['duration'].toString(),
+                                  promise['points'].toString(),
+                                ),
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey.shade600,
@@ -211,9 +245,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                       TextFormField(
                         controller: _titleController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(
-                            context,
-                          )!.promiseNameExampleHint,
+                          labelText: l10n.promiseNameExampleHint,
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 4,
@@ -222,22 +254,18 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return AppLocalizations.of(
-                              context,
-                            )!.promiseNameHint;
+                            return l10n.promiseNameHint;
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 10),
 
-                      // ▼ 変更: 時間（長さ）をドロップダウンに変更
+                      // 時間（長さ）ドロップダウン
                       DropdownButtonFormField<String>(
                         value: _selectedDuration,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(
-                            context,
-                          )!.durationLabel,
+                          labelText: l10n.durationLabel,
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 4,
@@ -247,7 +275,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                         items: _durationOptions.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text('$value'),
+                            child: Text(value),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
@@ -259,11 +287,11 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
 
                       const SizedBox(height: 10),
 
-                      // ▼ 変更: ポイントをドロップダウンに変更
+                      // ポイントドロップダウン
                       DropdownButtonFormField<String>(
                         value: _selectedPoints,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.points,
+                          labelText: l10n.points,
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(
                             vertical: 4,
@@ -273,7 +301,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                         items: _pointOptions.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text('$value'),
+                            child: Text(value),
                           );
                         }).toList(),
                         onChanged: (String? newValue) {
@@ -294,9 +322,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: Text(
-                          AppLocalizations.of(context)!.setThisPromiseButton,
-                        ),
+                        child: Text(l10n.setThisPromiseButton),
                       ),
                     ],
                   ),
