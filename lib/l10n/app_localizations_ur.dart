@@ -1226,7 +1226,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get notificationRequestTitle => 'اطلاعات موصول کریں؟ 🔔';
 
   @override
-  String get notificationRequestMessage => 'ہم آپ کو آپ کے بچے کی ترقی کے بارے میں ہفتہ وار اپ ڈیٹس اور نئی چیزوں کے بارے میں خبریں بھیجیں گے!\n\nاطلاعات آن کریں اور اس سفر سے ایک ساتھ لطف اٹھائیں! ✨';
+  String get notificationRequestMessage => 'جب وعدے کا وقت ہوگا تو آپ کو ایک اطلاع ملے گی!\nاطلاعات آن کریں اور ایک ساتھ مزے کرتے رہیں✨';
 
   @override
   String get notificationLater => 'بعد میں';

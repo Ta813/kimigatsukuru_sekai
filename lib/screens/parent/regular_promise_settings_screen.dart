@@ -737,7 +737,7 @@ class _RegularPromiseSettingsScreenState
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         subtitle: Text(
-          '${template['time']} / ${template['duration']}分 / ${template['points']}pt',
+          '${template['time']} / ${AppLocalizations.of(context)!.durationAndPoints(template['duration'].toString(), template['points'].toString())}',
           style: const TextStyle(fontSize: 10),
         ),
         trailing: isTutorialTrialCard

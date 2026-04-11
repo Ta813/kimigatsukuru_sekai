@@ -1226,7 +1226,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationRequestTitle => 'Receive notifications? 🔔';
 
   @override
-  String get notificationRequestMessage => 'We\'ll send you weekly updates on your child\'s progress and news about new items to your phone!\n\nTurn on notifications and enjoy the journey together! ✨';
+  String get notificationRequestMessage => 'You\'ll get a notification when it\'s time for a promise!\nTurn on notifications and keep having fun together✨';
 
   @override
   String get notificationLater => 'Later';

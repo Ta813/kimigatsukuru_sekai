@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
@@ -1394,15 +1393,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     int level, {
     bool forceShow = false, // ★ 追加: レベルの条件を無視して表示するためのフラグ
   }) async {
-    // 🌟 1. セーブデータを読み込み、「すでに表示したか？」をチェック
-    final prefs = await SharedPreferences.getInstance();
-    final hasShown = prefs.getBool('has_shown_notification_dialog') ?? false;
-
-    if (hasShown) {
-      print('通知のお願いダイアログはすでに表示済みのためスキップします');
-      return false;
-    }
-
     // レベル2以下なら通知の許可を求めない（forceShowがtrueの場合は無視）
     if (level <= 2 && !forceShow) return false;
 
@@ -1493,10 +1483,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         ],
       ),
     );
-
-    // 🌟 3. ダイアログを表示し終わったら、「表示したよ！」という記録をセーブする
-    // （「うけとる！」でも「あとで」でも、一度見せたという事実は保存します）
-    await prefs.setBool('has_shown_notification_dialog', true);
 
     // 3. ユーザーが「うけとる！」(true) を選んだ時だけ、OS標準のダイアログを出す
     if (shouldRequest == true) {

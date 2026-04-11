@@ -2476,7 +2476,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationRequestMessage.
   ///
   /// In en, this message translates to:
-  /// **'We\'ll send you weekly updates on your child\'s progress and news about new items to your phone!\n\nTurn on notifications and enjoy the journey together! ✨'**
+  /// **'You\'ll get a notification when it\'s time for a promise!\nTurn on notifications and keep having fun together✨'**
   String get notificationRequestMessage;
 
   /// No description provided for @notificationLater.
