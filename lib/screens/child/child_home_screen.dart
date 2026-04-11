@@ -956,6 +956,39 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     }
   }
 
+  // ▼ 追加: チュートリアル終了時に、過去のやくそくを完了済みにするメソッド
+  Future<void> _skipPastPromisesForTutorial() async {
+    final now = DateTime.now();
+    final regularPromises = await SharedPrefsHelper.loadRegularPromises(
+      context,
+    );
+    final todaysCompletedTitles =
+        await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+
+    for (var promise in regularPromises) {
+      if (!todaysCompletedTitles.contains(promise['title'])) {
+        final timeStr = promise['time'] as String?;
+        if (timeStr != null && timeStr.contains(':')) {
+          final parts = timeStr.split(':');
+          final hour = int.tryParse(parts[0]) ?? 0;
+          final minute = int.tryParse(parts[1]) ?? 0;
+          final promiseTime = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            hour,
+            minute,
+          );
+
+          // 現在時刻よりも前（過去）なら完了済みに記録する
+          if (promiseTime.isBefore(now)) {
+            await SharedPrefsHelper.addCompletionRecord(promise['title']);
+          }
+        }
+      }
+    }
+  }
+
   /// 親チュートリアル完了時の処理
   Future<void> _onParentTutorialCompleted() async {
     if (!mounted) return;
@@ -986,6 +1019,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         await _requestNotificationPermission(context, _level, forceShow: true);
       }
     }
+
+    // ▼ 追加: ここで時間が過ぎている「やくそく」をスキップ（完了済み）にする
+    await _skipPastPromisesForTutorial();
+
     // プロミスを再読み込む
     _loadAndDetermineDisplayPromise();
   }
@@ -996,8 +1033,43 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final loadedPoints = await SharedPrefsHelper.loadPoints();
     final regular = await SharedPrefsHelper.loadRegularPromises(context);
     final emergency = await SharedPrefsHelper.loadEmergencyPromise();
-    final todaysCompletedTitles =
+    var todaysCompletedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+
+    // ▼ 追加: 1時間以上前のやくそくを自動で完了扱いにする処理
+    final now = DateTime.now();
+    bool hasAutoSkipped = false;
+
+    for (var promise in regular) {
+      if (!todaysCompletedTitles.contains(promise['title'])) {
+        final timeStr = promise['time'] as String?;
+        if (timeStr != null && timeStr.contains(':')) {
+          final parts = timeStr.split(':');
+          final hour = int.tryParse(parts[0]) ?? 0;
+          final minute = int.tryParse(parts[1]) ?? 0;
+          final promiseTime = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            hour,
+            minute,
+          );
+
+          // 現在時刻とやくそくの時間を比較し、60分（1時間）以上過ぎていたら完了扱いに
+          if (now.difference(promiseTime).inMinutes >= 60) {
+            await SharedPrefsHelper.addCompletionRecord(promise['title']);
+            hasAutoSkipped = true;
+          }
+        }
+      }
+    }
+
+    // 自動スキップ（完了扱い）があった場合、達成リストを再取得して最新にする
+    if (hasAutoSkipped) {
+      todaysCompletedTitles =
+          await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+    }
+    // ▲ ここまで追加
 
     Offset? loadedAvatarPos = await SharedPrefsHelper.loadCharacterPosition(
       'avatar',
