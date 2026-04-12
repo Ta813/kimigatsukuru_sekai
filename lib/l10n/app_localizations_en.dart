@@ -1403,4 +1403,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String durationAndPoints(String duration, String points) {
     return '$duration min / $points pt';
   }
+
+  @override
+  String get heatmapWeek => 'Week';
+
+  @override
+  String get heatmapMonth => 'Month';
+
+  @override
+  String get heatmapYear => 'Year';
+
+  @override
+  String get heatmapTitleWeek => 'Promises accomplished this week';
+
+  @override
+  String get heatmapTitleMonth => 'Promises accomplished in the last month';
+
+  @override
+  String get heatmapTitleYear => 'Promises accomplished in the past year';
+
+  @override
+  String get daySun => 'Sun';
+
+  @override
+  String get dayMon => 'Mon';
+
+  @override
+  String get dayTue => 'Tue';
+
+  @override
+  String get dayWed => 'Wed';
+
+  @override
+  String get dayThu => 'Thu';
+
+  @override
+  String get dayFri => 'Fri';
+
+  @override
+  String get daySat => 'Sat';
+
+  @override
+  String get heatmapLess => 'Less';
+
+  @override
+  String get heatmapMore => 'More';
+
+  @override
+  String heatmapTooltip(String date, int count) {
+    return '$date: $count promises accomplished';
+  }
+
+  @override
+  String get tutorialPromiseBoardBubble => 'Check today\'s\npromises here!';
+
+  @override
+  String get tutorialPromiseBoardBackBubble => 'Once you\'ve checked the\nboard, please go back!';
 }

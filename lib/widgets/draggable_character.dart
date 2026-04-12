@@ -12,6 +12,7 @@ class DraggableCharacter extends StatefulWidget {
   final double size;
   final Function(Offset) onPositionChanged;
   final bool isBlinking;
+  final bool isInteractive;
 
   const DraggableCharacter({
     super.key,
@@ -21,6 +22,7 @@ class DraggableCharacter extends StatefulWidget {
     required this.size,
     required this.onPositionChanged,
     this.isBlinking = false,
+    this.isInteractive = true,
   });
 
   @override
@@ -33,31 +35,34 @@ class _DraggableCharacterState extends State<DraggableCharacter> {
     return Positioned(
       left: widget.position.dx,
       top: widget.position.dy,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onPanUpdate: (details) {
-          setState(() {
-            widget.onPositionChanged(details.delta);
-          });
-        },
-        onPanEnd: (_) {
-          SharedPrefsHelper.saveCharacterPosition(widget.id, widget.position);
-        },
-        child: Stack(
-          alignment: Alignment.center,
-          clipBehavior: Clip.none,
-          children: [
-            BlinkingEffect(
-              isBlinking: widget.isBlinking,
-              color: Colors.purpleAccent,
-              child: Image.asset(widget.imagePath, height: widget.size),
-            ),
-            if (widget.isBlinking)
-              const Positioned(
-                bottom: -20, // Display slightly below the center
-                child: AnimatedHandSlide(),
+      child: IgnorePointer(
+        ignoring: !widget.isInteractive,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onPanUpdate: (details) {
+            setState(() {
+              widget.onPositionChanged(details.delta);
+            });
+          },
+          onPanEnd: (_) {
+            SharedPrefsHelper.saveCharacterPosition(widget.id, widget.position);
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              BlinkingEffect(
+                isBlinking: widget.isBlinking,
+                color: Colors.purpleAccent,
+                child: Image.asset(widget.imagePath, height: widget.size),
               ),
-          ],
+              if (widget.isBlinking)
+                const Positioned(
+                  bottom: -20, // Display slightly below the center
+                  child: AnimatedHandSlide(),
+                ),
+            ],
+          ),
         ),
       ),
     );

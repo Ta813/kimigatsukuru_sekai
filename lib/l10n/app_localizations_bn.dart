@@ -1403,4 +1403,60 @@ class AppLocalizationsBn extends AppLocalizations {
   String durationAndPoints(String duration, String points) {
     return '$duration মিনিট / $points পয়েন্ট';
   }
+
+  @override
+  String get heatmapWeek => 'সপ্তাহ';
+
+  @override
+  String get heatmapMonth => 'মাস';
+
+  @override
+  String get heatmapYear => 'বছর';
+
+  @override
+  String get heatmapTitleWeek => 'এই সপ্তাহে সম্পন্ন প্রতিশ্রুতি';
+
+  @override
+  String get heatmapTitleMonth => 'গত মাসে সম্পন্ন প্রতিশ্রুতি';
+
+  @override
+  String get heatmapTitleYear => 'গত বছরে সম্পন্ন প্রতিশ্রুতি';
+
+  @override
+  String get daySun => 'রবি';
+
+  @override
+  String get dayMon => 'সোম';
+
+  @override
+  String get dayTue => 'মঙ্গল';
+
+  @override
+  String get dayWed => 'বুধ';
+
+  @override
+  String get dayThu => 'বৃহঃ';
+
+  @override
+  String get dayFri => 'শুক্র';
+
+  @override
+  String get daySat => 'শনি';
+
+  @override
+  String get heatmapLess => 'কম';
+
+  @override
+  String get heatmapMore => 'বেশি';
+
+  @override
+  String heatmapTooltip(String date, int count) {
+    return '$date: $count টি প্রতিশ্রুতি সম্পন্ন';
+  }
+
+  @override
+  String get tutorialPromiseBoardBubble => 'এখান থেকে আজকের\nপ্রতিশ্রুতি দেখুন!';
+
+  @override
+  String get tutorialPromiseBoardBackBubble => 'বোর্ড চেক করার পর,\nঅনুগ্রহ করে ফিরে যান!';
 }

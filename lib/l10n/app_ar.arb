@@ -558,7 +558,9 @@
   "alreadyAddedPromise": "\"{title}\" تمت إضافته بالفعل",
   "@alreadyAddedPromise": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "customAdd": "إضافة مخصصة",
@@ -589,8 +591,42 @@
   "durationAndPoints": "{duration} دقيقة / {points} نقطة",
   "@durationAndPoints": {
     "placeholders": {
-      "duration": { "type": "String" },
-      "points": { "type": "String" }
+      "duration": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
     }
-  }
+  },
+  "heatmapWeek": "أسبوع",
+  "heatmapMonth": "شهر",
+  "heatmapYear": "سنة",
+  "heatmapTitleWeek": "الوعود المنجزة هذا الأسبوع",
+  "heatmapTitleMonth": "الوعود المنجزة في الشهر الماضي",
+  "heatmapTitleYear": "الوعود المنجزة في العام الماضي",
+  "daySun": "أحد",
+  "dayMon": "إثنين",
+  "dayTue": "ثلاثاء",
+  "dayWed": "أربعاء",
+  "dayThu": "خميس",
+  "dayFri": "جمعة",
+  "daySat": "سبت",
+  "heatmapLess": "أقل",
+  "heatmapMore": "أكثر",
+  "heatmapTooltip": "{date}: تم إنجاز {count} من الوعود",
+  "@heatmapTooltip": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024/05/20"
+      },
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "tutorialPromiseBoardBubble": "تحقق من وعود\nاليوم من هنا!",
+  "tutorialPromiseBoardBackBubble": "بمجرد التحقق من اللوحة،\nيرجى العودة!"
 }

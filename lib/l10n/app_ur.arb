@@ -6,7 +6,6 @@
   "customizeTabHouse": "گھر",
   "customizeTabCharacter": "ساتھی",
   "customizeTabItem": "چیزیں",
-
   "guideWelcomeTitle": "سب سے پہلے، ایک بچے کی طرح کھیلتے ہیں!",
   "guideWelcomeDesc": "خود تجربہ کریں کہ 'وعدے' کیسے کام کرتے ہیں!\nمیں نے نیچے دی گئی بار میں ایک 'آزمائشی وعدہ' رکھا ہے۔\nفوراً 'شروع کریں' دبائیں اور ایک بچے کی طرح کھیلنے کی کوشش کریں!",
   "guideSettingsTitle": "بڑوں کی ترتیبات (اوپر بائیں ⚙️ آئیکن)",
@@ -559,7 +558,9 @@
   "alreadyAddedPromise": "\"{title}\" پہلے ہی شامل کیا جا چکا ہے",
   "@alreadyAddedPromise": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "customAdd": "اپنی مرضی سے شامل کریں",
@@ -590,8 +591,42 @@
   "durationAndPoints": "{duration} منٹ / {points} پوائنٹس",
   "@durationAndPoints": {
     "placeholders": {
-      "duration": { "type": "String" },
-      "points": { "type": "String" }
+      "duration": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
     }
-  }
+  },
+  "heatmapWeek": "ہفتہ",
+  "heatmapMonth": "مہینہ",
+  "heatmapYear": "سال",
+  "heatmapTitleWeek": "اس ہفتے پورے کیے گئے وعدے",
+  "heatmapTitleMonth": "پچھلے مہینے پورے کیے گئے وعدے",
+  "heatmapTitleYear": "پچھلے سال پورے کیے گئے وعدے",
+  "daySun": "اتوار",
+  "dayMon": "پیر",
+  "dayTue": "منگل",
+  "dayWed": "بدھ",
+  "dayThu": "جمعرات",
+  "dayFri": "جمعہ",
+  "daySat": "ہفتہ",
+  "heatmapLess": "کم",
+  "heatmapMore": "زیادہ",
+  "heatmapTooltip": "{date}: {count} وعدے پورے کیے گئے",
+  "@heatmapTooltip": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024/05/20"
+      },
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "tutorialPromiseBoardBubble": "یہاں سے آج کے\nوعدے دیکھیں!",
+  "tutorialPromiseBoardBackBubble": "بورڈ چیک کرنے کے بعد،\nبراہ کرم واپس جائیں!"
 }

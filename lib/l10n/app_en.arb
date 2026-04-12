@@ -558,7 +558,9 @@
   "alreadyAddedPromise": "\"{title}\" is already added",
   "@alreadyAddedPromise": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "customAdd": "Custom Add",
@@ -589,8 +591,42 @@
   "durationAndPoints": "{duration} min / {points} pt",
   "@durationAndPoints": {
     "placeholders": {
-      "duration": { "type": "String" },
-      "points": { "type": "String" }
+      "duration": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
     }
-  }
+  },
+  "heatmapWeek": "Week",
+  "heatmapMonth": "Month",
+  "heatmapYear": "Year",
+  "heatmapTitleWeek": "Promises accomplished this week",
+  "heatmapTitleMonth": "Promises accomplished in the last month",
+  "heatmapTitleYear": "Promises accomplished in the past year",
+  "daySun": "Sun",
+  "dayMon": "Mon",
+  "dayTue": "Tue",
+  "dayWed": "Wed",
+  "dayThu": "Thu",
+  "dayFri": "Fri",
+  "daySat": "Sat",
+  "heatmapLess": "Less",
+  "heatmapMore": "More",
+  "heatmapTooltip": "{date}: {count} promises accomplished",
+  "@heatmapTooltip": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024/05/20"
+      },
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "tutorialPromiseBoardBubble": "Check today's\npromises here!",
+  "tutorialPromiseBoardBackBubble": "Once you've checked the\nboard, please go back!"
 }

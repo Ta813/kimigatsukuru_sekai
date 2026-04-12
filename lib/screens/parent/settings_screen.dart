@@ -41,6 +41,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   BackupServiceKbn _linkedService = BackupServiceKbn.none; // ★ 連携状態を管理
   bool _isLoading = false; // ★ バックアップ/復元中のローディングフラグ
 
+  // ▼ 追加: デバッグ用シミュレート日付
+  DateTime? _simulatedDate;
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +59,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final points = await SharedPrefsHelper.loadPoints();
 
     final service = await SharedPrefsHelper.loadBackupService();
+
+    // シミュレート日付を読む
+    final prefs = await SharedPreferences.getInstance();
+    final dateStr = prefs.getString('debug_simulated_date');
+    DateTime? simDate;
+    if (dateStr != null) {
+      try {
+        simDate = DateTime.parse(dateStr);
+      } catch (_) {}
+    }
+
     if (mounted) {
       setState(() {
         _selectedLockMode = lockMode;
@@ -70,6 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _pointsController.text = _currentPoints.toString();
 
         _linkedService = service;
+        _simulatedDate = simDate;
       });
     }
   }
@@ -598,42 +613,76 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           });
                         },
                       ),
-                    // タイムトラベル（昨日に戻す）ボタン
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
+                    // タイムトラベル（日付移動）ボタン
+                    ListTile(
+                      leading: const Icon(
+                        Icons.calendar_month,
+                        color: Colors.purple,
                       ),
-                      onPressed: () async {
-                        final prefs = await SharedPreferences.getInstance();
-
-                        // 「今の時間」から「1日」を引いて「昨日」を作る
-                        final yesterday = DateTime.now().subtract(
-                          const Duration(days: 1),
-                        );
-
-                        // SharedPreferencesに保存
-                        await prefs.setString(
-                          'last_login_date',
-                          yesterday.toIso8601String(),
-                        );
-
-                        // 画面下に「成功したよ！」という通知（スナックバー）を出すと分かりやすいです
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                '⏳ デバッグ: 最終ログイン日を昨日に変更しました！\nホーム画面に戻って確認してください。',
+                      title: const Text('【テスト用】現在の日付を変更する'),
+                      subtitle: Text(
+                        _simulatedDate == null
+                            ? '現在の日付（実際の日時）'
+                            : '設定中: ${_simulatedDate!.year}/${_simulatedDate!.month}/${_simulatedDate!.day}',
+                        style: const TextStyle(color: Colors.purple),
+                      ),
+                      trailing: _simulatedDate != null
+                          ? IconButton(
+                              icon: const Icon(
+                                Icons.clear,
+                                color: Colors.purple,
                               ),
-                              backgroundColor: Colors.purple,
-                              duration: Duration(seconds: 3),
-                            ),
-                          );
+                              onPressed: () async {
+                                await SharedPrefsHelper.setDebugSimulatedDate(
+                                  null,
+                                );
+                                // 最終アクセス日をクリアして、変更を確実に反映させる
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.remove('last_active_date');
+                                setState(() {
+                                  _simulatedDate = null;
+                                });
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('実際の日時に戻しました。'),
+                                    ),
+                                  );
+                                }
+                              },
+                            )
+                          : null,
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _simulatedDate ?? DateTime.now(),
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime(2030),
+                        );
+                        if (picked != null) {
+                          await SharedPrefsHelper.setDebugSimulatedDate(picked);
+
+                          // ホーム画面に戻った際に新しい日として認識されるように最終アクセス日をリセットする
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.remove('last_active_date');
+
+                          setState(() {
+                            _simulatedDate = picked;
+                          });
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '日付を ${picked.year}/${picked.month}/${picked.day} に設定しました！\nホーム画面に戻って確認してください。',
+                                ),
+                                backgroundColor: Colors.purple,
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          }
                         }
                       },
-                      child: const Text(
-                        '【テスト】最終ログインを「昨日」にする',
-                        style: TextStyle(color: Colors.white),
-                      ),
                     ),
                     const SizedBox(height: 10),
                     // チュートリアルリセットボタン

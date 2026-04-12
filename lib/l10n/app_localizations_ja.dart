@@ -1403,4 +1403,60 @@ class AppLocalizationsJa extends AppLocalizations {
   String durationAndPoints(String duration, String points) {
     return '$duration分 / $pointsポイント';
   }
+
+  @override
+  String get heatmapWeek => '週';
+
+  @override
+  String get heatmapMonth => '月';
+
+  @override
+  String get heatmapYear => '年';
+
+  @override
+  String get heatmapTitleWeek => '今週のやくそく達成状況';
+
+  @override
+  String get heatmapTitleMonth => '最近1ヶ月のやくそく達成状況';
+
+  @override
+  String get heatmapTitleYear => '過去1年間のやくそく達成状況';
+
+  @override
+  String get daySun => '日';
+
+  @override
+  String get dayMon => '月';
+
+  @override
+  String get dayTue => '火';
+
+  @override
+  String get dayWed => '水';
+
+  @override
+  String get dayThu => '木';
+
+  @override
+  String get dayFri => '金';
+
+  @override
+  String get daySat => '土';
+
+  @override
+  String get heatmapLess => '少ない';
+
+  @override
+  String get heatmapMore => '多い';
+
+  @override
+  String heatmapTooltip(String date, int count) {
+    return '$date: $count件のやくそく達成';
+  }
+
+  @override
+  String get tutorialPromiseBoardBubble => '今日のやくそくは\nここから確認！';
+
+  @override
+  String get tutorialPromiseBoardBackBubble => 'やくそくボードでできることを\n確認したら、戻ってください';
 }

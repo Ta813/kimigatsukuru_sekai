@@ -10,6 +10,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/speech_bubble.dart';
 
 /// チュートリアルのフェーズ
 enum _TutorialPhase { add, delete, finish, done }
@@ -30,6 +31,10 @@ class _RegularPromiseSettingsScreenState
 
   // チュートリアルフェーズ
   _TutorialPhase _tutorialPhase = _TutorialPhase.add;
+
+  // LayerLinks for tutorial bubbles
+  final LayerLink _addIconLink = LayerLink();
+  final LayerLink _deleteIconLink = LayerLink();
 
   // ▼ 追加: チュートリアル用のおためしテンプレートを取得するメソッド
   Map<String, dynamic> _getTrialTemplate(BuildContext context) {
@@ -741,36 +746,26 @@ class _RegularPromiseSettingsScreenState
           style: const TextStyle(fontSize: 10),
         ),
         trailing: isTutorialTrialCard
-            ? Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  BlinkingEffect(
-                    isBlinking: true,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.add_circle,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      onPressed: () {
-                        if (widget.isTutorial) {
-                          FirebaseAnalytics.instance.logEvent(
-                            name: 'start_promise_add_tutorial',
-                          );
-                        }
-                        _playTapSound();
-                        _addRecommendedPromise(template);
-                      },
+            ? CompositedTransformTarget(
+                link: _addIconLink,
+                child: BlinkingEffect(
+                  isBlinking: true,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.add_circle,
+                      color: Theme.of(context).primaryColor,
                     ),
+                    onPressed: () {
+                      if (widget.isTutorial) {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'start_promise_add_tutorial',
+                        );
+                      }
+                      _playTapSound();
+                      _addRecommendedPromise(template);
+                    },
                   ),
-                  Positioned(
-                    right: 46,
-                    top: 20,
-                    child: _buildBubble(
-                      AppLocalizations.of(context)!.tutorialParentAddBubble,
-                      alignRight: true,
-                    ),
-                  ),
-                ],
+                ),
               )
             : IgnorePointer(
                 ignoring: isDisabledInTutorial,
@@ -802,28 +797,18 @@ class _RegularPromiseSettingsScreenState
 
     Widget deleteButton;
     if (isTutorialTrialCard) {
-      deleteButton = Stack(
-        clipBehavior: Clip.none,
-        children: [
-          BlinkingEffect(
-            isBlinking: true,
-            child: IconButton(
-              icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
-              onPressed: () {
-                _playTapSound();
-                _deletePromise(index);
-              },
-            ),
+      deleteButton = CompositedTransformTarget(
+        link: _deleteIconLink,
+        child: BlinkingEffect(
+          isBlinking: true,
+          child: IconButton(
+            icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
+            onPressed: () {
+              _playTapSound();
+              _deletePromise(index);
+            },
           ),
-          Positioned(
-            right: 44,
-            top: -4,
-            child: _buildBubble(
-              AppLocalizations.of(context)!.tutorialParentDeleteBubble,
-              alignRight: true,
-            ),
-          ),
-        ],
+        ),
       );
     } else {
       final bool disabled =
@@ -894,29 +879,6 @@ class _RegularPromiseSettingsScreenState
     );
   }
 
-  /// 吹き出しウィジェット
-  Widget _buildBubble(String text, {bool alignRight = false}) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 140),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF9C4),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.orange, width: 2),
-        boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black26)],
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -945,162 +907,102 @@ class _RegularPromiseSettingsScreenState
         (_tutorialPhase == _TutorialPhase.add ||
             _tutorialPhase == _TutorialPhase.delete);
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: isFinishPhase
-            ? BlinkingEffect(
-                isBlinking: true,
-                borderRadius: 8,
-                child: BackButton(
-                  onPressed: () {
-                    if (widget.isTutorial) {
-                      FirebaseAnalytics.instance.logEvent(
-                        name: 'finish_regular_promise_settings_tutorial',
-                      );
-                    }
-                    if (Navigator.of(context).canPop())
-                      Navigator.of(context).pop();
-                  },
-                ),
-              )
-            : IgnorePointer(
-                ignoring: blockOtherButtons,
-                child: const CustomBackButton(),
-              ),
-        title: Text(l10n.regularPromiseSettingsTitle),
-        actions: [
-          IgnorePointer(
-            ignoring:
-                widget.isTutorial &&
-                _tutorialPhase != _TutorialPhase.done &&
-                _tutorialPhase != _TutorialPhase.finish,
-            child: Opacity(
-              opacity:
-                  widget.isTutorial &&
-                      _tutorialPhase != _TutorialPhase.done &&
-                      _tutorialPhase != _TutorialPhase.finish
-                  ? 0.4
-                  : 1.0,
-              child: InkWell(
-                onTap: () {
-                  FirebaseAnalytics.instance.logEvent(
-                    name: 'start_regular_promise_settings_add',
-                  );
-                  _navigateToAddScreen();
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 4.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.add),
-                      Text(
-                        // ▼ 変更: 多言語対応
-                        l10n.customAdd,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Row(
-          children: [
-            // 左側：おすすめのやくそく
-            Expanded(
-              flex: 4,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
-                  border: Border(
-                    right: BorderSide(
-                      color: Theme.of(context).primaryColor.withOpacity(0.2),
-                    ),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                      child: Text(
-                        // ▼ 変更: 多言語対応
-                        '💡 ${l10n.recommendedTitle}',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemCount: availableTemplates.length,
-                        itemBuilder: (context, index) {
-                          final template = availableTemplates[index];
-                          // チュートリアルのadd以外フェーズでは左側全体をブロック
-                          final bool disableLeft =
-                              widget.isTutorial &&
-                              _tutorialPhase != _TutorialPhase.add &&
-                              _tutorialPhase != _TutorialPhase.finish;
-                          return IgnorePointer(
-                            ignoring: disableLeft,
-                            child: LongPressDraggable<Map<String, dynamic>>(
-                              data: template,
-                              feedback: Material(
-                                color: Colors.transparent,
-                                child: _buildRecommendedCard(
-                                  template,
-                                  isDragging: true,
-                                ),
-                              ),
-                              childWhenDragging: Opacity(
-                                opacity: 0.5,
-                                child: _buildRecommendedCard(template),
-                              ),
-                              child: _buildRecommendedCard(template),
-                            ),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            leading: isFinishPhase
+                ? BlinkingEffect(
+                    isBlinking: true,
+                    borderRadius: 8,
+                    child: BackButton(
+                      onPressed: () {
+                        if (widget.isTutorial) {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'finish_regular_promise_settings_tutorial',
                           );
-                        },
+                        }
+                        if (Navigator.of(context).canPop())
+                          Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                : IgnorePointer(
+                    ignoring: blockOtherButtons,
+                    child: const CustomBackButton(),
+                  ),
+            title: Text(l10n.regularPromiseSettingsTitle),
+            actions: [
+              IgnorePointer(
+                ignoring:
+                    widget.isTutorial &&
+                    _tutorialPhase != _TutorialPhase.done &&
+                    _tutorialPhase != _TutorialPhase.finish,
+                child: Opacity(
+                  opacity:
+                      widget.isTutorial &&
+                          _tutorialPhase != _TutorialPhase.done &&
+                          _tutorialPhase != _TutorialPhase.finish
+                      ? 0.4
+                      : 1.0,
+                  child: InkWell(
+                    onTap: () {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'start_regular_promise_settings_add',
+                      );
+                      _navigateToAddScreen();
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 4.0,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.add),
+                          Text(
+                            // ▼ 変更: 多言語対応
+                            l10n.customAdd,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-            // 右側：今のやくそく
-            Expanded(
-              flex: 6,
-              child: DragTarget<Map<String, dynamic>>(
-                onWillAcceptWithDetails: (details) => true,
-                onAcceptWithDetails: (details) {
-                  _addRecommendedPromise(details.data);
-                },
-                builder: (context, candidateData, rejectedData) {
-                  final isHovered = candidateData.isNotEmpty;
-                  return Container(
-                    color: isHovered
-                        ? Theme.of(context).primaryColor.withOpacity(0.1)
-                        : Colors.transparent,
+            ],
+          ),
+          body: SafeArea(
+            child: Row(
+              children: [
+                // 左側：おすすめのやくそく
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.5),
+                      border: Border(
+                        right: BorderSide(
+                          color: Theme.of(
+                            context,
+                          ).primaryColor.withOpacity(0.2),
+                        ),
+                      ),
+                    ),
                     child: Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: Text(
                             // ▼ 変更: 多言語対応
-                            '📝 ${l10n.currentPromiseTitle}',
+                            '💡 ${l10n.recommendedTitle}',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -1109,49 +1011,142 @@ class _RegularPromiseSettingsScreenState
                           ),
                         ),
                         Expanded(
-                          child: _regularPromises.isEmpty
-                              ? Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.arrow_back,
-                                        size: 48,
-                                        color: Colors.grey[400],
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        // ▼ 変更: 多言語対応
-                                        l10n.dragToAddInstruction,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
+                          child: ListView.builder(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: availableTemplates.length,
+                            itemBuilder: (context, index) {
+                              final template = availableTemplates[index];
+                              // チュートリアルのadd以外フェーズでは左側全体をブロック
+                              final bool disableLeft =
+                                  widget.isTutorial &&
+                                  _tutorialPhase != _TutorialPhase.add &&
+                                  _tutorialPhase != _TutorialPhase.finish;
+                              return IgnorePointer(
+                                ignoring: disableLeft,
+                                child: LongPressDraggable<Map<String, dynamic>>(
+                                  data: template,
+                                  feedback: Material(
+                                    color: Colors.transparent,
+                                    child: _buildRecommendedCard(
+                                      template,
+                                      isDragging: true,
+                                    ),
                                   ),
-                                )
-                              : ListView.builder(
-                                  itemCount: _regularPromises.length,
-                                  itemBuilder: (context, index) {
-                                    final promise = _regularPromises[index];
-                                    return _buildCurrentPromiseCard(
-                                      promise,
-                                      index,
-                                    );
-                                  },
+                                  childWhenDragging: Opacity(
+                                    opacity: 0.5,
+                                    child: _buildRecommendedCard(template),
+                                  ),
+                                  child: _buildRecommendedCard(template),
                                 ),
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+                // 右側：今のやくそく
+                Expanded(
+                  flex: 6,
+                  child: DragTarget<Map<String, dynamic>>(
+                    onWillAcceptWithDetails: (details) => true,
+                    onAcceptWithDetails: (details) {
+                      _addRecommendedPromise(details.data);
+                    },
+                    builder: (context, candidateData, rejectedData) {
+                      final isHovered = candidateData.isNotEmpty;
+                      return Container(
+                        color: isHovered
+                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            : Colors.transparent,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12.0,
+                              ),
+                              child: Text(
+                                // ▼ 変更: 多言語対応
+                                '📝 ${l10n.currentPromiseTitle}',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: _regularPromises.isEmpty
+                                  ? Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.arrow_back,
+                                            size: 48,
+                                            color: Colors.grey[400],
+                                          ),
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            // ▼ 変更: 多言語対応
+                                            l10n.dragToAddInstruction,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.grey[600],
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      itemCount: _regularPromises.length,
+                                      itemBuilder: (context, index) {
+                                        final promise = _regularPromises[index];
+                                        return _buildCurrentPromiseCard(
+                                          promise,
+                                          index,
+                                        );
+                                      },
+                                    ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+        if (widget.isTutorial && _tutorialPhase == _TutorialPhase.add)
+          CompositedTransformFollower(
+            link: _addIconLink,
+            showWhenUnlinked: false,
+            targetAnchor: Alignment.bottomCenter,
+            followerAnchor: Alignment.topCenter,
+            offset: const Offset(0, 5),
+            child: SpeechBubble(
+              text: AppLocalizations.of(context)!.tutorialParentAddBubble,
+              tailDirection: TailDirection.top,
+            ),
+          ),
+        if (widget.isTutorial && _tutorialPhase == _TutorialPhase.delete)
+          CompositedTransformFollower(
+            link: _deleteIconLink,
+            showWhenUnlinked: false,
+            targetAnchor: Alignment.bottomCenter,
+            followerAnchor: Alignment.topCenter,
+            offset: const Offset(0, 5),
+            child: SpeechBubble(
+              text: AppLocalizations.of(context)!.tutorialParentDeleteBubble,
+              tailDirection: TailDirection.top,
+            ),
+          ),
+      ],
     );
   }
 }

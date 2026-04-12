@@ -172,13 +172,35 @@ class SharedPrefsHelper {
     return prefs.getInt(_pointsKey) ?? 0;
   }
 
+  // デバッグ用：仮想の現在日付をセットする
+  static Future<void> setDebugSimulatedDate(DateTime? date) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (date == null) {
+      await prefs.remove('debug_simulated_date');
+    } else {
+      await prefs.setString('debug_simulated_date', date.toIso8601String());
+    }
+  }
+
+  // デバッグ用：仮想の現在日付を取得する
+  static Future<DateTime> getSimulatedDate() async {
+    final prefs = await SharedPreferences.getInstance();
+    final dateStr = prefs.getString('debug_simulated_date');
+    if (dateStr != null) {
+      try {
+        return DateTime.parse(dateStr);
+      } catch (_) {}
+    }
+    return DateTime.now();
+  }
+
   // ここから達成記録関連 ---
   static const String _completedPromisesKey = 'completed_promises';
 
   // 新しい達成記録を追加する
   static Future<void> addCompletionRecord(String promiseTitle) async {
     final prefs = await SharedPreferences.getInstance();
-    final today = DateTime.now();
+    final today = await getSimulatedDate();
     // 日付を '2025-8-12' のような文字列で記録
     final todayString = "${today.year}-${today.month}-${today.day}";
 
@@ -196,7 +218,7 @@ class SharedPrefsHelper {
   // 今日の達成済みやくそくの「名前リスト」を読み込む
   static Future<List<String>> loadTodaysCompletedPromiseTitles() async {
     final prefs = await SharedPreferences.getInstance();
-    final today = DateTime.now();
+    final today = await getSimulatedDate();
     final todayString = "${today.year}-${today.month}-${today.day}";
 
     final List<String> recordsString =
@@ -209,6 +231,67 @@ class SharedPrefsHelper {
         .where((record) => record['date'] == todayString)
         .map((record) => record['title'] as String)
         .toList();
+  }
+
+  // --- ここからスキップ記録関連 ---
+  static const String _skippedPromisesKey = 'skipped_promises';
+
+  static Future<void> addSkippedRecord(String promiseTitle) async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = await getSimulatedDate();
+    final todayString = "${today.year}-${today.month}-${today.day}";
+
+    final newRecord = {'title': promiseTitle, 'date': todayString};
+
+    final List<String> recordsString =
+        prefs.getStringList(_skippedPromisesKey) ?? [];
+    recordsString.add(json.encode(newRecord));
+
+    await prefs.setStringList(_skippedPromisesKey, recordsString);
+  }
+
+  static Future<List<String>> loadTodaysSkippedPromiseTitles() async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = await getSimulatedDate();
+    final todayString = "${today.year}-${today.month}-${today.day}";
+
+    final List<String> recordsString =
+        prefs.getStringList(_skippedPromisesKey) ?? [];
+    if (recordsString.isEmpty) return [];
+
+    return recordsString
+        .map((record) => json.decode(record) as Map<String, dynamic>)
+        .where((record) => record['date'] == todayString)
+        .map((record) => record['title'] as String)
+        .toList();
+  }
+
+  // 過去すべての達成記録を日ごとに集計し、Heatmap用のMapを返す
+  static Future<Map<DateTime, int>> loadCompletionHeatmapData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> recordsString =
+        prefs.getStringList(_completedPromisesKey) ?? [];
+
+    Map<DateTime, int> heatmapData = {};
+    for (String recordStr in recordsString) {
+      try {
+        final record = json.decode(recordStr) as Map<String, dynamic>;
+        final dateStr = record['date'] as String;
+        final parts = dateStr.split('-');
+        if (parts.length == 3) {
+          final year = int.parse(parts[0]);
+          final month = int.parse(parts[1]);
+          final day = int.parse(parts[2]);
+          // 時間を除いた日付のみにする
+          final date = DateTime(year, month, day);
+          heatmapData[date] = (heatmapData[date] ?? 0) + 1;
+        }
+      } catch (e) {
+        // フォーマットエラーなどは無視して次へ
+        print('Error parsing completion record: $e');
+      }
+    }
+    return heatmapData;
   }
 
   // --- ここから購入済みアイテム関連を追加 ---
@@ -721,6 +804,8 @@ class SharedPrefsHelper {
   static const String tutorialStepCustomizeKey =
       'tutorial_step_customize_shown';
   static const String tutorialStepMoveKey = 'tutorial_step_move_shown';
+  static const String tutorialStepPromiseBoardKey =
+      'tutorial_step_promise_board_shown';
   static const String tutorialStepParentSetupShownKey =
       'tutorial_step_parent_setup_shown';
 
@@ -765,6 +850,7 @@ class SharedPrefsHelper {
     await prefs.remove(tutorialStepShopKey);
     await prefs.remove(tutorialStepCustomizeKey);
     await prefs.remove(tutorialStepMoveKey);
+    await prefs.remove(tutorialStepPromiseBoardKey);
     await prefs.remove(tutorialStepParentSetupShownKey);
     await prefs.remove(tutorialPurchasedItemKey);
     await prefs.remove(tutorialPurchasedTypeKey);

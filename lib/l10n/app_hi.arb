@@ -512,7 +512,9 @@
   "alreadyAddedPromise": "\"{title}\" पहले से ही जोड़ा गया है",
   "@alreadyAddedPromise": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "customAdd": "कस्टम जोड़ें",
@@ -543,8 +545,42 @@
   "durationAndPoints": "{duration} मिनट / {points} अंक",
   "@durationAndPoints": {
     "placeholders": {
-      "duration": { "type": "String" },
-      "points": { "type": "String" }
+      "duration": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      }
     }
-  }
+  },
+  "heatmapWeek": "सप्ताह",
+  "heatmapMonth": "महीना",
+  "heatmapYear": "वर्ष",
+  "heatmapTitleWeek": "इस सप्ताह पूरे किए गए वादे",
+  "heatmapTitleMonth": "पिछले महीने पूरे किए गए वादे",
+  "heatmapTitleYear": "पिछले वर्ष पूरे किए गए वादे",
+  "daySun": "रवि",
+  "dayMon": "सोम",
+  "dayTue": "मंगल",
+  "dayWed": "बुध",
+  "dayThu": "गुरु",
+  "dayFri": "शुक्र",
+  "daySat": "शनि",
+  "heatmapLess": "कम",
+  "heatmapMore": "अधिक",
+  "heatmapTooltip": "{date}: {count} वादे पूरे किए गए",
+  "@heatmapTooltip": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2024/05/20"
+      },
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "tutorialPromiseBoardBubble": "यहां से आज के\nवादे देखें!",
+  "tutorialPromiseBoardBackBubble": "बोर्ड चेक करने के बाद,\nकृपया वापस जाएं!"
 }

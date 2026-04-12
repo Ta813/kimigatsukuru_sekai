@@ -1403,4 +1403,60 @@ class AppLocalizationsAr extends AppLocalizations {
   String durationAndPoints(String duration, String points) {
     return '$duration دقيقة / $points نقطة';
   }
+
+  @override
+  String get heatmapWeek => 'أسبوع';
+
+  @override
+  String get heatmapMonth => 'شهر';
+
+  @override
+  String get heatmapYear => 'سنة';
+
+  @override
+  String get heatmapTitleWeek => 'الوعود المنجزة هذا الأسبوع';
+
+  @override
+  String get heatmapTitleMonth => 'الوعود المنجزة في الشهر الماضي';
+
+  @override
+  String get heatmapTitleYear => 'الوعود المنجزة في العام الماضي';
+
+  @override
+  String get daySun => 'أحد';
+
+  @override
+  String get dayMon => 'إثنين';
+
+  @override
+  String get dayTue => 'ثلاثاء';
+
+  @override
+  String get dayWed => 'أربعاء';
+
+  @override
+  String get dayThu => 'خميس';
+
+  @override
+  String get dayFri => 'جمعة';
+
+  @override
+  String get daySat => 'سبت';
+
+  @override
+  String get heatmapLess => 'أقل';
+
+  @override
+  String get heatmapMore => 'أكثر';
+
+  @override
+  String heatmapTooltip(String date, int count) {
+    return '$date: تم إنجاز $count من الوعود';
+  }
+
+  @override
+  String get tutorialPromiseBoardBubble => 'تحقق من وعود\nاليوم من هنا!';
+
+  @override
+  String get tutorialPromiseBoardBackBubble => 'بمجرد التحقق من اللوحة،\nيرجى العودة!';
 }

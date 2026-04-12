@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'timer_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/bgm_manager.dart';
@@ -13,7 +12,10 @@ import '../../screens/parent/advice_screen.dart';
 import '../../screens/parent/regular_promise_settings_screen.dart';
 import '../child/math_lock_dialog.dart'; // ロック画面
 import '../child/passcode_lock_dialog.dart';
+import '../../widgets/blinking_effect.dart';
+import '../../widgets/speech_bubble.dart';
 import '../../models/lock_mode.dart';
+import '../../widgets/contribution_heatmap.dart';
 
 class PromiseBoardScreen extends StatefulWidget {
   // StatefulWidgetに変更
@@ -28,12 +30,29 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   List<Map<String, dynamic>> _promises = [];
   // 今日の達成済みやくそくリストを管理する変数
   List<String> _todaysCompletedTitles = [];
+  // 今日のスキップ済みやくそくリストを管理する変数
+  List<String> _todaysSkippedTitles = [];
+  // ヒートマップ用のデータ
+  Map<DateTime, int> _heatmapData = {};
+  bool _isTutorialMode = false; // チュートリアル中かどうか
 
   // 最初にデータを読み込む
   @override
   void initState() {
     super.initState();
     _loadData();
+    _checkTutorialMode();
+  }
+
+  Future<void> _checkTutorialMode() async {
+    bool wasShown = await SharedPrefsHelper.isTutorialStepShown(
+      SharedPrefsHelper.tutorialStepPromiseBoardKey,
+    );
+    if (!wasShown && mounted) {
+      setState(() {
+        _isTutorialMode = true;
+      });
+    }
   }
 
   // 画面が表示されるたびに、やくそくと達成記録の両方を読み込む
@@ -41,6 +60,9 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
     final loadedPromises = await SharedPrefsHelper.loadRegularPromises(context);
     final completedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+    final skippedTitles =
+        await SharedPrefsHelper.loadTodaysSkippedPromiseTitles();
+    final heatmapData = await SharedPrefsHelper.loadCompletionHeatmapData();
 
     loadedPromises.sort((a, b) {
       final timeA = a['time'] ?? '00:00';
@@ -52,6 +74,8 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
     setState(() {
       _promises = loadedPromises;
       _todaysCompletedTitles = completedTitles;
+      _todaysSkippedTitles = skippedTitles;
+      _heatmapData = heatmapData;
     });
   }
 
@@ -119,8 +143,8 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
     FirebaseAnalytics.instance.logEvent(
       name: 'start_promise_board_skip_promise',
     );
-    // 達成記録を保存します
-    await SharedPrefsHelper.addCompletionRecord(promiseTitle);
+    // スキップ記録を保存します（ヒートマップの達成には含めない）
+    await SharedPrefsHelper.addSkippedRecord(promiseTitle);
     // リストの表示を最新の状態に更新します
     _loadData();
   }
@@ -162,7 +186,10 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const CustomBackButton(),
+        leading: BlinkingEffect(
+          isBlinking: _isTutorialMode,
+          child: const CustomBackButton(),
+        ),
         title: Text(AppLocalizations.of(context)!.promiseBoard),
         actions: [
           // ？ボタン (アドバイス画面へ)
@@ -230,91 +257,154 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
           ),
         ],
       ),
-      body: _promises.isEmpty
-          ? Center(child: Text(AppLocalizations.of(context)!.noRegularPromises))
-          : ListView.builder(
-              itemCount: _promises.length,
-              itemBuilder: (context, index) {
-                final promise = _promises[index];
-                // このやくそくが、今日達成済みかどうかをチェック
-                final bool isCompleted = _todaysCompletedTitles.contains(
-                  promise['title'],
-                );
+      body: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 左側：本日のやくそくリスト
+              Expanded(
+                flex: 3,
+                child: _promises.isEmpty
+                    ? Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.noRegularPromises,
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: _promises.length,
+                        itemBuilder: (context, index) {
+                          final promise = _promises[index];
+                          // このやくそくが、今日達成済みかどうかをチェック
+                          final bool isCompleted = _todaysCompletedTitles
+                              .contains(promise['title']);
 
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: ListTile(
-                    leading: Text(
-                      promise['time'] ?? '',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    // ▼ 変更: タイトルと一緒にアイコン（絵文字）を表示
-                    title: Row(
-                      children: [
-                        Text(
-                          promise['icon'] ?? '⭐', // 保存されていなければデフォルトの星
-                          style: const TextStyle(fontSize: 22),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            promise['title'] ??
-                                AppLocalizations.of(context)!.untitled,
-                            overflow: TextOverflow.ellipsis, // 長い名前は「...」で省略
-                          ),
-                        ),
-                      ],
-                    ),
-                    trailing: isCompleted
-                        ? const Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 40,
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min, // Rowが必要な分だけ幅をとる
-                            children: [
-                              // 「やらなかった」ボタン
-                              IconButton(
-                                icon: Icon(
-                                  Icons.close,
-                                  color: Colors.grey[400],
-                                ),
-                                onPressed: () {
-                                  try {
-                                    SfxManager.instance.playTapSound();
-                                  } catch (e) {
-                                    // エラーが発生した場合
-                                    print('再生エラー: $e');
-                                  }
-                                  _skipPromiseOnBoard(promise['title']);
-                                },
-                              ),
-                              // 「はじめる」ボタン
-                              ElevatedButton(
-                                onPressed: () {
-                                  _startPromise(promise);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary,
-                                ),
-                                child: Text(
-                                  AppLocalizations.of(context)!.startPromise,
+                          // このやくそくが、今日スキップ済みかどうかをチェック
+                          final bool isSkipped = _todaysSkippedTitles.contains(
+                            promise['title'],
+                          );
+
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            child: ListTile(
+                              leading: Text(
+                                promise['time'] ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ],
-                          ),
+                              // ▼ 変更: タイトルと一緒にアイコン（絵文字）を表示
+                              title: Row(
+                                children: [
+                                  Text(
+                                    promise['icon'] ?? '⭐', // 保存されていなければデフォルトの星
+                                    style: const TextStyle(fontSize: 22),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      promise['title'] ??
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.untitled,
+                                      overflow: TextOverflow
+                                          .ellipsis, // 長い名前は「...」で省略
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: isCompleted
+                                  ? const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                      size: 40,
+                                    )
+                                  : isSkipped
+                                  ? const Icon(
+                                      Icons.remove_circle_outline,
+                                      color: Colors.grey,
+                                      size: 40,
+                                    )
+                                  : Row(
+                                      mainAxisSize:
+                                          MainAxisSize.min, // Rowが必要な分だけ幅をとる
+                                      children: [
+                                        // 「やらなかった」ボタン
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.close,
+                                            color: Colors.grey[400],
+                                          ),
+                                          onPressed: () {
+                                            try {
+                                              SfxManager.instance
+                                                  .playTapSound();
+                                            } catch (e) {
+                                              // エラーが発生した場合
+                                              print('再生エラー: $e');
+                                            }
+                                            _skipPromiseOnBoard(
+                                              promise['title'],
+                                            );
+                                          },
+                                        ),
+                                        // 「はじめる」ボタン
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            _startPromise(promise);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Theme.of(
+                                              context,
+                                            ).colorScheme.secondary,
+                                          ),
+                                          child: Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.startPromise,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+
+              // 中央の区切り線
+              const VerticalDivider(width: 1, color: Colors.grey),
+
+              // 右側：達成記録のヒートマップ
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ContributionHeatmap(
+                    data: _heatmapData,
+                    initialViewType: HeatmapViewType.month,
                   ),
-                );
-              },
+                ),
+              ),
+            ],
+          ),
+          if (_isTutorialMode)
+            PositionedDirectional(
+              start: 10,
+              top: -10, // AppBarに向かって少しはみ出させる
+              child: SpeechBubble(
+                text: AppLocalizations.of(
+                  context,
+                )!.tutorialPromiseBoardBackBubble,
+                tailDirection: TailDirection.top,
+              ),
             ),
-      // 画面下部にバナーを設置（初回起動時は広告を表示しない）
-      bottomNavigationBar: const AdBanner(),
+        ],
+      ),
     );
   }
 }

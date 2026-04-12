@@ -1403,4 +1403,60 @@ class AppLocalizationsUr extends AppLocalizations {
   String durationAndPoints(String duration, String points) {
     return '$duration منٹ / $points پوائنٹس';
   }
+
+  @override
+  String get heatmapWeek => 'ہفتہ';
+
+  @override
+  String get heatmapMonth => 'مہینہ';
+
+  @override
+  String get heatmapYear => 'سال';
+
+  @override
+  String get heatmapTitleWeek => 'اس ہفتے پورے کیے گئے وعدے';
+
+  @override
+  String get heatmapTitleMonth => 'پچھلے مہینے پورے کیے گئے وعدے';
+
+  @override
+  String get heatmapTitleYear => 'پچھلے سال پورے کیے گئے وعدے';
+
+  @override
+  String get daySun => 'اتوار';
+
+  @override
+  String get dayMon => 'پیر';
+
+  @override
+  String get dayTue => 'منگل';
+
+  @override
+  String get dayWed => 'بدھ';
+
+  @override
+  String get dayThu => 'جمعرات';
+
+  @override
+  String get dayFri => 'جمعہ';
+
+  @override
+  String get daySat => 'ہفتہ';
+
+  @override
+  String get heatmapLess => 'کم';
+
+  @override
+  String get heatmapMore => 'زیادہ';
+
+  @override
+  String heatmapTooltip(String date, int count) {
+    return '$date: $count وعدے پورے کیے گئے';
+  }
+
+  @override
+  String get tutorialPromiseBoardBubble => 'یہاں سے آج کے\nوعدے دیکھیں!';
+
+  @override
+  String get tutorialPromiseBoardBackBubble => 'بورڈ چیک کرنے کے بعد،\nبراہ کرم واپس جائیں!';
 }

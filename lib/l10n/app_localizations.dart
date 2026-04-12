@@ -2814,6 +2814,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{duration} min / {points} pt'**
   String durationAndPoints(String duration, String points);
+
+  /// No description provided for @heatmapWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get heatmapWeek;
+
+  /// No description provided for @heatmapMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get heatmapMonth;
+
+  /// No description provided for @heatmapYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get heatmapYear;
+
+  /// No description provided for @heatmapTitleWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Promises accomplished this week'**
+  String get heatmapTitleWeek;
+
+  /// No description provided for @heatmapTitleMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Promises accomplished in the last month'**
+  String get heatmapTitleMonth;
+
+  /// No description provided for @heatmapTitleYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Promises accomplished in the past year'**
+  String get heatmapTitleYear;
+
+  /// No description provided for @daySun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get daySun;
+
+  /// No description provided for @dayMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get dayMon;
+
+  /// No description provided for @dayTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get dayTue;
+
+  /// No description provided for @dayWed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get dayWed;
+
+  /// No description provided for @dayThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get dayThu;
+
+  /// No description provided for @dayFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get dayFri;
+
+  /// No description provided for @daySat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get daySat;
+
+  /// No description provided for @heatmapLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get heatmapLess;
+
+  /// No description provided for @heatmapMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get heatmapMore;
+
+  /// No description provided for @heatmapTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'{date}: {count} promises accomplished'**
+  String heatmapTooltip(String date, int count);
+
+  /// No description provided for @tutorialPromiseBoardBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Check today\'s\npromises here!'**
+  String get tutorialPromiseBoardBubble;
+
+  /// No description provided for @tutorialPromiseBoardBackBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Once you\'ve checked the\nboard, please go back!'**
+  String get tutorialPromiseBoardBackBubble;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

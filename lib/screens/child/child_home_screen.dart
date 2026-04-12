@@ -27,6 +27,7 @@ import 'package:in_app_review/in_app_review.dart';
 import 'help_menu_dialog.dart';
 import '../../managers/login_bonus_manager.dart';
 import '../../widgets/blinking_effect.dart';
+import '../../widgets/speech_bubble.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ChildHomeScreen extends StatefulWidget {
@@ -77,6 +78,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   bool _isTutorialParentSettingsFocus = false; // チュートリアルでおやの設定へ誘導中か
   bool _showShopBlinking = false; // おみせボタンを点滅させるフラグ（チュートリアル）
   bool _showCustomizeBlinking = false; // きせかえボタンを点滅させるフラグ（チュートリアル）
+  bool _showPromiseBoardBlinking = false; // やくそくボードを点滅させるフラグ（チュートリアル）
+  bool _isTutorialPromiseBoardFocus = false; // チュートリアルでやくそくボードへ誘導中か
   bool _showDraggableBlinking = false; // キャラ・アイテムを点滅させるフラグ（チュートリアル）
   bool _isWaitingForMove = false; // チュートリアルで移動を待っているかのフラグ
   late AnimationController _hintAnimationController; // 吹き出しアニメーション用
@@ -569,6 +572,28 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       });
       return;
     }
+
+    // チュートリアル: やくそくボードへ誘導
+    bool wasPromiseBoardShown = await SharedPrefsHelper.isTutorialStepShown(
+      SharedPrefsHelper.tutorialStepPromiseBoardKey,
+    );
+    if (!wasPromiseBoardShown && mounted) {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'start_tutorial_home_to_promise_board',
+      );
+      // チュートリアル: アイテム移動後にやくそくボードへ誘導
+      setState(() {
+        _showPromiseBoardBlinking = true;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _showTutorialDialog(
+          title: AppLocalizations.of(context)!.guidePromiseBoardTitle,
+          content: AppLocalizations.of(context)!.guidePromiseBoardDesc,
+          buttonText: AppLocalizations.of(context)!.tutorialBtnMove,
+        );
+      });
+      return;
+    }
     // チュートリアル: 全ての体験が終わったので、親のやくそく設定へ誘導
     bool wasParentSetupShown = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepParentSetupShownKey,
@@ -606,17 +631,17 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _showDraggableBlinking = false;
         _isTutorialMoveCompleted = true;
 
-        // ★ おやの設定へ誘導開始（紫点滅 + 吹き出し）
-        _showParentSettingsBlinking = true;
-        _isTutorialParentSettingsFocus = true;
+        // ★ やくそくボードへ誘導開始（紫点滅 + 吹き出し）
+        _showPromiseBoardBlinking = true;
+        _isTutorialPromiseBoardFocus = true;
       });
 
-      FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_parent_setup');
+      FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_promise_board');
 
       await _showTutorialDialog(
-        title: AppLocalizations.of(context)!.tutorialParentSetupTitle,
-        content: AppLocalizations.of(context)!.tutorialParentSetupDesc,
-        buttonText: AppLocalizations.of(context)!.gotIt,
+        title: AppLocalizations.of(context)!.guidePromiseBoardTitle,
+        content: AppLocalizations.of(context)!.guidePromiseBoardDesc,
+        buttonText: AppLocalizations.of(context)!.tutorialBtnMove,
       );
     });
   }
@@ -707,7 +732,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               ),
               // 吹き出しのしっぽ（上向き三角）
               ClipPath(
-                clipper: _SpeechBubbleTailClipper(),
+                clipper: SpeechBubbleTailClipper(),
                 child: Container(
                   width: 24,
                   height: 16,
@@ -811,7 +836,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               ),
               // 吹き出しのしっぽ（上向き三角）
               ClipPath(
-                clipper: _SpeechBubbleTailClipper(),
+                clipper: SpeechBubbleTailClipper(),
                 child: Container(
                   width: 24,
                   height: 16,
@@ -980,9 +1005,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             minute,
           );
 
-          // 現在時刻よりも前（過去）なら完了済みに記録する
+          // 現在時刻よりも前（過去）ならスキップ扱いに記録する
           if (promiseTime.isBefore(now)) {
-            await SharedPrefsHelper.addCompletionRecord(promise['title']);
+            await SharedPrefsHelper.addSkippedRecord(promise['title']);
           }
         }
       }
@@ -1035,13 +1060,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final emergency = await SharedPrefsHelper.loadEmergencyPromise();
     var todaysCompletedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+    var todaysSkippedTitles =
+        await SharedPrefsHelper.loadTodaysSkippedPromiseTitles();
 
-    // ▼ 追加: 1時間以上前のやくそくを自動で完了扱いにする処理
+    // ▼ 追加: 1時間以上前のやくそくを自動でスキップ扱いに処理
     final now = DateTime.now();
     bool hasAutoSkipped = false;
 
     for (var promise in regular) {
-      if (!todaysCompletedTitles.contains(promise['title'])) {
+      if (!todaysCompletedTitles.contains(promise['title']) &&
+          !todaysSkippedTitles.contains(promise['title'])) {
         final timeStr = promise['time'] as String?;
         if (timeStr != null && timeStr.contains(':')) {
           final parts = timeStr.split(':');
@@ -1055,19 +1083,21 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             minute,
           );
 
-          // 現在時刻とやくそくの時間を比較し、60分（1時間）以上過ぎていたら完了扱いに
+          // 現在時刻とやくそくの時間を比較し、60分（1時間）以上過ぎていたらスキップ扱いに
           if (now.difference(promiseTime).inMinutes >= 60) {
-            await SharedPrefsHelper.addCompletionRecord(promise['title']);
+            await SharedPrefsHelper.addSkippedRecord(promise['title']);
             hasAutoSkipped = true;
           }
         }
       }
     }
 
-    // 自動スキップ（完了扱い）があった場合、達成リストを再取得して最新にする
+    // 自動スキップがあった場合、リストを再取得して最新にする
     if (hasAutoSkipped) {
       todaysCompletedTitles =
           await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+      todaysSkippedTitles =
+          await SharedPrefsHelper.loadTodaysSkippedPromiseTitles();
     }
     // ▲ ここまで追加
 
@@ -1085,11 +1115,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (emergency != null) {
       nextPromise = emergency;
       isEmergency = true;
-    }
-    // 2. 緊急がなければ、定例のやくそくから探す
-    else if (regular.isNotEmpty) {
+    } else if (regular.isNotEmpty) {
       final uncompletedPromises = regular.where((promise) {
-        return !todaysCompletedTitles.contains(promise['title']);
+        return !todaysCompletedTitles.contains(promise['title']) &&
+            !todaysSkippedTitles.contains(promise['title']);
       }).toList();
 
       // 未達成のやくそくがあれば
@@ -1471,8 +1500,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     // 1. 現在の通知許可のステータスを取得
     PermissionStatus status = await Permission.notification.status;
 
-    // すでに「許可」されている、または設定から完全に「拒否」されている場合は何もしない
-    if (status.isGranted || status.isPermanentlyDenied) return false;
+    // すでに「許可」されている場合は何もしない
+    if (status.isGranted) return false;
 
     // 2. アプリオリジナルの可愛い「お願いダイアログ（プレ・ダイアログ）」を出す
     // ユーザーが「うけとる！」を押したら true、「あとで」を押したら false が返ります
@@ -1581,11 +1610,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     }
     if (_displayPromise == null) return;
 
-    // 緊急のやくそくの場合は削除し、定例のやくそくの場合は達成済みとして記録します
+    // 緊急のやくそくの場合は削除し、定例のやくそくの場合はスキップ済みとして記録します
     if (_isDisplayPromiseEmergency) {
       await SharedPrefsHelper.saveEmergencyPromise(null);
     } else {
-      await SharedPrefsHelper.addCompletionRecord(_displayPromise!['title']);
+      await SharedPrefsHelper.addSkippedRecord(_displayPromise!['title']);
     }
 
     // ホーム画面の表示を最新の状態に更新します
@@ -1619,7 +1648,17 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final bool isAnyTutorialBlinking =
         _showShopBlinking ||
         _showCustomizeBlinking ||
+        _showDraggableBlinking ||
+        _showPromiseBoardBlinking ||
         _showParentSettingsBlinking;
+
+    // 「はじめる」も含めたいずれかのチュートリアルがアクティブかどうか
+    final bool isAnyTutorialActive =
+        _showShopBlinking ||
+        _showCustomizeBlinking ||
+        _showPromiseBoardBlinking ||
+        _showParentSettingsBlinking ||
+        _showStartBlinking;
 
     // Scaffoldが画面全体の基本的な骨組みです
     return Scaffold(
@@ -2064,62 +2103,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
           ),
 
-          // ★アバターの表示と操作
-          DraggableCharacter(
-            id: 'avatar',
-            imagePath: _equippedClothesPath,
-            position: _avatarPosition,
-            size: 80,
-            isBlinking: _showDraggableBlinking,
-            onPositionChanged: (delta) {
-              setState(() {
-                _avatarPosition += delta;
-              });
-              _onTutorialMove();
-            },
-          ),
-
-          // ★応援キャラクターの表示と操作
-          ..._equippedCharacters.map((charPath) {
-            return DraggableCharacter(
-              id: charPath,
-              imagePath: charPath,
-              position:
-                  _characterPositionsMap[charPath] ??
-                  Offset(safeAreaWidth - 240, 190),
-              size: 80,
-              isBlinking: _showDraggableBlinking,
-              onPositionChanged: (delta) {
-                setState(() {
-                  _characterPositionsMap[charPath] =
-                      (_characterPositionsMap[charPath] ??
-                          Offset(safeAreaWidth - 240, 190)) +
-                      delta;
-                });
-                _onTutorialMove();
-              },
-            );
-          }).toList(),
-
-          // ★アイテムの表示と操作
-          ..._equippedItems.map((itemPath) {
-            return DraggableCharacter(
-              id: itemPath,
-              imagePath: itemPath,
-              position: _itemPositionsMap[itemPath] ?? const Offset(100, 190),
-              size: _getItemSize(itemPath),
-              isBlinking: _showDraggableBlinking,
-              onPositionChanged: (delta) {
-                setState(() {
-                  _itemPositionsMap[itemPath] =
-                      (_itemPositionsMap[itemPath] ?? const Offset(100, 190)) +
-                      delta;
-                });
-                _onTutorialMove();
-              },
-            );
-          }).toList(),
-
           // ★ チュートリアル点滅中は画面を暗くし、対象以外を触れないようにする
           if (isAnyTutorialBlinking)
             Positioned.fill(child: Container(color: Colors.black38)),
@@ -2137,105 +2120,188 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IgnorePointer(
-                          ignoring: isAnyTutorialBlinking,
-                          child: Opacity(
-                            opacity: isAnyTutorialBlinking ? 0.6 : 1.0,
-                            child: Material(
-                              color: const Color(0xFFFF7043).withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(8),
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(8),
-                                onTap: () async {
-                                  try {
-                                    SfxManager.instance.playTapSound();
-                                  } catch (e) {
-                                    // エラーが発生した場合
-                                    print('再生エラー: $e');
-                                  }
+                        Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.centerLeft,
+                          children: [
+                            IgnorePointer(
+                              ignoring:
+                                  isAnyTutorialBlinking &&
+                                  !_showPromiseBoardBlinking,
+                              child: Opacity(
+                                opacity:
+                                    (isAnyTutorialBlinking &&
+                                        !_showPromiseBoardBlinking)
+                                    ? 0.6
+                                    : 1.0,
+                                child: BlinkingEffect(
+                                  isBlinking: _showPromiseBoardBlinking,
+                                  child: Material(
+                                    color: const Color(
+                                      0xFFFF7043,
+                                    ).withOpacity(0.9),
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(8),
+                                      onTap: () async {
+                                        try {
+                                          SfxManager.instance.playTapSound();
+                                        } catch (e) {
+                                          // エラーが発生した場合
+                                          print('再生エラー: $e');
+                                        }
 
-                                  // やくそくボード画面から戻ってくるのを「await」で待ち、結果を受け取る
-                                  final result =
-                                      await Navigator.push<Map<String, int?>>(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const PromiseBoardScreen(),
+                                        // やくそくボード画面から戻ってくるのを「await」で待ち、結果を受け取る
+                                        final result =
+                                            await Navigator.push<
+                                              Map<String, int?>
+                                            >(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const PromiseBoardScreen(),
+                                              ),
+                                            );
+
+                                        // 戻り値からポイントと経験値を取得
+                                        final pointsFromBoard = result != null
+                                            ? result['points']
+                                            : null;
+                                        final expFromBoard = result != null
+                                            ? result['exp']
+                                            : null;
+
+                                        // もし、ポイントを持って戻ってきたら
+                                        if (pointsFromBoard != null) {
+                                          // ポイント追加の効果音出す
+                                          try {
+                                            SfxManager.instance
+                                                .playSuccessSound();
+                                          } catch (e) {
+                                            // エラーが発生した場合
+                                            print('再生エラー: $e');
+                                          }
+
+                                          // setStateを使って、ポイントを加算し、画面を更新！
+                                          setState(() {
+                                            _points += pointsFromBoard;
+                                            _pointsAdded = pointsFromBoard;
+                                            _experience += expFromBoard ?? 0;
+                                          });
+
+                                          _animationController.forward(
+                                            from: 0.0,
+                                          );
+                                          _pointsAddedAnimationController
+                                              .forward(from: 0.0);
+                                        }
+
+                                        // レベルアップのチェックと表示
+                                        _checkLevelUp();
+                                        // SharedPreferencesに新しいポイントを保存
+                                        await SharedPrefsHelper.savePoints(
+                                          _points,
+                                        );
+
+                                        // ★やくそくボード画面から戻ってきたら、必ずデータを再読み込みする！
+                                        _loadAndDetermineDisplayPromise();
+
+                                        // チュートリアル：やくそくボード終了チェック
+                                        bool wasPromiseBoardStepShown =
+                                            await SharedPrefsHelper.isTutorialStepShown(
+                                              SharedPrefsHelper
+                                                  .tutorialStepPromiseBoardKey,
+                                            );
+                                        bool isShown =
+                                            await SharedPrefsHelper.isGuideShown();
+                                        if (!wasPromiseBoardStepShown &&
+                                            !isShown &&
+                                            mounted) {
+                                          // 終了フラグを立てる
+                                          await SharedPrefsHelper.setTutorialStepShown(
+                                            SharedPrefsHelper
+                                                .tutorialStepPromiseBoardKey,
+                                          );
+                                          FirebaseAnalytics.instance.logEvent(
+                                            name: 'start_tutorial_parent_setup',
+                                          );
+
+                                          setState(() {
+                                            _showPromiseBoardBlinking = false;
+                                            _isTutorialPromiseBoardFocus =
+                                                false;
+                                            // ★ おやの設定へ誘導開始（紫点滅 + 吹き出し）
+                                            _showParentSettingsBlinking = true;
+                                            _isTutorialParentSettingsFocus =
+                                                true;
+                                          });
+
+                                          WidgetsBinding.instance
+                                              .addPostFrameCallback((_) async {
+                                                await _showTutorialDialog(
+                                                  title: AppLocalizations.of(
+                                                    context,
+                                                  )!.tutorialParentSetupTitle,
+                                                  content: AppLocalizations.of(
+                                                    context,
+                                                  )!.tutorialParentSetupDesc,
+                                                  buttonText:
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.gotIt,
+                                                );
+                                              });
+                                        }
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6.0,
+                                          vertical: 4.0,
                                         ),
-                                      );
-
-                                  // 戻り値からポイントと経験値を取得
-                                  final pointsFromBoard = result != null
-                                      ? result['points']
-                                      : null;
-                                  final expFromBoard = result != null
-                                      ? result['exp']
-                                      : null;
-
-                                  // もし、ポイントを持って戻ってきたら
-                                  if (pointsFromBoard != null) {
-                                    // ポイント追加の効果音出す
-                                    try {
-                                      SfxManager.instance.playSuccessSound();
-                                    } catch (e) {
-                                      // エラーが発生した場合
-                                      print('再生エラー: $e');
-                                    }
-
-                                    // setStateを使って、ポイントを加算し、画面を更新！
-                                    setState(() {
-                                      _points += pointsFromBoard;
-                                      _pointsAdded = pointsFromBoard;
-                                      _experience += expFromBoard ?? 0;
-                                    });
-
-                                    _animationController.forward(from: 0.0);
-                                    _pointsAddedAnimationController.forward(
-                                      from: 0.0,
-                                    );
-                                  }
-
-                                  // レベルアップのチェックと表示
-                                  _checkLevelUp();
-                                  // SharedPreferencesに新しいポイントを保存
-                                  await SharedPrefsHelper.savePoints(_points);
-
-                                  // ★やくそくボード画面から戻ってきたら、必ずデータを再読み込みする！
-                                  _loadAndDetermineDisplayPromise();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6.0,
-                                    vertical: 4.0,
-                                  ),
-                                  child: SizedBox(
-                                    width: 55,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.article_rounded,
-                                          size: 24,
-                                          color: Color(0xFFFFCA28),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.navPromiseBoard,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            color: Color(0xFFFFCA28),
-                                            fontWeight: FontWeight.bold,
+                                        child: SizedBox(
+                                          width: 55,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Icons.article_rounded,
+                                                size: 24,
+                                                color: Color(0xFFFFCA28),
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Text(
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.navPromiseBoard,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: Color(0xFFFFCA28),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
+
+                            if (_isTutorialPromiseBoardFocus)
+                              Positioned(
+                                left: -30, // 吹き出しを中心付近へ
+                                top: -55, // ボタンの上に配置
+                                child: SpeechBubble(
+                                  text: AppLocalizations.of(
+                                    context,
+                                  )!.tutorialPromiseBoardBubble,
+                                  tailDirection: TailDirection.bottom,
+                                  duration: const Duration(milliseconds: 1500),
+                                ),
+                              ),
+                          ],
                         ),
 
                         const SizedBox(height: 6), // ボタンの間に少し隙間をあける
@@ -2430,7 +2496,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       ),
                                     ),
                                     ClipPath(
-                                      clipper: _SpeechBubbleTailDownClipper(),
+                                      clipper: SpeechBubbleTailDownClipper(),
                                       child: Container(
                                         width: 16,
                                         height: 8,
@@ -2622,7 +2688,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       ),
                                     ),
                                     ClipPath(
-                                      clipper: _SpeechBubbleTailDownClipper(),
+                                      clipper: SpeechBubbleTailDownClipper(),
                                       child: Container(
                                         width: 16,
                                         height: 8,
@@ -2650,54 +2716,69 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         Stack(
                           clipBehavior: Clip.none,
                           children: [
-                            BlinkingEffect(
-                              isBlinking: _showParentSettingsBlinking,
-                              child: Material(
-                                color: const Color(0xFFFF7043).withOpacity(0.9),
-                                borderRadius: BorderRadius.circular(8),
-                                child: InkWell(
-                                  onTap:
-                                      isAnyTutorialBlinking &&
-                                          !_showParentSettingsBlinking
-                                      ? null // 他のボタン点滅中は無効
-                                      : () async {
-                                          FirebaseAnalytics.instance.logEvent(
-                                            name:
-                                                'start_child_home_parent_settings',
-                                          );
-                                          try {
-                                            SfxManager.instance.playTapSound();
-                                          } catch (e) {
-                                            print('再生エラー: $e');
-                                          }
-                                          await _openParentMode();
-                                        },
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      width: 64,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons.settings,
-                                            size: 28,
-                                            color: Color(0xFFFFCA28),
+                            IgnorePointer(
+                              ignoring:
+                                  isAnyTutorialBlinking &&
+                                  !_showParentSettingsBlinking,
+                              child: Opacity(
+                                opacity:
+                                    (isAnyTutorialBlinking &&
+                                        !_showParentSettingsBlinking)
+                                    ? 0.6
+                                    : 1.0,
+                                child: BlinkingEffect(
+                                  isBlinking: _showParentSettingsBlinking,
+                                  child: Material(
+                                    color: const Color(
+                                      0xFFFF7043,
+                                    ).withOpacity(0.9),
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: InkWell(
+                                      onTap:
+                                          isAnyTutorialBlinking &&
+                                              !_showParentSettingsBlinking
+                                          ? null // 他のボタン点滅中は無効
+                                          : () async {
+                                              FirebaseAnalytics.instance.logEvent(
+                                                name:
+                                                    'start_child_home_parent_settings',
+                                              );
+                                              try {
+                                                SfxManager.instance
+                                                    .playTapSound();
+                                              } catch (e) {
+                                                print('再生エラー: $e');
+                                              }
+                                              await _openParentMode();
+                                            },
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          width: 64,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Icons.settings,
+                                                size: 28,
+                                                color: Color(0xFFFFCA28),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.parentSettings,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color(0xFFFFCA28),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.parentSettings,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Color(0xFFFFCA28),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -3011,7 +3092,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       ),
                                     ),
                                     ClipPath(
-                                      clipper: _SpeechBubbleTailDownClipper(),
+                                      clipper: SpeechBubbleTailDownClipper(),
                                       child: Container(
                                         width: 16,
                                         height: 8,
@@ -3054,38 +3135,70 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     ),
                   ),
                 ),
+
+          // ★アバターの表示と操作
+          DraggableCharacter(
+            id: 'avatar',
+            imagePath: _equippedClothesPath,
+            position: _avatarPosition,
+            size: 80,
+            isBlinking: _showDraggableBlinking,
+            isInteractive: !isAnyTutorialActive,
+            onPositionChanged: (delta) {
+              setState(() {
+                _avatarPosition += delta;
+              });
+              _onTutorialMove();
+            },
+          ),
+
+          // ★応援キャラクターの表示と操作
+          ..._equippedCharacters.map((charPath) {
+            return DraggableCharacter(
+              id: charPath,
+              imagePath: charPath,
+              position:
+                  _characterPositionsMap[charPath] ??
+                  Offset(safeAreaWidth - 240, 190),
+              size: 80,
+              isBlinking: _showDraggableBlinking,
+              isInteractive: !isAnyTutorialActive,
+              onPositionChanged: (delta) {
+                setState(() {
+                  _characterPositionsMap[charPath] =
+                      (_characterPositionsMap[charPath] ??
+                          Offset(safeAreaWidth - 240, 190)) +
+                      delta;
+                });
+                _onTutorialMove();
+              },
+            );
+          }).toList(),
+
+          // ★アイテムの表示と操作
+          ..._equippedItems.map((itemPath) {
+            return DraggableCharacter(
+              id: itemPath,
+              imagePath: itemPath,
+              position: _itemPositionsMap[itemPath] ?? const Offset(100, 190),
+              size: _getItemSize(itemPath),
+              isBlinking: _showDraggableBlinking,
+              isInteractive: !isAnyTutorialActive,
+              onPositionChanged: (delta) {
+                setState(() {
+                  _itemPositionsMap[itemPath] =
+                      (_itemPositionsMap[itemPath] ?? const Offset(100, 190)) +
+                      delta;
+                });
+                _onTutorialMove();
+              },
+            );
+          }).toList(),
         ],
       ),
     );
   }
 }
 
-class _SpeechBubbleTailClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.moveTo(0, size.height);
-    path.lineTo(size.width / 2, 0);
-    path.lineTo(size.width, size.height);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
-class _SpeechBubbleTailDownClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.moveTo(0, 0); // トップ左
-    path.lineTo(size.width, 0); // トップ右
-    path.lineTo(size.width / 2, size.height); // ボトム中央
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
+@override
+bool shouldReclip(CustomClipper<Path> oldClipper) => false;
