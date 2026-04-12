@@ -1459,4 +1459,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialPromiseBoardBackBubble => 'Once you\'ve checked the\nboard, please go back!';
+
+  @override
+  String get premiumMembership => 'Premium Membership';
+
+  @override
+  String get upgradeToPremium => 'Upgrade to Premium';
+
+  @override
+  String get premiumActive => 'Premium Active';
+
+  @override
+  String get manageSubscription => 'Manage Subscription';
+
+  @override
+  String get premiumFeaturesDesc => 'Remove ads and enjoy comfortably!';
+
+  @override
+  String get restorePurchases => 'Restore Purchases';
 }

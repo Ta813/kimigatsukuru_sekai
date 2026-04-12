@@ -628,5 +628,11 @@
     }
   },
   "tutorialPromiseBoardBubble": "今日のやくそくは\nここから確認！",
-  "tutorialPromiseBoardBackBubble": "やくそくボードでできることを\n確認したら、戻ってください"
+  "tutorialPromiseBoardBackBubble": "やくそくボードでできることを\n確認したら、戻ってください",
+  "premiumMembership": "プレミアム会員",
+  "upgradeToPremium": "プレミアムにアップグレード",
+  "premiumActive": "プレミアム会員：有効",
+  "manageSubscription": "サブスクリプションの管理",
+  "premiumFeaturesDesc": "広告を無くして快適に！",
+  "restorePurchases": "購入情報を復元"
 }

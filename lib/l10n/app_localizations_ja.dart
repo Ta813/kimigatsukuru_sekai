@@ -1459,4 +1459,22 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialPromiseBoardBackBubble => 'やくそくボードでできることを\n確認したら、戻ってください';
+
+  @override
+  String get premiumMembership => 'プレミアム会員';
+
+  @override
+  String get upgradeToPremium => 'プレミアムにアップグレード';
+
+  @override
+  String get premiumActive => 'プレミアム会員：有効';
+
+  @override
+  String get manageSubscription => 'サブスクリプションの管理';
+
+  @override
+  String get premiumFeaturesDesc => '広告を無くして快適に！';
+
+  @override
+  String get restorePurchases => '購入情報を復元';
 }

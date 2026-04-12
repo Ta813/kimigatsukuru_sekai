@@ -628,5 +628,11 @@
     }
   },
   "tutorialPromiseBoardBubble": "تحقق من وعود\nاليوم من هنا!",
-  "tutorialPromiseBoardBackBubble": "بمجرد التحقق من اللوحة،\nيرجى العودة!"
+  "tutorialPromiseBoardBackBubble": "بمجرد التحقق من اللوحة،\nيرجى العودة!",
+  "premiumMembership": "عضوية بريميوم",
+  "upgradeToPremium": "الترقية إلى بريميوم",
+  "premiumActive": "عضوية بريميوم نشطة",
+  "manageSubscription": "إدارة الاشتراك",
+  "premiumFeaturesDesc": "أزل الإعلانات واستمتع براحة!",
+  "restorePurchases": "استعادة المشتريات"
 }

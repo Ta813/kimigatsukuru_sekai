@@ -628,5 +628,11 @@
     }
   },
   "tutorialPromiseBoardBubble": "Check today's\npromises here!",
-  "tutorialPromiseBoardBackBubble": "Once you've checked the\nboard, please go back!"
+  "tutorialPromiseBoardBackBubble": "Once you've checked the\nboard, please go back!",
+  "premiumMembership": "Premium Membership",
+  "upgradeToPremium": "Upgrade to Premium",
+  "premiumActive": "Premium Active",
+  "manageSubscription": "Manage Subscription",
+  "premiumFeaturesDesc": "Remove ads and enjoy comfortably!",
+  "restorePurchases": "Restore Purchases"
 }

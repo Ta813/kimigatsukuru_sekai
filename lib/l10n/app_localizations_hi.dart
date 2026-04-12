@@ -1459,4 +1459,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tutorialPromiseBoardBackBubble => 'बोर्ड चेक करने के बाद,\nकृपया वापस जाएं!';
+
+  @override
+  String get premiumMembership => 'प्रीमियम सदस्यता';
+
+  @override
+  String get upgradeToPremium => 'प्रीमियम में अपग्रेड करें';
+
+  @override
+  String get premiumActive => 'प्रीमियम सक्रिय है';
+
+  @override
+  String get manageSubscription => 'सदस्यता प्रबंधित करें';
+
+  @override
+  String get premiumFeaturesDesc => 'विज्ञापन हटाएं और आराम से आनंद लें!';
+
+  @override
+  String get restorePurchases => 'खरीद बहाल करें';
 }

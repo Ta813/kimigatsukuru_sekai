@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter/foundation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import '../managers/purchase_manager.dart';
 
 class AdBanner extends StatefulWidget {
   const AdBanner({super.key});
@@ -34,6 +35,10 @@ class _AdBannerState extends State<AdBanner> {
   }
 
   void _loadAd() async {
+    // プレミアム会員の場合は広告を読み込まない
+    if (PurchaseManager.instance.isPremium.value) {
+      return;
+    }
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
       // オフラインなら何もしない
@@ -69,28 +74,33 @@ class _AdBannerState extends State<AdBanner> {
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      return const Padding(
-        padding: EdgeInsets.only(top: 16.0),
-        child: SizedBox(height: 50),
-      );
-    }
+    return ValueListenableBuilder<bool>(
+      valueListenable: PurchaseManager.instance.isPremium,
+      builder: (context, isPremium, child) {
+        if (isPremium) {
+          // プレミアム会員の場合は高さを0にして何も表示しない
+          return const SizedBox.shrink();
+        }
 
-    // if (!Platform.isAndroid) {
-    // return const Padding(
-    //   padding: EdgeInsets.only(top: 12.0),
-    //   child: SizedBox(height: 50, child: Center(child: Text('Ad Banner Placeholder'))),
-    // );
-    // }
+        if (kDebugMode) {
+          return const Padding(
+            padding: EdgeInsets.only(top: 16.0),
+            child: SizedBox(height: 50),
+          );
+        }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
-      child: Container(
-        alignment: Alignment.center,
-        width: AdSize.banner.width.toDouble(),
-        height: AdSize.banner.height.toDouble(),
-        child: _isLoaded && _bannerAd != null ? AdWidget(ad: _bannerAd!) : null,
-      ),
+        return Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: Container(
+            alignment: Alignment.center,
+            width: AdSize.banner.width.toDouble(),
+            height: AdSize.banner.height.toDouble(),
+            child: _isLoaded && _bannerAd != null
+                ? AdWidget(ad: _bannerAd!)
+                : null,
+          ),
+        );
+      },
     );
   }
 }

@@ -628,5 +628,11 @@
     }
   },
   "tutorialPromiseBoardBubble": "এখান থেকে আজকের\nপ্রতিশ্রুতি দেখুন!",
-  "tutorialPromiseBoardBackBubble": "বোর্ড চেক করার পর,\nঅনুগ্রহ করে ফিরে যান!"
+  "tutorialPromiseBoardBackBubble": "বোর্ড চেক করার পর,\nঅনুগ্রহ করে ফিরে যান!",
+  "premiumMembership": "প্রিমিয়াম মেম্বারশিপ",
+  "upgradeToPremium": "প্রিমিয়ামে আপগ্রেড করুন",
+  "premiumActive": "প্রিমিয়াম সক্রিয়",
+  "manageSubscription": "সাবস্ক্রিপশন পরিচালনা করুন",
+  "premiumFeaturesDesc": "বিজ্ঞাপন সরান এবং আরামে উপভোগ করুন!",
+  "restorePurchases": "ক্রয় পুনরুদ্ধার করুন"
 }

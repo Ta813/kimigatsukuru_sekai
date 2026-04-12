@@ -582,5 +582,11 @@
     }
   },
   "tutorialPromiseBoardBubble": "यहां से आज के\nवादे देखें!",
-  "tutorialPromiseBoardBackBubble": "बोर्ड चेक करने के बाद,\nकृपया वापस जाएं!"
+  "tutorialPromiseBoardBackBubble": "बोर्ड चेक करने के बाद,\nकृपया वापस जाएं!",
+  "premiumMembership": "प्रीमियम सदस्यता",
+  "upgradeToPremium": "प्रीमियम में अपग्रेड करें",
+  "premiumActive": "प्रीमियम सक्रिय है",
+  "manageSubscription": "सदस्यता प्रबंधित करें",
+  "premiumFeaturesDesc": "विज्ञापन हटाएं और आराम से आनंद लें!",
+  "restorePurchases": "खरीद बहाल करें"
 }

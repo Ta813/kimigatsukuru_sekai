@@ -15,6 +15,7 @@ import 'providers/locale_provider.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:audio_session/audio_session.dart';
 import 'managers/notification_manager.dart';
+import 'managers/purchase_manager.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -109,15 +110,26 @@ Future<void> _initializeBackgroundServices() async {
     print("Facebook SDKの初期化エラー: $e");
   }
 
-  // ④ 広告の同意管理と初期化
+  // ④ RevenueCatの初期化 (広告の要否を判断するために先に実行)
   try {
-    final connectivityResult = await Connectivity().checkConnectivity();
-    final isOnline = connectivityResult != ConnectivityResult.none;
-    if (isOnline) {
-      await _initConsentAndLoadAds();
-    }
+    await PurchaseManager.instance.init();
   } catch (e) {
-    print("AdMob初期化エラー: $e");
+    print("RevenueCat初期化エラー: $e");
+  }
+
+  // ⑤ 広告の同意管理と初期化 (プレミアム会員でない場合のみ実行)
+  if (!PurchaseManager.instance.isPremium.value) {
+    try {
+      final connectivityResult = await Connectivity().checkConnectivity();
+      final isOnline = connectivityResult != ConnectivityResult.none;
+      if (isOnline) {
+        await _initConsentAndLoadAds();
+      }
+    } catch (e) {
+      print("AdMob初期化エラー: $e");
+    }
+  } else {
+    print("プレミアム会員のため、広告の初期化をスキップします");
   }
 }
 

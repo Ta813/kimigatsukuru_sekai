@@ -2922,6 +2922,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Once you\'ve checked the\nboard, please go back!'**
   String get tutorialPromiseBoardBackBubble;
+
+  /// No description provided for @premiumMembership.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Membership'**
+  String get premiumMembership;
+
+  /// No description provided for @upgradeToPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium'**
+  String get upgradeToPremium;
+
+  /// No description provided for @premiumActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Active'**
+  String get premiumActive;
+
+  /// No description provided for @manageSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Subscription'**
+  String get manageSubscription;
+
+  /// No description provided for @premiumFeaturesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove ads and enjoy comfortably!'**
+  String get premiumFeaturesDesc;
+
+  /// No description provided for @restorePurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchases'**
+  String get restorePurchases;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

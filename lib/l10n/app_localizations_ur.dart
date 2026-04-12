@@ -1459,4 +1459,22 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get tutorialPromiseBoardBackBubble => 'بورڈ چیک کرنے کے بعد،\nبراہ کرم واپس جائیں!';
+
+  @override
+  String get premiumMembership => 'پریمیم ممبرشپ';
+
+  @override
+  String get upgradeToPremium => 'پریمیم میں اپ گریڈ کریں';
+
+  @override
+  String get premiumActive => 'پریمیم فعال ہے';
+
+  @override
+  String get manageSubscription => 'سبسکرپشن کا انتظام کریں';
+
+  @override
+  String get premiumFeaturesDesc => 'اشتہارات ہٹائیں اور آرام سے لطف اٹھائیں!';
+
+  @override
+  String get restorePurchases => 'خریداری بحال کریں';
 }

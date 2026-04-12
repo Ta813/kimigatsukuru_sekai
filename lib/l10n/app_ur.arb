@@ -628,5 +628,11 @@
     }
   },
   "tutorialPromiseBoardBubble": "یہاں سے آج کے\nوعدے دیکھیں!",
-  "tutorialPromiseBoardBackBubble": "بورڈ چیک کرنے کے بعد،\nبراہ کرم واپس جائیں!"
+  "tutorialPromiseBoardBackBubble": "بورڈ چیک کرنے کے بعد،\nبراہ کرم واپس جائیں!",
+  "premiumMembership": "پریمیم ممبرشپ",
+  "upgradeToPremium": "پریمیم میں اپ گریڈ کریں",
+  "premiumActive": "پریمیم فعال ہے",
+  "manageSubscription": "سبسکرپشن کا انتظام کریں",
+  "premiumFeaturesDesc": "اشتہارات ہٹائیں اور آرام سے لطف اٹھائیں!",
+  "restorePurchases": "خریداری بحال کریں"
 }

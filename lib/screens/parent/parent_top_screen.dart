@@ -11,6 +11,7 @@ import 'advice_screen.dart';
 import '../../l10n/app_localizations.dart';
 import 'settings_screen.dart';
 import 'child_name_settings_screen.dart';
+import '../../managers/purchase_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum _ParentTutorialPhase { regular, back, done }
@@ -313,9 +314,151 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 32),
+
+                // ▼ プレミアム会員のご案内（派手なデザインで最下部へ）
+                _buildPremiumMembershipSection(context),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPremiumMembershipSection(BuildContext context) {
+    return IgnorePointer(
+      ignoring: widget.isTutorial,
+      child: Opacity(
+        opacity: widget.isTutorial ? 0.4 : 1.0,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: PurchaseManager.instance.isPremium,
+          builder: (context, isPremium, child) {
+            return Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: isPremium
+                          ? [Colors.teal.shade700, Colors.teal.shade400]
+                          : [const Color(0xFFFFD700), const Color(0xFFFF8C00)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: (isPremium ? Colors.teal : Colors.orange)
+                            .withOpacity(0.4),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        _playTapSound();
+                        if (isPremium) {
+                          PurchaseManager.instance.showCustomerCenter();
+                        } else {
+                          PurchaseManager.instance.showPaywall();
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(20),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                isPremium
+                                    ? Icons.stars
+                                    : Icons.workspace_premium,
+                                size: 32,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    isPremium
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.premiumActive
+                                        : AppLocalizations.of(
+                                            context,
+                                          )!.upgradeToPremium,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      shadows: [
+                                        Shadow(
+                                          blurRadius: 4,
+                                          color: Colors.black26,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    isPremium
+                                        ? AppLocalizations.of(
+                                            context,
+                                          )!.manageSubscription
+                                        : AppLocalizations.of(
+                                            context,
+                                          )!.premiumFeaturesDesc,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.white.withOpacity(0.9),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // 復元ボタン
+                TextButton(
+                  onPressed: () {
+                    _playTapSound();
+                    PurchaseManager.instance.restorePurchases();
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.restorePurchases,
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 13,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -358,6 +501,7 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
     required IconData icon,
     required Color color,
     required VoidCallback onPressed,
+    String? subtitle,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -387,19 +531,33 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                     color: color.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: FaIcon(icon, size: 24, color: color),
+                  child: Icon(icon, size: 24, color: color),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        label,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (subtitle != null)
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
                 Icon(

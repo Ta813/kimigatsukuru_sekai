@@ -1459,4 +1459,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialPromiseBoardBackBubble => 'بمجرد التحقق من اللوحة،\nيرجى العودة!';
+
+  @override
+  String get premiumMembership => 'عضوية بريميوم';
+
+  @override
+  String get upgradeToPremium => 'الترقية إلى بريميوم';
+
+  @override
+  String get premiumActive => 'عضوية بريميوم نشطة';
+
+  @override
+  String get manageSubscription => 'إدارة الاشتراك';
+
+  @override
+  String get premiumFeaturesDesc => 'أزل الإعلانات واستمتع براحة!';
+
+  @override
+  String get restorePurchases => 'استعادة المشتريات';
 }
