@@ -56,6 +56,7 @@ class _TimerScreenState extends State<TimerScreen>
   final FlutterTts _flutterTts = FlutterTts();
   String? _childFullName; // 読み上げる名前（敬称付き）を保持
   bool _isTtsInitialized = false; // TTS初期化完了フラグ
+  bool _isDisposed = false; // ★ 画面破棄フラグ
   int _namesListCount = 0;
   bool _didInitialize = false;
 
@@ -166,6 +167,7 @@ class _TimerScreenState extends State<TimerScreen>
   // この画面が閉じられる時に、一度だけ呼ばれるお片付け処理
   @override
   void dispose() {
+    _isDisposed = true; // ★ 破棄フラグを立てる
     _flutterTts.stop();
     _confettiController.dispose();
     _hintAnimationController.dispose();
@@ -509,6 +511,8 @@ class _TimerScreenState extends State<TimerScreen>
 
       // もし再生すべき音があれば、SfxManagerの新しいメソッドを呼び出す
       if (soundsToPlay.isNotEmpty) {
+        if (_isDisposed) return; // ★ 破棄されていたら中断
+
         // 1. BGMを一時停止
         try {
           BgmManager.instance.pause();
@@ -535,7 +539,11 @@ class _TimerScreenState extends State<TimerScreen>
             print('再生エラー: $e');
           }
         }
+
+        if (_isDisposed) return; // ★ 待機中に破棄されたかチェック
         await Future.delayed(const Duration(seconds: 3));
+
+        if (_isDisposed) return; // ★ 再びチェック
         // 3. BGMを再開
         try {
           BgmManager.instance.resume();

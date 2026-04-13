@@ -10,6 +10,8 @@ import 'package:timezone/timezone.dart' as tz;
 import '../../l10n/app_localizations.dart'; // ★追加: 多言語の文字列を取得するため
 import '../../helpers/shared_prefs_helper.dart'; // ★追加: 保存された言語設定を取得するため
 
+import 'package:permission_handler/permission_handler.dart';
+
 class NotificationManager {
   static final NotificationManager instance = NotificationManager._internal();
   factory NotificationManager() => instance;
@@ -44,6 +46,28 @@ class NotificationManager {
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {},
     );
+  }
+
+  /// 通知許可をリクエストするメソッド
+  Future<bool> requestPermission() async {
+    if (Platform.isIOS) {
+      // iOSの場合: flutter_local_notificationsのネイティブ機能を使ってリクエスト
+      // これにより、DarwinInitializationSettings で false にしていた権限を明示的に要求します
+      final bool? result = await _flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+      return result ?? false;
+    } else if (Platform.isAndroid) {
+      // Androidの場合: permission_handler または local_notifications の機能を使用
+      final status = await Permission.notification.request();
+      return status.isGranted;
+    }
+    return false;
   }
 
   // ★追加: 現在の言語設定に基づいて AppLocalizations を取得するヘルパーメソッド

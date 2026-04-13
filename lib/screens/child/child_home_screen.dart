@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
@@ -1587,14 +1588,17 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     // 3. ユーザーが「うけとる！」(true) を選んだ時だけ、OS標準のダイアログを出す
     if (shouldRequest == true) {
-      await Permission.notification.request();
-      FirebaseAnalytics.instance.logEvent(
-        name: 'notification_permission_granted',
-      );
-    } else {
-      FirebaseAnalytics.instance.logEvent(
-        name: 'notification_permission_denied',
-      );
+      final bool granted = await NotificationManager.instance
+          .requestPermission();
+      if (granted) {
+        FirebaseAnalytics.instance.logEvent(
+          name: 'notification_permission_granted',
+        );
+      } else {
+        FirebaseAnalytics.instance.logEvent(
+          name: 'notification_permission_denied',
+        );
+      }
     }
     return true;
   }

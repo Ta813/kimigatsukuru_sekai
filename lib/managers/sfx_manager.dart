@@ -11,19 +11,13 @@ class SfxManager {
 
   // 効果音専用のプレイヤーを管理します
   AudioPlayer? _sfxPlayer;
-  bool _isInitializing = false;
+  Future<AudioPlayer>? _initFuture;
 
   Future<AudioPlayer> _ensurePlayer() async {
-    if (_sfxPlayer != null) return _sfxPlayer!;
+    return _initFuture ??= _init();
+  }
 
-    if (_isInitializing) {
-      while (_isInitializing && _sfxPlayer == null) {
-        await Future.delayed(const Duration(milliseconds: 50));
-      }
-      if (_sfxPlayer != null) return _sfxPlayer!;
-    }
-
-    _isInitializing = true;
+  Future<AudioPlayer> _init() async {
     try {
       print("SfxManager: AudioPlayerを新規作成します");
       final player = AudioPlayer();
@@ -31,12 +25,12 @@ class SfxManager {
       return player;
     } on PlatformException catch (e) {
       print("SfxManager: AudioPlayer作成中にプラットフォーム例外が発生しました: $e");
+      _initFuture = null;
       rethrow;
     } catch (e) {
       print("SfxManager: AudioPlayer作成中に予期せぬエラーが発生しました: $e");
+      _initFuture = null;
       rethrow;
-    } finally {
-      _isInitializing = false;
     }
   }
 

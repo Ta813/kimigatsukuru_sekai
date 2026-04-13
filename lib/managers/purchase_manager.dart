@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
@@ -52,8 +52,25 @@ class PurchaseManager {
   /// RevenueCatのペイウォール画面を表示する
   Future<void> showPaywall() async {
     try {
+      // iOSの場合、強制的に縦画面に回転させる
+      if (Platform.isIOS) {
+        await SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+        ]);
+        // 🌟 回転アニメーションのためのわずかな待機（フリッカー防止）
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
+
       // 2024年現在のモダンな実装: RevenueCat公式のPaywall UIを表示
       await RevenueCatUI.presentPaywall();
+
+      // 閉じられたら横画面固定に戻す
+      if (Platform.isIOS) {
+        await SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+      }
     } catch (e) {
       debugPrint('ペイウォール表示エラー: $e');
     }
@@ -62,7 +79,24 @@ class PurchaseManager {
   /// RevenueCatのカスタマーセンター（購読管理・リストア等）を表示する
   Future<void> showCustomerCenter() async {
     try {
+      // iOSの場合、強制的に縦画面に回転させる
+      if (Platform.isIOS) {
+        await SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+        ]);
+        // 🌟 回転アニメーションのためのわずかな待機（フリッカー防止）
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
+
       await RevenueCatUI.presentCustomerCenter();
+
+      // 閉じられたら横画面固定に戻す
+      if (Platform.isIOS) {
+        await SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]);
+      }
     } catch (e) {
       debugPrint('カスタマーセンター表示エラー: $e');
     }
