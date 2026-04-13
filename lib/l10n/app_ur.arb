@@ -634,5 +634,8 @@
   "premiumActive": "پریمیم فعال ہے",
   "manageSubscription": "سبسکرپشن کا انتظام کریں",
   "premiumFeaturesDesc": "اشتہارات ہٹائیں اور آرام سے لطف اٹھائیں!",
-  "restorePurchases": "خریداری بحال کریں"
+  "restorePurchases": "خریداری بحال کریں",
+  "restoringPurchases": "خریداری بحال ہو رہی ہے...",
+  "restoreSuccess": "خریداری کامیابی سے بحال ہو گئی!",
+  "restoreFailed": "بحالی ناکام رہی۔ براہ کرم دوبارہ کوشش کریں۔"
 }

@@ -634,5 +634,8 @@
   "premiumActive": "প্রিমিয়াম সক্রিয়",
   "manageSubscription": "সাবস্ক্রিপশন পরিচালনা করুন",
   "premiumFeaturesDesc": "বিজ্ঞাপন সরান এবং আরামে উপভোগ করুন!",
-  "restorePurchases": "ক্রয় পুনরুদ্ধার করুন"
+  "restorePurchases": "ক্রয় পুনরুদ্ধার করুন",
+  "restoringPurchases": "ক্রয় পুনরুদ্ধার করা হচ্ছে...",
+  "restoreSuccess": "ক্রয় সফলভাবে পুনরুদ্ধার করা হয়েছে!",
+  "restoreFailed": "পুনরুদ্ধার ব্যর্থ হয়েছে। আবার চেষ্টা করুন।"
 }

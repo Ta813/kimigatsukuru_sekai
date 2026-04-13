@@ -2144,6 +2144,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(8),
                                       onTap: () async {
+                                        if (isAnyTutorialBlinking) {
+                                          FirebaseAnalytics.instance.logEvent(
+                                            name: 'promise_board_tutorial',
+                                          );
+                                        } else {
+                                          FirebaseAnalytics.instance.logEvent(
+                                            name: 'promise_board',
+                                          );
+                                        }
                                         try {
                                           SfxManager.instance.playTapSound();
                                         } catch (e) {

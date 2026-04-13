@@ -1211,7 +1211,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupFailure => 'バックアップに失敗しました';
 
   @override
-  String get restoreSuccess => 'データを復元しました';
+  String get restoreSuccess => '購入情報を復元しました！';
 
   @override
   String get restoreFailure => '復元に失敗しました';
@@ -1477,4 +1477,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get restorePurchases => '購入情報を復元';
+
+  @override
+  String get restoringPurchases => '購入情報を復元しています...';
+
+  @override
+  String get restoreFailed => '復元に失敗しました。もう一度お試しください。';
 }

@@ -1211,7 +1211,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupFailure => 'Backup failed';
 
   @override
-  String get restoreSuccess => 'Data restored';
+  String get restoreSuccess => 'Purchases restored successfully!';
 
   @override
   String get restoreFailure => 'Restore failed';
@@ -1477,4 +1477,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restorePurchases => 'Restore Purchases';
+
+  @override
+  String get restoringPurchases => 'Restoring purchases...';
+
+  @override
+  String get restoreFailed => 'Failed to restore purchases. Please try again.';
 }

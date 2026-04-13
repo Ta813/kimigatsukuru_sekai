@@ -443,9 +443,28 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                 const SizedBox(height: 12),
                 // 復元ボタン
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     _playTapSound();
-                    PurchaseManager.instance.restorePurchases();
+                    final scaffoldMessenger = ScaffoldMessenger.of(context);
+                    final l10n = AppLocalizations.of(context)!;
+
+                    // 復元中メッセージ
+                    scaffoldMessenger.showSnackBar(
+                      SnackBar(content: Text(l10n.restoringPurchases)),
+                    );
+
+                    final success = await PurchaseManager.instance
+                        .restorePurchases();
+
+                    if (success) {
+                      scaffoldMessenger.showSnackBar(
+                        SnackBar(content: Text(l10n.restoreSuccess)),
+                      );
+                    } else {
+                      scaffoldMessenger.showSnackBar(
+                        SnackBar(content: Text(l10n.restoreFailed)),
+                      );
+                    }
                   },
                   child: Text(
                     AppLocalizations.of(context)!.restorePurchases,

@@ -634,5 +634,8 @@
   "premiumActive": "Premium Active",
   "manageSubscription": "Manage Subscription",
   "premiumFeaturesDesc": "Remove ads and enjoy comfortably!",
-  "restorePurchases": "Restore Purchases"
+  "restorePurchases": "Restore Purchases",
+  "restoringPurchases": "Restoring purchases...",
+  "restoreSuccess": "Purchases restored successfully!",
+  "restoreFailed": "Failed to restore purchases. Please try again."
 }

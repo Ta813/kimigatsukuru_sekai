@@ -1211,7 +1211,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get backupFailure => 'بیک اپ ناکام ہو گیا';
 
   @override
-  String get restoreSuccess => 'ڈیٹا بحال کر دیا گیا';
+  String get restoreSuccess => 'خریداری کامیابی سے بحال ہو گئی!';
 
   @override
   String get restoreFailure => 'بحالی ناکام ہو گئی';
@@ -1477,4 +1477,10 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get restorePurchases => 'خریداری بحال کریں';
+
+  @override
+  String get restoringPurchases => 'خریداری بحال ہو رہی ہے...';
+
+  @override
+  String get restoreFailed => 'بحالی ناکام رہی۔ براہ کرم دوبارہ کوشش کریں۔';
 }

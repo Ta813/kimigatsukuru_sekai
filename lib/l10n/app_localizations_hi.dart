@@ -1211,7 +1211,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get backupFailure => 'बैकअप विफल रहा';
 
   @override
-  String get restoreSuccess => 'डेटा पुनर्स्थापित किया गया';
+  String get restoreSuccess => 'खरीद सफलतापूर्वक बहाल की गई!';
 
   @override
   String get restoreFailure => 'पुनर्स्थापना विफल रही';
@@ -1477,4 +1477,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get restorePurchases => 'खरीद बहाल करें';
+
+  @override
+  String get restoringPurchases => 'खरीद बहाल की जा रही है...';
+
+  @override
+  String get restoreFailed => 'बहाली विफल रही। कृपया पुन: प्रयास करें।';
 }

@@ -1211,7 +1211,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get backupFailure => 'فشل النسخ الاحتياطي';
 
   @override
-  String get restoreSuccess => 'تم استعادة البيانات';
+  String get restoreSuccess => 'تمت استعادة المشتريات بنجاح!';
 
   @override
   String get restoreFailure => 'فشلت الاستعادة';
@@ -1477,4 +1477,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get restorePurchases => 'استعادة المشتريات';
+
+  @override
+  String get restoringPurchases => 'جاري استعادة المشتريات...';
+
+  @override
+  String get restoreFailed => 'فشلت عملية الاستعادة. يرجى المحاولة مرة أخرى.';
 }

@@ -69,12 +69,14 @@ class PurchaseManager {
   }
 
   /// 購入情報の復元（リストア）を手動で行う場合
-  Future<void> restorePurchases() async {
+  Future<bool> restorePurchases() async {
     try {
       CustomerInfo customerInfo = await Purchases.restorePurchases();
       _updatePremiumStatus(customerInfo);
+      return true;
     } catch (e) {
       debugPrint('リストアエラー: $e');
+      return false;
     }
   }
 }

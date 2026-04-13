@@ -588,5 +588,8 @@
   "premiumActive": "प्रीमियम सक्रिय है",
   "manageSubscription": "सदस्यता प्रबंधित करें",
   "premiumFeaturesDesc": "विज्ञापन हटाएं और आराम से आनंद लें!",
-  "restorePurchases": "खरीद बहाल करें"
+  "restorePurchases": "खरीद बहाल करें",
+  "restoringPurchases": "खरीद बहाल की जा रही है...",
+  "restoreSuccess": "खरीद सफलतापूर्वक बहाल की गई!",
+  "restoreFailed": "बहाली विफल रही। कृपया पुन: प्रयास करें।"
 }

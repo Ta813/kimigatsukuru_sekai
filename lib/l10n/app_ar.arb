@@ -634,5 +634,8 @@
   "premiumActive": "عضوية بريميوم نشطة",
   "manageSubscription": "إدارة الاشتراك",
   "premiumFeaturesDesc": "أزل الإعلانات واستمتع براحة!",
-  "restorePurchases": "استعادة المشتريات"
+  "restorePurchases": "استعادة المشتريات",
+  "restoringPurchases": "جاري استعادة المشتريات...",
+  "restoreSuccess": "تمت استعادة المشتريات بنجاح!",
+  "restoreFailed": "فشلت عملية الاستعادة. يرجى المحاولة مرة أخرى."
 }

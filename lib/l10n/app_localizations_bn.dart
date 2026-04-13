@@ -1211,7 +1211,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get backupFailure => 'ব্যাকআপ ব্যর্থ হয়েছে';
 
   @override
-  String get restoreSuccess => 'ডেটা পুনরুদ্ধার করা হয়েছে';
+  String get restoreSuccess => 'ক্রয় সফলভাবে পুনরুদ্ধার করা হয়েছে!';
 
   @override
   String get restoreFailure => 'পুনরুদ্ধার ব্যর্থ হয়েছে';
@@ -1477,4 +1477,10 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get restorePurchases => 'ক্রয় পুনরুদ্ধার করুন';
+
+  @override
+  String get restoringPurchases => 'ক্রয় পুনরুদ্ধার করা হচ্ছে...';
+
+  @override
+  String get restoreFailed => 'পুনরুদ্ধার ব্যর্থ হয়েছে। আবার চেষ্টা করুন।';
 }

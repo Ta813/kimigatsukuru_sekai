@@ -2446,7 +2446,7 @@ abstract class AppLocalizations {
   /// No description provided for @restoreSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Data restored'**
+  /// **'Purchases restored successfully!'**
   String get restoreSuccess;
 
   /// No description provided for @restoreFailure.
@@ -2958,6 +2958,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore Purchases'**
   String get restorePurchases;
+
+  /// No description provided for @restoringPurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring purchases...'**
+  String get restoringPurchases;
+
+  /// No description provided for @restoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to restore purchases. Please try again.'**
+  String get restoreFailed;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

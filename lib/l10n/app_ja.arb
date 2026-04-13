@@ -634,5 +634,8 @@
   "premiumActive": "プレミアム会員：有効",
   "manageSubscription": "サブスクリプションの管理",
   "premiumFeaturesDesc": "広告を無くして快適に！",
-  "restorePurchases": "購入情報を復元"
+  "restorePurchases": "購入情報を復元",
+  "restoringPurchases": "購入情報を復元しています...",
+  "restoreSuccess": "購入情報を復元しました！",
+  "restoreFailed": "復元に失敗しました。もう一度お試しください。"
 }
