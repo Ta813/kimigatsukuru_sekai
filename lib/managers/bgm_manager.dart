@@ -25,15 +25,22 @@ class BgmManager {
 
   // just_audioのプレイヤーを管理します
   AudioPlayer? _bgmPlayer;
-  Future<AudioPlayer>? _initFuture;
+  bool _isInitializing = false;
 
   // 外部からのアクセス用ゲッターは修正
   // プレイヤーが必要な場合は await _ensurePlayer() を使うように統一します
   Future<AudioPlayer> _ensurePlayer() async {
-    return _initFuture ??= _init();
-  }
+    if (_bgmPlayer != null) return _bgmPlayer!;
 
-  Future<AudioPlayer> _init() async {
+    if (_isInitializing) {
+      // 初期化完了まで短時間待機
+      while (_isInitializing && _bgmPlayer == null) {
+        await Future.delayed(const Duration(milliseconds: 50));
+      }
+      if (_bgmPlayer != null) return _bgmPlayer!;
+    }
+
+    _isInitializing = true;
     try {
       print("BgmManager: AudioPlayerを新規作成します");
       final player = AudioPlayer();
@@ -41,12 +48,12 @@ class BgmManager {
       return player;
     } on PlatformException catch (e) {
       print("BgmManager: AudioPlayer作成中にプラットフォーム例外が発生しました: $e");
-      _initFuture = null; // 失敗時は次回復帰できるようにリセット
       rethrow;
     } catch (e) {
       print("BgmManager: AudioPlayer作成中に予期せぬエラーが発生しました: $e");
-      _initFuture = null;
       rethrow;
+    } finally {
+      _isInitializing = false;
     }
   }
 
@@ -87,23 +94,13 @@ class BgmManager {
     }
   }
 
-  BgmTrack? _currentTrack;
-
   Future<void> play(BgmTrack track) async {
     try {
-      print("BgmManager.play: $track (現在のトラック: $_currentTrack)");
-
-      // すでに同じトラックを再生中の場合は何もしない（二重再生・カクつき・エラー防止）
-      if (_currentTrack == track && (_bgmPlayer?.playing ?? false)) {
-        print("BgmManager.play: 同一トラック再生中のためスキップします");
-        return;
-      }
-
+      print("BgmManager.play: $track");
       final trackPath = _getTrackPath(track);
 
       if (trackPath == null) {
         await stopBgm();
-        _currentTrack = track;
         return;
       }
 
@@ -114,20 +111,10 @@ class BgmManager {
       await player.stop();
 
       print("BgmManager.play: アセットをロード中... $trackPath");
-      try {
-        await player.setAsset(trackPath);
-      } on PlatformException catch (e) {
-        if (e.code == 'abort') {
-          print("BgmManager.play: ロードが中断されました（次のロードが優先されました）: $e");
-          return; // 中断された場合は後続の処理を行わない
-        }
-        rethrow;
-      }
-
+      await player.setAsset(trackPath);
       await player.setLoopMode(LoopMode.one);
       await player.play();
 
-      _currentTrack = track;
       print("BgmManager.play: 再生開始しました: $track");
     } catch (e) {
       print("BGMの再生エラー ($track): $e");
