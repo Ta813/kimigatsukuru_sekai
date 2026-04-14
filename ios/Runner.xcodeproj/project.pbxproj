@@ -66,6 +66,8 @@
 		97D8A87A759A8587B858147A /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3E8034277C0F04282798F8E /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		E2F1350B16397185C2B922EA /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
+		FA078EFF2F8EE6F400B8C1CF /* bn */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = bn; path = bn.lproj/Info.plist; sourceTree = "<group>"; };
+		FA078F002F8EE6FE00B8C1CF /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ar; path = ar.lproj/Info.plist; sourceTree = "<group>"; };
 		FA0F47132EA6E29E00850FCC /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 		FA67F1AD2EA6DC6A005DF68C /* en */ = {isa = PBXFileReference; explicitFileType = text.plist.entitlements; name = en; path = en.lproj/Info.plist; sourceTree = "<group>"; };
 		FA67F1AF2EA6DD5F005DF68C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ja; path = ja.lproj/Info.plist; sourceTree = "<group>"; };
@@ -249,6 +251,8 @@
 				ja,
 				hi,
 				ur,
+				bn,
+				ar,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
@@ -292,9 +296,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -347,9 +355,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -466,6 +478,8 @@
 				FA67F1B12EA6DE12005DF68C /* hi */,
 				FA0F47132EA6E29E00850FCC /* Base */,
 				FA7901A92F7FC9100014537E /* ur */,
+				FA078EFF2F8EE6F400B8C1CF /* bn */,
+				FA078F002F8EE6FE00B8C1CF /* ar */,
 			);
 			name = Info.plist;
 			sourceTree = "<group>";
