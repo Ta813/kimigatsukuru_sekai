@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
+import 'bgm_manager.dart';
 
 class PurchaseManager {
   PurchaseManager._internal();
@@ -64,6 +65,13 @@ class PurchaseManager {
       // 2024年現在のモダンな実装: RevenueCat公式のPaywall UIを表示
       await RevenueCatUI.presentPaywall();
 
+      // BGMの再開を試みる（ネイティブUIや回転で止まる場合があるため）
+      try {
+        await BgmManager.instance.resume();
+      } catch (e) {
+        debugPrint('BGM再開エラー: $e');
+      }
+
       // 閉じられたら横画面固定に戻す
       if (Platform.isIOS) {
         await SystemChrome.setPreferredOrientations([
@@ -89,6 +97,13 @@ class PurchaseManager {
       }
 
       await RevenueCatUI.presentCustomerCenter();
+
+      // BGMの再開を試みる
+      try {
+        await BgmManager.instance.resume();
+      } catch (e) {
+        debugPrint('BGM再開エラー: $e');
+      }
 
       // 閉じられたら横画面固定に戻す
       if (Platform.isIOS) {

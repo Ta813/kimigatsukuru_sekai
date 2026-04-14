@@ -1,5 +1,6 @@
 // lib/managers/sfx_manager.dart
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
@@ -11,32 +12,43 @@ class SfxManager {
 
   // 効果音専用のプレイヤーを管理します
   AudioPlayer? _sfxPlayer;
-  bool _isInitializing = false;
+  Completer<AudioPlayer>? _initCompleter; // ★追加：初期化同期用
 
   Future<AudioPlayer> _ensurePlayer() async {
+    // すでにプレイヤーがある場合は即座に返す
     if (_sfxPlayer != null) return _sfxPlayer!;
 
-    if (_isInitializing) {
-      while (_isInitializing && _sfxPlayer == null) {
-        await Future.delayed(const Duration(milliseconds: 50));
-      }
-      if (_sfxPlayer != null) return _sfxPlayer!;
+    // 初期化中の場合は、その完了を待つ
+    if (_initCompleter != null) {
+      return _initCompleter!.future;
     }
 
-    _isInitializing = true;
+    // 初期化開始
+    _initCompleter = Completer<AudioPlayer>();
     try {
       print("SfxManager: AudioPlayerを新規作成します");
       final player = AudioPlayer();
       _sfxPlayer = player;
+      _initCompleter!.complete(player);
       return player;
     } on PlatformException catch (e) {
       print("SfxManager: AudioPlayer作成中にプラットフォーム例外が発生しました: $e");
+
+      // すでに存在するというエラーの場合
+      if (e.code == 'already_exists') {
+        print("SfxManager: 'already_exists'エラーが発生しました。");
+      }
+
+      _initCompleter!.completeError(e);
+      _initCompleter = null;
       rethrow;
     } catch (e) {
       print("SfxManager: AudioPlayer作成中に予期せぬエラーが発生しました: $e");
+      _initCompleter!.completeError(e);
+      _initCompleter = null;
       rethrow;
     } finally {
-      _isInitializing = false;
+      _initCompleter = null;
     }
   }
 
@@ -229,7 +241,7 @@ class SfxManager {
   }
 
   // アプリ終了時にリソースを解放する
-  void dispose() async {
+  Future<void> dispose() async {
     try {
       if (_sfxPlayer != null) {
         print("SfxManager: AudioPlayerを破棄します");

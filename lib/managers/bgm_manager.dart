@@ -1,5 +1,6 @@
 // lib/bgm_manager.dart
 
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -25,35 +26,47 @@ class BgmManager {
 
   // just_audioのプレイヤーを管理します
   AudioPlayer? _bgmPlayer;
-  bool _isInitializing = false;
+  Completer<AudioPlayer>? _initCompleter; // ★追加：初期化同期用
 
   // 外部からのアクセス用ゲッターは修正
   // プレイヤーが必要な場合は await _ensurePlayer() を使うように統一します
   Future<AudioPlayer> _ensurePlayer() async {
+    // すでにプレイヤーがある場合は即座に返す
     if (_bgmPlayer != null) return _bgmPlayer!;
 
-    if (_isInitializing) {
-      // 初期化完了まで短時間待機
-      while (_isInitializing && _bgmPlayer == null) {
-        await Future.delayed(const Duration(milliseconds: 50));
-      }
-      if (_bgmPlayer != null) return _bgmPlayer!;
+    // 初期化中の場合は、その完了を待つ
+    if (_initCompleter != null) {
+      return _initCompleter!.future;
     }
 
-    _isInitializing = true;
+    // 初期化開始
+    _initCompleter = Completer<AudioPlayer>();
     try {
       print("BgmManager: AudioPlayerを新規作成します");
       final player = AudioPlayer();
       _bgmPlayer = player;
+      _initCompleter!.complete(player);
       return player;
     } on PlatformException catch (e) {
       print("BgmManager: AudioPlayer作成中にプラットフォーム例外が発生しました: $e");
+
+      // すでに存在するというエラーの場合、既存のものを再利用するか、一度クリアを試みる
+      if (e.code == 'already_exists') {
+        print("BgmManager: 'already_exists'エラーが発生しました。状態をリセットします。");
+      }
+
+      _initCompleter!.completeError(e);
+      _initCompleter = null;
       rethrow;
     } catch (e) {
       print("BgmManager: AudioPlayer作成中に予期せぬエラーが発生しました: $e");
+      _initCompleter!.completeError(e);
+      _initCompleter = null;
       rethrow;
     } finally {
-      _isInitializing = false;
+      // 成功時も失敗時もコンプリーター自体はnullに戻しておく（次の呼び出しで再挑戦可能にするため）
+      // しかし、すでに成功している場合は _bgmPlayer != null でガードされる
+      _initCompleter = null;
     }
   }
 

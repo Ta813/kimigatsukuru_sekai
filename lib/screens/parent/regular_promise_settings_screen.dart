@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/blinking_effect.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'add_edit_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
@@ -190,8 +189,6 @@ class _RegularPromiseSettingsScreenState
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showTutorialStep3Dialog();
       });
-    } else {
-      _checkFirstYakusoku();
     }
   }
 
@@ -205,115 +202,6 @@ class _RegularPromiseSettingsScreenState
     setState(() {
       _regularPromises = loadedPromises;
     });
-  }
-
-  /// 初回訪問時のみダイアログを表示する
-  Future<void> _checkFirstYakusoku() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool isFirst = prefs.getBool('is_first_yakusoku') ?? true;
-
-    if (isFirst) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => Dialog(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            insetPadding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 14,
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Image.asset(
-                        'assets/images/clothes_dress_red.gif',
-                        height: 90,
-                      ),
-                      const SizedBox(width: 16),
-                      Image.asset(
-                        'assets/images/character_kuma.gif',
-                        height: 90,
-                      ),
-                    ],
-                  ),
-                  ClipPath(
-                    clipper: _SpeechBubbleTailClipper(),
-                    child: Container(
-                      width: 24,
-                      height: 16,
-                      color: const Color(0xFFFFF7E6),
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 22,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF7E6),
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        _buildRichText(
-                          AppLocalizations.of(context)!.samplePromiseTitle,
-                          isTitle: true,
-                        ),
-                        const SizedBox(height: 10),
-                        _buildRichText(
-                          AppLocalizations.of(context)!.samplePromiseDesc,
-                          isTitle: false,
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            _playTapSound();
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF7043),
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size(220, 64),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(32),
-                            ),
-                            elevation: 8,
-                          ),
-                          child: Text(
-                            AppLocalizations.of(context)!.gotIt,
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      });
-      await prefs.setBool('is_first_yakusoku', false);
-    }
   }
 
   Widget _buildRichText(

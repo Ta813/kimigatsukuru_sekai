@@ -20,6 +20,9 @@ class NotificationManager {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  bool _isInitialized = false; // ★追加: 初期化完了フラグ
+  bool get isInitialized => _isInitialized;
+
   // 初期化処理
   Future<void> init() async {
     tz.initializeTimeZones();
@@ -46,6 +49,8 @@ class NotificationManager {
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {},
     );
+
+    _isInitialized = true; // ★追加: 初期化完了
   }
 
   /// 通知許可をリクエストするメソッド
@@ -55,12 +60,9 @@ class NotificationManager {
       // これにより、DarwinInitializationSettings で false にしていた権限を明示的に要求します
       final bool? result = await _flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
+            IOSFlutterLocalNotificationsPlugin
+          >()
+          ?.requestPermissions(alert: true, badge: true, sound: true);
       return result ?? false;
     } else if (Platform.isAndroid) {
       // Androidの場合: permission_handler または local_notifications の機能を使用
@@ -122,6 +124,14 @@ class NotificationManager {
       final notificationBody = l10n.promiseNotificationBody(icon);
 
       try {
+        // ★追加: 初期化されていない場合はスキップ（または待機）
+        if (!_isInitialized) {
+          print(
+            "⚠️ NotificationManager not initialized yet. Skipping schedule for $title.",
+          );
+          continue;
+        }
+
         await _flutterLocalNotificationsPlugin.zonedSchedule(
           id: 100 + i, // IDを100, 101...とする
           title: notificationTitle,
@@ -135,6 +145,7 @@ class NotificationManager {
               importance: Importance.high,
               priority: Priority.high,
               color: Color(0xFFFF7043),
+              icon: 'ic_notification', // ★明示的に指定
             ),
             iOS: DarwinNotificationDetails(),
           ),
@@ -181,6 +192,14 @@ class NotificationManager {
     final String body = l10n.weeklyNotificationBody;
 
     try {
+      // ★追加: 初期化されていない場合はスキップ
+      if (!_isInitialized) {
+        print(
+          "⚠️ NotificationManager not initialized yet. Skipping weekly schedule.",
+        );
+        return;
+      }
+
       await _flutterLocalNotificationsPlugin.zonedSchedule(
         id: 0, // ID 0 は月曜通知用
         title: title,
@@ -193,6 +212,7 @@ class NotificationManager {
             importance: Importance.high,
             priority: Priority.high,
             color: Color(0xFFFF7043),
+            icon: 'ic_notification', // ★明示的に指定
           ),
           iOS: DarwinNotificationDetails(),
         ),

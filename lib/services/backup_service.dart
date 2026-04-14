@@ -7,6 +7,7 @@ import 'package:icloud_storage/icloud_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import '../helpers/shared_prefs_helper.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_api_availability/google_api_availability.dart';
 
 const String _backupFileName = 'kimigatsukurusekai_backup.json';
 const String _iCloudContainerId = 'iCloud.com.kotoapp.kimigatsukurusekai';
@@ -16,17 +17,45 @@ class BackupService {
   // ★ Google Drive 関連 (Android / iOS)
   // =============================================
 
+  static final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [drive.DriveApi.driveAppdataScope],
+  );
+
   // Googleサインインの初期化と認証クライアントの取得
   static Future<auth.AuthClient?> _getGoogleAuthClient() async {
     try {
-      final googleSignIn = GoogleSignIn(
-        scopes: [drive.DriveApi.driveAppdataScope], // アプリ固有のファイルへのアクセス権限
-      );
-      final account = await googleSignIn.signIn();
+      // 0. Androidの場合、Google Play Servicesの可用性をチェック
+      if (Platform.isAndroid) {
+        try {
+          final availability = await GoogleApiAvailability.instance
+              .checkGooglePlayServicesAvailability();
+          if (availability != GooglePlayServicesAvailability.success) {
+            print(
+              "Warning: Google Play Services availability check returned: $availability",
+            );
+            //SignInHubActivityのNPE対策として、可用性に問題がある場合でも続行し、
+            //GoogleSignInプラグイン側の内部エラーハンドリングに任せるように調整
+          }
+        } catch (e) {
+          print("Failed to check Google Play Services availability: $e");
+          //可用性チェック自体が失敗した場合は無視して続行
+        }
+      }
+
+      // 1. まずはサイレントサインインを試みる（以前の認証情報があればそれを使う）
+      GoogleSignInAccount? account = await _googleSignIn.signInSilently();
+
+      // 2. サイレントサインインで失敗（null）なら通常のサインインを実行
+      if (account == null) {
+        // ここで account が null の場合に限り、UI（SignInHubActivity）を起動する
+        account = await _googleSignIn.signIn();
+      }
+
       if (account == null) {
         print("Google Sign-In failed or was cancelled.");
         return null; // ユーザーがキャンセル
       }
+
       final authentication = await account.authentication;
       final accessToken = authentication.accessToken;
 
@@ -42,12 +71,13 @@ class BackupService {
           DateTime.now().toUtc().add(const Duration(hours: 1)),
         ),
         null, // Refresh token (今回はnull)
-        googleSignIn.scopes,
+        _googleSignIn.scopes,
       );
 
       return auth.authenticatedClient(http.Client(), credentials);
-    } catch (e) {
+    } catch (e, stackTrace) {
       print("Google Sign-In Error: $e");
+      print("Stack trace: $stackTrace");
       return null;
     }
   }
