@@ -18,6 +18,8 @@ import 'managers/notification_manager.dart';
 import 'managers/purchase_manager.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,11 +103,18 @@ Future<void> _initializeBackgroundServices() async {
 
   // ③ Facebook SDKの初期化
   try {
-    //final facebookAppEvents = FacebookAppEvents();
-    FacebookAppEvents();
-    // 💡 既にキッズカテゴリから脱却しているため、大人向けの広告最適化ができるよう、
-    // ここは enabled: false を消すか、必要に応じて true に切り替えるのがおすすめです。
-    // await facebookAppEvents.setAdvertiserTracking(enabled: true);
+    final facebookAppEvents = FacebookAppEvents();
+
+    // iOSの場合、App Tracking Transparency (ATT) の許可を求める
+    if (Platform.isIOS) {
+      final status = await Permission.appTrackingTransparency.request();
+      if (status.isGranted) {
+        // ユーザーが許可した場合のみ、広告トラッキングを有効化
+        await facebookAppEvents.setAdvertiserTracking(enabled: true);
+      } else {
+        await facebookAppEvents.setAdvertiserTracking(enabled: false);
+      }
+    }
   } catch (e) {
     print("Facebook SDKの初期化エラー: $e");
   }

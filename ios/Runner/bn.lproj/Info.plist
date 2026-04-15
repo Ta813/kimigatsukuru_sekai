@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>Used to show you personalized ads based on your interests.</string>
+	<string>আপনার আগ্রহের উপর ভিত্তি করে ব্যক্তিগতকৃত বিজ্ঞাপন দেখানোর জন্য ব্যবহৃত হয়।</string>
 	<key>LSApplicationCategoryType</key>
 	<string>Privacy - Access to a File Provide Domain Usage Description</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
