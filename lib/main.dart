@@ -101,97 +101,114 @@ Future<void> _initializeBackgroundServices() async {
     print("通知マネージャーの初期化エラー: $e");
   }
 
-  // ③ Facebook SDKの初期化
-  try {
-    final facebookAppEvents = FacebookAppEvents();
-
-    // iOSの場合、App Tracking Transparency (ATT) の許可を求める
-    if (Platform.isIOS) {
-      final status = await Permission.appTrackingTransparency.request();
-      if (status.isGranted) {
-        // ユーザーが許可した場合のみ、広告トラッキングを有効化
-        await facebookAppEvents.setAdvertiserTracking(enabled: true);
-      } else {
-        await facebookAppEvents.setAdvertiserTracking(enabled: false);
-      }
-    }
-  } catch (e) {
-    print("Facebook SDKの初期化エラー: $e");
-  }
-
-  // ④ RevenueCatの初期化 (広告の要否を判断するために先に実行)
+  // ③ RevenueCatの初期化 (広告の要否を判断するために先に実行)
   try {
     await PurchaseManager.instance.init();
   } catch (e) {
     print("RevenueCat初期化エラー: $e");
   }
 
-  // ⑤ 広告の同意管理と初期化 (プレミアム会員でない場合のみ実行)
-  if (!PurchaseManager.instance.isPremium.value) {
-    try {
-      final connectivityResult = await Connectivity().checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
-      if (isOnline) {
-        await _initConsentAndLoadAds();
-      }
-    } catch (e) {
-      print("AdMob初期化エラー: $e");
-    }
-  } else {
-    print("プレミアム会員のため、広告の初期化をスキップします");
-  }
+  // ④ 広告同意・トラッキング許可・SDK初期化の一連の流れを実行
+  // (プレミアム会員でない、またはFacebook等のトラッキングが必要な場合)
+  // 💡 ここでは await せずに、他の初期化（音声や通知）と並行して走らせますが、
+  // 内部的には UMP -> ATT -> SDK の順序を厳守します。
+  _initTrackingAndAdsFlow();
 }
 
 // ----------------------------------------------------
-// 🌟 同意ステータスの確認 → 広告SDK初期化までの一連の流れ
+// 🌟 トラッキングと広告の初期化フロー
+// [UMPダイアログ] ➡ [ATTダイアログ] ➡ [SDK初期化] の順序を保証する
 // ----------------------------------------------------
-Future<void> _initConsentAndLoadAds() async {
+Future<void> _initTrackingAndAdsFlow() async {
+  try {
+    // 1. UMP (同意ダイアログ) の確認と表示
+    // ※ 内部的に非プレミアムかつオンラインの場合のみ実行される
+    await _initializeConsent();
+
+    // 2. ATT (iOSトラッキング許可) のリクエスト
+    // ※ iOSかつ、UMPが完了した直後に実行
+    await _requestATT();
+
+    // 3. 各種SDKの初期化 (Facebook, AdMob)
+    // ※ ATTの返答を受け取った後に実行
+    await _initializeSDKs();
+  } catch (e) {
+    print("初期化フローエラー: $e");
+    // エラー時も最低限の初期化を試みる
+    await _initializeSDKs();
+  }
+}
+
+Future<void> _initializeConsent() async {
+  // プレミアム会員の場合はUMPをスキップ
+  if (PurchaseManager.instance.isPremium.value) return;
+
+  final connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult == ConnectivityResult.none) return;
+
+  final completer = Completer<void>();
   final params = ConsentRequestParameters();
 
   ConsentInformation.instance.requestConsentInfoUpdate(
     params,
     () async {
-      // フォームが利用可能な場合、フォームをロード
       if (await ConsentInformation.instance.isConsentFormAvailable()) {
-        _loadAndShowConsentForm();
+        ConsentForm.loadConsentForm(
+          (ConsentForm consentForm) async {
+            var status = await ConsentInformation.instance.getConsentStatus();
+            if (status == ConsentStatus.required) {
+              consentForm.show((FormError? formError) {
+                completer.complete();
+              });
+            } else {
+              completer.complete();
+            }
+          },
+          (FormError formError) {
+            completer.complete();
+          },
+        );
       } else {
-        // フォームが不要な地域（日本など）の場合はそのまま広告をロード
-        await _initializeAds();
+        completer.complete();
       }
     },
     (FormError error) {
-      // エラー発生時は、とりあえず広告の初期化へ進む（フェイルセーフ）
-      _initializeAds();
+      completer.complete();
     },
   );
+
+  return completer.future;
 }
 
-void _loadAndShowConsentForm() {
-  ConsentForm.loadConsentForm(
-    (ConsentForm consentForm) async {
-      var status = await ConsentInformation.instance.getConsentStatus();
-      // 同意が必須（未回答）の場合、フォームを表示
-      if (status == ConsentStatus.required) {
-        consentForm.show((FormError? formError) {
-          // ユーザーが回答し終わったら、広告を初期化してロード
-          _initializeAds();
-        });
-      } else {
-        // すでに回答済みなどの場合はそのまま広告初期化
-        await _initializeAds();
-      }
-    },
-    (FormError formError) {
-      _initializeAds();
-    },
-  );
-}
+Future<void> _requestATT() async {
+  if (!Platform.isIOS) return;
 
-Future<void> _initializeAds() async {
   try {
-    await MobileAds.instance.initialize();
+    await Permission.appTrackingTransparency.request();
   } catch (e) {
-    print('AdMob SDK 初期化エラー: $e');
+    print("ATTリクエストエラー: $e");
+  }
+}
+
+Future<void> _initializeSDKs() async {
+  // ① Facebook SDKの初期化
+  try {
+    final facebookAppEvents = FacebookAppEvents();
+    if (Platform.isIOS) {
+      final status = await Permission.appTrackingTransparency.status;
+      await facebookAppEvents.setAdvertiserTracking(enabled: status.isGranted);
+    }
+  } catch (e) {
+    print("Facebook SDK初期化エラー: $e");
+  }
+
+  // ② AdMob SDKの初期化 (プレミアム会員でない場合のみ)
+  if (!PurchaseManager.instance.isPremium.value) {
+    try {
+      await MobileAds.instance.initialize();
+    } catch (e) {
+      print("AdMob初期化エラー: $e");
+    }
   }
 }
 
