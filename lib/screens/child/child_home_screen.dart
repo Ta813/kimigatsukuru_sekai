@@ -1,10 +1,15 @@
 // lib/screens/child_home_screen.dart
 
 import 'dart:async';
+import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
+import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
@@ -251,10 +256,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     // ★ 最初のフレーム描画後に、ダイアログの表示チェックを順番に行う
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // 1. 同意ダイアログ (Androidのみ、こども向け設定のため不要)
-      // if (Platform.isAndroid) {
-      //   await _showDisclosureDialogIfNeeded();
-      // }
+      // 1. UMP (同意ダイアログ) の確認と表示
+      // 2. ATT (iOSトラッキング許可) のリクエスト
+      _initializeConsent();
 
       // 2. ログインボーナスチェック
       if (mounted) {
@@ -316,6 +320,146 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       } catch (e) {
         // エラーが発生した場合
         print('再生エラー: $e');
+      }
+    } else if (state == AppLifecycleState.detached) {
+      // 🌟 【ここを追加！】アプリが完全にキルされた瞬間の処理
+      try {
+        BgmManager.instance.stopBgm();
+      } catch (e) {
+        print('再生エラー: $e');
+      }
+    }
+  }
+
+  // 広告の初期化・トラッキングフロー
+  Future<void> _initializeConsent() async {
+    // プレミアム会員の場合はUMP/ATTをスキップ
+    if (PurchaseManager.instance.isPremium.value) {
+      print("Premium member: skipping tracking flow.");
+      _initializeSDKs();
+      return;
+    }
+
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      print("Offline: skipping tracking flow.");
+      _initializeSDKs();
+      return;
+    }
+
+    // 1. UMP (同意ダイアログ) の処理を待つ
+    print("Starting UMP flow...");
+    await _runUMPFlow();
+    print("UMP flow completed.");
+
+    // 2. ATT (iOSトラッキング許可) のリクエスト
+    if (Platform.isIOS) {
+      print("Starting ATT flow...");
+      try {
+        // 現在のステータスを確認
+        final status = await Permission.appTrackingTransparency.status;
+        print("Initial ATT Status: $status");
+
+        if (status == PermissionStatus.denied ||
+            status == PermissionStatus.provisional) {
+          // 少し待ってからダイアログを表示（UIの競合を避けるため）
+          await Future.delayed(const Duration(milliseconds: 800));
+          final result = await Permission.appTrackingTransparency.request();
+          print("ATT Request Result: $result");
+        } else if (status == PermissionStatus.permanentlyDenied) {
+          print("⚠️ ATT is permanently denied.");
+          print(
+            "➔ iOS Simulator Settings -> Privacy & Security -> Tracking -> 'Allow Apps to Request to Track' を ON にしてください。",
+          );
+          print(
+            "➔ 既に ON なのに出ない場合は、Simulator の Device -> Erase All Content and Settings... を試してください。",
+          );
+        }
+      } catch (e) {
+        print("ATTリクエストエラー: $e");
+      }
+      print("ATT flow completed.");
+    }
+
+    // 3. SDKの初期化
+    _initializeSDKs();
+  }
+
+  // UMPフローの内部実装
+  Future<void> _runUMPFlow() async {
+    final completer = Completer<void>();
+
+    //final params = ConsentRequestParameters();
+    // 1. デバッグ設定を作成する
+    await ConsentInformation.instance.reset();
+    ConsentDebugSettings debugSettings = ConsentDebugSettings(
+      // GDPRの同意ダイアログを強制的に表示するため、EEA（欧州経済領域）を模倣します
+      debugGeography: DebugGeography.debugGeographyEea,
+    );
+
+    ConsentRequestParameters params = ConsentRequestParameters(
+      consentDebugSettings: debugSettings,
+    );
+
+    ConsentInformation.instance.requestConsentInfoUpdate(
+      params,
+      () async {
+        if (await ConsentInformation.instance.isConsentFormAvailable()) {
+          ConsentForm.loadConsentForm(
+            (ConsentForm consentForm) async {
+              var status = await ConsentInformation.instance.getConsentStatus();
+              if (status == ConsentStatus.required) {
+                consentForm.show((FormError? formError) {
+                  if (formError != null) {
+                    print("UMP Show Error: ${formError.message}");
+                  }
+                  completer.complete();
+                });
+              } else {
+                completer.complete();
+              }
+            },
+            (FormError formError) {
+              print("UMP Load Error: ${formError.message}");
+              completer.complete();
+            },
+          );
+        } else {
+          completer.complete();
+        }
+      },
+      (FormError error) {
+        print("UMP Update Error: ${error.message}");
+        completer.complete();
+      },
+    );
+
+    return completer.future;
+  }
+
+  void _initializeSDKs() async {
+    print("Initializing SDKs...");
+    // ③ Facebook SDKの初期化
+    try {
+      final facebookAppEvents = FacebookAppEvents();
+      if (Platform.isIOS) {
+        final status = await Permission.appTrackingTransparency.status;
+        print("Setting Facebook Advertiser Tracking: ${status.isGranted}");
+        await facebookAppEvents.setAdvertiserTracking(
+          enabled: status.isGranted,
+        );
+      }
+    } catch (e) {
+      print("Facebook SDK初期化エラー: $e");
+    }
+
+    // ④ AdMob SDKの初期化
+    if (!PurchaseManager.instance.isPremium.value) {
+      try {
+        await MobileAds.instance.initialize();
+        print("AdMob SDK initialized.");
+      } catch (e) {
+        print("AdMob初期化エラー: $e");
       }
     }
   }

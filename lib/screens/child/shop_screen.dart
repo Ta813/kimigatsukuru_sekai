@@ -169,7 +169,13 @@ class _ShopScreenState extends State<ShopScreen> {
                 FirebaseAnalytics.instance.logEvent(
                   name: 'start_shop_confirm_buy',
                 );
-                final lang = AppLocalizations.of(context)!.localeName;
+                // ★ 修正: Navigator.pop する前に、必要な情報や管理クラスを取得しておく
+                // (pop 後は context が無効になる可能性があるため)
+                final l10n = AppLocalizations.of(context);
+                final messenger = ScaffoldMessenger.of(context);
+                final itemName = item.getDisplayName(context);
+
+                final lang = l10n?.localeName ?? 'en';
                 if (lang == 'ja') {
                   try {
                     SfxManager.instance.playShopBuySound();
@@ -200,6 +206,8 @@ class _ShopScreenState extends State<ShopScreen> {
                   );
                 }
 
+                if (!mounted) return;
+
                 setState(() {
                   _points = newPoints;
                   _purchasedItemNames.add(item.name);
@@ -209,17 +217,15 @@ class _ShopScreenState extends State<ShopScreen> {
                   }
                 });
 
+                // ダイアログを閉じる
                 Navigator.pop(context);
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      AppLocalizations.of(
-                        context,
-                      )!.shopExchangeSuccess(item.getDisplayName(context)),
-                    ),
-                  ),
-                );
+                // スナックバーを表示
+                if (l10n != null) {
+                  messenger.showSnackBar(
+                    SnackBar(content: Text(l10n.shopExchangeSuccess(itemName))),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043), // オレンジ

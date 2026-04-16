@@ -29,7 +29,9 @@ class ShopItem {
 
   String getDisplayName(BuildContext context) {
     // AppLocalizationsを使って、翻訳された文字列を返します
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return name;
+
     switch (name) {
       case 'あおいふく':
         return l10n.itemClothesBlue;

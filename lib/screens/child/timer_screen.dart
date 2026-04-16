@@ -200,6 +200,16 @@ class _TimerScreenState extends State<TimerScreen>
       if (_timer == null || !_timer!.isActive) {
         _startTimer();
       }
+    } else if (state == AppLifecycleState.detached) {
+      // 🌟 【ここを追加！】アプリが完全にキルされた瞬間の処理
+      _timer?.cancel();
+      try {
+        BgmManager.instance.stopBgm();
+      } catch (e) {
+        print('再生エラー: $e');
+      }
+      // Wakelockがオンになったままキルされるのを防ぐ
+      WakelockPlus.disable();
     } else {
       // アプリが裏に回ったら、UI更新用のタイマーは一旦停止
       _timer?.cancel();
@@ -363,10 +373,18 @@ class _TimerScreenState extends State<TimerScreen>
   }
 
   void _startTimer() {
+    _timer?.cancel(); // 念のため既存タイマーをキャンセル
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      // 🌟 追加1: 画面が閉じられていたらタイマーを止めて終わる
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
       _updateRemainingSeconds();
 
-      final String lang = AppLocalizations.of(context)!.localeName;
+      final localizations = AppLocalizations.of(context);
+      if (localizations == null) return;
+      final String lang = localizations.localeName;
       final String voiceDir = SfxManager.instance.getVoiceDir(lang);
 
       // --- 音声再生ロジックをここにまとめる ---
@@ -626,7 +644,11 @@ class _TimerScreenState extends State<TimerScreen>
                 onPressed: _isCompleting
                     ? null
                     : () async {
+                        if (!mounted) return;
                         setState(() => _isCompleting = true);
+                        final localizations = AppLocalizations.of(context);
+                        final lang = localizations?.localeName ?? 'en';
+                        final voiceDir = SfxManager.instance.getVoiceDir(lang);
                         // まず承認ダイアログを閉じる
                         Navigator.of(dialogContext).pop();
 
@@ -651,7 +673,6 @@ class _TimerScreenState extends State<TimerScreen>
                           await Future.delayed(const Duration(seconds: 2));
 
                           // ◯◯がんばったね。
-                          final lang = AppLocalizations.of(context)!.localeName;
                           if (_childFullName != null &&
                               _childFullName!.isNotEmpty) {
                             await _speak('$_childFullName');
@@ -667,11 +688,6 @@ class _TimerScreenState extends State<TimerScreen>
                               print('再生エラー: $e');
                             }
                           } else {
-                            final String lang = AppLocalizations.of(
-                              context,
-                            )!.localeName;
-                            final String voiceDir = SfxManager.instance
-                                .getVoiceDir(lang);
                             final List<String> soundsToPlay = [];
                             soundsToPlay.addAll([
                               'se/$voiceDir/you_did_your_best.mp3',
@@ -697,7 +713,6 @@ class _TimerScreenState extends State<TimerScreen>
                             _showRouletteAndFinish();
                           }
                         } else {
-                          final lang = AppLocalizations.of(context)!.localeName;
                           if (_childFullName != null &&
                               _childFullName!.isNotEmpty) {
                             await _speak('$_childFullName');
