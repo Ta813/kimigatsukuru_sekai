@@ -389,17 +389,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   Future<void> _runUMPFlow() async {
     final completer = Completer<void>();
 
-    //final params = ConsentRequestParameters();
-    // 1. デバッグ設定を作成する
-    await ConsentInformation.instance.reset();
-    ConsentDebugSettings debugSettings = ConsentDebugSettings(
-      // GDPRの同意ダイアログを強制的に表示するため、EEA（欧州経済領域）を模倣します
-      debugGeography: DebugGeography.debugGeographyEea,
-    );
-
-    ConsentRequestParameters params = ConsentRequestParameters(
-      consentDebugSettings: debugSettings,
-    );
+    final params = ConsentRequestParameters();
 
     ConsentInformation.instance.requestConsentInfoUpdate(
       params,
