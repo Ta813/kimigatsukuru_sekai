@@ -34,12 +34,16 @@ class MissionScreen extends StatefulWidget {
   State<MissionScreen> createState() => _MissionScreenState();
 }
 
-class _MissionScreenState extends State<MissionScreen>
-    with SingleTickerProviderStateMixin {
+// 🌟 変更点: DefaultTabControllerを使うため、SingleTickerProviderStateMixin は削除しました
+class _MissionScreenState extends State<MissionScreen> {
   List<MissionItem> _missions = [];
   bool _isLoading = true;
   late ConfettiController _confettiController;
-  late TabController _tabController;
+
+  // 🌟 追加: チュートリアルタブを表示するかどうかのフラグ
+  bool _showTutorialTab = true;
+  // 🌟 追加: 現在のポイントを保持する変数
+  int _currentPoints = 0;
 
   @override
   void initState() {
@@ -47,21 +51,17 @@ class _MissionScreenState extends State<MissionScreen>
     _confettiController = ConfettiController(
       duration: const Duration(seconds: 2),
     );
-    _tabController = TabController(length: 3, vsync: this);
     _loadMissions();
   }
 
   @override
   void dispose() {
     _confettiController.dispose();
-    _tabController.dispose();
+    // 🌟 変更点: 自前の _tabController.dispose() を削除
     super.dispose();
   }
 
   // 累計系ミッション用：グループ内で「直近のもの」だけを追加するヘルパー
-  // ・受け取り済み（isClaimed）はスキップ
-  // ・達成済みで未受け取り（isCompleted && !isClaimed）は表示
-  // ・未達成（!isCompleted）は最初の1件のみ表示し、それ以降はスキップ
   void _addNearestFromGroup(List<MissionItem> dest, List<MissionItem> group) {
     bool addedUncompleted = false;
     for (final m in group) {
@@ -76,13 +76,13 @@ class _MissionScreenState extends State<MissionScreen>
 
   // 🌟 保存されたデータを読み込んで、ミッション一覧を作るメソッド
   Future<void> _loadMissions() async {
-    // 1. 各種データをSharedPrefsHelperから取得
     final claimedIds = await SharedPrefsHelper.loadClaimedMissionIds();
     final isParentSetupDone = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepParentSetupShownKey,
     );
-    final cumulativePromises =
-        await SharedPrefsHelper.loadCumulativePromiseCount();
+    final isChildSetupDone = await SharedPrefsHelper.isTutorialStepShown(
+      SharedPrefsHelper.tutorialStepMoveKey,
+    );
     final hasChangedBgm = await SharedPrefsHelper.getHasChangedBgm();
     final hasOpenedWorldMap = await SharedPrefsHelper.getHasOpenedWorldMap();
     final hasVisitedBigIsland =
@@ -92,11 +92,15 @@ class _MissionScreenState extends State<MissionScreen>
     final hasVisitedSpace = await SharedPrefsHelper.getHasVisitedSpace();
     final hasVisitedPromiseBoard =
         await SharedPrefsHelper.getHasVisitedPromiseBoard();
+    final hasEnteredHouse = await SharedPrefsHelper.getHasEnteredHouse();
+
     final cumulativeShop = await SharedPrefsHelper.loadCumulativeShopCount();
     final currentLevel = await SharedPrefsHelper.loadLevel();
     final cumulativePoints = await SharedPrefsHelper.loadCumulativePoints();
     final cumulativeLoginDays =
         await SharedPrefsHelper.loadCumulativeLoginDays();
+    // 🌟 追加: 現在の所持ポイントを読み込む
+    final currentPoints = await SharedPrefsHelper.loadPoints();
 
     List<MissionItem> loadedMissions = [];
 
@@ -105,7 +109,7 @@ class _MissionScreenState extends State<MissionScreen>
       MissionItem(
         id: 'mission_parent_setup',
         title: 'おやのやくそくを せっていしよう',
-        rewardPoints: 100,
+        rewardPoints: 200,
         isCompleted: isParentSetupDone,
         isClaimed: claimedIds.contains('mission_parent_setup'),
         category: MissionCategory.tutorial,
@@ -117,14 +121,24 @@ class _MissionScreenState extends State<MissionScreen>
         id: 'mission_first_promise',
         title: 'はじめて やくそくを クリアしよう',
         rewardPoints: 200,
-        isCompleted: cumulativePromises >= 1,
+        isCompleted: isChildSetupDone,
         isClaimed: claimedIds.contains('mission_first_promise'),
-        progressText: '($cumulativePromises/1)',
         category: MissionCategory.tutorial,
       ),
     );
 
     // --- 初めて系ミッション ---
+    loadedMissions.add(
+      MissionItem(
+        id: 'mission_enter_house',
+        title: 'はじめて おうちの なかに はいろう',
+        rewardPoints: 50,
+        isCompleted: hasEnteredHouse,
+        isClaimed: claimedIds.contains('mission_enter_house'),
+        category: MissionCategory.firstTime,
+      ),
+    );
+
     loadedMissions.add(
       MissionItem(
         id: 'mission_promise_board',
@@ -203,7 +217,6 @@ class _MissionScreenState extends State<MissionScreen>
     );
 
     // --- 累計系ミッション ---
-    // ログイン日数
     _addNearestFromGroup(
       loadedMissions,
       SharedPrefsHelper.loginTargets
@@ -221,7 +234,6 @@ class _MissionScreenState extends State<MissionScreen>
           .toList(),
     );
 
-    // 買い物回数
     _addNearestFromGroup(
       loadedMissions,
       SharedPrefsHelper.shopTargets
@@ -239,7 +251,6 @@ class _MissionScreenState extends State<MissionScreen>
           .toList(),
     );
 
-    // レベル
     _addNearestFromGroup(
       loadedMissions,
       SharedPrefsHelper.levelTargets
@@ -257,7 +268,6 @@ class _MissionScreenState extends State<MissionScreen>
           .toList(),
     );
 
-    // 累計ポイント
     _addNearestFromGroup(
       loadedMissions,
       SharedPrefsHelper.pointTargets
@@ -275,32 +285,48 @@ class _MissionScreenState extends State<MissionScreen>
           .toList(),
     );
 
+    // 🌟 追加: ミッションの並び替え
+    // 優先度： 0=「うけとる！」, 1=「ちょうせん中」, 2=「クリア！」(一番下)
+    loadedMissions.sort((a, b) {
+      int getScore(MissionItem m) {
+        if (m.isCompleted && !m.isClaimed) return 0; // 最優先（一番上）
+        if (!m.isCompleted && !m.isClaimed) return 1; // その次
+        return 2; // クリア済み（一番下）
+      }
+
+      return getScore(a).compareTo(getScore(b));
+    });
+
+    // 🌟 追加: チュートリアルミッションが全て受け取り済みか判定する
+    final tutorialMissions = loadedMissions.where(
+      (m) => m.category == MissionCategory.tutorial,
+    );
+    // 「受け取っていない（未完了含む）チュートリアル」が1つでもあれば true
+    final shouldShowTutorial = tutorialMissions.any((m) => !m.isClaimed);
+
     // 画面を更新
     if (mounted) {
       setState(() {
         _missions = loadedMissions;
+        _showTutorialTab = shouldShowTutorial;
+        _currentPoints = currentPoints; // 🌟 追加: 読み込んだポイントを画面に反映
         _isLoading = false;
       });
     }
   }
 
-  // 🌟 報酬を受け取る処理
   Future<void> _claimReward(MissionItem mission) async {
-    // 効果音と紙吹雪
     try {
       SfxManager.instance.playSuccessSound();
     } catch (e) {}
     _confettiController.play();
 
-    // ポイントを加算して保存
     final currentPoints = await SharedPrefsHelper.loadPoints();
     await SharedPrefsHelper.savePoints(currentPoints + mission.rewardPoints);
-    await SharedPrefsHelper.addCumulativePoints(mission.rewardPoints); // 累計にも加算
+    await SharedPrefsHelper.addCumulativePoints(mission.rewardPoints);
 
-    // ミッションを「受け取り済み」に記録
     await SharedPrefsHelper.claimMission(mission.id);
 
-    // リストを再読み込みしてUIを更新
     await _loadMissions();
   }
 
@@ -329,65 +355,112 @@ class _MissionScreenState extends State<MissionScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF3E0), // ピーチクリーム背景
-      appBar: AppBar(
-        title: const Text(
-          'ミッション',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFFFF7043),
-        foregroundColor: Colors.white,
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Colors.white,
-          indicatorWeight: 3,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          labelStyle: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: Color(0xFFFFF3E0),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    // 🌟 動的にタブと中身のリストを作る
+    final List<Widget> tabs = [];
+    final List<Widget> tabViews = [];
+
+    // フラグが true の時だけ「チュートリアル」タブを追加
+    if (_showTutorialTab) {
+      tabs.add(const Tab(icon: Icon(Icons.school, size: 18), text: 'チュートリアル'));
+      tabViews.add(_buildMissionList(MissionCategory.tutorial));
+    }
+
+    // 「はじめて」と「累計」は常に表示
+    tabs.add(const Tab(icon: Icon(Icons.star, size: 18), text: 'はじめて'));
+    tabViews.add(_buildMissionList(MissionCategory.firstTime));
+
+    tabs.add(const Tab(icon: Icon(Icons.bar_chart, size: 18), text: '累計'));
+    tabViews.add(_buildMissionList(MissionCategory.cumulative));
+
+    // 🌟 Scaffold全体を DefaultTabController で包む
+    return DefaultTabController(
+      // key をつけることで、タブの数が減った時にエラーにならず綺麗にリセットされます
+      key: ValueKey(tabs.length),
+      length: tabs.length,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFFFF3E0),
+        appBar: AppBar(
+          title: const Text(
+            'ミッション',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          unselectedLabelStyle: const TextStyle(fontSize: 12),
-          tabs: const [
-            Tab(icon: Icon(Icons.school, size: 18), text: 'チュートリアル'),
-            Tab(icon: Icon(Icons.star, size: 18), text: 'はじめて'),
-            Tab(icon: Icon(Icons.bar_chart, size: 18), text: '累計'),
+          backgroundColor: const Color(0xFFFF7043),
+          foregroundColor: Colors.white,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.3), // 少し半透明な白枠
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        color: Colors.yellowAccent,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '$_currentPoints P',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+          bottom: TabBar(
+            indicatorColor: Colors.white,
+            indicatorWeight: 3,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+            unselectedLabelStyle: const TextStyle(fontSize: 12),
+            tabs: tabs,
+          ),
+        ),
+        body: Stack(
+          children: [
+            TabBarView(children: tabViews),
+            Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                emissionFrequency: 0.05,
+                numberOfParticles: 20,
+                gravity: 0.3,
+              ),
+            ),
           ],
         ),
-      ),
-      body: Stack(
-        children: [
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildMissionList(MissionCategory.tutorial),
-                    _buildMissionList(MissionCategory.firstTime),
-                    _buildMissionList(MissionCategory.cumulative),
-                  ],
-                ),
-
-          // 紙吹雪エフェクト（画面上部中央から）
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiController,
-              blastDirectionality: BlastDirectionality.explosive,
-              emissionFrequency: 0.05,
-              numberOfParticles: 20,
-              gravity: 0.3,
-            ),
-          ),
-        ],
       ),
     );
   }
 
-  // ミッションのカードデザイン
   Widget _buildMissionCard(MissionItem mission) {
-    // 状態によってボタンの見た目を変える
     Color buttonColor;
     String buttonText;
     VoidCallback? onPressed;
@@ -395,15 +468,29 @@ class _MissionScreenState extends State<MissionScreen>
     if (mission.isClaimed) {
       buttonColor = Colors.grey;
       buttonText = 'クリア！';
-      onPressed = null; // 押せない
+      onPressed = null;
     } else if (mission.isCompleted) {
-      buttonColor = const Color(0xFFFF7043); // オレンジ
+      buttonColor = const Color(0xFFFF7043);
       buttonText = 'うけとる！';
-      onPressed = () => _claimReward(mission); // 受け取り処理
+      onPressed = () => _claimReward(mission);
     } else {
-      buttonColor = Colors.blueGrey;
-      buttonText = 'ちょうせん中';
-      onPressed = null; // 押せない（未達成）
+      if (mission.category == MissionCategory.tutorial) {
+        // 【追加】チュートリアル系の場合は「やってみる」ボタンにして押せるようにする
+        buttonColor = const Color(0xFFFF7043); // 誘導用の色（お好みで変更してください）
+        buttonText = 'やってみる';
+        onPressed = () {
+          try {
+            SfxManager.instance.playTapSound();
+          } catch (e) {}
+          // 🌟 ホーム画面に「どのミッションをやりたいか（ID）」を渡して画面を閉じる
+          Navigator.of(context).pop(mission.id);
+        };
+      } else {
+        // 通常の未達成ミッションは今まで通り押せない
+        buttonColor = Colors.orange;
+        buttonText = 'ちょうせん中';
+        onPressed = null;
+      }
     }
 
     return Card(
@@ -414,14 +501,12 @@ class _MissionScreenState extends State<MissionScreen>
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         child: Row(
           children: [
-            // 左側：メダルアイコン
             Icon(
               mission.isClaimed ? Icons.verified : Icons.military_tech,
               color: mission.isClaimed ? Colors.grey : Colors.amber,
               size: 40,
             ),
             const SizedBox(width: 12),
-            // 中央：タイトルと報酬
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,7 +546,6 @@ class _MissionScreenState extends State<MissionScreen>
                 ],
               ),
             ),
-            // 右側：ボタン
             ElevatedButton(
               onPressed: onPressed,
               style: ElevatedButton.styleFrom(
