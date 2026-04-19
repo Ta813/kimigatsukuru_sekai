@@ -645,6 +645,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         SharedPrefsHelper.tutorialPhaseStart;
     if (isParentGuideShown) {
       await _showContinueTutorialDialog();
+      _showParentTutorial();
       return;
     }
   }
@@ -654,7 +655,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       context: context,
       builder: (context) => AlertDialog(
         title: Text(
-          AppLocalizations.of(context)!.levelUpTitle,
+          AppLocalizations.of(context)!.missionTabTutorial,
           textAlign: TextAlign.center,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
