@@ -46,6 +46,7 @@ class _IslandScreenState extends State<IslandScreen> {
   @override
   void initState() {
     super.initState();
+    SharedPrefsHelper.setHasVisitedBigIsland(true);
     _loadPlacedItems();
   }
 

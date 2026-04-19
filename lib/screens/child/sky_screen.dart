@@ -48,6 +48,7 @@ class _SkyScreenState extends State<SkyScreen> {
   @override
   void initState() {
     super.initState();
+    SharedPrefsHelper.setHasVisitedSky(true);
     _loadPlacedItems();
   }
 

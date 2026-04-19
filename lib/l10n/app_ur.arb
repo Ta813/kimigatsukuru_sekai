@@ -506,7 +506,7 @@
   "restoreAction": "بحالی",
   "backupSuccess": "بیک اپ مکمل ہو گیا",
   "backupFailure": "بیک اپ ناکام ہو گیا",
-  "restoreSuccess": "ڈیٹا بحال کر دیا گیا",
+  "restoreSuccess": "خریداری کامیابی سے بحال ہو گئی!",
   "restoreFailure": "بحالی ناکام ہو گئی",
   "minutesLabel": "منٹ",
   "okAction": "ٹھیک ہے",
@@ -535,8 +535,8 @@
   "tutorialParentStep3Desc": "بائیں طرف **+ بٹن** دبا کر وعدہ شامل کریں۔\n**\"آزمائشی وعدہ\"** شامل کر کے دیکھیں!",
   "tutorialParentStep5Title": "وعدے ترتیب دینے کا وقت!",
   "tutorialParentStep5Desc": "سجیشنز یا \"کسٹم شامل کریں\" سے **اپنے بچے کے لیے وعدے** ترتیب دیں۔\nمکمل ہونے پر **\"واپس\"** دبائیں!",
-  "tutorialParentCompleteTitle": "وعدے تیار ہیں!",
-  "tutorialParentCompleteDesc": "**وعدہ ترتیب** مکمل ہو گیا!\nہوم اسکرین پر وعدے آزمائیں!",
+  "tutorialParentCompleteTitle": "وعدے مکمل!",
+  "tutorialParentCompleteDesc": "**وعدے** مکمل ہو گیا!\nمشن اسکرین پر انعامات حاصل کریں!",
   "promiseNotificationTitle": "\"{title}\" کا وقت ہو گیا!",
   "@promiseNotificationTitle": {
     "placeholders": {
@@ -636,6 +636,56 @@
   "premiumFeaturesDesc": "اشتہارات ہٹائیں اور آرام سے لطف اٹھائیں!",
   "restorePurchases": "خریداری بحال کریں",
   "restoringPurchases": "خریداری بحال ہو رہی ہے...",
-  "restoreSuccess": "خریداری کامیابی سے بحال ہو گئی!",
-  "restoreFailed": "بحالی ناکام رہی۔ براہ کرم دوبارہ کوشش کریں۔"
+  "restoreFailed": "بحالی ناکام رہی۔ براہ کرم دوبارہ کوشش کریں۔",
+  "missionTitleParentSetup": "آئیے والدین کے وعدے سیٹ کریں",
+  "missionTitleFirstPromise": "آئیے ایک وعدہ آزمائیں",
+  "missionTitleEnterHouse": "پہلی بار گھر میں داخل ہوں",
+  "missionTitlePromiseBoard": "پہلی بار پرومس بورڈ دیکھیں",
+  "missionTitleBgm": "پہلی بار موسیقی تبدیل کریں",
+  "missionTitleWorldMap": "پہلی بار دنیا کا نقشہ دیکھیں",
+  "missionTitleBigIsland": "آئیے بڑے جزیرے پر چلیں (لیول 5)",
+  "missionTitleSea": "آئیے سمندر میں چلیں (لیول 10)",
+  "missionTitleSky": "آئیے آسمان میں چلیں (لیول 15)",
+  "missionTitleSpace": "آئیے خلا میں چلیں (لیول 20)",
+  "missionTitleLoginDays": "{target} دنوں تک لاگ ان کریں",
+  "@missionTitleLoginDays": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitleShopCount": "اسٹور پر {target} بار خریداری کریں",
+  "@missionTitleShopCount": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitleLevel": "لیول {target} تک پہنچیں",
+  "@missionTitleLevel": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitlePoints": "{target} پوائنٹس جمع کریں",
+  "@missionTitlePoints": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionNoMissions": "کوئی مشن نہیں",
+  "missionTabTutorial": "ٹیوٹوریل",
+  "missionTabFirstTime": "پہلی بار",
+  "missionTabCumulative": "مجموعی",
+  "missionScreenTitle": "مشنز",
+  "missionButtonCleared": "مکمل ہو گیا!",
+  "missionButtonClaim": "حاصل کریں!",
+  "missionButtonTry": "کوشش کریں",
+  "missionButtonChallenging": "جاری ہے",
+  "missionRewardPrefix": "انعام:",
+  "missionBadgeAvailableNow": "اب دستیاب ہے!",
+  "tutorialResumeDesc": "آپ ٹیوٹوریل کے بیچ میں ہیں۔\nآئیے دوبارہ شروع کریں!",
+  "tutorialResumeBtn": "جاری رکھیں",
+  "tutorialFirstPromiseCompleteTitle": "وعدے کا تجربہ مکمل ہوا!",
+  "tutorialFirstPromiseCompleteDesc": "**وعدے کا تجربہ** مکمل ہو گیا ہے!\nاپنا انعام حاصل کرنے کے لیے مشن اسکرین پر جائیں!",
+  "missionHintBubble": "آپ یہاں سے مشن کر سکتے ہیں!",
+  "helpMenuPromiseSettings": "وعدے سیٹ کریں"
 }

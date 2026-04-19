@@ -54,7 +54,18 @@ class _DraggableCharacterState extends State<DraggableCharacter> {
               BlinkingEffect(
                 isBlinking: widget.isBlinking,
                 color: Colors.purpleAccent,
-                child: Image.asset(widget.imagePath, height: widget.size),
+                child: widget.isInteractive
+                    ? Image.asset(widget.imagePath, height: widget.size)
+                    : ColorFiltered(
+                        colorFilter: const ColorFilter.mode(
+                          Colors.black45,
+                          BlendMode.srcATop,
+                        ), // 触れないことを示すために薄暗くする
+                        child: Image.asset(
+                          widget.imagePath,
+                          height: widget.size,
+                        ),
+                      ),
               ),
               if (widget.isBlinking)
                 const Positioned(

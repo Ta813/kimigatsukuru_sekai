@@ -1298,10 +1298,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tutorialParentStep5Desc => 'সাজেশন বা \"কাস্টম যোগ\" ব্যবহার করে **আপনার সন্তানের জন্য প্রতিশ্রুতি** সেট করুন।\nশেষ হলে **\"ফিরে যান\"** ট্যাপ করুন!';
 
   @override
-  String get tutorialParentCompleteTitle => 'প্রতিশ্রুতি প্রস্তুত!';
+  String get tutorialParentCompleteTitle => 'প্রতিশ্রুতি সেটআপ\nসম্পন্ন!';
 
   @override
-  String get tutorialParentCompleteDesc => '**প্রতিশ্রুতি সেটআপ** সম্পন্ন!\nহোম স্ক্রিনে প্রতিশ্রুতি চেষ্টা করুন!';
+  String get tutorialParentCompleteDesc => '**প্রতিশ্রুতি সেটআপ** সম্পন্ন!\nমিশন স্ক্রিনে পুরষ্কার নিন!';
 
   @override
   String promiseNotificationTitle(String title) {
@@ -1483,4 +1483,105 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get restoreFailed => 'পুনরুদ্ধার ব্যর্থ হয়েছে। আবার চেষ্টা করুন।';
+
+  @override
+  String get missionTitleParentSetup => 'পিতামাতার প্রতিশ্রুতি সেট আপ করি';
+
+  @override
+  String get missionTitleFirstPromise => 'একটি প্রতিশ্রুতি চেষ্টা করি';
+
+  @override
+  String get missionTitleEnterHouse => 'প্রথমবার বাড়িতে প্রবেশ করুন';
+
+  @override
+  String get missionTitlePromiseBoard => 'প্রথমবার প্রতিশ্রুতি বোর্ড দেখুন';
+
+  @override
+  String get missionTitleBgm => 'প্রথমবার সঙ্গীত পরিবর্তন করুন';
+
+  @override
+  String get missionTitleWorldMap => 'প্রথমবার বিশ্ব মানচিত্র দেখুন';
+
+  @override
+  String get missionTitleBigIsland => 'চলুন বড় দ্বীপে যাই (লেভেল ৫)';
+
+  @override
+  String get missionTitleSea => 'চলুন সমুদ্রে যাই (লেভেল ১০)';
+
+  @override
+  String get missionTitleSky => 'চলুন আকাশে যাই (লেভেল ১৫)';
+
+  @override
+  String get missionTitleSpace => 'চলুন মহাকাশে যাই (লেভেল ২০)';
+
+  @override
+  String missionTitleLoginDays(Object target) {
+    return '$target দিনের জন্য লগ ইন করুন';
+  }
+
+  @override
+  String missionTitleShopCount(Object target) {
+    return 'দোকানে $target বার কেনাকাটা করুন';
+  }
+
+  @override
+  String missionTitleLevel(Object target) {
+    return 'লেভেল $target এ পৌঁছান';
+  }
+
+  @override
+  String missionTitlePoints(Object target) {
+    return '$target পয়েন্ট সংগ্রহ করুন';
+  }
+
+  @override
+  String get missionNoMissions => 'কোনো মিশন নেই';
+
+  @override
+  String get missionTabTutorial => 'টিউটোরিয়াল';
+
+  @override
+  String get missionTabFirstTime => 'প্রথমবার';
+
+  @override
+  String get missionTabCumulative => 'ক্রমযোজ্য';
+
+  @override
+  String get missionScreenTitle => 'মিশন সমূহ';
+
+  @override
+  String get missionButtonCleared => 'সম্পন্ন!';
+
+  @override
+  String get missionButtonClaim => 'দাবি করুন!';
+
+  @override
+  String get missionButtonTry => 'চেষ্টা করুন';
+
+  @override
+  String get missionButtonChallenging => 'চলমান';
+
+  @override
+  String get missionRewardPrefix => 'পুরস্কার:';
+
+  @override
+  String get missionBadgeAvailableNow => 'এখন উপলব্ধ!';
+
+  @override
+  String get tutorialResumeDesc => 'আপনি টিউটোরিয়ালের মাঝখানে আছেন।\nচলুন আবার শুরু করি!';
+
+  @override
+  String get tutorialResumeBtn => 'চালিয়ে যান';
+
+  @override
+  String get tutorialFirstPromiseCompleteTitle => 'প্রতিশ্রুতি নেওয়া সম্পন্ন!';
+
+  @override
+  String get tutorialFirstPromiseCompleteDesc => '**প্রতিশ্রুতি নেওয়া** সম্পন্ন হয়েছে!\nপুরস্কার পেতে মিশন স্ক্রিনে যান!';
+
+  @override
+  String get missionHintBubble => 'আপনি এখান থেকে মিশন করতে পারেন!';
+
+  @override
+  String get helpMenuPromiseSettings => 'প্রতিশ্রুতি সেট';
 }

@@ -1298,10 +1298,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialParentStep5Desc => 'おすすめや「カスタム追加」で、**お子さまに合ったやくそく**を設定してください。\n設定が終わったら「**もどる**」でホーム画面に戻ってね！';
 
   @override
-  String get tutorialParentCompleteTitle => 'やくそくの準備ができたよ！';
+  String get tutorialParentCompleteTitle => 'やくそく設定が\nできました！';
 
   @override
-  String get tutorialParentCompleteDesc => 'これで**やくそく設定**は完了です！\nホーム画面でやくそくに挑戦してみよう！';
+  String get tutorialParentCompleteDesc => 'これで**やくそく設定**は完了です！\nミッション画面でごほうびを受け取ろう!';
 
   @override
   String promiseNotificationTitle(String title) {
@@ -1483,4 +1483,105 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get restoreFailed => '復元に失敗しました。もう一度お試しください。';
+
+  @override
+  String get missionTitleParentSetup => 'おやのやくそくを せっていしよう';
+
+  @override
+  String get missionTitleFirstPromise => 'やくそくを たいけんしよう';
+
+  @override
+  String get missionTitleEnterHouse => 'はじめて おうちの なかに はいろう';
+
+  @override
+  String get missionTitlePromiseBoard => 'はじめて やくそくボードを みよう';
+
+  @override
+  String get missionTitleBgm => 'はじめて おんがくを かえよう';
+
+  @override
+  String get missionTitleWorldMap => 'はじめて せかいマップを みよう';
+
+  @override
+  String get missionTitleBigIsland => 'おおきなしま に いってみよう (Lv.5)';
+
+  @override
+  String get missionTitleSea => 'うみ に いってみよう (Lv.10)';
+
+  @override
+  String get missionTitleSky => 'そら に いってみよう (Lv.15)';
+
+  @override
+  String get missionTitleSpace => 'うちゅう に いってみよう (Lv.20)';
+
+  @override
+  String missionTitleLoginDays(Object target) {
+    return '$target日 ログインしよう';
+  }
+
+  @override
+  String missionTitleShopCount(Object target) {
+    return 'おみせで $targetかい おかいものしよう';
+  }
+
+  @override
+  String missionTitleLevel(Object target) {
+    return 'レベル$target に なろう';
+  }
+
+  @override
+  String missionTitlePoints(Object target) {
+    return 'ポイントを $target あつめよう';
+  }
+
+  @override
+  String get missionNoMissions => 'ミッションがありません';
+
+  @override
+  String get missionTabTutorial => 'チュートリアル';
+
+  @override
+  String get missionTabFirstTime => 'はじめて';
+
+  @override
+  String get missionTabCumulative => '累計';
+
+  @override
+  String get missionScreenTitle => 'ミッション';
+
+  @override
+  String get missionButtonCleared => 'クリア！';
+
+  @override
+  String get missionButtonClaim => 'うけとる！';
+
+  @override
+  String get missionButtonTry => 'やってみる';
+
+  @override
+  String get missionButtonChallenging => 'ちょうせん中';
+
+  @override
+  String get missionRewardPrefix => 'ほうしゅう:';
+
+  @override
+  String get missionBadgeAvailableNow => 'いまできるよ！';
+
+  @override
+  String get tutorialResumeDesc => 'チュートリアルの とちゅうだったね。\nつづきから はじめるよ！';
+
+  @override
+  String get tutorialResumeBtn => 'つづきから';
+
+  @override
+  String get tutorialFirstPromiseCompleteTitle => 'やくそく体験完了！';
+
+  @override
+  String get tutorialFirstPromiseCompleteDesc => 'これで**やくそく体験**は完了です！\nミッション画面でごほうびを受け取ろう!';
+
+  @override
+  String get missionHintBubble => 'ここからミッションができるよ！';
+
+  @override
+  String get helpMenuPromiseSettings => 'やくそくの設定';
 }

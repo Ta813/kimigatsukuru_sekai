@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'timer_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/bgm_manager.dart';
@@ -12,8 +13,6 @@ import '../../screens/parent/advice_screen.dart';
 import '../../screens/parent/regular_promise_settings_screen.dart';
 import '../child/math_lock_dialog.dart'; // ロック画面
 import '../child/passcode_lock_dialog.dart';
-import '../../widgets/blinking_effect.dart';
-import '../../widgets/speech_bubble.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/contribution_heatmap.dart';
 
@@ -34,25 +33,13 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   List<String> _todaysSkippedTitles = [];
   // ヒートマップ用のデータ
   Map<DateTime, int> _heatmapData = {};
-  bool _isTutorialMode = false; // チュートリアル中かどうか
 
   // 最初にデータを読み込む
   @override
   void initState() {
     super.initState();
+    SharedPrefsHelper.setHasVisitedPromiseBoard(true);
     _loadData();
-    _checkTutorialMode();
-  }
-
-  Future<void> _checkTutorialMode() async {
-    bool wasShown = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepPromiseBoardKey,
-    );
-    if (!wasShown && mounted) {
-      setState(() {
-        _isTutorialMode = true;
-      });
-    }
   }
 
   // 画面が表示されるたびに、やくそくと達成記録の両方を読み込む
@@ -186,10 +173,7 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BlinkingEffect(
-          isBlinking: _isTutorialMode,
-          child: const CustomBackButton(),
-        ),
+        leading: const CustomBackButton(),
         title: Text(AppLocalizations.of(context)!.promiseBoard),
         actions: [
           // ？ボタン (アドバイス画面へ)
@@ -313,6 +297,7 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                                           )!.untitled,
                                       overflow: TextOverflow
                                           .ellipsis, // 長い名前は「...」で省略
+                                      style: const TextStyle(fontSize: 14),
                                     ),
                                   ),
                                 ],
@@ -392,19 +377,10 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
               ),
             ],
           ),
-          if (_isTutorialMode)
-            PositionedDirectional(
-              start: 10,
-              top: -10, // AppBarに向かって少しはみ出させる
-              child: SpeechBubble(
-                text: AppLocalizations.of(
-                  context,
-                )!.tutorialPromiseBoardBackBubble,
-                tailDirection: TailDirection.top,
-              ),
-            ),
         ],
       ),
+      // 画面下部にバナーを設置
+      bottomNavigationBar: const AdBanner(),
     );
   }
 }

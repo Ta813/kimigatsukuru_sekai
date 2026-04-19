@@ -32,6 +32,7 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
   @override
   void initState() {
     super.initState();
+    SharedPrefsHelper.setHasOpenedWorldMap(true);
     // ★ 最初のフレーム描画後にガイドをチェックする
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndShowGuide();

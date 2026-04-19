@@ -506,7 +506,7 @@
   "restoreAction": "Restore",
   "backupSuccess": "Backup completed",
   "backupFailure": "Backup failed",
-  "restoreSuccess": "Data restored",
+  "restoreSuccess": "Purchases restored successfully!",
   "restoreFailure": "Restore failed",
   "minutesLabel": "min",
   "okAction": "OK",
@@ -536,7 +536,7 @@
   "tutorialParentStep5Title": "Time to set up promises!",
   "tutorialParentStep5Desc": "Use the suggestions or \"Custom Add\" to set up **promises that suit your child**.\nWhen you're done, tap **\"Back\"** to return to the home screen!",
   "tutorialParentCompleteTitle": "Promises are ready!",
-  "tutorialParentCompleteDesc": "The **promise setup** is complete!\nLet's try the promises on the home screen!",
+  "tutorialParentCompleteDesc": "The **promise setup** is complete!\nLet's try the promises on the mission screen!",
   "promiseNotificationTitle": "Time for \"{title}\"!",
   "@promiseNotificationTitle": {
     "placeholders": {
@@ -636,6 +636,56 @@
   "premiumFeaturesDesc": "Remove ads and enjoy comfortably!",
   "restorePurchases": "Restore Purchases",
   "restoringPurchases": "Restoring purchases...",
-  "restoreSuccess": "Purchases restored successfully!",
-  "restoreFailed": "Failed to restore purchases. Please try again."
+  "restoreFailed": "Failed to restore purchases. Please try again.",
+  "missionTitleParentSetup": "Set parent's promises",
+  "missionTitleFirstPromise": "Experience a promise",
+  "missionTitleEnterHouse": "Enter the house for the first time",
+  "missionTitlePromiseBoard": "Look at the Promise Board for the first time",
+  "missionTitleBgm": "Change the music for the first time",
+  "missionTitleWorldMap": "Look at the world map for the first time",
+  "missionTitleBigIsland": "Go to the big island (Lv.5)",
+  "missionTitleSea": "Go to the sea (Lv.10)",
+  "missionTitleSky": "Go to the sky (Lv.15)",
+  "missionTitleSpace": "Go to space (Lv.20)",
+  "missionTitleLoginDays": "Log in for {target} days",
+  "@missionTitleLoginDays": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitleShopCount": "Shop {target} times at the store",
+  "@missionTitleShopCount": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitleLevel": "Reach level {target}",
+  "@missionTitleLevel": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitlePoints": "Collect {target} points",
+  "@missionTitlePoints": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionNoMissions": "No missions",
+  "missionTabTutorial": "Tutorial",
+  "missionTabFirstTime": "First Time",
+  "missionTabCumulative": "Cumulative",
+  "missionScreenTitle": "Missions",
+  "missionButtonCleared": "Cleared!",
+  "missionButtonClaim": "Claim!",
+  "missionButtonTry": "Try it",
+  "missionButtonChallenging": "In Progress",
+  "missionRewardPrefix": "Reward:",
+  "missionBadgeAvailableNow": "Available now!",
+  "tutorialResumeDesc": "You are in the middle of the tutorial.\nLet's resume!",
+  "tutorialResumeBtn": "Resume",
+  "tutorialFirstPromiseCompleteTitle": "Promise Experience Complete!",
+  "tutorialFirstPromiseCompleteDesc": "The **promise experience** is complete!\nLet's go to the mission screen to get your reward!",
+  "missionHintBubble": "You can do missions from here!",
+  "helpMenuPromiseSettings": "Set Promises"
 }

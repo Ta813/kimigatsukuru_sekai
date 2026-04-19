@@ -20,6 +20,7 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
   @override
   void initState() {
     super.initState();
+    SharedPrefsHelper.setHasChangedBgm(true);
     _loadSelectedBgms();
   }
 
@@ -197,7 +198,7 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
             ],
           ),
         ),
-        // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+        // 画面下部にバナーを設置
         bottomNavigationBar: const AdBanner(),
       ),
     );

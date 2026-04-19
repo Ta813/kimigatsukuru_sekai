@@ -12,12 +12,12 @@ import '../../widgets/blinking_effect.dart';
 
 class RouletteDialog extends StatefulWidget {
   final int basePoints;
-  final bool isFirstTimeBonus;
+  final bool isTutorial;
 
   const RouletteDialog({
     super.key,
     required this.basePoints,
-    this.isFirstTimeBonus = false,
+    this.isTutorial = false,
   });
 
   @override
@@ -233,7 +233,7 @@ class _RouletteDialogState extends State<RouletteDialog> {
                     ),
                     const SizedBox(height: 16),
                     BlinkingEffect(
-                      isBlinking: widget.isFirstTimeBonus,
+                      isBlinking: widget.isTutorial,
                       child: ElevatedButton(
                         onPressed: _spin,
                         style: ElevatedButton.styleFrom(

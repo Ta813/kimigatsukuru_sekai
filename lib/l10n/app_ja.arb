@@ -506,7 +506,7 @@
   "restoreAction": "復元",
   "backupSuccess": "バックアップが完了しました",
   "backupFailure": "バックアップに失敗しました",
-  "restoreSuccess": "データを復元しました",
+  "restoreSuccess": "購入情報を復元しました！",
   "restoreFailure": "復元に失敗しました",
   "minutesLabel": "分",
   "okAction": "OK",
@@ -535,8 +535,8 @@
   "tutorialParentStep3Desc": "左の「**＋ボタン**」でやくそくを追加できます。\nためしに「**やくそく（おためし）**」を追加してみてね！",
   "tutorialParentStep5Title": "やくそくの設定をしよう！",
   "tutorialParentStep5Desc": "おすすめや「カスタム追加」で、**お子さまに合ったやくそく**を設定してください。\n設定が終わったら「**もどる**」でホーム画面に戻ってね！",
-  "tutorialParentCompleteTitle": "やくそくの準備ができたよ！",
-  "tutorialParentCompleteDesc": "これで**やくそく設定**は完了です！\nホーム画面でやくそくに挑戦してみよう！",
+  "tutorialParentCompleteTitle": "やくそく設定が\nできました！",
+  "tutorialParentCompleteDesc": "これで**やくそく設定**は完了です！\nミッション画面でごほうびを受け取ろう!",
   "promiseNotificationTitle": "「{title}」のじかんだよ！",
   "@promiseNotificationTitle": {
     "placeholders": {
@@ -636,6 +636,56 @@
   "premiumFeaturesDesc": "広告を無くして快適に！",
   "restorePurchases": "購入情報を復元",
   "restoringPurchases": "購入情報を復元しています...",
-  "restoreSuccess": "購入情報を復元しました！",
-  "restoreFailed": "復元に失敗しました。もう一度お試しください。"
+  "restoreFailed": "復元に失敗しました。もう一度お試しください。",
+  "missionTitleParentSetup": "おやのやくそくを せっていしよう",
+  "missionTitleFirstPromise": "やくそくを たいけんしよう",
+  "missionTitleEnterHouse": "はじめて おうちの なかに はいろう",
+  "missionTitlePromiseBoard": "はじめて やくそくボードを みよう",
+  "missionTitleBgm": "はじめて おんがくを かえよう",
+  "missionTitleWorldMap": "はじめて せかいマップを みよう",
+  "missionTitleBigIsland": "おおきなしま に いってみよう (Lv.5)",
+  "missionTitleSea": "うみ に いってみよう (Lv.10)",
+  "missionTitleSky": "そら に いってみよう (Lv.15)",
+  "missionTitleSpace": "うちゅう に いってみよう (Lv.20)",
+  "missionTitleLoginDays": "{target}日 ログインしよう",
+  "@missionTitleLoginDays": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitleShopCount": "おみせで {target}かい おかいものしよう",
+  "@missionTitleShopCount": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitleLevel": "レベル{target} に なろう",
+  "@missionTitleLevel": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitlePoints": "ポイントを {target} あつめよう",
+  "@missionTitlePoints": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionNoMissions": "ミッションがありません",
+  "missionTabTutorial": "チュートリアル",
+  "missionTabFirstTime": "はじめて",
+  "missionTabCumulative": "累計",
+  "missionScreenTitle": "ミッション",
+  "missionButtonCleared": "クリア！",
+  "missionButtonClaim": "うけとる！",
+  "missionButtonTry": "やってみる",
+  "missionButtonChallenging": "ちょうせん中",
+  "missionRewardPrefix": "ほうしゅう:",
+  "missionBadgeAvailableNow": "いまできるよ！",
+  "tutorialResumeDesc": "チュートリアルの とちゅうだったね。\nつづきから はじめるよ！",
+  "tutorialResumeBtn": "つづきから",
+  "tutorialFirstPromiseCompleteTitle": "やくそく体験完了！",
+  "tutorialFirstPromiseCompleteDesc": "これで**やくそく体験**は完了です！\nミッション画面でごほうびを受け取ろう!",
+  "missionHintBubble": "ここからミッションができるよ！",
+  "helpMenuPromiseSettings": "やくそくの設定"
 }

@@ -71,12 +71,30 @@ class HelpMenuDialog extends StatelessWidget {
                 Expanded(
                   child: _buildMenuButton(
                     context: context,
+                    title: l10n.helpMenuPromiseSettings,
+                    icon: Icons.settings,
+                    color: const Color(0xFFBA68C8), // パープル系
+                    resultKey: 'promise_settings',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+
+            // 選択肢5（3段目）
+            Row(
+              children: [
+                Expanded(
+                  child: _buildMenuButton(
+                    context: context,
                     title: l10n.helpMenuOthers,
                     icon: Icons.more_horiz,
                     color: const Color(0xFF81C784), // グリーン系
                     resultKey: 'others',
                   ),
                 ),
+                const SizedBox(width: 12),
+                const Expanded(child: SizedBox()), // 余白
               ],
             ),
             const SizedBox(height: 6),
@@ -114,16 +132,16 @@ class HelpMenuDialog extends StatelessWidget {
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        minimumSize: const Size(0, 80), // 縦に少し高さを出す
+        minimumSize: const Size(0, 35), // 縦に少し高さを出す
       ),
       onPressed: () {
         Navigator.of(context).pop(resultKey);
       },
-      child: Column(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 28),
-          const SizedBox(height: 8),
+          const SizedBox(width: 8),
           Text(
             title,
             textAlign: TextAlign.center,

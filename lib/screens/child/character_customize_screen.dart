@@ -43,17 +43,19 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     final isCustomizeShown = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepCustomizeKey,
     );
-    bool isShown = await SharedPrefsHelper.isGuideShown();
+    bool isShown =
+        await SharedPrefsHelper.getChildTutorial() ==
+        SharedPrefsHelper.tutorialPhaseStart;
     final purchasedItemName =
         await SharedPrefsHelper.getTutorialPurchasedItem();
     final purchasedItemType =
         await SharedPrefsHelper.getTutorialPurchasedType();
     setState(() {
-      _isTutorialStepCustomizeShown = isShown || isCustomizeShown;
+      _isTutorialStepCustomizeShown = !(isShown && !isCustomizeShown);
       _tutorialPurchasedItemName = purchasedItemName;
       _tutorialPurchasedItemType = purchasedItemType;
-      _showTabBlinking = !isShown && !isCustomizeShown;
-      _showItemBlinking = !isShown && !isCustomizeShown;
+      _showTabBlinking = isShown && !isCustomizeShown;
+      _showItemBlinking = isShown && !isCustomizeShown;
     });
   }
 

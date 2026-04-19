@@ -1298,10 +1298,10 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tutorialParentStep5Desc => 'سجیشنز یا \"کسٹم شامل کریں\" سے **اپنے بچے کے لیے وعدے** ترتیب دیں۔\nمکمل ہونے پر **\"واپس\"** دبائیں!';
 
   @override
-  String get tutorialParentCompleteTitle => 'وعدے تیار ہیں!';
+  String get tutorialParentCompleteTitle => 'وعدے مکمل!';
 
   @override
-  String get tutorialParentCompleteDesc => '**وعدہ ترتیب** مکمل ہو گیا!\nہوم اسکرین پر وعدے آزمائیں!';
+  String get tutorialParentCompleteDesc => '**وعدے** مکمل ہو گیا!\nمشن اسکرین پر انعامات حاصل کریں!';
 
   @override
   String promiseNotificationTitle(String title) {
@@ -1483,4 +1483,105 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get restoreFailed => 'بحالی ناکام رہی۔ براہ کرم دوبارہ کوشش کریں۔';
+
+  @override
+  String get missionTitleParentSetup => 'آئیے والدین کے وعدے سیٹ کریں';
+
+  @override
+  String get missionTitleFirstPromise => 'آئیے ایک وعدہ آزمائیں';
+
+  @override
+  String get missionTitleEnterHouse => 'پہلی بار گھر میں داخل ہوں';
+
+  @override
+  String get missionTitlePromiseBoard => 'پہلی بار پرومس بورڈ دیکھیں';
+
+  @override
+  String get missionTitleBgm => 'پہلی بار موسیقی تبدیل کریں';
+
+  @override
+  String get missionTitleWorldMap => 'پہلی بار دنیا کا نقشہ دیکھیں';
+
+  @override
+  String get missionTitleBigIsland => 'آئیے بڑے جزیرے پر چلیں (لیول 5)';
+
+  @override
+  String get missionTitleSea => 'آئیے سمندر میں چلیں (لیول 10)';
+
+  @override
+  String get missionTitleSky => 'آئیے آسمان میں چلیں (لیول 15)';
+
+  @override
+  String get missionTitleSpace => 'آئیے خلا میں چلیں (لیول 20)';
+
+  @override
+  String missionTitleLoginDays(Object target) {
+    return '$target دنوں تک لاگ ان کریں';
+  }
+
+  @override
+  String missionTitleShopCount(Object target) {
+    return 'اسٹور پر $target بار خریداری کریں';
+  }
+
+  @override
+  String missionTitleLevel(Object target) {
+    return 'لیول $target تک پہنچیں';
+  }
+
+  @override
+  String missionTitlePoints(Object target) {
+    return '$target پوائنٹس جمع کریں';
+  }
+
+  @override
+  String get missionNoMissions => 'کوئی مشن نہیں';
+
+  @override
+  String get missionTabTutorial => 'ٹیوٹوریل';
+
+  @override
+  String get missionTabFirstTime => 'پہلی بار';
+
+  @override
+  String get missionTabCumulative => 'مجموعی';
+
+  @override
+  String get missionScreenTitle => 'مشنز';
+
+  @override
+  String get missionButtonCleared => 'مکمل ہو گیا!';
+
+  @override
+  String get missionButtonClaim => 'حاصل کریں!';
+
+  @override
+  String get missionButtonTry => 'کوشش کریں';
+
+  @override
+  String get missionButtonChallenging => 'جاری ہے';
+
+  @override
+  String get missionRewardPrefix => 'انعام:';
+
+  @override
+  String get missionBadgeAvailableNow => 'اب دستیاب ہے!';
+
+  @override
+  String get tutorialResumeDesc => 'آپ ٹیوٹوریل کے بیچ میں ہیں۔\nآئیے دوبارہ شروع کریں!';
+
+  @override
+  String get tutorialResumeBtn => 'جاری رکھیں';
+
+  @override
+  String get tutorialFirstPromiseCompleteTitle => 'وعدے کا تجربہ مکمل ہوا!';
+
+  @override
+  String get tutorialFirstPromiseCompleteDesc => '**وعدے کا تجربہ** مکمل ہو گیا ہے!\nاپنا انعام حاصل کرنے کے لیے مشن اسکرین پر جائیں!';
+
+  @override
+  String get missionHintBubble => 'آپ یہاں سے مشن کر سکتے ہیں!';
+
+  @override
+  String get helpMenuPromiseSettings => 'وعدے سیٹ کریں';
 }

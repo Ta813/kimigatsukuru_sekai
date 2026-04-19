@@ -2626,7 +2626,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialParentCompleteDesc.
   ///
   /// In en, this message translates to:
-  /// **'The **promise setup** is complete!\nLet\'s try the promises on the home screen!'**
+  /// **'The **promise setup** is complete!\nLet\'s try the promises on the mission screen!'**
   String get tutorialParentCompleteDesc;
 
   /// No description provided for @promiseNotificationTitle.
@@ -2970,6 +2970,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to restore purchases. Please try again.'**
   String get restoreFailed;
+
+  /// No description provided for @missionTitleParentSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Set parent\'s promises'**
+  String get missionTitleParentSetup;
+
+  /// No description provided for @missionTitleFirstPromise.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience a promise'**
+  String get missionTitleFirstPromise;
+
+  /// No description provided for @missionTitleEnterHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the house for the first time'**
+  String get missionTitleEnterHouse;
+
+  /// No description provided for @missionTitlePromiseBoard.
+  ///
+  /// In en, this message translates to:
+  /// **'Look at the Promise Board for the first time'**
+  String get missionTitlePromiseBoard;
+
+  /// No description provided for @missionTitleBgm.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the music for the first time'**
+  String get missionTitleBgm;
+
+  /// No description provided for @missionTitleWorldMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Look at the world map for the first time'**
+  String get missionTitleWorldMap;
+
+  /// No description provided for @missionTitleBigIsland.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to the big island (Lv.5)'**
+  String get missionTitleBigIsland;
+
+  /// No description provided for @missionTitleSea.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to the sea (Lv.10)'**
+  String get missionTitleSea;
+
+  /// No description provided for @missionTitleSky.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to the sky (Lv.15)'**
+  String get missionTitleSky;
+
+  /// No description provided for @missionTitleSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to space (Lv.20)'**
+  String get missionTitleSpace;
+
+  /// No description provided for @missionTitleLoginDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in for {target} days'**
+  String missionTitleLoginDays(Object target);
+
+  /// No description provided for @missionTitleShopCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop {target} times at the store'**
+  String missionTitleShopCount(Object target);
+
+  /// No description provided for @missionTitleLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach level {target}'**
+  String missionTitleLevel(Object target);
+
+  /// No description provided for @missionTitlePoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Collect {target} points'**
+  String missionTitlePoints(Object target);
+
+  /// No description provided for @missionNoMissions.
+  ///
+  /// In en, this message translates to:
+  /// **'No missions'**
+  String get missionNoMissions;
+
+  /// No description provided for @missionTabTutorial.
+  ///
+  /// In en, this message translates to:
+  /// **'Tutorial'**
+  String get missionTabTutorial;
+
+  /// No description provided for @missionTabFirstTime.
+  ///
+  /// In en, this message translates to:
+  /// **'First Time'**
+  String get missionTabFirstTime;
+
+  /// No description provided for @missionTabCumulative.
+  ///
+  /// In en, this message translates to:
+  /// **'Cumulative'**
+  String get missionTabCumulative;
+
+  /// No description provided for @missionScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missions'**
+  String get missionScreenTitle;
+
+  /// No description provided for @missionButtonCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleared!'**
+  String get missionButtonCleared;
+
+  /// No description provided for @missionButtonClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim!'**
+  String get missionButtonClaim;
+
+  /// No description provided for @missionButtonTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try it'**
+  String get missionButtonTry;
+
+  /// No description provided for @missionButtonChallenging.
+  ///
+  /// In en, this message translates to:
+  /// **'In Progress'**
+  String get missionButtonChallenging;
+
+  /// No description provided for @missionRewardPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward:'**
+  String get missionRewardPrefix;
+
+  /// No description provided for @missionBadgeAvailableNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Available now!'**
+  String get missionBadgeAvailableNow;
+
+  /// No description provided for @tutorialResumeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You are in the middle of the tutorial.\nLet\'s resume!'**
+  String get tutorialResumeDesc;
+
+  /// No description provided for @tutorialResumeBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get tutorialResumeBtn;
+
+  /// No description provided for @tutorialFirstPromiseCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Promise Experience Complete!'**
+  String get tutorialFirstPromiseCompleteTitle;
+
+  /// No description provided for @tutorialFirstPromiseCompleteDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The **promise experience** is complete!\nLet\'s go to the mission screen to get your reward!'**
+  String get tutorialFirstPromiseCompleteDesc;
+
+  /// No description provided for @missionHintBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'You can do missions from here!'**
+  String get missionHintBubble;
+
+  /// No description provided for @helpMenuPromiseSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Promises'**
+  String get helpMenuPromiseSettings;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

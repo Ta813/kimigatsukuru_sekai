@@ -47,6 +47,7 @@ class _SeaScreenState extends State<SeaScreen> {
   @override
   void initState() {
     super.initState();
+    SharedPrefsHelper.setHasVisitedSea(true);
     _loadPlacedItems();
   }
 

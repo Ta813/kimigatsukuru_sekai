@@ -377,19 +377,37 @@ class SharedPrefsHelper {
     return null;
   }
 
-  // ガイド表示済みフラグのキー
-  static const String _guideShownKey = 'guide_shown';
+  // こどものチュートリアル開始 フラグのキー
+  static const String _childTutorialStartKey = 'child_tutorial_start';
+  // おやのチュートリアル開始フラグのキー
+  static const String _parentTutorialStartKey = 'parent_tutorial_start';
+  // チュートリアルのステータス
+  static const String tutorialPhaseRegular = 'regular';
+  static const String tutorialPhaseStart = 'start';
+  static const String tutorialPhaseFinish = 'finish';
 
-  // ガイドがすでに表示されたかチェックする
-  static Future<bool> isGuideShown() async {
+  // こどものチュートリアルがすでに開始されたかチェックする
+  static Future<String> getChildTutorial() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_guideShownKey) ?? false;
+    return prefs.getString(_childTutorialStartKey) ?? tutorialPhaseRegular;
   }
 
-  // ガイドを表示済みにセットする
-  static Future<void> setGuideShown() async {
+  // こどものチュートリアルを開始済みにセットする
+  static Future<void> setChildTutorial(String step) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_guideShownKey, true);
+    await prefs.setString(_childTutorialStartKey, step);
+  }
+
+  // おやのチュートリアルがすでに開始されたかチェックする
+  static Future<String> getParentTutorial() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_parentTutorialStartKey) ?? tutorialPhaseRegular;
+  }
+
+  // おやのチュートリアルを開始済みにセットする
+  static Future<void> setParentTutorial(String step) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_parentTutorialStartKey, step);
   }
 
   // 配置するアイテムのリストを保存するメソッド
@@ -804,8 +822,6 @@ class SharedPrefsHelper {
   static const String tutorialStepCustomizeKey =
       'tutorial_step_customize_shown';
   static const String tutorialStepMoveKey = 'tutorial_step_move_shown';
-  static const String tutorialStepPromiseBoardKey =
-      'tutorial_step_promise_board_shown';
   static const String tutorialStepParentSetupShownKey =
       'tutorial_step_parent_setup_shown';
 
@@ -850,10 +866,12 @@ class SharedPrefsHelper {
     await prefs.remove(tutorialStepShopKey);
     await prefs.remove(tutorialStepCustomizeKey);
     await prefs.remove(tutorialStepMoveKey);
-    await prefs.remove(tutorialStepPromiseBoardKey);
     await prefs.remove(tutorialStepParentSetupShownKey);
     await prefs.remove(tutorialPurchasedItemKey);
     await prefs.remove(tutorialPurchasedTypeKey);
+    await prefs.remove(_childTutorialStartKey);
+    await prefs.remove(_parentTutorialStartKey);
+    await prefs.remove(_keyHasVisitedMissionScreen);
 
     // ホーム画面のアドバイスフラグをリセット（trueに戻す）
     await prefs.remove('is_first_home_advice');
@@ -866,5 +884,270 @@ class SharedPrefsHelper {
         await prefs.remove(key);
       }
     }
+  }
+
+  // --- ミッション用キー ---
+  static const String _keyCumulativeShopCount =
+      'cumulative_shop_count'; // 買い物回数
+  static const String _keyHasChangedBgm = 'has_changed_bgm'; // BGM変更フラグ
+  static const String _keyHasOpenedWorldMap =
+      'has_opened_world_map'; // マップ閲覧フラグ
+  static const String _keyClaimedMissionIds =
+      'claimed_mission_ids'; // 報酬受け取り済みミッションIDリスト
+  static const String _keyCumulativePoints = 'cumulative_points'; // 累計獲得ポイント
+  static const String _keyHasVisitedBigIsland =
+      'has_visited_big_island'; // 大きな島
+  static const String _keyHasVisitedSea = 'has_visited_sea'; // 海
+  static const String _keyHasVisitedSky = 'has_visited_sky'; // 空
+  static const String _keyHasVisitedSpace = 'has_visited_space'; // 宇宙
+  static const String _keyHasVisitedPromiseBoard =
+      'has_visited_promise_board'; // やくそくボード訪問フラグ
+  static const String _keyCumulativePromiseCount =
+      'cumulative_promise_count'; // 累計やくそく達成回数
+  // --- 累計系ミッション（ログイン日数） ---
+  static const String _keyCumulativeLoginDays = 'cumulative_login_days';
+  static const String _keyLastLoginDateForCount = 'last_login_date_for_count';
+  // --- 累計系ミッション（ログイン日数） ---
+  static const List<int> loginTargets = [
+    1, // はじめてのログイン！
+    2, // 2日連続の壁を越えさせる
+    3,
+    5, // 3日坊主を乗り越えたご褒美
+    7, // 1週間！
+    10,
+    14, // 2週間！
+    21, // 🌟変更：14日〜28日の「魔の2週間」を埋めるため21日を追加
+    30, // 1ヶ月！
+    40,
+    50,
+    60,
+    80,
+    100,
+    150,
+    200,
+    250,
+    300,
+    365, // 1周年！
+  ];
+
+  // --- 累計系ミッション（買い物） ---
+  static const List<int> shopTargets = [
+    1, // はじめてのお買い物体験をすぐ褒める
+    3,
+    5,
+    10,
+    15,
+    20,
+    30,
+    50,
+    75,
+    100,
+  ];
+
+  // --- 累計系ミッション（レベル） ---
+  static const List<int> levelTargets = [
+    2, // レベルアップの仕組みを理解させるための最速ご褒美
+    3,
+    5,
+    7, // 🌟変更：5〜10の間に「7」を挟んで中だるみ防止
+    10,
+    12, // 🌟変更：10以降も少し刻む
+    15,
+    20,
+    25,
+    30,
+    40,
+    50,
+  ];
+
+  // --- 累計系ミッション（ポイント） ---
+  // 最初は「もらえるポイント」の嬉しさを知ってもらうために細かく設定
+  static const List<int> pointTargets = [
+    100, // チュートリアルクリアですぐもらえる！
+    300,
+    500,
+    800,
+    1000,
+    1500,
+    2000,
+    2500,
+    3000,
+    4000, // ここから少しずつ間隔を広げる
+    5000,
+    6000,
+    7000,
+    8500,
+    10000,
+  ];
+
+  // --- 買い物回数の管理 ---
+  static Future<int> loadCumulativeShopCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_keyCumulativeShopCount) ?? 0;
+  }
+
+  static Future<void> incrementShopCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    int current = prefs.getInt(_keyCumulativeShopCount) ?? 0;
+    await prefs.setInt(_keyCumulativeShopCount, current + 1);
+  }
+
+  // --- BGM変更フラグの管理 ---
+  static Future<bool> getHasChangedBgm() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyHasChangedBgm) ?? false;
+  }
+
+  static Future<void> setHasChangedBgm(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyHasChangedBgm, value);
+  }
+
+  // --- 世界マップ閲覧フラグの管理 ---
+  static Future<bool> getHasOpenedWorldMap() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyHasOpenedWorldMap) ?? false;
+  }
+
+  static Future<void> setHasOpenedWorldMap(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyHasOpenedWorldMap, value);
+  }
+
+  // --- 報酬受け取り済みミッションIDの管理 ---
+  // ID例: 'mission_level_5', 'mission_shop_10' など
+  static Future<List<String>> loadClaimedMissionIds() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_keyClaimedMissionIds) ?? [];
+  }
+
+  static Future<void> claimMission(String missionId) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> claimed = prefs.getStringList(_keyClaimedMissionIds) ?? [];
+    if (!claimed.contains(missionId)) {
+      claimed.add(missionId);
+      await prefs.setStringList(_keyClaimedMissionIds, claimed);
+    }
+  }
+
+  static Future<bool> isMissionClaimed(String missionId) async {
+    final claimed = await loadClaimedMissionIds();
+    return claimed.contains(missionId);
+  }
+
+  // --- 累計獲得ポイントの管理 ---
+  static Future<int> loadCumulativePoints() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_keyCumulativePoints) ?? 0;
+  }
+
+  // ポイントを獲得した時に、現在のポイントと一緒にこれも呼ぶ
+  static Future<void> addCumulativePoints(int points) async {
+    if (points <= 0) return;
+    final prefs = await SharedPreferences.getInstance();
+    int currentTotal = prefs.getInt(_keyCumulativePoints) ?? 0;
+    await prefs.setInt(_keyCumulativePoints, currentTotal + points);
+  }
+
+  // --- マップ訪問フラグの管理（大きな島） ---
+  static Future<bool> getHasVisitedBigIsland() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyHasVisitedBigIsland) ?? false;
+  }
+
+  static Future<void> setHasVisitedBigIsland(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyHasVisitedBigIsland, value);
+  }
+
+  // --- マップ訪問フラグの管理（海） ---
+  static Future<bool> getHasVisitedSea() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyHasVisitedSea) ?? false;
+  }
+
+  static Future<void> setHasVisitedSea(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyHasVisitedSea, value);
+  }
+
+  // --- マップ訪問フラグの管理（空） ---
+  static Future<bool> getHasVisitedSky() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyHasVisitedSky) ?? false;
+  }
+
+  static Future<void> setHasVisitedSky(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyHasVisitedSky, value);
+  }
+
+  // --- マップ訪問フラグの管理（宇宙） ---
+  static Future<bool> getHasVisitedSpace() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyHasVisitedSpace) ?? false;
+  }
+
+  static Future<void> setHasVisitedSpace(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyHasVisitedSpace, value);
+  }
+
+  // --- やくそくボード訪問フラグの管理 ---
+  static Future<bool> getHasVisitedPromiseBoard() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyHasVisitedPromiseBoard) ?? false;
+  }
+
+  static Future<void> setHasVisitedPromiseBoard(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyHasVisitedPromiseBoard, value);
+  }
+
+  // --- 累計やくそく達成回数の管理 ---
+  static Future<int> loadCumulativePromiseCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_keyCumulativePromiseCount) ?? 0;
+  }
+
+  // やくそくを完了（おわった！ボタン押下）した時に呼び出す
+  static Future<void> incrementPromiseCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    int current = prefs.getInt(_keyCumulativePromiseCount) ?? 0;
+    await prefs.setInt(_keyCumulativePromiseCount, current + 1);
+  }
+
+  // --- ログイン累計日数の管理 ---
+  // 累計ログイン日数を取得する
+  static Future<int> loadCumulativeLoginDays() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_keyCumulativeLoginDays) ?? 0;
+  }
+
+  // 今日初めてのログインなら累計日数を +1 する（1日1回しかカウントしない）
+  static Future<void> recordLoginDay() async {
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now();
+    final todayStr = '${now.year}-${now.month}-${now.day}';
+    final lastStr = prefs.getString(_keyLastLoginDateForCount);
+    if (lastStr != todayStr) {
+      final current = prefs.getInt(_keyCumulativeLoginDays) ?? 0;
+      await prefs.setInt(_keyCumulativeLoginDays, current + 1);
+      await prefs.setString(_keyLastLoginDateForCount, todayStr);
+    }
+  }
+
+  // --- ミッション画面遷移履歴の管理 ---
+  static const String _keyHasVisitedMissionScreen =
+      'has_visited_mission_screen';
+
+  static Future<void> setHasVisitedMissionScreen(bool visited) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyHasVisitedMissionScreen, visited);
+  }
+
+  static Future<bool> hasVisitedMissionScreen() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyHasVisitedMissionScreen) ?? false;
   }
 }

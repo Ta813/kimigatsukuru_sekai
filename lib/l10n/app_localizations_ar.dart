@@ -1298,10 +1298,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialParentStep5Desc => 'استخدم الاقتراحات أو \"إضافة مخصصة\" لإعداد **وعود تناسب طفلك**.\nعند الانتهاء، اضغط **\"رجوع\"** للعودة!';
 
   @override
-  String get tutorialParentCompleteTitle => 'الوعود جاهزة!';
+  String get tutorialParentCompleteTitle => 'تم إعداد الوعو  د!';
 
   @override
-  String get tutorialParentCompleteDesc => 'اكتمل **إعداد الوعود**!\nلنجرب الوعود في الشاشة الرئيسية!';
+  String get tutorialParentCompleteDesc => 'تم **إعداد الوعود**!\nلنجرب الوعود في شاشة المهام!';
 
   @override
   String promiseNotificationTitle(String title) {
@@ -1483,4 +1483,105 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get restoreFailed => 'فشلت عملية الاستعادة. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get missionTitleParentSetup => 'دعنا نضبط وعود الوالدين';
+
+  @override
+  String get missionTitleFirstPromise => 'دعنا نجرب وعدًا';
+
+  @override
+  String get missionTitleEnterHouse => 'ادخل المنزل لأول مرة';
+
+  @override
+  String get missionTitlePromiseBoard => 'انظر إلى لوحة الوعود لأول مرة';
+
+  @override
+  String get missionTitleBgm => 'قم بتغيير الموسيقى لأول مرة';
+
+  @override
+  String get missionTitleWorldMap => 'انظر إلى خريطة العالم لأول مرة';
+
+  @override
+  String get missionTitleBigIsland => 'دعنا نذهب إلى الجزيرة الكبيرة (مستوى 5)';
+
+  @override
+  String get missionTitleSea => 'دعنا نذهب إلى البحر (مستوى 10)';
+
+  @override
+  String get missionTitleSky => 'دعنا نذهب إلى السماء (مستوى 15)';
+
+  @override
+  String get missionTitleSpace => 'دعنا نذهب إلى الفضاء (مستوى 20)';
+
+  @override
+  String missionTitleLoginDays(Object target) {
+    return 'سجل الدخول لمدة $target أيام';
+  }
+
+  @override
+  String missionTitleShopCount(Object target) {
+    return 'تسوق $target مرات في المتجر';
+  }
+
+  @override
+  String missionTitleLevel(Object target) {
+    return 'صل إلى المستوى $target';
+  }
+
+  @override
+  String missionTitlePoints(Object target) {
+    return 'اجمع $target نقاط';
+  }
+
+  @override
+  String get missionNoMissions => 'لا توجد مهام';
+
+  @override
+  String get missionTabTutorial => 'دورة تعليمية';
+
+  @override
+  String get missionTabFirstTime => 'لأول مرة';
+
+  @override
+  String get missionTabCumulative => 'تراكمي';
+
+  @override
+  String get missionScreenTitle => 'المهام';
+
+  @override
+  String get missionButtonCleared => 'تم!';
+
+  @override
+  String get missionButtonClaim => 'استلم!';
+
+  @override
+  String get missionButtonTry => 'جرب';
+
+  @override
+  String get missionButtonChallenging => 'قيد التقدم';
+
+  @override
+  String get missionRewardPrefix => 'المكافأة:';
+
+  @override
+  String get missionBadgeAvailableNow => 'متاح الآن!';
+
+  @override
+  String get tutorialResumeDesc => 'أنت في منتصف البرنامج التعليمي.\nدعنا نستأنف!';
+
+  @override
+  String get tutorialResumeBtn => 'استئناف';
+
+  @override
+  String get tutorialFirstPromiseCompleteTitle => 'اكتملت تجربة الوعد!';
+
+  @override
+  String get tutorialFirstPromiseCompleteDesc => 'لقد اكتملت **تجربة الوعد**!\nدعنا نذهب إلى شاشة المهام للحصول على مكافأتك!';
+
+  @override
+  String get missionHintBubble => 'يمكنك أداء المهام من هنا!';
+
+  @override
+  String get helpMenuPromiseSettings => 'إعداد المهام';
 }

@@ -63,7 +63,7 @@ class _TimerScreenState extends State<TimerScreen>
   late AnimationController _hintAnimationController;
 
   int _basePoints = 0;
-  bool _isFirstTimeBonus = false;
+  bool _isTutorial = false;
 
   // 広告を表示するかどうかのフラグ（最初は絶対にfalseにしておく）
   //bool _showAd = false;
@@ -77,7 +77,7 @@ class _TimerScreenState extends State<TimerScreen>
     super.initState();
     _screenStartTime = DateTime.now(); // ★ 追加：画面起動時刻を記録
     _basePoints = widget.promise['points'] as int? ?? 0;
-    _checkFirstTimeBonus();
+    _checkTutorial();
 
     _confettiController = ConfettiController(
       duration: const Duration(seconds: 6), // 6秒間だけ紙吹雪を出す
@@ -114,20 +114,16 @@ class _TimerScreenState extends State<TimerScreen>
     _playFocusBgm();
   }
 
-  /// 初回ボーナスチェック: レベル1の場合、100ポイントに設定
-  Future<void> _checkFirstTimeBonus() async {
-    final int currentExp = await SharedPrefsHelper.loadExperience();
-    int currentLevel = 2;
-    // 経験値が3未満（レベル2に達していない）場合はレベル1とみなす
-    if (currentExp < 3) {
-      currentLevel = 1;
-    }
+  // チュートリアルチェック
+  Future<void> _checkTutorial() async {
+    final isTutorialShown =
+        await SharedPrefsHelper.getChildTutorial() ==
+        SharedPrefsHelper.tutorialPhaseStart;
 
-    if (currentLevel == 1) {
+    if (isTutorialShown) {
       if (mounted) {
         setState(() {
-          _isFirstTimeBonus = true;
-          _basePoints = 100;
+          _isTutorial = true;
         });
       }
     }
@@ -209,7 +205,11 @@ class _TimerScreenState extends State<TimerScreen>
         print('再生エラー: $e');
       }
       // Wakelockがオンになったままキルされるのを防ぐ
-      WakelockPlus.disable();
+      try {
+        WakelockPlus.disable();
+      } catch (e) {
+        print('Wakelock解除エラー: $e');
+      }
     } else {
       // アプリが裏に回ったら、UI更新用のタイマーは一旦停止
       _timer?.cancel();
@@ -639,7 +639,7 @@ class _TimerScreenState extends State<TimerScreen>
               ),
             ),
             BlinkingEffect(
-              isBlinking: _isFirstTimeBonus,
+              isBlinking: _isTutorial,
               child: ElevatedButton(
                 onPressed: _isCompleting
                     ? null
@@ -784,10 +784,8 @@ class _TimerScreenState extends State<TimerScreen>
     final multiplier = await showDialog<double>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => RouletteDialog(
-        basePoints: basePoints,
-        isFirstTimeBonus: _isFirstTimeBonus,
-      ),
+      builder: (context) =>
+          RouletteDialog(basePoints: basePoints, isTutorial: _isTutorial),
     );
     if (!mounted) return;
     // ルーレットの結果（1倍か2倍か）で終了処理を呼ぶ
@@ -805,11 +803,17 @@ class _TimerScreenState extends State<TimerScreen>
     if (widget.isEmergency) {
       await SharedPrefsHelper.saveEmergencyPromise(null);
     }
+
+    // やくそく回数を加算
+    await SharedPrefsHelper.incrementPromiseCount();
+    // 累計ポイントを加算
+    await SharedPrefsHelper.addCumulativePoints(pointsAwarded);
+
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop<Map<String, dynamic>>({
         'points': pointsAwarded,
         'exp': finalExp,
-        'isFirstTimeBonus': _isFirstTimeBonus,
+        'isFirstTimeBonus': _isTutorial,
       });
     }
   }
@@ -1087,10 +1091,7 @@ class _TimerScreenState extends State<TimerScreen>
                                         ),
                                       )
                                     : Text(
-                                        (_isFirstTimeBonus
-                                                ? '${AppLocalizations.of(context)!.firstTimeBonus}\n'
-                                                : '') +
-                                            AppLocalizations.of(
+                                        AppLocalizations.of(
                                               context,
                                             )!.pointsChance(_basePoints) +
                                             '\n' +
@@ -1112,7 +1113,7 @@ class _TimerScreenState extends State<TimerScreen>
                   ),
                   const SizedBox(height: 20),
                   BlinkingEffect(
-                    isBlinking: _isFirstTimeBonus && !_isFinishedButtonPressed,
+                    isBlinking: _isTutorial && !_isFinishedButtonPressed,
                     child: ElevatedButton(
                       // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
                       onPressed: _isFinishedButtonPressed
@@ -1359,13 +1360,7 @@ class _TimerScreenState extends State<TimerScreen>
           ],
         ),
         // 画面下部にバナーを設置（初回起動時は広告を表示しない）
-        bottomNavigationBar:
-            //_isFirstTimeBonus
-            //? Container(height: 50)
-            //: _showAd
-            //?
-            const AdBanner(),
-        //: Container(height: 50),
+        bottomNavigationBar: const AdBanner(),
       ),
     );
   }

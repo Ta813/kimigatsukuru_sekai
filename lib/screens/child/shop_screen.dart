@@ -57,10 +57,12 @@ class _ShopScreenState extends State<ShopScreen> {
     final isShopShown = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepShopKey,
     );
-    bool isShown = await SharedPrefsHelper.isGuideShown();
+    bool isShown =
+        await SharedPrefsHelper.getChildTutorial() ==
+        SharedPrefsHelper.tutorialPhaseStart;
     setState(() {
-      _isTutorialStepShopShown = isShown || isShopShown;
-      _showItemBlinking = !isShown && !isShopShown;
+      _isTutorialStepShopShown = !(isShown && !isShopShown);
+      _showItemBlinking = isShown && !isShopShown;
     });
   }
 
@@ -217,6 +219,8 @@ class _ShopScreenState extends State<ShopScreen> {
                   }
                 });
 
+                // 買い物回数を加算
+                SharedPrefsHelper.incrementShopCount();
                 // ダイアログを閉じる
                 Navigator.pop(context);
 

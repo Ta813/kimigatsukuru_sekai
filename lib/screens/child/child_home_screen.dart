@@ -13,6 +13,7 @@ import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
+import 'mission_screen.dart';
 import 'passcode_lock_dialog.dart';
 import 'promise_board_screen.dart';
 import 'timer_screen.dart';
@@ -84,11 +85,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   bool _isTutorialParentSettingsFocus = false; // チュートリアルでおやの設定へ誘導中か
   bool _showShopBlinking = false; // おみせボタンを点滅させるフラグ（チュートリアル）
   bool _showCustomizeBlinking = false; // きせかえボタンを点滅させるフラグ（チュートリアル）
-  bool _showPromiseBoardBlinking = false; // やくそくボードを点滅させるフラグ（チュートリアル）
-  bool _isTutorialPromiseBoardFocus = false; // チュートリアルでやくそくボードへ誘導中か
   bool _showDraggableBlinking = false; // キャラ・アイテムを点滅させるフラグ（チュートリアル）
   bool _isWaitingForMove = false; // チュートリアルで移動を待っているかのフラグ
   late AnimationController _hintAnimationController; // 吹き出しアニメーション用
+  // 🌟 追加: 達成済みで未受け取りのミッションがあるかどうかのフラグ
+  bool _hasUnclaimedMissions = true; // テスト用に最初はtrueにしておきます
+  bool _showMissionHint = false; // ミッション画面への初回案内
 
   final List<int> requiredExpForLevelUp = [
     0,
@@ -266,6 +268,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         // 🌟 ダイアログが閉じた後に最新のポイントなどを再読み込み
         await _loadAndDetermineDisplayPromise();
 
+        // 🌟 ログイン日数を記録
+        await SharedPrefsHelper.recordLoginDay();
+
         if (earnedPoints > 0 && mounted) {
           // ポイント獲得のアニメーションと音を実行
           try {
@@ -285,7 +290,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       }
     });
 
-    _showGuideIfNeeded(); // 必要ならガイドを表示
+    // ★ チュートリアル表示チェック
+    _checkTutorial();
 
     _scheduleMidnightRefresh(); // 日付変更チェックのスケジュール設定
   }
@@ -487,6 +493,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (lastActiveDateStr != todayStr) {
       // 「今日達成したやくそく」のリストをリセットする
       await SharedPrefsHelper.clearTodaysCompletedPromises();
+      // 🌟 日付が変わった場合もログイン日数を記録
+      await SharedPrefsHelper.recordLoginDay();
       // その後、やくそくリストを再読み込み
       _loadAndDetermineDisplayPromise();
     }
@@ -534,11 +542,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           return;
         }
 
-        // チュートリアルと同様に、0ポイントの「おためしやくそく」をセット
+        // チュートリアルと同様に、1ポイントの「おためしやくそく」をセット
         final emergencyPromise = {
           'title': AppLocalizations.of(context)!.trialPromiseTitle,
           'duration': 10,
-          'points': 0,
+          'points': 1,
         };
         await SharedPrefsHelper.saveEmergencyPromise(emergencyPromise);
         await _loadAndDetermineDisplayPromise();
@@ -582,6 +590,22 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           });
         }
         break;
+      case 'promise_settings':
+        // 親モード設定のガイド
+        if (!await _showGuideDialog(
+          title: AppLocalizations.of(context)!.guideSettingsTitle,
+          content: AppLocalizations.of(context)!.guideSettingsDesc,
+        )) {
+          return;
+        }
+
+        // チュートリアルと同様におやの設定ボタンを点滅させ、他を触れないようにする
+        if (mounted) {
+          setState(() {
+            _showParentSettingsBlinking = true;
+          });
+        }
+        break;
       case 'others':
         // やくそくボードのガイド
         if (!await _showGuideDialog(
@@ -591,12 +615,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           return;
         }
 
-        // 親モード設定のガイド
-        if (!await _showGuideDialog(
-          title: AppLocalizations.of(context)!.guideSettingsTitle,
-          content: AppLocalizations.of(context)!.guideSettingsDesc,
-        ))
-          return;
         // BGMボタンのガイド
         if (!await _showGuideDialog(
           title: AppLocalizations.of(context)!.guideBgmButtonTitle,
@@ -612,7 +630,98 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     }
   }
 
-  void _showTutorial() async {
+  // チュートリアル表示チェック
+  void _checkTutorial() async {
+    bool isChildGuideShown =
+        await SharedPrefsHelper.getChildTutorial() ==
+        SharedPrefsHelper.tutorialPhaseStart;
+    if (isChildGuideShown) {
+      await _showContinueTutorialDialog();
+      _showChildTutorial();
+      return;
+    }
+    bool isParentGuideShown =
+        await SharedPrefsHelper.getParentTutorial() ==
+        SharedPrefsHelper.tutorialPhaseStart;
+    if (isParentGuideShown) {
+      await _showContinueTutorialDialog();
+      return;
+    }
+  }
+
+  Future<void> _showContinueTutorialDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          AppLocalizations.of(context)!.levelUpTitle,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3E0), // ピーチクリーム
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
+              width: 2,
+            ),
+          ),
+          child: Text(
+            AppLocalizations.of(context)!.tutorialResumeDesc,
+            style: const TextStyle(fontSize: 16, height: 1.5),
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // 左側のキャラクター
+              Image.asset('assets/images/clothes_dress_red.gif', height: 60),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () {
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {
+                    print('再生エラー: $e');
+                  }
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF7043), // オレンジ
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(200, 60), // 横200、縦60。縦幅を出すのがポイント！
+                  side: const BorderSide(
+                    color: Color(0xFFFFCA28),
+                    width: 2,
+                  ), // 黄色の輪郭
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 4,
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.tutorialResumeBtn,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              // 右側のキャラクター
+              Image.asset('assets/images/character_kuma.gif', height: 60),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showChildTutorial() async {
     // すでに表示済みなら何もしない
     bool wasStepShown = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepPromiseKey,
@@ -707,38 +816,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       });
       return;
     }
+  }
 
-    // チュートリアル: やくそくボードへ誘導
-    bool wasPromiseBoardShown = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepPromiseBoardKey,
-    );
-    if (!wasPromiseBoardShown && mounted) {
-      FirebaseAnalytics.instance.logEvent(
-        name: 'start_tutorial_home_to_promise_board',
-      );
-      // チュートリアル: アイテム移動後にやくそくボードへ誘導
-      setState(() {
-        _showPromiseBoardBlinking = true;
-      });
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await _showTutorialDialog(
-          title: AppLocalizations.of(context)!.guidePromiseBoardTitle,
-          content: AppLocalizations.of(context)!.guidePromiseBoardDesc,
-          buttonText: AppLocalizations.of(context)!.tutorialBtnMove,
-        );
-      });
-      return;
-    }
+  void _showParentTutorial() async {
     // チュートリアル: 全ての体験が終わったので、親のやくそく設定へ誘導
     bool wasParentSetupShown = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepParentSetupShownKey,
     );
     if (!wasParentSetupShown && mounted) {
-      await _showTutorialDialog(
-        title: AppLocalizations.of(context)!.tutorialParentSetupTitle,
-        content: AppLocalizations.of(context)!.tutorialParentSetupDesc,
-        buttonText: AppLocalizations.of(context)!.tutorialBtnParent,
-      );
       // おやの設定画面へ誘導
       setState(() {
         _showParentSettingsBlinking = true;
@@ -756,40 +841,26 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     _tutorialMoveTimer?.cancel();
     _tutorialMoveTimer = Timer(const Duration(seconds: 1), () async {
       if (!mounted) return;
+      await _showTutorialDialog(
+        title: AppLocalizations.of(context)!.tutorialFirstPromiseCompleteTitle,
+        content: AppLocalizations.of(context)!.tutorialFirstPromiseCompleteDesc,
+        buttonText: AppLocalizations.of(context)!.gotIt,
+      );
+
       // 終了フラグを立てる
       await SharedPrefsHelper.setTutorialStepShown(
         SharedPrefsHelper.tutorialStepMoveKey,
+      );
+      await SharedPrefsHelper.setChildTutorial(
+        SharedPrefsHelper.tutorialPhaseFinish,
       );
 
       setState(() {
         _isWaitingForMove = false;
         _showDraggableBlinking = false;
         _isTutorialMoveCompleted = true;
-
-        // ★ やくそくボードへ誘導開始（紫点滅 + 吹き出し）
-        _showPromiseBoardBlinking = true;
-        _isTutorialPromiseBoardFocus = true;
       });
-
-      FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_promise_board');
-
-      await _showTutorialDialog(
-        title: AppLocalizations.of(context)!.guidePromiseBoardTitle,
-        content: AppLocalizations.of(context)!.guidePromiseBoardDesc,
-        buttonText: AppLocalizations.of(context)!.tutorialBtnMove,
-      );
     });
-  }
-
-  void _showGuideIfNeeded() async {
-    bool isShown = await SharedPrefsHelper.isGuideShown();
-    if (!isShown && mounted) {
-      // 画面の描画が終わってから、最初のダイアログを表示
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        //ガイド表示
-        _showTutorial();
-      });
-    }
   }
 
   Widget _buildRichText(
@@ -1079,6 +1150,20 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       return;
     }
 
+    if (_showParentSettingsBlinking) {
+      if (!mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ParentTopScreen(isTutorial: true),
+        ),
+      );
+      setState(() {
+        _showParentSettingsBlinking = false;
+      });
+      return;
+    }
+
     // ★ 保存されているロックモードを読み込む
     final lockMode = await SharedPrefsHelper.loadLockMode();
 
@@ -1156,8 +1241,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     await SharedPrefsHelper.setTutorialStepShown(
       SharedPrefsHelper.tutorialStepParentSetupShownKey,
     );
-    // チュートリアル完了のフラグを立てる
-    await SharedPrefsHelper.setGuideShown();
+    // おやのチュートリアル完了のフラグを立てる
+    await SharedPrefsHelper.setParentTutorial(
+      SharedPrefsHelper.tutorialPhaseFinish,
+    );
     // 画面状態をリセット
     if (mounted) {
       setState(() {
@@ -1227,6 +1314,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       }
     }
 
+    // ★ 追加: 未受取のミッションがないかチェック
+    _checkUnclaimedMissions();
+
     // 自動スキップがあった場合、リストを再取得して最新にする
     if (hasAutoSkipped) {
       todaysCompletedTitles =
@@ -1275,7 +1365,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final moveCompleted = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepMoveKey,
     );
-    bool isShown = await SharedPrefsHelper.isGuideShown();
+    bool isShown =
+        await SharedPrefsHelper.getChildTutorial() ==
+        SharedPrefsHelper.tutorialPhaseStart;
 
     final orientation = MediaQuery.of(context).orientation;
 
@@ -1404,9 +1496,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     // ★ タイマー画面に行く前にFirebaseイベントだけログ
     FirebaseAnalytics.instance.logEvent(name: 'start_child_home_start_promise');
     // ★ チュートリアル中なら追加ログを出す
-    final isInTutorial = !(await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepPromiseKey,
-    ));
+    final isInTutorial =
+        !await SharedPrefsHelper.isTutorialStepShown(
+          SharedPrefsHelper.tutorialStepPromiseKey,
+        ) &&
+        await SharedPrefsHelper.getChildTutorial() ==
+            SharedPrefsHelper.tutorialPhaseStart;
     if (isInTutorial) {
       FirebaseAnalytics.instance.logEvent(name: 'tutorial_tap_start_button');
     }
@@ -1468,8 +1563,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       bool wasShopStepShown = await SharedPrefsHelper.isTutorialStepShown(
         SharedPrefsHelper.tutorialStepShopKey,
       );
-      bool isShown = await SharedPrefsHelper.isGuideShown();
-      if (!wasShopStepShown && !isShown && mounted) {
+      bool isShown =
+          await SharedPrefsHelper.getChildTutorial() ==
+          SharedPrefsHelper.tutorialPhaseStart;
+      if (!wasShopStepShown && isShown && mounted) {
         setState(() {
           _showShopBlinking = true; // おみせボタンを点滅させる
         });
@@ -1774,6 +1871,79 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     return 50.0;
   }
 
+  // 🌟 未受け取り、または挑戦可能なミッションがあるかチェックして「！」バッジを更新するメソッド
+  Future<void> _checkUnclaimedMissions() async {
+    // 1. 各種データをSharedPrefsHelperから取得
+    final claimedIds = await SharedPrefsHelper.loadClaimedMissionIds();
+
+    // 累計系の判定用データを取得
+    final cumulativeShop = await SharedPrefsHelper.loadCumulativeShopCount();
+    final currentLevel = await SharedPrefsHelper.loadLevel();
+    final cumulativePoints = await SharedPrefsHelper.loadCumulativePoints();
+    final cumulativeLoginDays =
+        await SharedPrefsHelper.loadCumulativeLoginDays();
+
+    bool hasUnclaimed = false;
+
+    // --- 条件1：チュートリアルが残っている ---
+    // ※達成・未達成に関わらず、チュートリアルが受け取り済みでなければ「！」を出す
+    if (!claimedIds.contains('mission_parent_setup')) hasUnclaimed = true;
+    if (!claimedIds.contains('mission_first_promise')) hasUnclaimed = true;
+
+    // --- 条件2：はじめて系のミッションで「できるもの」または「受け取れるもの」がある ---
+    // 🌟 変更: 「まだ受け取っていない」かつ「今のレベルで挑戦可能」ならバッジを出すようにしました
+
+    // レベル制限なし（いつでもできるもの）は、受け取るまでずっとバッジを出す
+    if (!claimedIds.contains('mission_enter_house')) hasUnclaimed = true;
+    if (!claimedIds.contains('mission_promise_board')) hasUnclaimed = true;
+    if (!claimedIds.contains('mission_bgm')) hasUnclaimed = true;
+    if (!claimedIds.contains('mission_world_map')) hasUnclaimed = true;
+
+    // レベル制限ありのものは、そのレベルに達した瞬間からバッジを出す
+    if (!claimedIds.contains('mission_big_island') && currentLevel >= 5)
+      hasUnclaimed = true;
+    if (!claimedIds.contains('mission_sea') && currentLevel >= 10)
+      hasUnclaimed = true;
+    if (!claimedIds.contains('mission_sky') && currentLevel >= 15)
+      hasUnclaimed = true;
+    if (!claimedIds.contains('mission_space') && currentLevel >= 20)
+      hasUnclaimed = true;
+
+    // --- 条件3：累計系のミッションで受け取れるものがある ---
+    // ※累計系は「目標値に達していて、かつ未受け取りの場合」のみ「！」を出す（挑戦中は出さない）
+    for (int target in SharedPrefsHelper.loginTargets) {
+      if (cumulativeLoginDays >= target &&
+          !claimedIds.contains('mission_login_$target'))
+        hasUnclaimed = true;
+    }
+    for (int target in SharedPrefsHelper.shopTargets) {
+      if (cumulativeShop >= target &&
+          !claimedIds.contains('mission_shop_$target'))
+        hasUnclaimed = true;
+    }
+    for (int target in SharedPrefsHelper.levelTargets) {
+      if (currentLevel >= target &&
+          !claimedIds.contains('mission_level_$target'))
+        hasUnclaimed = true;
+    }
+    for (int target in SharedPrefsHelper.pointTargets) {
+      if (cumulativePoints >= target &&
+          !claimedIds.contains('mission_points_$target'))
+        hasUnclaimed = true;
+    }
+
+    final hasVisitedMissionScreen =
+        await SharedPrefsHelper.hasVisitedMissionScreen();
+
+    // 2. 判定結果を画面に反映
+    if (mounted) {
+      setState(() {
+        _hasUnclaimedMissions = hasUnclaimed;
+        _showMissionHint = !hasVisitedMissionScreen;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // 画面サイズを取得（位置計算に使用）
@@ -1787,14 +1957,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _showShopBlinking ||
         _showCustomizeBlinking ||
         _showDraggableBlinking ||
-        _showPromiseBoardBlinking ||
         _showParentSettingsBlinking;
 
     // 「はじめる」も含めたいずれかのチュートリアルがアクティブかどうか
     final bool isAnyTutorialActive =
         _showShopBlinking ||
         _showCustomizeBlinking ||
-        _showPromiseBoardBlinking ||
         _showParentSettingsBlinking ||
         _showStartBlinking;
 
@@ -1967,6 +2135,169 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        // 🌟 ミッションボタン
+                        Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.topRight,
+                          children: [
+                            // 🌟 初回限定のミッション案内吹き出し
+                            if (_showMissionHint && !isAnyTutorialActive)
+                              Positioned(
+                                bottom: 50, // ボタンのすぐ上に表示
+                                right: 0, // 吹き出しのしっぽをボタンの上に合わせる
+                                child: IgnorePointer(
+                                  child: ScaleTransition(
+                                    scale: Tween<double>(begin: 1.0, end: 1.1)
+                                        .animate(
+                                          CurvedAnimation(
+                                            parent: _hintAnimationController,
+                                            curve: Curves.easeInOut,
+                                          ),
+                                        ),
+                                    child: SpeechBubble(
+                                      text: AppLocalizations.of(
+                                        context,
+                                      )!.missionHintBubble,
+                                      tailDirection: TailDirection.bottomRight,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            Material(
+                              color: const Color(0xFFFF7043).withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(8),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () async {
+                                  try {
+                                    SfxManager.instance.playTapSound();
+                                  } catch (e) {}
+
+                                  if (_showMissionHint) {
+                                    await SharedPrefsHelper.setHasVisitedMissionScreen(
+                                      true,
+                                    );
+                                    if (mounted) {
+                                      setState(() {
+                                        _showMissionHint = false;
+                                      });
+                                    }
+                                  }
+
+                                  if (!mounted) return;
+
+                                  // 🌟 ミッション画面へ遷移！
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MissionScreen(),
+                                    ),
+                                  ).then((result) {
+                                    // ミッション画面から戻ってきた時の共通の更新処理
+                                    _loadAndDetermineDisplayPromise();
+                                    _checkUnclaimedMissions();
+
+                                    // 🌟 【追加】もし「やってみる」ボタンから戻ってきたなら、チュートリアルを開始！
+                                    if (result != null && result is String) {
+                                      if (result == 'mission_parent_setup') {
+                                        // 例：「おやのやくそく」のチュートリアル（または設定画面）を呼び出す
+                                        // 以前 initState で呼んでいた _showGuideIfNeeded() の中身や、
+                                        // 親設定ダイアログを開くメソッドをここで呼び出します。
+                                        SharedPrefsHelper.setParentTutorial(
+                                          SharedPrefsHelper.tutorialPhaseStart,
+                                        );
+                                        _showParentTutorial();
+                                        // _showParentSetupDialog(); // ← 実際のメソッド名に書き換えてください
+                                      } else if (result ==
+                                          'mission_first_promise') {
+                                        // 例：「はじめてのやくそく」のチュートリアルを呼び出す
+                                        // 画面上の特定の場所をハイライトしたり、説明ダイアログを出したりするメソッド
+                                        SharedPrefsHelper.setChildTutorial(
+                                          SharedPrefsHelper.tutorialPhaseStart,
+                                        );
+                                        _showChildTutorial();
+                                      }
+                                    }
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6.0,
+                                    vertical: 4.0,
+                                  ),
+                                  child: SizedBox(
+                                    width: 55,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons
+                                              .assignment_turned_in, // ミッションっぽいアイコン
+                                          size: 24,
+                                          color: Color(0xFFFFCA28),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.missionScreenTitle,
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            color: Color(0xFFFFCA28),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // 🌟 「！」バッジの表示
+                            if (_hasUnclaimedMissions)
+                              Positioned(
+                                top: -6, // バッジを大きくしたので少し位置を調整
+                                right: -6,
+                                // 🌟 既存のアニメーションを使い回してポヨポヨンさせる！
+                                child: ScaleTransition(
+                                  scale: Tween<double>(begin: 1.0, end: 1.3)
+                                      .animate(
+                                        CurvedAnimation(
+                                          parent: _hintAnimationController,
+                                          curve: Curves.easeInOut,
+                                        ),
+                                      ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(
+                                      6,
+                                    ), // 少し大きく（4 → 6）
+                                    decoration: const BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 2,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Text(
+                                      '!',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14, // 文字も少し大きく（12 → 14）
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
                         // ★ BGM変更ボタンを一番上に追加
                         Material(
                           color: const Color(0xFFFF7043).withOpacity(0.9),
@@ -2263,171 +2594,108 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           alignment: Alignment.centerLeft,
                           children: [
                             IgnorePointer(
-                              ignoring:
-                                  isAnyTutorialBlinking &&
-                                  !_showPromiseBoardBlinking,
+                              ignoring: isAnyTutorialBlinking,
                               child: Opacity(
-                                opacity:
-                                    (isAnyTutorialBlinking &&
-                                        !_showPromiseBoardBlinking)
-                                    ? 0.6
-                                    : 1.0,
-                                child: BlinkingEffect(
-                                  isBlinking: _showPromiseBoardBlinking,
-                                  child: Material(
-                                    color: const Color(
-                                      0xFFFF7043,
-                                    ).withOpacity(0.9),
+                                opacity: (isAnyTutorialBlinking) ? 0.6 : 1.0,
+                                child: Material(
+                                  color: const Color(
+                                    0xFFFF7043,
+                                  ).withOpacity(0.9),
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: InkWell(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(8),
-                                      onTap: () async {
-                                        if (isAnyTutorialBlinking) {
-                                          FirebaseAnalytics.instance.logEvent(
-                                            name: 'promise_board_tutorial',
+                                    onTap: () async {
+                                      FirebaseAnalytics.instance.logEvent(
+                                        name: 'promise_board',
+                                      );
+                                      try {
+                                        SfxManager.instance.playTapSound();
+                                      } catch (e) {
+                                        // エラーが発生した場合
+                                        print('再生エラー: $e');
+                                      }
+
+                                      // やくそくボード画面から戻ってくるのを「await」で待ち、結果を受け取る
+                                      final result =
+                                          await Navigator.push<
+                                            Map<String, int?>
+                                          >(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const PromiseBoardScreen(),
+                                            ),
                                           );
-                                        } else {
-                                          FirebaseAnalytics.instance.logEvent(
-                                            name: 'promise_board',
-                                          );
-                                        }
+
+                                      // 戻り値からポイントと経験値を取得
+                                      final pointsFromBoard = result != null
+                                          ? result['points']
+                                          : null;
+                                      final expFromBoard = result != null
+                                          ? result['exp']
+                                          : null;
+
+                                      // もし、ポイントを持って戻ってきたら
+                                      if (pointsFromBoard != null) {
+                                        // ポイント追加の効果音出す
                                         try {
-                                          SfxManager.instance.playTapSound();
+                                          SfxManager.instance
+                                              .playSuccessSound();
                                         } catch (e) {
                                           // エラーが発生した場合
                                           print('再生エラー: $e');
                                         }
 
-                                        // やくそくボード画面から戻ってくるのを「await」で待ち、結果を受け取る
-                                        final result =
-                                            await Navigator.push<
-                                              Map<String, int?>
-                                            >(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const PromiseBoardScreen(),
-                                              ),
-                                            );
+                                        // setStateを使って、ポイントを加算し、画面を更新！
+                                        setState(() {
+                                          _points += pointsFromBoard;
+                                          _pointsAdded = pointsFromBoard;
+                                          _experience += expFromBoard ?? 0;
+                                        });
 
-                                        // 戻り値からポイントと経験値を取得
-                                        final pointsFromBoard = result != null
-                                            ? result['points']
-                                            : null;
-                                        final expFromBoard = result != null
-                                            ? result['exp']
-                                            : null;
-
-                                        // もし、ポイントを持って戻ってきたら
-                                        if (pointsFromBoard != null) {
-                                          // ポイント追加の効果音出す
-                                          try {
-                                            SfxManager.instance
-                                                .playSuccessSound();
-                                          } catch (e) {
-                                            // エラーが発生した場合
-                                            print('再生エラー: $e');
-                                          }
-
-                                          // setStateを使って、ポイントを加算し、画面を更新！
-                                          setState(() {
-                                            _points += pointsFromBoard;
-                                            _pointsAdded = pointsFromBoard;
-                                            _experience += expFromBoard ?? 0;
-                                          });
-
-                                          _animationController.forward(
-                                            from: 0.0,
-                                          );
-                                          _pointsAddedAnimationController
-                                              .forward(from: 0.0);
-                                        }
-
-                                        // レベルアップのチェックと表示
-                                        _checkLevelUp();
-                                        // SharedPreferencesに新しいポイントを保存
-                                        await SharedPrefsHelper.savePoints(
-                                          _points,
+                                        _animationController.forward(from: 0.0);
+                                        _pointsAddedAnimationController.forward(
+                                          from: 0.0,
                                         );
+                                      }
 
-                                        // ★やくそくボード画面から戻ってきたら、必ずデータを再読み込みする！
-                                        _loadAndDetermineDisplayPromise();
+                                      // レベルアップのチェックと表示
+                                      _checkLevelUp();
+                                      // SharedPreferencesに新しいポイントを保存
+                                      await SharedPrefsHelper.savePoints(
+                                        _points,
+                                      );
 
-                                        // チュートリアル：やくそくボード終了チェック
-                                        bool wasPromiseBoardStepShown =
-                                            await SharedPrefsHelper.isTutorialStepShown(
-                                              SharedPrefsHelper
-                                                  .tutorialStepPromiseBoardKey,
-                                            );
-                                        bool isShown =
-                                            await SharedPrefsHelper.isGuideShown();
-                                        if (!wasPromiseBoardStepShown &&
-                                            !isShown &&
-                                            mounted) {
-                                          // 終了フラグを立てる
-                                          await SharedPrefsHelper.setTutorialStepShown(
-                                            SharedPrefsHelper
-                                                .tutorialStepPromiseBoardKey,
-                                          );
-                                          FirebaseAnalytics.instance.logEvent(
-                                            name: 'start_tutorial_parent_setup',
-                                          );
-
-                                          setState(() {
-                                            _showPromiseBoardBlinking = false;
-                                            _isTutorialPromiseBoardFocus =
-                                                false;
-                                            // ★ おやの設定へ誘導開始（紫点滅 + 吹き出し）
-                                            _showParentSettingsBlinking = true;
-                                            _isTutorialParentSettingsFocus =
-                                                true;
-                                          });
-
-                                          WidgetsBinding.instance
-                                              .addPostFrameCallback((_) async {
-                                                await _showTutorialDialog(
-                                                  title: AppLocalizations.of(
-                                                    context,
-                                                  )!.tutorialParentSetupTitle,
-                                                  content: AppLocalizations.of(
-                                                    context,
-                                                  )!.tutorialParentSetupDesc,
-                                                  buttonText:
-                                                      AppLocalizations.of(
-                                                        context,
-                                                      )!.gotIt,
-                                                );
-                                              });
-                                        }
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6.0,
-                                          vertical: 4.0,
-                                        ),
-                                        child: SizedBox(
-                                          width: 55,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.article_rounded,
-                                                size: 24,
+                                      // ★やくそくボード画面から戻ってきたら、必ずデータを再読み込みする！
+                                      _loadAndDetermineDisplayPromise();
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6.0,
+                                        vertical: 4.0,
+                                      ),
+                                      child: SizedBox(
+                                        width: 55,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.article_rounded,
+                                              size: 24,
+                                              color: Color(0xFFFFCA28),
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Text(
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.navPromiseBoard,
+                                              style: const TextStyle(
+                                                fontSize: 10,
                                                 color: Color(0xFFFFCA28),
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                              const SizedBox(height: 2),
-                                              Text(
-                                                AppLocalizations.of(
-                                                  context,
-                                                )!.navPromiseBoard,
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                  color: Color(0xFFFFCA28),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -2435,19 +2703,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 ),
                               ),
                             ),
-
-                            if (_isTutorialPromiseBoardFocus)
-                              Positioned(
-                                left: -30, // 吹き出しを中心付近へ
-                                top: -55, // ボタンの上に配置
-                                child: SpeechBubble(
-                                  text: AppLocalizations.of(
-                                    context,
-                                  )!.tutorialPromiseBoardBubble,
-                                  tailDirection: TailDirection.bottom,
-                                  duration: const Duration(milliseconds: 1500),
-                                ),
-                              ),
                           ],
                         ),
 
@@ -2477,12 +2732,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       borderRadius: BorderRadius.circular(8),
                                       onTap: () async {
                                         // チュートリアルで「きせかえ」ボタンを押したかチェック
-                                        final isTutorialStepShown =
-                                            await SharedPrefsHelper.isTutorialStepShown(
-                                              SharedPrefsHelper
-                                                  .tutorialStepCustomizeKey,
-                                            );
-                                        if (!isTutorialStepShown) {
+                                        bool isShown =
+                                            await SharedPrefsHelper.getChildTutorial() ==
+                                            SharedPrefsHelper
+                                                .tutorialPhaseStart;
+                                        if (isShown) {
                                           FirebaseAnalytics.instance.logEvent(
                                             name:
                                                 'tutorial_tap_customize_button',
@@ -2509,12 +2763,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             _showCustomizeBlinking = false;
                                           });
                                           // チュートリアルで「戻る」ボタンを押したかチェック
-                                          final isTutorialStepShown =
-                                              await SharedPrefsHelper.isTutorialStepShown(
-                                                SharedPrefsHelper
-                                                    .tutorialStepCustomizeKey,
-                                              );
-                                          if (!isTutorialStepShown) {
+                                          bool isShown =
+                                              await SharedPrefsHelper.getChildTutorial() ==
+                                              SharedPrefsHelper
+                                                  .tutorialPhaseStart;
+                                          if (isShown) {
                                             FirebaseAnalytics.instance.logEvent(
                                               name:
                                                   'tutorial_tap_customize_back',
@@ -2529,10 +2782,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                 SharedPrefsHelper
                                                     .tutorialStepMoveKey,
                                               );
-                                          bool isShown =
-                                              await SharedPrefsHelper.isGuideShown();
                                           if (!wasMoveShown &&
-                                              !isShown &&
+                                              isShown &&
                                               mounted) {
                                             // 終了フラグを立てる
                                             await SharedPrefsHelper.setTutorialStepShown(
@@ -2681,12 +2932,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       borderRadius: BorderRadius.circular(8),
                                       onTap: () async {
                                         // チュートリアルで「おみせ」ボタンを押したかチェック
-                                        final isTutorialStepShown =
-                                            await SharedPrefsHelper.isTutorialStepShown(
-                                              SharedPrefsHelper
-                                                  .tutorialStepShopKey,
-                                            );
-                                        if (!isTutorialStepShown) {
+                                        bool isShown =
+                                            await SharedPrefsHelper.getChildTutorial() ==
+                                            SharedPrefsHelper
+                                                .tutorialPhaseStart;
+                                        if (isShown) {
                                           FirebaseAnalytics.instance.logEvent(
                                             name: 'tutorial_tap_shop_button',
                                           );
@@ -2709,12 +2959,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             _showShopBlinking = false;
                                           });
                                           // チュートリアルで「戻る」ボタンを押したかチェック
-                                          final isTutorialStepShown =
-                                              await SharedPrefsHelper.isTutorialStepShown(
-                                                SharedPrefsHelper
-                                                    .tutorialStepShopKey,
-                                              );
-                                          if (!isTutorialStepShown) {
+                                          bool isShown =
+                                              await SharedPrefsHelper.getChildTutorial() ==
+                                              SharedPrefsHelper
+                                                  .tutorialPhaseStart;
+                                          if (isShown) {
                                             FirebaseAnalytics.instance.logEvent(
                                               name: 'tutorial_tap_shop_back',
                                             );
@@ -2727,10 +2976,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                 SharedPrefsHelper
                                                     .tutorialStepCustomizeKey,
                                               );
-                                          bool isShown =
-                                              await SharedPrefsHelper.isGuideShown();
                                           if (!wasCustomizeStepShown &&
-                                              !isShown &&
+                                              isShown &&
                                               mounted) {
                                             // 終了フラグを立てる
                                             await SharedPrefsHelper.setTutorialStepShown(

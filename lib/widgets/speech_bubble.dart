@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum TailDirection { top, bottom, left, right }
+enum TailDirection { top, bottom, left, right, bottomRight }
 
 class SpeechBubble extends StatelessWidget {
   final String text;
@@ -51,6 +51,14 @@ class SpeechBubble extends StatelessWidget {
           ],
         ),
         if (tailDirection == TailDirection.bottom) _buildTail(context),
+        if (tailDirection == TailDirection.bottomRight)
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 130.0),
+              child: _buildTail(context),
+            ),
+          ),
       ],
     );
   }
@@ -65,6 +73,7 @@ class SpeechBubble extends StatelessWidget {
         );
         break;
       case TailDirection.bottom:
+      case TailDirection.bottomRight:
         tail = ClipPath(
           clipper: SpeechBubbleTailDownClipper(),
           child: Container(width: 16, height: 8, color: Colors.white),

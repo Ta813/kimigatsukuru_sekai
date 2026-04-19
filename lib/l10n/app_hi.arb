@@ -460,7 +460,7 @@
   "restoreAction": "पुनर्स्थापना",
   "backupSuccess": "बैकअप पूरा हुआ",
   "backupFailure": "बैकअप विफल रहा",
-  "restoreSuccess": "डेटा पुनर्स्थापित किया गया",
+  "restoreSuccess": "खरीद सफलतापूर्वक बहाल की गई!",
   "restoreFailure": "पुनर्स्थापना विफल रही",
   "minutesLabel": "मिनट",
   "okAction": "ठीक है",
@@ -490,7 +490,7 @@
   "tutorialParentStep5Title": "वादे सेट करने का समय!",
   "tutorialParentStep5Desc": "सुझाव या \"कस्टम जोड़ें\" से **अपने बच्चे के लिए वादे** सेट करें।\nपूरा होने पर **\"वापस\"** दबाएँ!",
   "tutorialParentCompleteTitle": "वादे तैयार हैं!",
-  "tutorialParentCompleteDesc": "**वादा सेटअप** पूरा हो गया!\nहोम स्क्रीन पर वादे आज़माएँ!",
+  "tutorialParentCompleteDesc": "**वादे** पूरा हो गया!\nमिशन स्क्रीन पर पुरस्कार लें!",
   "promiseNotificationTitle": "\"{title}\" का समय हो गया!",
   "@promiseNotificationTitle": {
     "placeholders": {
@@ -590,6 +590,56 @@
   "premiumFeaturesDesc": "विज्ञापन हटाएं और आराम से आनंद लें!",
   "restorePurchases": "खरीद बहाल करें",
   "restoringPurchases": "खरीद बहाल की जा रही है...",
-  "restoreSuccess": "खरीद सफलतापूर्वक बहाल की गई!",
-  "restoreFailed": "बहाली विफल रही। कृपया पुन: प्रयास करें।"
+  "restoreFailed": "बहाली विफल रही। कृपया पुन: प्रयास करें।",
+  "missionTitleParentSetup": "माता-पिता के वादे सेट करें",
+  "missionTitleFirstPromise": "चलो एक वादा अनुभव करें",
+  "missionTitleEnterHouse": "पहली बार घर में प्रवेश करें",
+  "missionTitlePromiseBoard": "पहली बार प्रॉमिस बोर्ड देखें",
+  "missionTitleBgm": "पहली बार संगीत बदलें",
+  "missionTitleWorldMap": "पहली बार दुनिया का नक्शा देखें",
+  "missionTitleBigIsland": "चलो बड़े द्वीप पर चलें (लेवल 5)",
+  "missionTitleSea": "चलो समुद्र में चलें (लेवल 10)",
+  "missionTitleSky": "चलो आसमान में चलें (लेवल 15)",
+  "missionTitleSpace": "चलो अंतरिक्ष में चलें (लेवल 20)",
+  "missionTitleLoginDays": "{target} दिनों तक लॉग इन करें",
+  "@missionTitleLoginDays": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitleShopCount": "दुकान पर {target} बार खरीदारी करें",
+  "@missionTitleShopCount": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitleLevel": "लेवल {target} तक पहुँचें",
+  "@missionTitleLevel": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionTitlePoints": "{target} अंक एकत्र करें",
+  "@missionTitlePoints": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "missionNoMissions": "कोई मिशन नहीं",
+  "missionTabTutorial": "ट्यूटोरियल",
+  "missionTabFirstTime": "पहली बार",
+  "missionTabCumulative": "संचयी",
+  "missionScreenTitle": "मिशन",
+  "missionButtonCleared": "पूरा हुआ!",
+  "missionButtonClaim": "प्राप्त करें!",
+  "missionButtonTry": "प्रयास करें",
+  "missionButtonChallenging": "प्रगति पर है",
+  "missionRewardPrefix": "इनाम:",
+  "missionBadgeAvailableNow": "अभी उपलब्ध है!",
+  "tutorialResumeDesc": "आप ट्यूटोरियल के बीच में हैं।\nआइए फिर से शुरू करें!",
+  "tutorialResumeBtn": "फिर से शुरू करें",
+  "tutorialFirstPromiseCompleteTitle": "वादा का अनुभव पूरा हुआ!",
+  "tutorialFirstPromiseCompleteDesc": "**वादा का अनुभव** पूरा हो गया है!\nअपना इनाम पाने के लिए मिशन स्क्रीन पर जाएं!",
+  "missionHintBubble": "आप यहाँ से मिशन कर सकते हैं!",
+  "helpMenuPromiseSettings": "वादे सेट करें"
 }

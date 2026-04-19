@@ -1301,7 +1301,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tutorialParentCompleteTitle => 'वादे तैयार हैं!';
 
   @override
-  String get tutorialParentCompleteDesc => '**वादा सेटअप** पूरा हो गया!\nहोम स्क्रीन पर वादे आज़माएँ!';
+  String get tutorialParentCompleteDesc => '**वादे** पूरा हो गया!\nमिशन स्क्रीन पर पुरस्कार लें!';
 
   @override
   String promiseNotificationTitle(String title) {
@@ -1483,4 +1483,105 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get restoreFailed => 'बहाली विफल रही। कृपया पुन: प्रयास करें।';
+
+  @override
+  String get missionTitleParentSetup => 'माता-पिता के वादे सेट करें';
+
+  @override
+  String get missionTitleFirstPromise => 'चलो एक वादा अनुभव करें';
+
+  @override
+  String get missionTitleEnterHouse => 'पहली बार घर में प्रवेश करें';
+
+  @override
+  String get missionTitlePromiseBoard => 'पहली बार प्रॉमिस बोर्ड देखें';
+
+  @override
+  String get missionTitleBgm => 'पहली बार संगीत बदलें';
+
+  @override
+  String get missionTitleWorldMap => 'पहली बार दुनिया का नक्शा देखें';
+
+  @override
+  String get missionTitleBigIsland => 'चलो बड़े द्वीप पर चलें (लेवल 5)';
+
+  @override
+  String get missionTitleSea => 'चलो समुद्र में चलें (लेवल 10)';
+
+  @override
+  String get missionTitleSky => 'चलो आसमान में चलें (लेवल 15)';
+
+  @override
+  String get missionTitleSpace => 'चलो अंतरिक्ष में चलें (लेवल 20)';
+
+  @override
+  String missionTitleLoginDays(Object target) {
+    return '$target दिनों तक लॉग इन करें';
+  }
+
+  @override
+  String missionTitleShopCount(Object target) {
+    return 'दुकान पर $target बार खरीदारी करें';
+  }
+
+  @override
+  String missionTitleLevel(Object target) {
+    return 'लेवल $target तक पहुँचें';
+  }
+
+  @override
+  String missionTitlePoints(Object target) {
+    return '$target अंक एकत्र करें';
+  }
+
+  @override
+  String get missionNoMissions => 'कोई मिशन नहीं';
+
+  @override
+  String get missionTabTutorial => 'ट्यूटोरियल';
+
+  @override
+  String get missionTabFirstTime => 'पहली बार';
+
+  @override
+  String get missionTabCumulative => 'संचयी';
+
+  @override
+  String get missionScreenTitle => 'मिशन';
+
+  @override
+  String get missionButtonCleared => 'पूरा हुआ!';
+
+  @override
+  String get missionButtonClaim => 'प्राप्त करें!';
+
+  @override
+  String get missionButtonTry => 'प्रयास करें';
+
+  @override
+  String get missionButtonChallenging => 'प्रगति पर है';
+
+  @override
+  String get missionRewardPrefix => 'इनाम:';
+
+  @override
+  String get missionBadgeAvailableNow => 'अभी उपलब्ध है!';
+
+  @override
+  String get tutorialResumeDesc => 'आप ट्यूटोरियल के बीच में हैं।\nआइए फिर से शुरू करें!';
+
+  @override
+  String get tutorialResumeBtn => 'फिर से शुरू करें';
+
+  @override
+  String get tutorialFirstPromiseCompleteTitle => 'वादा का अनुभव पूरा हुआ!';
+
+  @override
+  String get tutorialFirstPromiseCompleteDesc => '**वादा का अनुभव** पूरा हो गया है!\nअपना इनाम पाने के लिए मिशन स्क्रीन पर जाएं!';
+
+  @override
+  String get missionHintBubble => 'आप यहाँ से मिशन कर सकते हैं!';
+
+  @override
+  String get helpMenuPromiseSettings => 'वादे सेट करें';
 }

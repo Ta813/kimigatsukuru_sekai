@@ -47,6 +47,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
   @override
   void initState() {
     super.initState();
+    SharedPrefsHelper.setHasVisitedSpace(true);
     _loadPlacedItems();
   }
 

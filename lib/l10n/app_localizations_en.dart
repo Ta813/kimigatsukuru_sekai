@@ -1301,7 +1301,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialParentCompleteTitle => 'Promises are ready!';
 
   @override
-  String get tutorialParentCompleteDesc => 'The **promise setup** is complete!\nLet\'s try the promises on the home screen!';
+  String get tutorialParentCompleteDesc => 'The **promise setup** is complete!\nLet\'s try the promises on the mission screen!';
 
   @override
   String promiseNotificationTitle(String title) {
@@ -1483,4 +1483,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restoreFailed => 'Failed to restore purchases. Please try again.';
+
+  @override
+  String get missionTitleParentSetup => 'Set parent\'s promises';
+
+  @override
+  String get missionTitleFirstPromise => 'Experience a promise';
+
+  @override
+  String get missionTitleEnterHouse => 'Enter the house for the first time';
+
+  @override
+  String get missionTitlePromiseBoard => 'Look at the Promise Board for the first time';
+
+  @override
+  String get missionTitleBgm => 'Change the music for the first time';
+
+  @override
+  String get missionTitleWorldMap => 'Look at the world map for the first time';
+
+  @override
+  String get missionTitleBigIsland => 'Go to the big island (Lv.5)';
+
+  @override
+  String get missionTitleSea => 'Go to the sea (Lv.10)';
+
+  @override
+  String get missionTitleSky => 'Go to the sky (Lv.15)';
+
+  @override
+  String get missionTitleSpace => 'Go to space (Lv.20)';
+
+  @override
+  String missionTitleLoginDays(Object target) {
+    return 'Log in for $target days';
+  }
+
+  @override
+  String missionTitleShopCount(Object target) {
+    return 'Shop $target times at the store';
+  }
+
+  @override
+  String missionTitleLevel(Object target) {
+    return 'Reach level $target';
+  }
+
+  @override
+  String missionTitlePoints(Object target) {
+    return 'Collect $target points';
+  }
+
+  @override
+  String get missionNoMissions => 'No missions';
+
+  @override
+  String get missionTabTutorial => 'Tutorial';
+
+  @override
+  String get missionTabFirstTime => 'First Time';
+
+  @override
+  String get missionTabCumulative => 'Cumulative';
+
+  @override
+  String get missionScreenTitle => 'Missions';
+
+  @override
+  String get missionButtonCleared => 'Cleared!';
+
+  @override
+  String get missionButtonClaim => 'Claim!';
+
+  @override
+  String get missionButtonTry => 'Try it';
+
+  @override
+  String get missionButtonChallenging => 'In Progress';
+
+  @override
+  String get missionRewardPrefix => 'Reward:';
+
+  @override
+  String get missionBadgeAvailableNow => 'Available now!';
+
+  @override
+  String get tutorialResumeDesc => 'You are in the middle of the tutorial.\nLet\'s resume!';
+
+  @override
+  String get tutorialResumeBtn => 'Resume';
+
+  @override
+  String get tutorialFirstPromiseCompleteTitle => 'Promise Experience Complete!';
+
+  @override
+  String get tutorialFirstPromiseCompleteDesc => 'The **promise experience** is complete!\nLet\'s go to the mission screen to get your reward!';
+
+  @override
+  String get missionHintBubble => 'You can do missions from here!';
+
+  @override
+  String get helpMenuPromiseSettings => 'Set Promises';
 }

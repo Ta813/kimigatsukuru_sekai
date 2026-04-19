@@ -1,7 +1,6 @@
 // lib/bgm_manager.dart
 
 import 'dart:async';
-import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 
 enum BgmTrack {
@@ -23,58 +22,19 @@ enum BgmTrack {
 
 class BgmManager {
   static final BgmManager instance = BgmManager._internal();
-
-  // just_audioのプレイヤーを管理します
   AudioPlayer? _bgmPlayer;
-  Completer<AudioPlayer>? _initCompleter; // ★追加：初期化同期用
-
-  // 外部からのアクセス用ゲッターは修正
-  // プレイヤーが必要な場合は await _ensurePlayer() を使うように統一します
-  Future<AudioPlayer> _ensurePlayer() async {
-    // すでにプレイヤーがある場合は即座に返す
-    if (_bgmPlayer != null) return _bgmPlayer!;
-
-    // 初期化中の場合は、その完了を待つ
-    if (_initCompleter != null) {
-      return _initCompleter!.future;
-    }
-
-    // 初期化開始
-    _initCompleter = Completer<AudioPlayer>();
-    try {
-      print("BgmManager: AudioPlayerを新規作成します");
-      final player = AudioPlayer();
-      _bgmPlayer = player;
-      _initCompleter!.complete(player);
-      return player;
-    } on PlatformException catch (e) {
-      print("BgmManager: AudioPlayer作成中にプラットフォーム例外が発生しました: $e");
-
-      // すでに存在するというエラーの場合、既存のものを再利用するか、一度クリアを試みる
-      if (e.code == 'already_exists') {
-        print("BgmManager: 'already_exists'エラーが発生しました。状態をリセットします。");
-      }
-
-      _initCompleter!.completeError(e);
-      _initCompleter = null;
-      rethrow;
-    } catch (e) {
-      print("BgmManager: AudioPlayer作成中に予期せぬエラーが発生しました: $e");
-      _initCompleter!.completeError(e);
-      _initCompleter = null;
-      rethrow;
-    } finally {
-      // 成功時も失敗時もコンプリーター自体はnullに戻しておく（次の呼び出しで再挑戦可能にするため）
-      // しかし、すでに成功している場合は _bgmPlayer != null でガードされる
-      _initCompleter = null;
-    }
-  }
 
   factory BgmManager() {
     return instance;
   }
 
   BgmManager._internal();
+
+  // 🌟 複雑なCompleterを廃止し、シンプルで安全な遅延初期化に変更
+  AudioPlayer get _player {
+    _bgmPlayer ??= AudioPlayer();
+    return _bgmPlayer!;
+  }
 
   String? _getTrackPath(BgmTrack track) {
     switch (track) {
@@ -103,7 +63,7 @@ class BgmManager {
       case BgmTrack.focus_relaxing:
         return 'assets/audio/bgm_task_kokotiyoi.mp3';
       default:
-        return null; // ★ BGMなしの場合はnullを返す
+        return null;
     }
   }
 
@@ -117,16 +77,10 @@ class BgmManager {
         return;
       }
 
-      // 再生前にプレイヤーを確保
-      final player = await _ensurePlayer();
-
-      // 一旦停止
-      await player.stop();
-
       print("BgmManager.play: アセットをロード中... $trackPath");
-      await player.setAsset(trackPath);
-      await player.setLoopMode(LoopMode.one);
-      await player.play();
+      await _player.setAsset(trackPath);
+      await _player.setLoopMode(LoopMode.one);
+      await _player.play();
 
       print("BgmManager.play: 再生開始しました: $track");
     } catch (e) {
@@ -146,8 +100,9 @@ class BgmManager {
 
   Future<void> resume() async {
     try {
-      final player = await _ensurePlayer();
-      await player.play();
+      if (_bgmPlayer != null) {
+        await _bgmPlayer!.play();
+      }
     } catch (e) {
       print("BGMの再開エラー: $e");
     }
@@ -166,11 +121,10 @@ class BgmManager {
   Future<void> dispose() async {
     try {
       if (_bgmPlayer != null) {
-        print("BgmManager: AudioPlayerを破棄します");
-        final playerToDispose = _bgmPlayer!;
-        _bgmPlayer = null; // 先に参照を切る
-        await playerToDispose.stop();
-        await playerToDispose.dispose();
+        print("BgmManager: AudioPlayerを停止します（Singletonのため破棄はしません）");
+        await _bgmPlayer!.stop();
+        // 🌟 重要: 参照を切ったり dispose() しないことで、
+        // アプリ起動中に発生する「重複初期化クラッシュ」を完全に防ぎます。
       }
     } catch (e) {
       print("BGMの破棄エラー: $e");

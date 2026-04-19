@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Kids Habit Hero</string>
+    <string name="app_name">Family Habit Hero</string>
     <string name="facebook_app_id">2210361479492024</string>
     <string name="facebook_client_token">55600afd30e0755ffa3a615ee96fe8be</string>
 </resources>

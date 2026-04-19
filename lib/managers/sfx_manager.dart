@@ -2,70 +2,36 @@
 
 import 'dart:async';
 import 'dart:math';
-
-import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 
 class SfxManager {
-  // Singleton（このクラスの唯一のインスタンス）を生成
   static final SfxManager instance = SfxManager._internal();
-
-  // 効果音専用のプレイヤーを管理します
-  AudioPlayer? _sfxPlayer;
-  Completer<AudioPlayer>? _initCompleter; // ★追加：初期化同期用
-
-  Future<AudioPlayer> _ensurePlayer() async {
-    // すでにプレイヤーがある場合は即座に返す
-    if (_sfxPlayer != null) return _sfxPlayer!;
-
-    // 初期化中の場合は、その完了を待つ
-    if (_initCompleter != null) {
-      return _initCompleter!.future;
-    }
-
-    // 初期化開始
-    _initCompleter = Completer<AudioPlayer>();
-    try {
-      print("SfxManager: AudioPlayerを新規作成します");
-      final player = AudioPlayer();
-      _sfxPlayer = player;
-      _initCompleter!.complete(player);
-      return player;
-    } on PlatformException catch (e) {
-      print("SfxManager: AudioPlayer作成中にプラットフォーム例外が発生しました: $e");
-
-      // すでに存在するというエラーの場合
-      if (e.code == 'already_exists') {
-        print("SfxManager: 'already_exists'エラーが発生しました。");
-      }
-
-      _initCompleter!.completeError(e);
-      _initCompleter = null;
-      rethrow;
-    } catch (e) {
-      print("SfxManager: AudioPlayer作成中に予期せぬエラーが発生しました: $e");
-      _initCompleter!.completeError(e);
-      _initCompleter = null;
-      rethrow;
-    } finally {
-      _initCompleter = null;
-    }
-  }
+  final List<AudioPlayer> _players = [];
+  int _currentPlayerIndex = 0;
+  static const int _poolSize = 5;
 
   factory SfxManager() {
     return instance;
   }
+
   SfxManager._internal();
+
+  // 🌟 複数プレイヤーのプールを使用して、同時に効果音がなってもクラッシュ（PlatformException）を防ぎつつ自然に重ねて再生する
+  AudioPlayer get _player {
+    if (_players.length <= _currentPlayerIndex) {
+      _players.add(AudioPlayer());
+    }
+    final player = _players[_currentPlayerIndex];
+    _currentPlayerIndex = (_currentPlayerIndex + 1) % _poolSize;
+    return player;
+  }
 
   // 効果音を再生するための共通メソッド
   Future<void> _playSound(String assetPath) async {
     try {
-      final player = await _ensurePlayer();
-      await player.stop();
-      await player.setAsset('assets/$assetPath');
-      await player.play();
+      await _player.setAsset('assets/$assetPath');
+      await _player.play();
     } catch (e) {
-      // もしエラーが出た場合、コンソールに表示
       print("効果音の再生エラー ($assetPath): $e");
     }
   }
@@ -76,7 +42,6 @@ class SfxManager {
     double speed = 1.0,
   }) async {
     try {
-      final player = await _ensurePlayer();
       // プレイリストを作成
       final playlist = ConcatenatingAudioSource(
         children: assetPaths
@@ -84,37 +49,31 @@ class SfxManager {
             .toList(),
       );
 
-      // プレイリストをプレイヤーにセットして再生
-      await player.stop();
-      await player.setAudioSource(playlist);
-      await player.setSpeed(speed);
-      await player.play();
+      await _player.setAudioSource(playlist);
+      await _player.setSpeed(speed);
+      await _player.play();
     } catch (e) {
       print("連続再生エラー: $e");
     }
   }
 
-  // ロケールに基づいて、ボイス（音声）が入っているディレクトリ名を返します
   String getVoiceDir(String localeName) {
     if (localeName == 'hi') return 'hindi';
     if (localeName == 'ur') return 'urdu';
     if (localeName == 'bn') return 'bengali';
     if (localeName == 'ar') return 'arabic';
-    return 'english'; // デフォルトはenglish
+    return 'english';
   }
 
-  // 言語に応じた効果音を再生するための汎用メソッド
   void playLocalizedSound(String filename, String locale) {
     if (locale == 'ja') {
-      // 日本語の場合は各メソッドで個別に定義（日本語特有のファイル名のため）
       return;
     }
     final String dir = getVoiceDir(locale);
     _playSound('se/$dir/$filename');
   }
 
-  // --- ここから再生用のメソッド ---
-
+  // --- 再生用メソッド群（そのまま） ---
   void playTapSound() => _playSound('se/ボタン.mp3');
   void playSuccessSound() => _playSound('se/ポイントが入る音.mp3');
   void playStartSound() => _playSound('se/「スタート」.mp3');
@@ -196,7 +155,6 @@ class SfxManager {
   void playRouletteSpinSound() => _playSound('se/ドラムロール.mp3');
   void playTimerWinSound2() => _playSound('se/歓声と拍手.mp3');
 
-  // 互換性のための既存メソッド（内部でLocalized版を呼ぶように修正）
   void playStartSoundEnglish() => playLocalizedSound('lets_go.mp3', 'en');
   void playRouletteMessageSoundEnglish() =>
       playLocalizedSound('please_touch_the_button.mp3', 'en');
@@ -240,15 +198,14 @@ class SfxManager {
     }
   }
 
-  // アプリ終了時にリソースを解放する
   Future<void> dispose() async {
     try {
-      if (_sfxPlayer != null) {
-        print("SfxManager: AudioPlayerを破棄します");
-        final playerToDispose = _sfxPlayer!;
-        _sfxPlayer = null;
-        await playerToDispose.stop();
-        await playerToDispose.dispose();
+      if (_players.isNotEmpty) {
+        print("SfxManager: AudioPlayerを停止します（Singletonのため破棄はしません）");
+        for (final player in _players) {
+          await player.stop();
+        }
+        // 🌟 重要: こちらも dispose() しない
       }
     } catch (e) {
       print("効果音プレイヤーの停止エラー: $e");
