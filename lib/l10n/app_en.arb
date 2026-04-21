@@ -271,6 +271,7 @@
   "lockMethod": "Lock Method",
   "multiplication": "Multiplication",
   "fourDigitPasscode": "4-Digit Passcode",
+  "lockNone": "None",
   "setPasscode": "Set Passcode",
   "notSet": "Not Set",
   "supportThisApp": "Support this app",

@@ -1309,6 +1309,12 @@ abstract class AppLocalizations {
   /// **'4-Digit Passcode'**
   String get fourDigitPasscode;
 
+  /// No description provided for @lockNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get lockNone;
+
   /// No description provided for @setPasscode.
   ///
   /// In en, this message translates to:

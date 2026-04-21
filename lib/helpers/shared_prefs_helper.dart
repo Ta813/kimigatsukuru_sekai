@@ -507,10 +507,10 @@ class SharedPrefsHelper {
   static Future<LockMode> loadLockMode() async {
     final prefs = await SharedPreferences.getInstance();
     final modeName = prefs.getString('lock_mode');
-    // 保存された文字列からenumに変換。保存されていなければデフォルトでmathを返す
+    // 保存された文字列からenumに変換。保存されていなければデフォルトでnoneを返す
     return LockMode.values.firstWhere(
       (e) => e.name == modeName,
-      orElse: () => LockMode.math,
+      orElse: () => LockMode.none,
     );
   }
 

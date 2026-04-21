@@ -632,6 +632,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get fourDigitPasscode => '4桁パスワード';
 
   @override
+  String get lockNone => 'なし';
+
+  @override
   String get setPasscode => 'パスワードを設定';
 
   @override

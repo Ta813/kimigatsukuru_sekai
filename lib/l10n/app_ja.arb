@@ -271,6 +271,7 @@
   "lockMethod": "ロック方法",
   "multiplication": "掛け算",
   "fourDigitPasscode": "4桁パスワード",
+  "lockNone": "なし",
   "setPasscode": "パスワードを設定",
   "notSet": "未設定",
   "supportThisApp": "このアプリを支援する",

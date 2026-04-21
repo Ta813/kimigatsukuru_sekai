@@ -271,6 +271,7 @@
   "lockMethod": "طريقة القفل",
   "multiplication": "ضرب",
   "fourDigitPasscode": "كلمة مرور من ٤ أرقام",
+  "lockNone": "بدون",
   "setPasscode": "ضبط كلمة المرور",
   "notSet": "لم يتم الضبط",
   "supportThisApp": "ادعم هذا التطبيق",

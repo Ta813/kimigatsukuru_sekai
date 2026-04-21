@@ -271,6 +271,7 @@
   "lockMethod": "लॉक करने का तरीका",
   "multiplication": "गुणा",
   "fourDigitPasscode": "4-अंकीय पासकोड",
+  "lockNone": "कोई नहीं",
   "setPasscode": "पासकोड सेट करें",
   "notSet": "सेट नहीं है",
   "supportThisApp": "इस ऐप का समर्थन करें",

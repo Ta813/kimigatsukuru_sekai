@@ -28,9 +28,9 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
     (index) => (index + 1).toString(),
   ); // 1〜120分
   final List<String> _pointOptions = List.generate(
-    100,
+    50,
     (index) => (index + 1).toString(),
-  ); // 1〜100ポイント
+  ); // 1〜50ポイント
 
   // 選択中の値を保持する変数（初期値は10）
   String _selectedDuration = '10';

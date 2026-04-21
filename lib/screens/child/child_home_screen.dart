@@ -1168,28 +1168,34 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     // ★ 保存されているロックモードを読み込む
     final lockMode = await SharedPrefsHelper.loadLockMode();
 
-    // ★ モードに応じて表示するダイアログを切り替える
-    final bool? isCorrect = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        if (lockMode == LockMode.passcode) {
-          // ★ 保存されているパスワードがなければ、掛け算モードにフォールバック
-          // (親がパスワード設定を忘れた場合の安全策)
-          return FutureBuilder<String?>(
-            future: SharedPrefsHelper.loadPasscode(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.data != null &&
-                  snapshot.data!.isNotEmpty) {
-                return const PasscodeLockDialog();
-              }
-              return const MathLockDialog(); // パスワード未設定なら掛け算
-            },
-          );
-        }
-        return const MathLockDialog(); // デフォルトは掛け算
-      },
-    );
+    bool? isCorrect;
+    if (lockMode == LockMode.none) {
+      isCorrect = true; // ロックなしならそのまま通過
+    } else {
+      // ★ モードに応じて表示するダイアログを切り替える
+      if (!mounted) return;
+      isCorrect = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          if (lockMode == LockMode.passcode) {
+            // ★ 保存されているパスワードがなければ、掛け算モードにフォールバック
+            // (親がパスワード設定を忘れた場合の安全策)
+            return FutureBuilder<String?>(
+              future: SharedPrefsHelper.loadPasscode(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData &&
+                    snapshot.data != null &&
+                    snapshot.data!.isNotEmpty) {
+                  return const PasscodeLockDialog();
+                }
+                return const MathLockDialog(); // パスワード未設定なら掛け算
+              },
+            );
+          }
+          return const MathLockDialog(); // デフォルトは掛け算
+        },
+      );
+    }
 
     if (isCorrect == true) {
       if (!mounted) return;

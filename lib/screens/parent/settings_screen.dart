@@ -177,10 +177,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
     bool success = false;
     if (service == BackupServiceKbn.googleDrive) {
-      success = await BackupService.backupToGoogleDrive();
+      success = await BackupService.backupToGoogleDrive(context);
     } else if (service == BackupServiceKbn.icloud) {
       success = await BackupService.backupToiCloud();
     }
+    if (!mounted) return;
 
     if (success) {
       await SharedPrefsHelper.saveBackupService(service);
@@ -208,10 +209,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
     bool success = false;
     if (service == BackupServiceKbn.googleDrive) {
-      success = await BackupService.restoreFromGoogleDrive();
+      success = await BackupService.restoreFromGoogleDrive(context);
     } else if (service == BackupServiceKbn.icloud) {
       success = await BackupService.restoreFromiCloud();
     }
+    if (!mounted) return;
 
     if (success) {
       await SharedPrefsHelper.saveBackupService(service);
@@ -362,6 +364,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     trailing: DropdownButton<LockMode>(
                       value: _selectedLockMode,
                       items: [
+                        DropdownMenuItem(
+                          value: LockMode.none,
+                          child: Text(l10n.lockNone),
+                        ),
                         DropdownMenuItem(
                           value: LockMode.math,
                           child: Text(l10n.multiplication),

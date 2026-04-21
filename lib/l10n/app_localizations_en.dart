@@ -632,6 +632,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fourDigitPasscode => '4-Digit Passcode';
 
   @override
+  String get lockNone => 'None';
+
+  @override
   String get setPasscode => 'Set Passcode';
 
   @override

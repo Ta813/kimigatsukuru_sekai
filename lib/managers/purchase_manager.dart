@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:google_api_availability/google_api_availability.dart';
 import 'bgm_manager.dart';
 
 class PurchaseManager {
@@ -17,8 +19,38 @@ class PurchaseManager {
   final ValueNotifier<bool> isPremium = ValueNotifier<bool>(false);
   Offerings? offerings;
 
+  Future<void> _logDeviceInfo() async {
+    try {
+      final deviceInfo = DeviceInfoPlugin();
+      if (Platform.isAndroid) {
+        final androidInfo = await deviceInfo.androidInfo;
+        debugPrint('Device Info (Android): Brand=${androidInfo.brand}, Model=${androidInfo.model}, SDK=${androidInfo.version.sdkInt}');
+      } else if (Platform.isIOS) {
+        final iosInfo = await deviceInfo.iosInfo;
+        debugPrint('Device Info (iOS): Name=${iosInfo.name}, Model=${iosInfo.model}, SystemName=${iosInfo.systemName}, SystemVersion=${iosInfo.systemVersion}');
+      }
+    } catch (e) {
+      debugPrint('Device info logging failed: $e');
+    }
+  }
+
+  Future<void> _checkGooglePlayServices() async {
+    if (!Platform.isAndroid) return;
+    try {
+      final availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
+      debugPrint('Google Play Services Availability: $availability');
+    } catch (e) {
+      debugPrint('Google Play Services check failed: $e');
+    }
+  }
+
   Future<void> init() async {
     try {
+      // デバイス情報のログ出力
+      await _logDeviceInfo();
+      // Google Play Servicesの状態確認（Androidのみ）
+      await _checkGooglePlayServices();
+
       // ログレベルの設定（デバッグ時は詳細に出力）
       await Purchases.setLogLevel(kDebugMode ? LogLevel.debug : LogLevel.info);
 
@@ -62,6 +94,17 @@ class PurchaseManager {
         await Future.delayed(const Duration(milliseconds: 300));
       }
 
+      // ペイウォール表示前のデバッグログ（OnePlus等でのNullPointerException調査用）
+      debugPrint('Billing Flow Initiation: showPaywall');
+      if (offerings == null) {
+        debugPrint('Warning: Offerings is null before showing paywall. Attempting to fetch...');
+        offerings = await Purchases.getOfferings();
+      }
+      debugPrint('Offerings status: ${offerings?.all.keys.toList()}');
+
+      final customerInfo = await Purchases.getCustomerInfo();
+      debugPrint('CustomerInfo at showPaywall: ${customerInfo.entitlements.active.keys.toList()}');
+
       // 2024年現在のモダンな実装: RevenueCat公式のPaywall UIを表示
       await RevenueCatUI.presentPaywall();
 
@@ -95,6 +138,10 @@ class PurchaseManager {
         // 🌟 回転アニメーションのためのわずかな待機（フリッカー防止）
         await Future.delayed(const Duration(milliseconds: 300));
       }
+
+      debugPrint('Billing Flow Initiation: showCustomerCenter');
+      final customerInfo = await Purchases.getCustomerInfo();
+      debugPrint('CustomerInfo at showCustomerCenter: ${customerInfo.entitlements.active.keys.toList()}');
 
       await RevenueCatUI.presentCustomerCenter();
 

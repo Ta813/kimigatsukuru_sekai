@@ -632,6 +632,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get fourDigitPasscode => '৪-সংখ্যার পাসকোড';
 
   @override
+  String get lockNone => 'কিছু না';
+
+  @override
   String get setPasscode => 'পাসকোড সেট করুন';
 
   @override

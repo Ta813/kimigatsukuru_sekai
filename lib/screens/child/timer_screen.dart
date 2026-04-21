@@ -242,15 +242,22 @@ class _TimerScreenState extends State<TimerScreen>
     FirebaseAnalytics.instance.logEvent(name: 'start_timer_name_settings');
     // 1. ロック画面を表示
     final lockMode = await SharedPrefsHelper.loadLockMode();
-    final bool? isCorrect = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        if (lockMode == LockMode.passcode) {
-          return const PasscodeLockDialog();
-        }
-        return const MathLockDialog();
-      },
-    );
+
+    bool? isCorrect;
+    if (lockMode == LockMode.none) {
+      isCorrect = true; // ロックなしならそのまま通過
+    } else {
+      if (!mounted) return;
+      isCorrect = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          if (lockMode == LockMode.passcode) {
+            return const PasscodeLockDialog();
+          }
+          return const MathLockDialog();
+        },
+      );
+    }
 
     // 2. ロック解除成功なら遷移
     if (isCorrect == true && mounted) {

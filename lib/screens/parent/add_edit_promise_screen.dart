@@ -37,9 +37,9 @@ class _AddEditPromiseScreenState extends State<AddEditPromiseScreen> {
     (index) => (index + 1).toString(),
   ); // 1〜120分
   final List<String> _pointOptions = List.generate(
-    100,
+    50,
     (index) => (index + 1).toString(),
-  ); // 1〜100ポイント
+  ); // 1〜50ポイント
 
   // ▼ 追加: 選択中の値を保持する変数
   String _selectedHour = '07';

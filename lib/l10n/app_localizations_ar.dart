@@ -632,6 +632,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fourDigitPasscode => 'كلمة مرور من ٤ أرقام';
 
   @override
+  String get lockNone => 'بدون';
+
+  @override
   String get setPasscode => 'ضبط كلمة المرور';
 
   @override

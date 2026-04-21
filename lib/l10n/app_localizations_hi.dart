@@ -632,6 +632,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get fourDigitPasscode => '4-अंकीय पासकोड';
 
   @override
+  String get lockNone => 'कोई नहीं';
+
+  @override
   String get setPasscode => 'पासकोड सेट करें';
 
   @override

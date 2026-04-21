@@ -146,15 +146,22 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
     }
     // 1. ロック画面を表示する
     final lockMode = await SharedPrefsHelper.loadLockMode();
-    final bool? isCorrect = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        if (lockMode == LockMode.passcode) {
-          return const PasscodeLockDialog();
-        }
-        return const MathLockDialog();
-      },
-    );
+
+    bool? isCorrect;
+    if (lockMode == LockMode.none) {
+      isCorrect = true; // ロックなしならそのまま通過
+    } else {
+      if (!mounted) return;
+      isCorrect = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          if (lockMode == LockMode.passcode) {
+            return const PasscodeLockDialog();
+          }
+          return const MathLockDialog();
+        },
+      );
+    }
 
     // 2. ロックが解除されたら、やくそく設定画面に遷移
     if (isCorrect == true && mounted) {

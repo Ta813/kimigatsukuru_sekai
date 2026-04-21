@@ -632,6 +632,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get fourDigitPasscode => '4 ہندسوں کا پاس کوڈ';
 
   @override
+  String get lockNone => 'کوئی نہیں';
+
+  @override
   String get setPasscode => 'پاس کوڈ سیٹ کریں';
 
   @override

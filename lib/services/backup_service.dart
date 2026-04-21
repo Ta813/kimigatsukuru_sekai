@@ -8,6 +8,8 @@ import 'package:path_provider/path_provider.dart';
 import '../helpers/shared_prefs_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_api_availability/google_api_availability.dart';
+import 'package:flutter/material.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 const String _backupFileName = 'kimigatsukurusekai_backup.json';
 const String _iCloudContainerId = 'iCloud.com.kotoapp.kimigatsukurusekai';
@@ -22,23 +24,32 @@ class BackupService {
   );
 
   // Googleサインインの初期化と認証クライアントの取得
-  static Future<auth.AuthClient?> _getGoogleAuthClient() async {
+  static Future<auth.AuthClient?> _getGoogleAuthClient({
+    BuildContext? context,
+  }) async {
     try {
       // 0. Androidの場合、Google Play Servicesの可用性をチェック
       if (Platform.isAndroid) {
         try {
+          // デバイス情報のログ（OnePlus等の特定用）
+          final deviceInfo = DeviceInfoPlugin();
+          final androidInfo = await deviceInfo.androidInfo;
+          debugPrint(
+            'SignIn Attempt Device: ${androidInfo.brand} ${androidInfo.model}, SDK: ${androidInfo.version.sdkInt}',
+          );
+
           final availability = await GoogleApiAvailability.instance
-              .checkGooglePlayServicesAvailability();
+              .checkGooglePlayServicesAvailability(context != null);
+
           if (availability != GooglePlayServicesAvailability.success) {
-            print(
-              "Warning: Google Play Services availability check returned: $availability",
-            );
-            //SignInHubActivityのNPE対策として、可用性に問題がある場合でも続行し、
-            //GoogleSignInプラグイン側の内部エラーハンドリングに任せるように調整
+            debugPrint("Google Play Services not success: $availability");
+            // 解決を促した後は一旦中止（ユーザーが戻ってきてから再試行してもらう）
+            return null;
           }
         } catch (e) {
-          print("Failed to check Google Play Services availability: $e");
-          //可用性チェック自体が失敗した場合は無視して続行
+          debugPrint("Failed to check Google Play Services availability: $e");
+          // 可用性チェック自体が失敗した場合は安全のため中止
+          return null;
         }
       }
 
@@ -48,6 +59,7 @@ class BackupService {
       // 2. サイレントサインインで失敗（null）なら通常のサインインを実行
       if (account == null) {
         // ここで account が null の場合に限り、UI（SignInHubActivity）を起動する
+        debugPrint("Initiating interactive Google Sign-In...");
         account = await _googleSignIn.signIn();
       }
 
@@ -83,8 +95,8 @@ class BackupService {
   }
 
   // Google Driveにバックアップ
-  static Future<bool> backupToGoogleDrive() async {
-    final client = await _getGoogleAuthClient();
+  static Future<bool> backupToGoogleDrive(BuildContext? context) async {
+    final client = await _getGoogleAuthClient(context: context);
     if (client == null) return false;
 
     try {
@@ -134,8 +146,8 @@ class BackupService {
   }
 
   // Google Driveから復元
-  static Future<bool> restoreFromGoogleDrive() async {
-    final client = await _getGoogleAuthClient();
+  static Future<bool> restoreFromGoogleDrive(BuildContext? context) async {
+    final client = await _getGoogleAuthClient(context: context);
     if (client == null) return false;
 
     try {
