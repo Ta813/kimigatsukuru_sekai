@@ -55,7 +55,7 @@ class SpeechBubble extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: Padding(
-              padding: const EdgeInsets.only(left: 130.0),
+              padding: const EdgeInsets.only(left: 170.0),
               child: _buildTail(context),
             ),
           ),
