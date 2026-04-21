@@ -1589,5 +1589,5 @@ class AppLocalizationsBn extends AppLocalizations {
   String get helpMenuPromiseSettings => 'প্রতিশ্রুতি সেট';
 
   @override
-  String get missionTutorialBonusChance => 'Chance to get 200 points by completing the tutorial!';
+  String get missionTutorialBonusChance => 'টিউটোরিয়াল সম্পন্ন করে\n২০০ পয়েন্ট পাওয়ার সুযোগ!!';
 }

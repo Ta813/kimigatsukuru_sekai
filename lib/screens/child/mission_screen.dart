@@ -437,8 +437,8 @@ class _MissionScreenState extends State<MissionScreen>
       children: [
         Icon(iconData, size: 18),
         Positioned(
-          top: -6, // 大きくした分、位置を少し外側にズラす
-          right: -8,
+          top: -10, // 大きくした分、位置を少し外側にズラす
+          right: -17,
           child: ScaleTransition(
             scale: Tween<double>(begin: 1.0, end: 1.3).animate(
               CurvedAnimation(
@@ -448,9 +448,10 @@ class _MissionScreenState extends State<MissionScreen>
             ),
             child: Container(
               padding: const EdgeInsets.all(4), // 余白を増やして少し大きく
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.red,
                 shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2.0),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black26,

@@ -3166,7 +3166,7 @@ abstract class AppLocalizations {
   /// No description provided for @missionTutorialBonusChance.
   ///
   /// In en, this message translates to:
-  /// **'Chance to get 200 points by completing the tutorial!'**
+  /// **'Chance to get\n200 points by completing the tutorial!!'**
   String get missionTutorialBonusChance;
 }
 

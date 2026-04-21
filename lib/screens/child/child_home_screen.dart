@@ -2148,309 +2148,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           SafeArea(
             child: Stack(
               children: [
-                Positioned(
-                  top: 0,
-                  bottom: 0,
-                  right: 10,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // 🌟 ミッションボタン
-                        Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.topRight,
-                          children: [
-                            // 🌟 初回限定のミッション案内吹き出し
-                            if (_showMissionHint && !isAnyTutorialActive)
-                              Positioned(
-                                bottom: 50, // ボタンのすぐ上に表示
-                                right: 0, // 吹き出しのしっぽをボタンの上に合わせる
-                                child: IgnorePointer(
-                                  child: ScaleTransition(
-                                    scale: Tween<double>(begin: 1.0, end: 1.1)
-                                        .animate(
-                                          CurvedAnimation(
-                                            parent: _hintAnimationController,
-                                            curve: Curves.easeInOut,
-                                          ),
-                                        ),
-                                    child: SpeechBubble(
-                                      text: _isTutorialMissionIncomplete
-                                          ? AppLocalizations.of(
-                                              context,
-                                            )!.missionTutorialBonusChance
-                                          : AppLocalizations.of(
-                                              context,
-                                            )!.missionHintBubble,
-                                      tailDirection: TailDirection.bottomRight,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            BlinkingEffect(
-                              isBlinking: _isTutorialMissionIncomplete,
-                              child: Material(
-                                color: const Color(0xFFFF7043).withOpacity(0.9),
-                                borderRadius: BorderRadius.circular(8),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(8),
-                                  onTap: () async {
-                                    try {
-                                      SfxManager.instance.playTapSound();
-                                    } catch (e) {}
-                                    // ★ミッション画面へ遷移
-                                    FirebaseAnalytics.instance.logEvent(
-                                      name: 'mission_button_tapped',
-                                    );
-
-                                    if (_showMissionHint) {
-                                      await SharedPrefsHelper.setHasVisitedMissionScreen(
-                                        true,
-                                      );
-                                      if (mounted) {
-                                        setState(() {
-                                          _showMissionHint = false;
-                                        });
-                                      }
-                                    }
-
-                                    if (!mounted) return;
-
-                                    // 🌟 ミッション画面へ遷移！
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MissionScreen(),
-                                      ),
-                                    ).then((result) {
-                                      // ミッション画面から戻ってきた時の共通の更新処理
-                                      _loadAndDetermineDisplayPromise();
-                                      _checkUnclaimedMissions();
-
-                                      // 🌟 【追加】もし「やってみる」ボタンから戻ってきたなら、チュートリアルを開始！
-                                      if (result != null && result is String) {
-                                        if (result == 'mission_parent_setup') {
-                                          // 例：「おやのやくそく」のチュートリアル（または設定画面）を呼び出す
-                                          // 以前 initState で呼んでいた _showGuideIfNeeded() の中身や、
-                                          // 親設定ダイアログを開くメソッドをここで呼び出します。
-                                          SharedPrefsHelper.setParentTutorial(
-                                            SharedPrefsHelper
-                                                .tutorialPhaseStart,
-                                          );
-                                          _showParentTutorial();
-                                          // _showParentSetupDialog(); // ← 実際のメソッド名に書き換えてください
-                                        } else if (result ==
-                                            'mission_first_promise') {
-                                          // 例：「はじめてのやくそく」のチュートリアルを呼び出す
-                                          // 画面上の特定の場所をハイライトしたり、説明ダイアログを出したりするメソッド
-                                          SharedPrefsHelper.setChildTutorial(
-                                            SharedPrefsHelper
-                                                .tutorialPhaseStart,
-                                          );
-                                          _showChildTutorial();
-                                        }
-                                      }
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6.0,
-                                      vertical: 4.0,
-                                    ),
-                                    child: SizedBox(
-                                      width: 55,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons
-                                                .assignment_turned_in, // ミッションっぽいアイコン
-                                            size: 24,
-                                            color: Color(0xFFFFCA28),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.missionScreenTitle,
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                              color: Color(0xFFFFCA28),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // 🌟 「！」バッジの表示
-                            if (_hasUnclaimedMissions)
-                              Positioned(
-                                top: -6, // バッジを大きくしたので少し位置を調整
-                                right: -6,
-                                // 🌟 既存のアニメーションを使い回してポヨポヨンさせる！
-                                child: ScaleTransition(
-                                  scale: Tween<double>(begin: 1.0, end: 1.3)
-                                      .animate(
-                                        CurvedAnimation(
-                                          parent: _hintAnimationController,
-                                          curve: Curves.easeInOut,
-                                        ),
-                                      ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(
-                                      6,
-                                    ), // 少し大きく（4 → 6）
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: const Text(
-                                      '!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14, // 文字も少し大きく（12 → 14）
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
-                        // ★ BGM変更ボタンを一番上に追加
-                        Material(
-                          color: const Color(0xFFFF7043).withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(8),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
-                            onTap: () async {
-                              try {
-                                SfxManager.instance.playTapSound();
-                              } catch (e) {
-                                // エラーが発生した場合
-                                print('再生エラー: $e');
-                              }
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const BgmSelectionScreen(),
-                                ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6.0,
-                                vertical: 4.0,
-                              ),
-                              child: SizedBox(
-                                width: 55,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.music_note,
-                                      size: 24,
-                                      color: Color(0xFFFFCA28),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      AppLocalizations.of(context)!.navMusic,
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                        color: Color(0xFFFFCA28),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
-
-                        Material(
-                          color: const Color(0xFFFF7043).withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(8),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
-                            onTap: () async {
-                              try {
-                                SfxManager.instance.playTapSound();
-                              } catch (e) {
-                                // エラーが発生した場合
-                                print('再生エラー: $e');
-                              }
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => WorldMapScreen(
-                                    currentLevel: _level,
-                                    currentPoints: _points,
-                                    requiredExpForNextLevel:
-                                        _requiredExpForNextLevel,
-                                    experience: _experience,
-                                    experienceFraction: _experienceFraction,
-                                  ),
-                                ),
-                              ).then((_) {
-                                // ★世界選択画面から戻ってきたら、必ずデータを再読み込みする
-                                _loadAndDetermineDisplayPromise();
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6.0,
-                                vertical: 4.0,
-                              ),
-                              child: SizedBox(
-                                width: 55,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.public,
-                                      size: 24,
-                                      color: Color(0xFFFFCA28),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      AppLocalizations.of(context)!.navWorldMap,
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                        color: Color(0xFFFFCA28),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
                 // ★ レベル表示（順番をボトムバーの前に移動）
                 Positioned(
                   top: 10, // ポイント表示の下あたり
@@ -2600,6 +2297,313 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           ),
                         ),
                     ],
+                  ),
+                ),
+
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  right: 10,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // 🌟 ミッションボタン
+                        Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.topRight,
+                          children: [
+                            // 🌟 初回限定のミッション案内吹き出し
+                            if (_showMissionHint && !isAnyTutorialActive)
+                              Positioned(
+                                bottom: 50, // ボタンのすぐ上に表示
+                                right: 0, // 吹き出しのしっぽをボタンの上に合わせる
+                                child: IgnorePointer(
+                                  child: ScaleTransition(
+                                    scale: Tween<double>(begin: 1.0, end: 1.1)
+                                        .animate(
+                                          CurvedAnimation(
+                                            parent: _hintAnimationController,
+                                            curve: Curves.easeInOut,
+                                          ),
+                                        ),
+                                    child: SpeechBubble(
+                                      text: _isTutorialMissionIncomplete
+                                          ? AppLocalizations.of(
+                                              context,
+                                            )!.missionTutorialBonusChance
+                                          : AppLocalizations.of(
+                                              context,
+                                            )!.missionHintBubble,
+                                      tailDirection: TailDirection.bottomRight,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            BlinkingEffect(
+                              isBlinking: _isTutorialMissionIncomplete,
+                              child: Material(
+                                color: const Color(0xFFFF7043).withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(8),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(8),
+                                  onTap: () async {
+                                    try {
+                                      SfxManager.instance.playTapSound();
+                                    } catch (e) {}
+                                    // ★ミッション画面へ遷移
+                                    FirebaseAnalytics.instance.logEvent(
+                                      name: 'mission_button_tapped',
+                                    );
+
+                                    if (_showMissionHint) {
+                                      await SharedPrefsHelper.setHasVisitedMissionScreen(
+                                        true,
+                                      );
+                                      if (mounted) {
+                                        setState(() {
+                                          _showMissionHint = false;
+                                        });
+                                      }
+                                    }
+
+                                    if (!mounted) return;
+
+                                    // 🌟 ミッション画面へ遷移！
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MissionScreen(),
+                                      ),
+                                    ).then((result) {
+                                      // ミッション画面から戻ってきた時の共通の更新処理
+                                      _loadAndDetermineDisplayPromise();
+                                      _checkUnclaimedMissions();
+
+                                      // 🌟 【追加】もし「やってみる」ボタンから戻ってきたなら、チュートリアルを開始！
+                                      if (result != null && result is String) {
+                                        if (result == 'mission_parent_setup') {
+                                          // 例：「おやのやくそく」のチュートリアル（または設定画面）を呼び出す
+                                          // 以前 initState で呼んでいた _showGuideIfNeeded() の中身や、
+                                          // 親設定ダイアログを開くメソッドをここで呼び出します。
+                                          SharedPrefsHelper.setParentTutorial(
+                                            SharedPrefsHelper
+                                                .tutorialPhaseStart,
+                                          );
+                                          _showParentTutorial();
+                                          // _showParentSetupDialog(); // ← 実際のメソッド名に書き換えてください
+                                        } else if (result ==
+                                            'mission_first_promise') {
+                                          // 例：「はじめてのやくそく」のチュートリアルを呼び出す
+                                          // 画面上の特定の場所をハイライトしたり、説明ダイアログを出したりするメソッド
+                                          SharedPrefsHelper.setChildTutorial(
+                                            SharedPrefsHelper
+                                                .tutorialPhaseStart,
+                                          );
+                                          _showChildTutorial();
+                                        }
+                                      }
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6.0,
+                                      vertical: 4.0,
+                                    ),
+                                    child: SizedBox(
+                                      width: 55,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons
+                                                .assignment_turned_in, // ミッションっぽいアイコン
+                                            size: 24,
+                                            color: Color(0xFFFFCA28),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.missionScreenTitle,
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              color: Color(0xFFFFCA28),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // 🌟 「！」バッジの表示
+                            if (_hasUnclaimedMissions)
+                              Positioned(
+                                top: -14, // バッジを大きくしたので少し位置を調整
+                                right: -8,
+                                // 🌟 既存のアニメーションを使い回してポヨポヨンさせる！
+                                child: ScaleTransition(
+                                  scale: Tween<double>(begin: 1.0, end: 1.3)
+                                      .animate(
+                                        CurvedAnimation(
+                                          parent: _hintAnimationController,
+                                          curve: Curves.easeInOut,
+                                        ),
+                                      ),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(
+                                      6,
+                                    ), // 少し大きく（4 → 6）
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 2.0,
+                                      ),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 2,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Text(
+                                      '!',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14, // 文字も少し大きく（12 → 14）
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
+                        // ★ BGM変更ボタンを一番上に追加
+                        Material(
+                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () async {
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (e) {
+                                // エラーが発生した場合
+                                print('再生エラー: $e');
+                              }
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const BgmSelectionScreen(),
+                                ),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                                vertical: 4.0,
+                              ),
+                              child: SizedBox(
+                                width: 55,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.music_note,
+                                      size: 24,
+                                      color: Color(0xFFFFCA28),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      AppLocalizations.of(context)!.navMusic,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Color(0xFFFFCA28),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
+
+                        Material(
+                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(8),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () async {
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (e) {
+                                // エラーが発生した場合
+                                print('再生エラー: $e');
+                              }
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WorldMapScreen(
+                                    currentLevel: _level,
+                                    currentPoints: _points,
+                                    requiredExpForNextLevel:
+                                        _requiredExpForNextLevel,
+                                    experience: _experience,
+                                    experienceFraction: _experienceFraction,
+                                  ),
+                                ),
+                              ).then((_) {
+                                // ★世界選択画面から戻ってきたら、必ずデータを再読み込みする
+                                _loadAndDetermineDisplayPromise();
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                                vertical: 4.0,
+                              ),
+                              child: SizedBox(
+                                width: 55,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.public,
+                                      size: 24,
+                                      color: Color(0xFFFFCA28),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      AppLocalizations.of(context)!.navWorldMap,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Color(0xFFFFCA28),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

@@ -1589,5 +1589,5 @@ class AppLocalizationsUr extends AppLocalizations {
   String get helpMenuPromiseSettings => 'وعدے سیٹ کریں';
 
   @override
-  String get missionTutorialBonusChance => 'Chance to get 200 points by completing the tutorial!';
+  String get missionTutorialBonusChance => 'ٹیوٹوریل مکمل کرکے\n200 پوائنٹس حاصل کرنے کا موقع!!';
 }
