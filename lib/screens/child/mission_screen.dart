@@ -5,6 +5,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
 import '../../managers/sfx_manager.dart';
 import 'package:confetti/confetti.dart';
+import '../../widgets/blinking_effect.dart';
 
 // ミッションカテゴリ
 enum MissionCategory { tutorial, firstTime, cumulative }
@@ -55,6 +56,7 @@ class _MissionScreenState extends State<MissionScreen>
   bool _hasUnclaimedTutorial = false;
   bool _hasUnclaimedFirstTime = false;
   bool _hasUnclaimedCumulative = false;
+  bool _isTutorialMissionIncomplete = false;
 
   @override
   void initState() {
@@ -380,6 +382,9 @@ class _MissionScreenState extends State<MissionScreen>
         _hasUnclaimedFirstTime = checkTabBadge(MissionCategory.firstTime);
         _hasUnclaimedCumulative = checkTabBadge(MissionCategory.cumulative);
         _isLoading = false;
+        _isTutorialMissionIncomplete =
+            !claimedIds.contains('mission_parent_setup') ||
+            !claimedIds.contains('mission_first_promise');
       });
     }
   }
@@ -509,10 +514,13 @@ class _MissionScreenState extends State<MissionScreen>
     // フラグが true の時だけ「チュートリアル」タブを追加
     if (_showTutorialTab) {
       tabs.add(
-        _buildCompactTab(
-          l10n.missionTabTutorial,
-          Icons.school,
-          _hasUnclaimedTutorial,
+        BlinkingEffect(
+          isBlinking: _isTutorialMissionIncomplete,
+          child: _buildCompactTab(
+            l10n.missionTabTutorial,
+            Icons.school,
+            _hasUnclaimedTutorial,
+          ),
         ),
       );
       tabViews.add(_buildMissionList(MissionCategory.tutorial));
@@ -697,21 +705,26 @@ class _MissionScreenState extends State<MissionScreen>
                     ],
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: onPressed,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                BlinkingEffect(
+                  isBlinking:
+                      mission.category == MissionCategory.tutorial &&
+                      !mission.isClaimed,
+                  child: ElevatedButton(
+                    onPressed: onPressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: buttonColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: mission.isCompleted && !mission.isClaimed
+                          ? 4
+                          : 0,
                     ),
-                    elevation: mission.isCompleted && !mission.isClaimed
-                        ? 4
-                        : 0,
-                  ),
-                  child: Text(
-                    buttonText,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    child: Text(
+                      buttonText,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ],

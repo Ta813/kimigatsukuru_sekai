@@ -688,5 +688,6 @@
   "tutorialFirstPromiseCompleteTitle": "やくそく体験完了！",
   "tutorialFirstPromiseCompleteDesc": "これで**やくそく体験**は完了です！\nミッション画面でごほうびを受け取ろう!",
   "missionHintBubble": "ここからミッションができるよ！",
-  "helpMenuPromiseSettings": "やくそくの設定"
+  "helpMenuPromiseSettings": "やくそくの設定",
+  "missionTutorialBonusChance": "チュートリアル完了で\n200ポイントゲットのチャンス！！"
 }

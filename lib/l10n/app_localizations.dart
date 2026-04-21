@@ -3162,6 +3162,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set Promises'**
   String get helpMenuPromiseSettings;
+
+  /// No description provided for @missionTutorialBonusChance.
+  ///
+  /// In en, this message translates to:
+  /// **'Chance to get 200 points by completing the tutorial!'**
+  String get missionTutorialBonusChance;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

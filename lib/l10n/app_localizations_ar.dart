@@ -1587,4 +1587,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get helpMenuPromiseSettings => 'إعداد المهام';
+
+  @override
+  String get missionTutorialBonusChance => 'Chance to get 200 points by completing the tutorial!';
 }

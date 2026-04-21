@@ -1878,6 +1878,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     return 50.0;
   }
 
+  bool _isTutorialMissionIncomplete = false;
+
   // 🌟 未受け取り、または挑戦可能なミッションがあるかチェックして「！」バッジを更新するメソッド
   Future<void> _checkUnclaimedMissions() async {
     // 1. 各種データをSharedPrefsHelperから取得
@@ -1896,6 +1898,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     // ※達成・未達成に関わらず、チュートリアルが受け取り済みでなければ「！」を出す
     if (!claimedIds.contains('mission_parent_setup')) hasUnclaimed = true;
     if (!claimedIds.contains('mission_first_promise')) hasUnclaimed = true;
+
+    // 🌟 追加: チュートリアルミッションが「未受け取り」かどうかを判定 (点滅表示用)
+    // 完了していても受け取るまでは点滅を続けるように変更
+    final bool isTutorialUnclaimed =
+        !claimedIds.contains('mission_parent_setup') ||
+        !claimedIds.contains('mission_first_promise');
 
     // --- 条件2：はじめて系のミッションで「できるもの」または「受け取れるもの」がある ---
     // 🌟 変更: 「まだ受け取っていない」かつ「今のレベルで挑戦可能」ならバッジを出すようにしました
@@ -1946,7 +1954,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (mounted) {
       setState(() {
         _hasUnclaimedMissions = hasUnclaimed;
-        _showMissionHint = !hasVisitedMissionScreen;
+        _isTutorialMissionIncomplete = isTutorialUnclaimed;
+        // チュートリアルが未完了（または未受け取り）なら、ヒントを常に出す（200ポイントゲットのチャンス）
+        if (isTutorialUnclaimed) {
+          _showMissionHint = true;
+        } else {
+          _showMissionHint = !hasVisitedMissionScreen;
+        }
       });
     }
   }
@@ -2162,101 +2176,114 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                           ),
                                         ),
                                     child: SpeechBubble(
-                                      text: AppLocalizations.of(
-                                        context,
-                                      )!.missionHintBubble,
+                                      text: _isTutorialMissionIncomplete
+                                          ? AppLocalizations.of(
+                                              context,
+                                            )!.missionTutorialBonusChance
+                                          : AppLocalizations.of(
+                                              context,
+                                            )!.missionHintBubble,
                                       tailDirection: TailDirection.bottomRight,
                                     ),
                                   ),
                                 ),
                               ),
-                            Material(
-                              color: const Color(0xFFFF7043).withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(8),
-                              child: InkWell(
+                            BlinkingEffect(
+                              isBlinking: _isTutorialMissionIncomplete,
+                              child: Material(
+                                color: const Color(0xFFFF7043).withOpacity(0.9),
                                 borderRadius: BorderRadius.circular(8),
-                                onTap: () async {
-                                  try {
-                                    SfxManager.instance.playTapSound();
-                                  } catch (e) {}
-
-                                  if (_showMissionHint) {
-                                    await SharedPrefsHelper.setHasVisitedMissionScreen(
-                                      true,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(8),
+                                  onTap: () async {
+                                    try {
+                                      SfxManager.instance.playTapSound();
+                                    } catch (e) {}
+                                    // ★ミッション画面へ遷移
+                                    FirebaseAnalytics.instance.logEvent(
+                                      name: 'mission_button_tapped',
                                     );
-                                    if (mounted) {
-                                      setState(() {
-                                        _showMissionHint = false;
-                                      });
-                                    }
-                                  }
 
-                                  if (!mounted) return;
-
-                                  // 🌟 ミッション画面へ遷移！
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MissionScreen(),
-                                    ),
-                                  ).then((result) {
-                                    // ミッション画面から戻ってきた時の共通の更新処理
-                                    _loadAndDetermineDisplayPromise();
-                                    _checkUnclaimedMissions();
-
-                                    // 🌟 【追加】もし「やってみる」ボタンから戻ってきたなら、チュートリアルを開始！
-                                    if (result != null && result is String) {
-                                      if (result == 'mission_parent_setup') {
-                                        // 例：「おやのやくそく」のチュートリアル（または設定画面）を呼び出す
-                                        // 以前 initState で呼んでいた _showGuideIfNeeded() の中身や、
-                                        // 親設定ダイアログを開くメソッドをここで呼び出します。
-                                        SharedPrefsHelper.setParentTutorial(
-                                          SharedPrefsHelper.tutorialPhaseStart,
-                                        );
-                                        _showParentTutorial();
-                                        // _showParentSetupDialog(); // ← 実際のメソッド名に書き換えてください
-                                      } else if (result ==
-                                          'mission_first_promise') {
-                                        // 例：「はじめてのやくそく」のチュートリアルを呼び出す
-                                        // 画面上の特定の場所をハイライトしたり、説明ダイアログを出したりするメソッド
-                                        SharedPrefsHelper.setChildTutorial(
-                                          SharedPrefsHelper.tutorialPhaseStart,
-                                        );
-                                        _showChildTutorial();
+                                    if (_showMissionHint) {
+                                      await SharedPrefsHelper.setHasVisitedMissionScreen(
+                                        true,
+                                      );
+                                      if (mounted) {
+                                        setState(() {
+                                          _showMissionHint = false;
+                                        });
                                       }
                                     }
-                                  });
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6.0,
-                                    vertical: 4.0,
-                                  ),
-                                  child: SizedBox(
-                                    width: 55,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons
-                                              .assignment_turned_in, // ミッションっぽいアイコン
-                                          size: 24,
-                                          color: Color(0xFFFFCA28),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.missionScreenTitle,
-                                          style: const TextStyle(
-                                            fontSize: 10,
+
+                                    if (!mounted) return;
+
+                                    // 🌟 ミッション画面へ遷移！
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MissionScreen(),
+                                      ),
+                                    ).then((result) {
+                                      // ミッション画面から戻ってきた時の共通の更新処理
+                                      _loadAndDetermineDisplayPromise();
+                                      _checkUnclaimedMissions();
+
+                                      // 🌟 【追加】もし「やってみる」ボタンから戻ってきたなら、チュートリアルを開始！
+                                      if (result != null && result is String) {
+                                        if (result == 'mission_parent_setup') {
+                                          // 例：「おやのやくそく」のチュートリアル（または設定画面）を呼び出す
+                                          // 以前 initState で呼んでいた _showGuideIfNeeded() の中身や、
+                                          // 親設定ダイアログを開くメソッドをここで呼び出します。
+                                          SharedPrefsHelper.setParentTutorial(
+                                            SharedPrefsHelper
+                                                .tutorialPhaseStart,
+                                          );
+                                          _showParentTutorial();
+                                          // _showParentSetupDialog(); // ← 実際のメソッド名に書き換えてください
+                                        } else if (result ==
+                                            'mission_first_promise') {
+                                          // 例：「はじめてのやくそく」のチュートリアルを呼び出す
+                                          // 画面上の特定の場所をハイライトしたり、説明ダイアログを出したりするメソッド
+                                          SharedPrefsHelper.setChildTutorial(
+                                            SharedPrefsHelper
+                                                .tutorialPhaseStart,
+                                          );
+                                          _showChildTutorial();
+                                        }
+                                      }
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6.0,
+                                      vertical: 4.0,
+                                    ),
+                                    child: SizedBox(
+                                      width: 55,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons
+                                                .assignment_turned_in, // ミッションっぽいアイコン
+                                            size: 24,
                                             color: Color(0xFFFFCA28),
-                                            fontWeight: FontWeight.bold,
                                           ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.missionScreenTitle,
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              color: Color(0xFFFFCA28),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

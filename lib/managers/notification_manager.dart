@@ -145,7 +145,6 @@ class NotificationManager {
               importance: Importance.high,
               priority: Priority.high,
               color: Color(0xFFFF7043),
-              icon: 'ic_notification', // ★明示的に指定
             ),
             iOS: DarwinNotificationDetails(),
           ),
@@ -212,7 +211,6 @@ class NotificationManager {
             importance: Importance.high,
             priority: Priority.high,
             color: Color(0xFFFF7043),
-            icon: 'ic_notification', // ★明示的に指定
           ),
           iOS: DarwinNotificationDetails(),
         ),
