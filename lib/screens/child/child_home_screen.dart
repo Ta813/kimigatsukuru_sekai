@@ -444,6 +444,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         await facebookAppEvents.setAdvertiserTracking(
           enabled: status.isGranted,
         );
+      } else {
+        await facebookAppEvents.setAdvertiserTracking(enabled: true);
       }
     } catch (e) {
       print("Facebook SDK初期化エラー: $e");
