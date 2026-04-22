@@ -67,6 +67,18 @@
 		    	<string>com.googleusercontent.apps.1059611862340-hqiha49toaqflgpls1sr8jbj0cvn1lif</string>
 		    </array>
 	    </dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb2210361479492024</string>
+			</array>
+		</dict>
     </array>
+	<key>FacebookAppID</key>
+	<string>2210361479492024</string>
+	<key>FacebookClientToken</key>
+	<string>55600afd30e0755ffa3a615ee96fe8be</string>
+	<key>FacebookDisplayName</key>
+	<string>kimigatsukuru sekai</string>
 </dict>
 </plist>
