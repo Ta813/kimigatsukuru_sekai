@@ -1590,4 +1590,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get missionTutorialBonusChance => 'Chance to get\n200 points by completing the tutorial!!';
+
+  @override
+  String get notificationChannelPromiseName => 'Promise Reminders';
+
+  @override
+  String get notificationChannelPromiseDesc => 'Notifications for each promise time';
+
+  @override
+  String get notificationChannelWeeklyName => 'Weekly Reminder';
 }

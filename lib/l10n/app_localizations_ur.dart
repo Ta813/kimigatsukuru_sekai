@@ -1590,4 +1590,13 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get missionTutorialBonusChance => 'ٹیوٹوریل مکمل کرکے\n200 پوائنٹس حاصل کرنے کا موقع!!';
+
+  @override
+  String get notificationChannelPromiseName => 'وعدوں کی یاد دہانی';
+
+  @override
+  String get notificationChannelPromiseDesc => 'ہر وعدے کے وقت کے لیے اطلاعات';
+
+  @override
+  String get notificationChannelWeeklyName => 'ہفتہ وار یاد دہانی';
 }

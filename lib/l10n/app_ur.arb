@@ -689,5 +689,8 @@
   "tutorialFirstPromiseCompleteDesc": "**وعدے کا تجربہ** مکمل ہو گیا ہے!\nاپنا انعام حاصل کرنے کے لیے مشن اسکرین پر جائیں!",
   "missionHintBubble": "آپ یہاں سے مشن کر سکتے ہیں!",
   "helpMenuPromiseSettings": "وعدے سیٹ کریں",
-  "missionTutorialBonusChance": "ٹیوٹوریل مکمل کرکے\n200 پوائنٹس حاصل کرنے کا موقع!!"
+  "missionTutorialBonusChance": "ٹیوٹوریل مکمل کرکے\n200 پوائنٹس حاصل کرنے کا موقع!!",
+  "notificationChannelPromiseName": "وعدوں کی یاد دہانی",
+  "notificationChannelPromiseDesc": "ہر وعدے کے وقت کے لیے اطلاعات",
+  "notificationChannelWeeklyName": "ہفتہ وار یاد دہانی"
 }

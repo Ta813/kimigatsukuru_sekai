@@ -3168,6 +3168,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chance to get\n200 points by completing the tutorial!!'**
   String get missionTutorialBonusChance;
+
+  /// No description provided for @notificationChannelPromiseName.
+  ///
+  /// In en, this message translates to:
+  /// **'Promise Reminders'**
+  String get notificationChannelPromiseName;
+
+  /// No description provided for @notificationChannelPromiseDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications for each promise time'**
+  String get notificationChannelPromiseDesc;
+
+  /// No description provided for @notificationChannelWeeklyName.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Reminder'**
+  String get notificationChannelWeeklyName;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

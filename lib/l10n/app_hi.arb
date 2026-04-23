@@ -643,5 +643,8 @@
   "tutorialFirstPromiseCompleteDesc": "**वादा का अनुभव** पूरा हो गया है!\nअपना इनाम पाने के लिए मिशन स्क्रीन पर जाएं!",
   "missionHintBubble": "आप यहाँ से मिशन कर सकते हैं!",
   "helpMenuPromiseSettings": "वादे सेट करें",
-  "missionTutorialBonusChance": "ट्यूटोरियल पूरा करके\n200 पॉइंट पाने का मौका!!"
+  "missionTutorialBonusChance": "ट्यूटोरियल पूरा करके\n200 पॉइंट पाने का मौका!!",
+  "notificationChannelPromiseName": "वादे के रिमाइंडर",
+  "notificationChannelPromiseDesc": "प्रत्येक वादे के समय के लिए सूचनाएं",
+  "notificationChannelWeeklyName": "साप्ताहिक रिमाइंडर"
 }

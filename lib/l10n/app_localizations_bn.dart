@@ -1590,4 +1590,13 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get missionTutorialBonusChance => 'টিউটোরিয়াল সম্পন্ন করে\n২০০ পয়েন্ট পাওয়ার সুযোগ!!';
+
+  @override
+  String get notificationChannelPromiseName => 'প্রতিশ্রুতির অনুস্মারক';
+
+  @override
+  String get notificationChannelPromiseDesc => 'প্রতিটি প্রতিশ্রুতির সময়ের জন্য বিজ্ঞপ্তি';
+
+  @override
+  String get notificationChannelWeeklyName => 'সাপ্তাহিক অনুস্মারক';
 }

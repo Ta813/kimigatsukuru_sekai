@@ -689,5 +689,8 @@
   "tutorialFirstPromiseCompleteDesc": "لقد اكتملت **تجربة الوعد**!\nدعنا نذهب إلى شاشة المهام للحصول على مكافأتك!",
   "missionHintBubble": "يمكنك أداء المهام من هنا!",
   "helpMenuPromiseSettings": "إعداد المهام",
-  "missionTutorialBonusChance": "فرصة للحصول على\n200 نقطة بإكمال البرنامج التعليمي!!"
+  "missionTutorialBonusChance": "فرصة للحصول على\n200 نقطة بإكمال البرنامج التعليمي!!",
+  "notificationChannelPromiseName": "تذكيرات الوعود",
+  "notificationChannelPromiseDesc": "إشعارات لكل وقت وعد",
+  "notificationChannelWeeklyName": "تذكير أسبوعي"
 }

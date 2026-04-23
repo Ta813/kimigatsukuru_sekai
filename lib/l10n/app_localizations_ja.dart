@@ -30,43 +30,37 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideWelcomeTitle => 'まずは**こどもの気分**になって遊んでみよう！';
 
   @override
-  String get guideWelcomeDesc =>
-      'どんな風に「やくそく」にチャレンジするのか、実際に体験してみてね！\n下のバーに**『お試しのやくそく』**を用意したよ。\nさっそく『スタート』を押して、こどもの気分で遊んでみてね！';
+  String get guideWelcomeDesc => 'どんな風に「やくそく」にチャレンジするのか、実際に体験してみてね！\n下のバーに**『お試しのやくそく』**を用意したよ。\nさっそく『スタート』を押して、こどもの気分で遊んでみてね！';
 
   @override
   String get guideSettingsTitle => 'おうちのひと設定「左上の⚙マーク」';
 
   @override
-  String get guideSettingsDesc =>
-      'やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！';
+  String get guideSettingsDesc => 'やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！';
 
   @override
   String get tutorialShopTitle => '100ポイントゲットだね！✨';
 
   @override
-  String get tutorialShopDesc =>
-      'ポイントがたまったよ！\nさっそく右の🏠ボタンから**「おみせ」**でアイテムをかってみよう！';
+  String get tutorialShopDesc => 'ポイントがたまったよ！\nさっそく右の🏠ボタンから**「おみせ」**でアイテムをかってみよう！';
 
   @override
   String get tutorialCustomizeTitle => 'アイテムをゲットしたね！🎁';
 
   @override
-  String get tutorialCustomizeDesc =>
-      'アイテムをてにいれたね！\n次は右の☺ボタンから**「きせかえ・もようがえ」**で、おへやにかざってみよう！';
+  String get tutorialCustomizeDesc => 'アイテムをてにいれたね！\n次は右の☺ボタンから**「きせかえ・もようがえ」**で、おへやにかざってみよう！';
 
   @override
   String get tutorialParentSetupTitle => 'じゅんび完了！🎉';
 
   @override
-  String get tutorialParentSetupDesc =>
-      'こどもによろこんでもらう準備ができたよ！\nさっそく、毎日の**『やくそく』**を設定してはじめよう！';
+  String get tutorialParentSetupDesc => 'こどもによろこんでもらう準備ができたよ！\nさっそく、毎日の**『やくそく』**を設定してはじめよう！';
 
   @override
   String get tutorialMoveTitle => 'うごかしてみよう！✨';
 
   @override
-  String get tutorialMoveDesc =>
-      '「きせかえ・もようがえ」でえらんだものは、ゆびで**うごかせるよ**！\nすきな場所においてみてね。';
+  String get tutorialMoveDesc => '「きせかえ・もようがえ」でえらんだものは、ゆびで**うごかせるよ**！\nすきな場所においてみてね。';
 
   @override
   String get tutorialBtnStart => 'やってみる！';
@@ -87,15 +81,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideTrialPromiseTitle => 'パパ・ママも体験してみてね！✨';
 
   @override
-  String get guideTrialPromiseDesc =>
-      'どんな風に「やくそく」にチャレンジするのか、実際に体験してみてね！\n\n下のバーに「お試しのやくそく」を用意したよ。\nさっそく『スタート』を押して、こどもの気分で遊んでみてね！';
+  String get guideTrialPromiseDesc => 'どんな風に「やくそく」にチャレンジするのか、実際に体験してみてね！\n\n下のバーに「お試しのやくそく」を用意したよ。\nさっそく『スタート』を押して、こどもの気分で遊んでみてね！';
 
   @override
   String get guideNextPromiseTitle => 'つぎのやくそく「下のボード」';
 
   @override
-  String get guideNextPromiseDesc =>
-      'つぎに挑戦する「やくそく」が表示されるよ。\n「はじめる」を押してどんどんチャレンジしてね！';
+  String get guideNextPromiseDesc => 'つぎに挑戦する「やくそく」が表示されるよ。\n「はじめる」を押してどんどんチャレンジしてね！';
 
   @override
   String get guidePromiseBoardTitle => 'やくそくボード「右の📄マーク」';
@@ -107,8 +99,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guidePointsTitle => 'ポイント「右上の★」';
 
   @override
-  String get guidePointsDesc =>
-      'ここにやくそくを達成すると、ポイントがもらえるよ！\nたくさん集めて、ごほうびと交換しよう。';
+  String get guidePointsDesc => 'ここにやくそくを達成すると、ポイントがもらえるよ！\nたくさん集めて、ごほうびと交換しよう。';
 
   @override
   String get guideShopTitle => 'ごほうびショップ「右の🏠マーク」';
@@ -132,8 +123,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideWorldMapButtonTitle => '外の世界「右の🌎マーク」';
 
   @override
-  String get guideWorldMapButtonDesc =>
-      'このボタンを押すと、世界の全体図が見られるよ。レベルが上がると行ける場所が増えるかも！';
+  String get guideWorldMapButtonDesc => 'このボタンを押すと、世界の全体図が見られるよ。レベルが上がると行ける場所が増えるかも！';
 
   @override
   String get emergency => 'きんきゅう！';
@@ -280,36 +270,31 @@ class AppLocalizationsJa extends AppLocalizations {
   String get advice1Title => 'やくそくは、お子さんと一緒に決める';
 
   @override
-  String get advice1Desc =>
-      '「何を」「いつまでに」「何ポイントで」やるか、お子さんと一緒に話しながら決めてみましょう。自分で決めたルールだからこそ、挑戦する気持ちが芽生えます。';
+  String get advice1Desc => '「何を」「いつまでに」「何ポイントで」やるか、お子さんと一緒に話しながら決めてみましょう。自分で決めたルールだからこそ、挑戦する気持ちが芽生えます。';
 
   @override
   String get advice2Title => '最初は「かんたん」から始めよう';
 
   @override
-  String get advice2Desc =>
-      'まずは、お子さんが絶対にクリアできる簡単なやくそくから始めましょう。「できた！」という成功体験を積み重ねることが、自信に繋がります。';
+  String get advice2Desc => 'まずは、お子さんが絶対にクリアできる簡単なやくそくから始めましょう。「できた！」という成功体験を積み重ねることが、自信に繋がります。';
 
   @override
   String get advice3Title => '時間は「少しだけ多め」に設定';
 
   @override
-  String get advice3Desc =>
-      '「急がなきゃ！」と焦らせるのではなく、「時間内にできた！」という達成感を味わえるように、最初のうちは挑戦時間を少しだけ長めに設定してあげるのがコツです。';
+  String get advice3Desc => '「急がなきゃ！」と焦らせるのではなく、「時間内にできた！」という達成感を味わえるように、最初のうちは挑戦時間を少しだけ長めに設定してあげるのがコツです。';
 
   @override
   String get advice4Title => 'ポイントは「特別感」を大切に';
 
   @override
-  String get advice4Desc =>
-      '難しいやくそくほど、もらえるポイントを少しだけ高く設定してみましょう。「このミッションは特別だ！」と感じることで、お子さんの挑戦意欲を引き出します。';
+  String get advice4Desc => '難しいやくそくほど、もらえるポイントを少しだけ高く設定してみましょう。「このミッションは特別だ！」と感じることで、お子さんの挑戦意欲を引き出します。';
 
   @override
   String get advice5Title => '一番のごほうびは「言葉」です';
 
   @override
-  String get advice5Desc =>
-      'アプリでのポイントも大切ですが、やくそくを達成したときには、ぜひ「よくできたね！」「すごい！」と、直接言葉で褒めてあげてください。それが、お子さんにとって最高のエネルギーになります。';
+  String get advice5Desc => 'アプリでのポイントも大切ですが、やくそくを達成したときには、ぜひ「よくできたね！」「すごい！」と、直接言葉で褒めてあげてください。それが、お子さんにとって最高のエネルギーになります。';
 
   @override
   String emergencyPromiseSet(String promiseTitle) {
@@ -721,8 +706,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get worldMapGuideTitle3 => 'まだまだ広がる世界';
 
   @override
-  String get worldMapGuideContent3 =>
-      '下にある海や、ずーっと上の宇宙にも、いつか行けるようになるかも…？\nお楽しみに！';
+  String get worldMapGuideContent3 => '下にある海や、ずーっと上の宇宙にも、いつか行けるようになるかも…？\nお楽しみに！';
 
   @override
   String get seaAreaLocked => 'レベル10になると入れるようになります！';
@@ -842,8 +826,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get disclosureTitle => 'データの取り扱いについて';
 
   @override
-  String get disclosureMessage =>
-      'このアプリは、広告の表示とアプリのパフォーマンス改善を目的として、インストール済みのアプリに関する情報や、デバイスの広告IDを収集・共有することがあります。';
+  String get disclosureMessage => 'このアプリは、広告の表示とアプリのパフォーマンス改善を目的として、インストール済みのアプリに関する情報や、デバイスの広告IDを収集・共有することがあります。';
 
   @override
   String get disagreeAction => '同意しない';
@@ -1143,8 +1126,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get samplePromiseTitle => 'やくそくを設定してね！';
 
   @override
-  String get samplePromiseDesc =>
-      'サンプルとして、いくつか「やくそく」を設定してあるよ！ご自身のお子様に合った設定に変えてあげてね。';
+  String get samplePromiseDesc => 'サンプルとして、いくつか「やくそく」を設定してあるよ！ご自身のお子様に合った設定に変えてあげてね。';
 
   @override
   String get gotIt => 'わかった';
@@ -1247,8 +1229,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get notificationRequestTitle => 'お知らせをうけとる？🔔';
 
   @override
-  String get notificationRequestMessage =>
-      'やくそくの時間になると、通知が鳴るよ！\n通知をオンにして、親子で楽しく続けよう✨';
+  String get notificationRequestMessage => 'やくそくの時間になると、通知が鳴るよ！\n通知をオンにして、親子で楽しく続けよう✨';
 
   @override
   String get notificationLater => 'あとで';
@@ -1311,22 +1292,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialParentStep3Title => 'サンプルのやくそくで\nためしてみよう！';
 
   @override
-  String get tutorialParentStep3Desc =>
-      '左の「**＋ボタン**」でやくそくを追加できます。\nためしに「**やくそく（おためし）**」を追加してみてね！';
+  String get tutorialParentStep3Desc => '左の「**＋ボタン**」でやくそくを追加できます。\nためしに「**やくそく（おためし）**」を追加してみてね！';
 
   @override
   String get tutorialParentStep5Title => 'やくそくの設定をしよう！';
 
   @override
-  String get tutorialParentStep5Desc =>
-      'おすすめや「カスタム追加」で、**お子さまに合ったやくそく**を設定してください。\n設定が終わったら「**もどる**」でホーム画面に戻ってね！';
+  String get tutorialParentStep5Desc => 'おすすめや「カスタム追加」で、**お子さまに合ったやくそく**を設定してください。\n設定が終わったら「**もどる**」でホーム画面に戻ってね！';
 
   @override
   String get tutorialParentCompleteTitle => 'やくそく設定が\nできました！';
 
   @override
-  String get tutorialParentCompleteDesc =>
-      'これで**やくそく設定**は完了です！\nミッション画面でごほうびを受け取ろう!';
+  String get tutorialParentCompleteDesc => 'これで**やくそく設定**は完了です！\nミッション画面でごほうびを受け取ろう!';
 
   @override
   String promiseNotificationTitle(String title) {
@@ -1342,8 +1320,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get weeklyNotificationTitle => '今週の「やくそく」はいかがですか？🌟';
 
   @override
-  String get weeklyNotificationBody =>
-      '毎日の育児お疲れ様です☕️ お子様の習慣づくりをアプリでチェックしてみましょう！';
+  String get weeklyNotificationBody => '毎日の育児お疲れ様です☕️ お子様の習慣づくりをアプリでチェックしてみましょう！';
 
   @override
   String alreadyAddedPromise(String title) {
@@ -1603,8 +1580,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'やくそく体験完了！';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc =>
-      'これで**やくそく体験**は完了です！\nミッション画面でごほうびを受け取ろう!';
+  String get tutorialFirstPromiseCompleteDesc => 'これで**やくそく体験**は完了です！\nミッション画面でごほうびを受け取ろう!';
 
   @override
   String get missionHintBubble => 'ここからミッションができるよ！';
@@ -1614,4 +1590,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get missionTutorialBonusChance => 'チュートリアル完了で\n200ポイントゲットのチャンス！！';
+
+  @override
+  String get notificationChannelPromiseName => 'やくそくの通知';
+
+  @override
+  String get notificationChannelPromiseDesc => '各やくそくの時間に通知します';
+
+  @override
+  String get notificationChannelWeeklyName => '今週のふりかえり';
 }

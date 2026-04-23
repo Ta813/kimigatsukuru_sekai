@@ -1590,4 +1590,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get missionTutorialBonusChance => 'ट्यूटोरियल पूरा करके\n200 पॉइंट पाने का मौका!!';
+
+  @override
+  String get notificationChannelPromiseName => 'वादे के रिमाइंडर';
+
+  @override
+  String get notificationChannelPromiseDesc => 'प्रत्येक वादे के समय के लिए सूचनाएं';
+
+  @override
+  String get notificationChannelWeeklyName => 'साप्ताहिक रिमाइंडर';
 }

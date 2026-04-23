@@ -689,5 +689,8 @@
   "tutorialFirstPromiseCompleteDesc": "**প্রতিশ্রুতি নেওয়া** সম্পন্ন হয়েছে!\nপুরস্কার পেতে মিশন স্ক্রিনে যান!",
   "missionHintBubble": "আপনি এখান থেকে মিশন করতে পারেন!",
   "helpMenuPromiseSettings": "প্রতিশ্রুতি সেট",
-  "missionTutorialBonusChance": "টিউটোরিয়াল সম্পন্ন করে\n২০০ পয়েন্ট পাওয়ার সুযোগ!!"
+  "missionTutorialBonusChance": "টিউটোরিয়াল সম্পন্ন করে\n২০০ পয়েন্ট পাওয়ার সুযোগ!!",
+  "notificationChannelPromiseName": "প্রতিশ্রুতির অনুস্মারক",
+  "notificationChannelPromiseDesc": "প্রতিটি প্রতিশ্রুতির সময়ের জন্য বিজ্ঞপ্তি",
+  "notificationChannelWeeklyName": "সাপ্তাহিক অনুস্মারক"
 }

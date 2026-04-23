@@ -83,7 +83,8 @@ class NotificationManager {
         langCode = savedLocale;
       } else {
         // 2. なければスマホ本体の言語設定を取得する
-        langCode = Platform.localeName.split('_')[0];
+        // ハイフンとアンダースコアの両方に対応 ('en-US' or 'en_US')
+        langCode = Platform.localeName.replaceAll('-', '_').split('_')[0];
       }
     } catch (e) {
       print('言語設定の取得エラー: $e');
@@ -137,14 +138,15 @@ class NotificationManager {
           title: notificationTitle,
           body: notificationBody,
           scheduledDate: _nextInstanceOfTime(timeStr),
-          notificationDetails: const NotificationDetails(
+          notificationDetails: NotificationDetails(
             android: AndroidNotificationDetails(
               'promise_reminder_channel',
-              'Promise Reminders',
-              channelDescription: 'Notifications for each promise time',
+              l10n.notificationChannelPromiseName,
+              channelDescription: l10n.notificationChannelPromiseDesc,
               importance: Importance.high,
               priority: Priority.high,
               color: Color(0xFFFF7043),
+              icon: 'ic_notification', // ★明示的に指定
             ),
             iOS: DarwinNotificationDetails(),
           ),
@@ -204,13 +206,14 @@ class NotificationManager {
         title: title,
         body: body,
         scheduledDate: _nextInstanceOfMonday11AM(),
-        notificationDetails: const NotificationDetails(
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             'weekly_reminder_channel',
-            'Weekly Reminder',
+            l10n.notificationChannelWeeklyName,
             importance: Importance.high,
             priority: Priority.high,
             color: Color(0xFFFF7043),
+            icon: 'ic_notification', // ★明示的に指定
           ),
           iOS: DarwinNotificationDetails(),
         ),

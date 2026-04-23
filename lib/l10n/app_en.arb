@@ -689,5 +689,8 @@
   "tutorialFirstPromiseCompleteDesc": "The **promise experience** is complete!\nLet's go to the mission screen to get your reward!",
   "missionHintBubble": "You can do missions from here!",
   "helpMenuPromiseSettings": "Set Promises",
-  "missionTutorialBonusChance": "Chance to get\n200 points by completing the tutorial!!"
+  "missionTutorialBonusChance": "Chance to get\n200 points by completing the tutorial!!",
+  "notificationChannelPromiseName": "Promise Reminders",
+  "notificationChannelPromiseDesc": "Notifications for each promise time",
+  "notificationChannelWeeklyName": "Weekly Reminder"
 }

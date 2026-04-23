@@ -689,5 +689,8 @@
   "tutorialFirstPromiseCompleteDesc": "これで**やくそく体験**は完了です！\nミッション画面でごほうびを受け取ろう!",
   "missionHintBubble": "ここからミッションができるよ！",
   "helpMenuPromiseSettings": "やくそくの設定",
-  "missionTutorialBonusChance": "チュートリアル完了で\n200ポイントゲットのチャンス！！"
+  "missionTutorialBonusChance": "チュートリアル完了で\n200ポイントゲットのチャンス！！",
+  "notificationChannelPromiseName": "やくそくの通知",
+  "notificationChannelPromiseDesc": "各やくそくの時間に通知します",
+  "notificationChannelWeeklyName": "今週のふりかえり"
 }

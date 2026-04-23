@@ -1590,4 +1590,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get missionTutorialBonusChance => 'فرصة للحصول على\n200 نقطة بإكمال البرنامج التعليمي!!';
+
+  @override
+  String get notificationChannelPromiseName => 'تذكيرات الوعود';
+
+  @override
+  String get notificationChannelPromiseDesc => 'إشعارات لكل وقت وعد';
+
+  @override
+  String get notificationChannelWeeklyName => 'تذكير أسبوعي';
 }
