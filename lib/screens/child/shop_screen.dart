@@ -273,8 +273,15 @@ class _ShopScreenState extends State<ShopScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              AppLocalizations.of(context)!.shopLevelLockMessage(item.requiredLevel),
-                              style: const TextStyle(fontSize: 16, height: 1.5, fontWeight: FontWeight.bold, color: Colors.orange),
+                              AppLocalizations.of(
+                                context,
+                              )!.shopLevelLockMessage(item.requiredLevel),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                height: 1.5,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.orange,
+                              ),
                             ),
                             Text(
                               AppLocalizations.of(
