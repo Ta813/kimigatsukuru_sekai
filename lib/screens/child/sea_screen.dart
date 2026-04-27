@@ -7,6 +7,7 @@ import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
 import 'shop_screen.dart';
 import '../../managers/sfx_manager.dart';
+import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 
 class SeaScreen extends StatefulWidget {
   final int currentLevel;
@@ -30,7 +31,11 @@ class SeaScreen extends StatefulWidget {
 
 class _SeaScreenState extends State<SeaScreen> {
   // --- 配置するアイテムの状態を管理する変数 ---
-  String? _equippedClothesPath;
+  String _equippedFace = 'assets/images/face/face_default.png';
+  String _equippedHair = 'assets/images/hair/hair_default.png';
+  String _equippedClothes = 'assets/images/clothes/clothes_default.png';
+  String? _equippedHeadgear;
+  String? _equippedAccessory;
   List<String> _equippedSeaItems = [];
   List<String> _equippedLivings = [];
 
@@ -56,7 +61,11 @@ class _SeaScreenState extends State<SeaScreen> {
     // --- 装備情報の読み込み ---
     final loadedPoints = await SharedPrefsHelper.loadPoints();
     final loadedLevel = await SharedPrefsHelper.loadLevel();
+    final face = await SharedPrefsHelper.loadEquippedFace();
+    final hair = await SharedPrefsHelper.loadEquippedHairstyle();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
+    final headgear = await SharedPrefsHelper.loadEquippedHeadgear();
+    final accessory = await SharedPrefsHelper.loadEquippedAccessory();
     final seaItems = await SharedPrefsHelper.loadEquippedSeaItems();
     final livings = await SharedPrefsHelper.loadEquippedLivings();
 
@@ -111,7 +120,12 @@ class _SeaScreenState extends State<SeaScreen> {
       setState(() {
         _points = loadedPoints;
         _level = loadedLevel;
-        _equippedClothesPath = clothes ?? 'assets/images/avatar.png';
+        _equippedFace = face ?? 'assets/images/face/face_default.png';
+        _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
+        _equippedClothes =
+            clothes ?? 'assets/images/clothes/clothes_default.png';
+        _equippedHeadgear = headgear;
+        _equippedAccessory = accessory;
         _avatarPosition =
             avatarPos ?? Offset(screenWidth / 2, screenHeight * 2 / 3);
         _equippedSeaItems = seaItems;
@@ -516,16 +530,22 @@ class _SeaScreenState extends State<SeaScreen> {
           }).toList(),
 
           // --- アバターの表示 ---
-          if (_equippedClothesPath != null)
-            DraggableCharacter(
-              id: 'avatar_on_sea',
-              imagePath: _equippedClothesPath!,
-              position: _avatarPosition,
-              size: _getItemSize(_equippedClothesPath!),
-              onPositionChanged: (delta) {
-                setState(() => _avatarPosition += delta);
-              },
+          DraggableCharacter(
+            id: 'avatar_on_sea',
+            customWidget: AvatarDisplay(
+              face: _equippedFace,
+              clothes: _equippedClothes,
+              hair: _equippedHair,
+              headgear: _equippedHeadgear,
+              accessory: _equippedAccessory,
+              size: _getItemSize(_equippedClothes),
             ),
+            position: _avatarPosition,
+            size: _getItemSize(_equippedClothes),
+            onPositionChanged: (delta) {
+              setState(() => _avatarPosition += delta);
+            },
+          ),
 
           // ★応援キャラクターの表示と操作
           ..._equippedCharacters.map((charPath) {

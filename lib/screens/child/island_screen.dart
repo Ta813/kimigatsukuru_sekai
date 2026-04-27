@@ -6,6 +6,7 @@ import 'shop_screen.dart'; // ショップ画面
 import 'furniture_customize_screen.dart'; // 家具設定画面
 import '../../l10n/app_localizations.dart';
 import '../../managers/sfx_manager.dart';
+import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 
 class IslandScreen extends StatefulWidget {
   final int currentLevel;
@@ -29,7 +30,11 @@ class IslandScreen extends StatefulWidget {
 
 class _IslandScreenState extends State<IslandScreen> {
   // --- 配置するアイテムの状態を管理する変数 ---
-  String? _equippedClothesPath;
+  String _equippedFace = 'assets/images/face/face_default.png';
+  String _equippedHair = 'assets/images/hair/hair_default.png';
+  String _equippedClothes = 'assets/images/clothes/clothes_default.png';
+  String? _equippedHeadgear;
+  String? _equippedAccessory;
   List<String> _equippedBuildings = [];
   List<String> _equippedVehicles = [];
 
@@ -55,7 +60,11 @@ class _IslandScreenState extends State<IslandScreen> {
     // --- 装備情報の読み込み ---
     final loadedPoints = await SharedPrefsHelper.loadPoints();
     final loadedLevel = await SharedPrefsHelper.loadLevel();
+    final face = await SharedPrefsHelper.loadEquippedFace();
+    final hair = await SharedPrefsHelper.loadEquippedHairstyle();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
+    final headgear = await SharedPrefsHelper.loadEquippedHeadgear();
+    final accessory = await SharedPrefsHelper.loadEquippedAccessory();
     final buildings = await SharedPrefsHelper.loadEquippedBuildings();
     final vehicles = await SharedPrefsHelper.loadEquippedVehicles();
 
@@ -110,7 +119,12 @@ class _IslandScreenState extends State<IslandScreen> {
       setState(() {
         _points = loadedPoints;
         _level = loadedLevel;
-        _equippedClothesPath = clothes ?? 'assets/images/avatar.png';
+        _equippedFace = face ?? 'assets/images/face/face_default.png';
+        _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
+        _equippedClothes =
+            clothes ?? 'assets/images/clothes/clothes_default.png';
+        _equippedHeadgear = headgear;
+        _equippedAccessory = accessory;
         _avatarPosition =
             avatarPos ?? Offset(screenWidth / 2, screenHeight * 2 / 3);
         _equippedBuildings = buildings;
@@ -536,16 +550,22 @@ class _IslandScreenState extends State<IslandScreen> {
           }).toList(),
 
           // --- アバターの表示 ---
-          if (_equippedClothesPath != null)
-            DraggableCharacter(
-              id: 'avatar_on_island',
-              imagePath: _equippedClothesPath!,
-              position: _avatarPosition,
-              size: _getItemSize(_equippedClothesPath!),
-              onPositionChanged: (delta) {
-                setState(() => _avatarPosition += delta);
-              },
+          DraggableCharacter(
+            id: 'avatar_on_island',
+            customWidget: AvatarDisplay(
+              face: _equippedFace,
+              clothes: _equippedClothes,
+              hair: _equippedHair,
+              headgear: _equippedHeadgear,
+              accessory: _equippedAccessory,
+              size: _getItemSize(_equippedClothes),
             ),
+            position: _avatarPosition,
+            size: _getItemSize(_equippedClothes),
+            onPositionChanged: (delta) {
+              setState(() => _avatarPosition += delta);
+            },
+          ),
 
           // ★応援キャラクターの表示と操作
           ..._equippedCharacters.map((charPath) {

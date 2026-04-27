@@ -18,11 +18,26 @@ class MainActivity: FlutterFragmentActivity() {
                 Log.w("MainActivity", "Shared engine is not executing Dart. Returning null to force fresh engine creation.")
                 return null
             }
+            
+            // ★ 追加: レンダラーへのアクセスを試みることで、JNIがアタッチされているか簡易チェック
+            try {
+                engine.renderer
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Shared engine renderer is inaccessible: ${e.message}. Returning null.")
+                return null
+            }
+
             Log.d("MainActivity", "Returning shared engine from AudioServicePlugin")
         } else {
             Log.d("MainActivity", "AudioServicePlugin.getFlutterEngine returned null. A new engine will be created.")
         }
         
         return engine
+    }
+
+    // ★ 追加: Activityが破棄される際に、共有されているFlutterエンジンまで破棄しないようにする
+    // これにより、オーディオサービス等と共有しているエンジンが不健全な状態になるのを防ぎます
+    override fun shouldDestroyEngineWithHost(): Boolean {
+        return false
     }
 }

@@ -25,9 +25,16 @@ class NotificationManager {
 
   // 初期化処理
   Future<void> init() async {
-    tz.initializeTimeZones();
-    final timeZoneInfo = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneInfo.identifier));
+    try {
+      tz.initializeTimeZones();
+      final timeZoneInfo = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timeZoneInfo.identifier));
+    } catch (e) {
+      // タイムゾーンの取得に失敗した場合でも、通知の初期化自体は継続できるようにする
+      print("⚠️ NotificationManager: Failed to initialize timezones: $e");
+      // デフォルトとして UTC を設定 (必要に応じて修正)
+      tz.setLocalLocation(tz.UTC);
+    }
 
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('ic_notification');

@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'roulette_dialog.dart';
@@ -44,7 +45,11 @@ class _TimerScreenState extends State<TimerScreen>
   DateTime? _screenStartTime; // ★ 画面表示からの経過時間を測定
 
   String? _randomSupportCharacterPath; // ★ランダムで表示するキャラのパス
-  String _avatarPath = 'assets/images/avatar.png';
+  String _equippedFace = 'assets/images/face/face_default.png';
+  String _equippedHair = 'assets/images/hair/hair_default.png';
+  String _equippedClothes = 'assets/images/clothes/clothes_default.png';
+  String? _equippedHeadgear;
+  String? _equippedAccessory;
 
   late ConfettiController _confettiController; // ★ 紙吹雪のコントローラーを宣言
 
@@ -346,20 +351,34 @@ class _TimerScreenState extends State<TimerScreen>
 
   Future<void> _loadAndSetRandomCharacter() async {
     final equippedChars = await SharedPrefsHelper.loadEquippedCharacters();
+    final face = await SharedPrefsHelper.loadEquippedFace();
+    final hair = await SharedPrefsHelper.loadEquippedHairstyle();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
+    final headgear = await SharedPrefsHelper.loadEquippedHeadgear();
+    final accessory = await SharedPrefsHelper.loadEquippedAccessory();
 
     if (equippedChars.isNotEmpty) {
       // ランダムに1体を選ぶ
       final randomIndex = Random().nextInt(equippedChars.length);
       setState(() {
         _randomSupportCharacterPath = equippedChars[randomIndex];
-        _avatarPath = clothes ?? 'assets/images/avatar.png';
+        _equippedFace = face ?? 'assets/images/face/face_default.png';
+        _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
+        _equippedClothes =
+            clothes ?? 'assets/images/clothes/clothes_default.png';
+        _equippedHeadgear = headgear;
+        _equippedAccessory = accessory;
       });
     } else {
       // 設定されているキャラがいなければ、デフォルトのキャラを設定
       setState(() {
         _randomSupportCharacterPath = 'assets/images/character_usagi.gif';
-        _avatarPath = clothes ?? 'assets/images/avatar.png';
+        _equippedFace = face ?? 'assets/images/face/face_default.png';
+        _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
+        _equippedClothes =
+            clothes ?? 'assets/images/clothes/clothes_default.png';
+        _equippedHeadgear = headgear;
+        _equippedAccessory = accessory;
       });
     }
   }
@@ -1025,7 +1044,14 @@ class _TimerScreenState extends State<TimerScreen>
             Positioned(
               left: 50,
               bottom: 50,
-              child: Image.asset(_avatarPath, height: 180),
+              child: AvatarDisplay(
+                face: _equippedFace,
+                clothes: _equippedClothes,
+                hair: _equippedHair,
+                headgear: _equippedHeadgear,
+                accessory: _equippedAccessory,
+                size: 170,
+              ),
             ),
             Center(
               child: Column(

@@ -8,6 +8,7 @@ import 'furniture_customize_screen.dart';
 import 'shop_screen.dart';
 import '../../managers/sfx_manager.dart';
 import 'space_screen.dart';
+import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 
 class SkyScreen extends StatefulWidget {
   final int currentLevel;
@@ -31,7 +32,11 @@ class SkyScreen extends StatefulWidget {
 
 class _SkyScreenState extends State<SkyScreen> {
   // --- 配置するアイテムの状態を管理する変数 ---
-  String? _equippedClothesPath;
+  String _equippedFace = 'assets/images/face/face_default.png';
+  String _equippedHair = 'assets/images/hair/hair_default.png';
+  String _equippedClothes = 'assets/images/clothes/clothes_default.png';
+  String? _equippedHeadgear;
+  String? _equippedAccessory;
   List<String> _equippedSkyItems = [];
   List<String> _equippedSkyLivings = [];
 
@@ -57,7 +62,11 @@ class _SkyScreenState extends State<SkyScreen> {
     // --- 装備情報の読み込み ---
     final loadedPoints = await SharedPrefsHelper.loadPoints();
     final loadedLevel = await SharedPrefsHelper.loadLevel();
+    final face = await SharedPrefsHelper.loadEquippedFace();
+    final hair = await SharedPrefsHelper.loadEquippedHairstyle();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
+    final headgear = await SharedPrefsHelper.loadEquippedHeadgear();
+    final accessory = await SharedPrefsHelper.loadEquippedAccessory();
     final skyItems = await SharedPrefsHelper.loadEquippedSkyItems();
     final skyLivings = await SharedPrefsHelper.loadEquippedSkyLivings();
 
@@ -112,7 +121,12 @@ class _SkyScreenState extends State<SkyScreen> {
       setState(() {
         _points = loadedPoints;
         _level = loadedLevel;
-        _equippedClothesPath = clothes ?? 'assets/images/avatar.png';
+        _equippedFace = face ?? 'assets/images/face/face_default.png';
+        _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
+        _equippedClothes =
+            clothes ?? 'assets/images/clothes/clothes_default.png';
+        _equippedHeadgear = headgear;
+        _equippedAccessory = accessory;
         _avatarPosition =
             avatarPos ?? Offset(screenWidth / 2, screenHeight * 2 / 3);
         _equippedSkyItems = skyItems;
@@ -567,16 +581,22 @@ class _SkyScreenState extends State<SkyScreen> {
           }).toList(),
 
           // --- アバターの表示 ---
-          if (_equippedClothesPath != null)
-            DraggableCharacter(
-              id: 'avatar_on_sky',
-              imagePath: _equippedClothesPath!,
-              position: _avatarPosition,
-              size: _getItemSize(_equippedClothesPath!),
-              onPositionChanged: (delta) {
-                setState(() => _avatarPosition += delta);
-              },
+          DraggableCharacter(
+            id: 'avatar_on_sky',
+            customWidget: AvatarDisplay(
+              face: _equippedFace,
+              clothes: _equippedClothes,
+              hair: _equippedHair,
+              headgear: _equippedHeadgear,
+              accessory: _equippedAccessory,
+              size: _getItemSize(_equippedClothes),
             ),
+            position: _avatarPosition,
+            size: _getItemSize(_equippedClothes),
+            onPositionChanged: (delta) {
+              setState(() => _avatarPosition += delta);
+            },
+          ),
 
           // ★応援キャラクターの表示と操作
           ..._equippedCharacters.map((charPath) {

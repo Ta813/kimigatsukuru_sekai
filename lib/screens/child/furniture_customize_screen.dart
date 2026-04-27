@@ -160,11 +160,6 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(child: Image.asset(item.imagePath)),
-                Text(
-                  item.getDisplayName(context),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
                 const SizedBox(height: 8),
               ],
             ),

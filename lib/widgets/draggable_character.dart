@@ -7,7 +7,8 @@ import 'animated_hand_slide.dart';
 
 class DraggableCharacter extends StatefulWidget {
   final String id;
-  final String imagePath;
+  final String? imagePath;
+  final Widget? customWidget;
   final Offset position;
   final double size;
   final Function(Offset) onPositionChanged;
@@ -17,7 +18,8 @@ class DraggableCharacter extends StatefulWidget {
   const DraggableCharacter({
     super.key,
     required this.id,
-    required this.imagePath,
+    this.imagePath,
+    this.customWidget,
     required this.position,
     required this.size,
     required this.onPositionChanged,
@@ -32,6 +34,10 @@ class DraggableCharacter extends StatefulWidget {
 class _DraggableCharacterState extends State<DraggableCharacter> {
   @override
   Widget build(BuildContext context) {
+    final Widget displayWidget =
+        widget.customWidget ??
+        Image.asset(widget.imagePath!, height: widget.size);
+
     return Positioned(
       left: widget.position.dx,
       top: widget.position.dy,
@@ -55,16 +61,13 @@ class _DraggableCharacterState extends State<DraggableCharacter> {
                 isBlinking: widget.isBlinking,
                 color: Colors.purpleAccent,
                 child: widget.isInteractive
-                    ? Image.asset(widget.imagePath, height: widget.size)
+                    ? displayWidget
                     : ColorFiltered(
                         colorFilter: const ColorFilter.mode(
                           Colors.black45,
                           BlendMode.srcATop,
                         ), // 触れないことを示すために薄暗くする
-                        child: Image.asset(
-                          widget.imagePath,
-                          height: widget.size,
-                        ),
+                        child: displayWidget,
                       ),
               ),
               if (widget.isBlinking)

@@ -20,6 +20,9 @@ enum ShopMode {
   forSpace, // 宇宙からの表示
 }
 
+// 🌟 ショップの画面遷移用モードを追加
+enum ShopView { menu, avatar, support, world }
+
 class ShopScreen extends StatefulWidget {
   final int currentPoints;
   final int currentLevel;
@@ -37,6 +40,9 @@ class ShopScreen extends StatefulWidget {
 }
 
 class _ShopScreenState extends State<ShopScreen> {
+  // 🌟 現在表示している画面（初期値はメニュー）
+  ShopView _currentView = ShopView.menu;
+
   late int _points; // この画面で管理するポイント数
 
   List<String> _purchasedItemNames = [];
@@ -71,14 +77,12 @@ class _ShopScreenState extends State<ShopScreen> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    // ★サウンドがまだ再生されていなければ
     if (!_hasPlayedInitialSound) {
       final lang = AppLocalizations.of(context)!.localeName;
       if (lang == 'ja') {
         try {
           SfxManager.instance.playShopInitSound();
         } catch (e) {
-          // エラーが発生した場合
           print('再生エラー: $e');
         }
       } else {
@@ -88,11 +92,10 @@ class _ShopScreenState extends State<ShopScreen> {
         try {
           SfxManager.instance.playSequentialSounds(soundsToPlay);
         } catch (e) {
-          // エラーが発生した場合
           print('再生エラー: $e');
         }
       }
-      _hasPlayedInitialSound = true; // ★再生済みの旗を立てる
+      _hasPlayedInitialSound = true;
     }
   }
 
@@ -110,18 +113,13 @@ class _ShopScreenState extends State<ShopScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(
-            item.getDisplayName(context),
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
           content: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF3E0), // ピーチクリーム
+              color: const Color(0xFFFFF3E0),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
+                color: const Color(0xFFFF7043).withOpacity(0.5),
                 width: 2,
               ),
             ),
@@ -134,7 +132,6 @@ class _ShopScreenState extends State<ShopScreen> {
           actions: [
             TextButton(
               onPressed: () async {
-                // チュートリアルで「やめる」ボタンを押したかチェック
                 final isTutorialStepShown =
                     await SharedPrefsHelper.isTutorialStepShown(
                       SharedPrefsHelper.tutorialStepShopKey,
@@ -146,9 +143,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 }
                 try {
                   SfxManager.instance.playTapSound();
-                } catch (e) {
-                  print('再生エラー: $e');
-                }
+                } catch (e) {}
                 Navigator.pop(context);
               },
               child: Text(
@@ -158,7 +153,6 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
-                // チュートリアルで「買う」ボタンを押したかチェック
                 final isTutorialStepShown =
                     await SharedPrefsHelper.isTutorialStepShown(
                       SharedPrefsHelper.tutorialStepShopKey,
@@ -171,32 +165,25 @@ class _ShopScreenState extends State<ShopScreen> {
                 FirebaseAnalytics.instance.logEvent(
                   name: 'start_shop_confirm_buy',
                 );
-                // ★ 修正: Navigator.pop する前に、必要な情報や管理クラスを取得しておく
-                // (pop 後は context が無効になる可能性があるため)
-                final l10n = AppLocalizations.of(context);
-                final messenger = ScaffoldMessenger.of(context);
-                final itemName = item.getDisplayName(context);
 
+                final l10n = AppLocalizations.of(context);
                 final lang = l10n?.localeName ?? 'en';
+
                 if (lang == 'ja') {
                   try {
                     SfxManager.instance.playShopBuySound();
-                  } catch (e) {
-                    print('再生エラー: $e');
-                  }
+                  } catch (e) {}
                 } else {
                   final List<String> soundsToPlay = [];
                   final String voiceDir = SfxManager.instance.getVoiceDir(lang);
                   soundsToPlay.addAll(['se/$voiceDir/thank_you_very_much.mp3']);
                   try {
                     SfxManager.instance.playSequentialSounds(soundsToPlay);
-                  } catch (e) {
-                    print('再生エラー: $e');
-                  }
+                  } catch (e) {}
                 }
+
                 final newPoints = _points - item.price;
                 await SharedPrefsHelper.savePoints(newPoints);
-
                 await SharedPrefsHelper.addPurchasedItem(item.name);
 
                 if (!mounted) return;
@@ -219,25 +206,13 @@ class _ShopScreenState extends State<ShopScreen> {
                   }
                 });
 
-                // 買い物回数を加算
                 SharedPrefsHelper.incrementShopCount();
-                // ダイアログを閉じる
                 Navigator.pop(context);
-
-                // スナックバーを表示
-                if (l10n != null) {
-                  messenger.showSnackBar(
-                    SnackBar(content: Text(l10n.shopExchangeSuccess(itemName))),
-                  );
-                }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF7043), // オレンジ
+                backgroundColor: const Color(0xFFFF7043),
                 foregroundColor: Colors.white,
-                side: const BorderSide(
-                  color: Color(0xFFFFCA28),
-                  width: 2,
-                ), // 黄色の輪郭
+                side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -262,21 +237,16 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Widget _buildShopItemCard(ShopItem item) {
-    // ★ レベルが足りているか判定
     final bool isLocked = widget.currentLevel < item.requiredLevel;
-    // ★このアイテムが購入済みかどうかをチェック
     final bool isPurchased = _purchasedItemNames.contains(item.name);
 
     Widget card = Card(
       elevation: 2,
-      // 購入済みなら、カード全体を少しグレーにする
       color: (isLocked || isPurchased) ? Colors.grey[200] : Colors.white,
       child: InkWell(
-        // ★購入済みなら、タップできないようにする (onTap: null)
         onTap: (isLocked || isPurchased)
             ? null
             : () async {
-                // チュートリアルで「アイテム」をタップしたかチェック
                 final isTutorialStepShown =
                     await SharedPrefsHelper.isTutorialStepShown(
                       SharedPrefsHelper.tutorialStepShopKey,
@@ -293,47 +263,101 @@ class _ShopScreenState extends State<ShopScreen> {
                 _buyItem(item);
               },
         child: Stack(
-          // ★重ねて表示するためにStackを使用
           children: [
-            // アイテム情報（Column）
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    // ★購入済みなら、画像も少しグレーにする
                     child: Opacity(
                       opacity: (isLocked || isPurchased) ? 0.5 : 1.0,
-                      child: Image.asset(item.imagePath),
+                      child: Builder(
+                        builder: (context) {
+                          if (item.type == 'face' || item.type == 'headgear') {
+                            return ClipRect(
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: ClipRect(
+                                  child: Align(
+                                    alignment: Alignment.topCenter,
+                                    heightFactor: 0.5,
+                                    child: Image.asset(item.imagePath),
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else if (item.type == 'hair') {
+                            return ClipRect(
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: ClipRect(
+                                  child: Align(
+                                    alignment: Alignment.topCenter,
+                                    heightFactor: 0.7,
+                                    child: Image.asset(item.imagePath),
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else if (item.type == 'clothes') {
+                            return ClipRect(
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: ClipRect(
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    heightFactor: 0.5,
+                                    child: Image.asset(item.imagePath),
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else if (item.type == 'accessory') {
+                            return ClipRect(
+                              child: Transform.scale(
+                                scale: 2.0,
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: ClipRect(
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      heightFactor: 0.5,
+                                      child: ClipRect(
+                                        child: Align(
+                                          alignment: Alignment.bottomCenter,
+                                          heightFactor: 0.5,
+                                          child: Image.asset(item.imagePath),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          return Image.asset(item.imagePath);
+                        },
+                      ),
                     ),
                   ),
-                ),
-                Text(
-                  item.getDisplayName(context),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
                 ),
                 Text('${item.price}P', textAlign: TextAlign.center),
                 const SizedBox(height: 10),
               ],
             ),
-
             if (isLocked)
               Positioned.fill(
                 child: Container(
-                  // 半透明の黒いマスクをかける
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(12), // Cardの角丸に合わせる
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // 鍵アイコン
                       const Icon(Icons.lock, color: Colors.white, size: 40),
                       const SizedBox(height: 8),
-                      // 解放レベルを表示
                       Text(
                         AppLocalizations.of(
                           context,
@@ -347,7 +371,6 @@ class _ShopScreenState extends State<ShopScreen> {
                   ),
                 ),
               ),
-            // ★購入済みの場合のみ、「購入済み」ラベルを上に重ねて表示
             if (isPurchased && !isLocked)
               Center(
                 child: Container(
@@ -361,7 +384,7 @@ class _ShopScreenState extends State<ShopScreen> {
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.itemPurchased,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -386,28 +409,378 @@ class _ShopScreenState extends State<ShopScreen> {
     return GridView.builder(
       padding: const EdgeInsets.all(8.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount, // 1行に表示する数
+        crossAxisCount: crossAxisCount,
         crossAxisSpacing: 1,
         mainAxisSpacing: 1,
-        childAspectRatio: 0.8, // アイテムの縦横比
+        childAspectRatio: 0.8,
       ),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
-        return _buildShopItemCard(item); // 既存のアイテムカードウィジェットを再利用
+        return _buildShopItemCard(item);
       },
     );
   }
 
+  // アプリバーに表示するポイント部分の共通化
+  List<Widget> _buildAppBarActions() {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(right: 20.0),
+        child: Center(
+          child: Text(
+            '$_points ${AppLocalizations.of(context)!.points}',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<Tab> tabs;
+    // 🌟 ホームからの通常アクセスでない場合（島や家の中など）は、メニューを出さずに従来のタブ表示へ
+    if (widget.mode != ShopMode.forGeneral) {
+      return _buildSpecialShopScreen();
+    }
+
+    // 🌟 ホームからのアクセスの場合はメニュー方式を適用
+    return PopScope(
+      canPop: _currentView == ShopView.menu,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          setState(() {
+            _currentView = ShopView.menu;
+          });
+        }
+      },
+      child: _buildCurrentView(),
+    );
+  }
+
+  Widget _buildCurrentView() {
+    switch (_currentView) {
+      case ShopView.menu:
+        return _buildMenuScreen();
+      case ShopView.avatar:
+        return _buildAvatarShopScreen();
+      case ShopView.support:
+        return _buildSupportShopScreen();
+      case ShopView.world:
+        return _buildWorldShopScreen();
+    }
+  }
+
+  // ==========================================
+  // 1. トップメニュー画面
+  // ==========================================
+  Widget _buildMenuScreen() {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      appBar: AppBar(
+        toolbarHeight: 40,
+        leading: BlinkingEffect(
+          isBlinking: _showBackButtonBlinking,
+          child: const CustomBackButton(),
+        ),
+        title: Text(
+          AppLocalizations.of(context)?.shopTitle ?? 'おみせ',
+          style: const TextStyle(fontSize: 18),
+        ),
+        actions: _buildAppBarActions(),
+      ),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildMenuButton(
+                  'きせかえ',
+                  'アバターのアイテム\n（ふく・かみ など）',
+                  Icons.checkroom,
+                  ShopView.avatar,
+                  Colors.pinkAccent,
+                ),
+                const SizedBox(width: 20),
+                _buildMenuButton(
+                  'おうえんキャラクター',
+                  'いっしょにがんばる\nなかま',
+                  Icons.support_agent,
+                  ShopView.support,
+                  Colors.orangeAccent,
+                ),
+                const SizedBox(width: 20),
+                _buildMenuButton(
+                  'きみのせかい',
+                  'おうちや\nマップのアイテム',
+                  Icons.public,
+                  ShopView.world,
+                  Colors.lightBlue,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: const AdBanner(),
+    );
+  }
+
+  Widget _buildMenuButton(
+    String title,
+    String subtitle,
+    IconData icon,
+    ShopView targetView,
+    Color color,
+  ) {
+    // チュートリアル中はとりあえずアバター画面（きせかえ）へ誘導
+    final isBlinking = _showItemBlinking && targetView == ShopView.avatar;
+
+    Widget button = SizedBox(
+      width: 180,
+      height: 180,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 4,
+          padding: const EdgeInsets.all(12),
+        ),
+        onPressed: () {
+          try {
+            SfxManager.instance.playTapSound();
+          } catch (e) {}
+          setState(() {
+            _currentView = targetView;
+          });
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 56),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: const TextStyle(fontSize: 11),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (isBlinking) {
+      return BlinkingEffect(isBlinking: true, child: button);
+    }
+    return button;
+  }
+
+  Widget _buildSubBackButton() {
+    return BlinkingEffect(
+      isBlinking: _showBackButtonBlinking,
+      child: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios_new,
+          color: Colors.white,
+          size: 20,
+        ),
+        onPressed: () {
+          try {
+            SfxManager.instance.playTapSound();
+          } catch (e) {}
+          setState(() {
+            _currentView = ShopView.menu;
+          });
+        },
+      ),
+    );
+  }
+
+  // ==========================================
+  // 2. きせかえ（アバター）ショップ画面
+  // ==========================================
+  Widget _buildAvatarShopScreen() {
+    final items = shopItems
+        .where((item) => !item.isIslandOnly && !item.isSeaOnly)
+        .toList();
+
+    // デフォルトアイテムは販売リストから除外
+    final faceItems = items
+        .where(
+          (item) =>
+              item.type == 'face' &&
+              item.name != 'いつものかお' &&
+              item.name != '頑張るかお' &&
+              item.name != '困ったかお' &&
+              item.name != 'ウインクしているかお',
+        )
+        .toList();
+    final hairItems = items
+        .where(
+          (item) =>
+              item.type == 'hair' &&
+              item.name != 'いつものかみがた' &&
+              item.name != 'ポニーテールかみがた' &&
+              item.name != 'おとこのこのかみがた' &&
+              item.name != 'アシメかみがた',
+        )
+        .toList();
+    final clothesItems = items
+        .where(
+          (item) =>
+              item.type == 'clothes' &&
+              item.name != 'いつものふく' &&
+              item.name != 'おとこのこ',
+        )
+        .toList();
+    final headgearItems = items
+        .where((item) => item.type == 'headgear')
+        .toList();
+    final accessoryItems = items
+        .where((item) => item.type == 'accessory')
+        .toList();
+
+    return DefaultTabController(
+      length: 5,
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 40,
+          leading: _buildSubBackButton(),
+          title: const Text('きせかえショップ', style: TextStyle(fontSize: 18)),
+          actions: _buildAppBarActions(),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(40),
+            child: TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.center,
+              tabs: [
+                _buildTab('かお', Icons.face),
+                _buildTab('かみがた', Icons.cut),
+                _buildTab('かぶるもの', Icons.theater_comedy),
+                _buildTab('ふくそう', Icons.checkroom),
+                _buildTab('アクセサリー', Icons.backpack),
+              ],
+            ),
+          ),
+        ),
+        body: SafeArea(
+          child: TabBarView(
+            children: [
+              _buildCategoryGrid(faceItems, crossAxisCount: 8),
+              _buildCategoryGrid(hairItems, crossAxisCount: 8),
+              _buildCategoryGrid(headgearItems, crossAxisCount: 8),
+              _buildCategoryGrid(clothesItems, crossAxisCount: 8),
+              _buildCategoryGrid(accessoryItems, crossAxisCount: 8),
+            ],
+          ),
+        ),
+        bottomNavigationBar: const AdBanner(),
+      ),
+    );
+  }
+
+  // ==========================================
+  // 3. おうえんキャラクターショップ画面
+  // ==========================================
+  Widget _buildSupportShopScreen() {
+    final items = shopItems
+        .where((item) => !item.isIslandOnly && !item.isSeaOnly)
+        .toList();
+    // デフォルトのウサギは除外
+    final characterItems = items
+        .where((item) => item.type == 'character' && item.name != 'ウサギ')
+        .toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 40,
+        leading: _buildSubBackButton(),
+        title: const Text('おうえんキャラクター', style: TextStyle(fontSize: 18)),
+        actions: _buildAppBarActions(),
+      ),
+      body: SafeArea(
+        child: _buildCategoryGrid(characterItems, crossAxisCount: 8),
+      ),
+      bottomNavigationBar: const AdBanner(),
+    );
+  }
+
+  // ==========================================
+  // 4. きみのせかいショップ画面
+  // ==========================================
+  Widget _buildWorldShopScreen() {
+    final items = shopItems
+        .where((item) => !item.isIslandOnly && !item.isSeaOnly)
+        .toList();
+    // デフォルトのおうちは除外
+    final houseItems = items
+        .where((item) => item.type == 'house' && item.name != 'さいしょのおうち')
+        .toList();
+    final itemItems = items.where((item) => item.type == 'item').toList();
+
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 40,
+          leading: _buildSubBackButton(),
+          title: const Text('きみのせかいショップ', style: TextStyle(fontSize: 18)),
+          actions: _buildAppBarActions(),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(40),
+            child: TabBar(
+              tabs: [
+                _buildTab('おうち', Icons.house),
+                _buildTab('アイテム', Icons.star),
+              ],
+            ),
+          ),
+        ),
+        body: SafeArea(
+          child: TabBarView(
+            children: [
+              _buildCategoryGrid(houseItems, crossAxisCount: 4),
+              _buildCategoryGrid(itemItems, crossAxisCount: 8),
+            ],
+          ),
+        ),
+        bottomNavigationBar: const AdBanner(),
+      ),
+    );
+  }
+
+  // サブ画面用のタブ作成ヘルパー
+  Widget _buildTab(String title, IconData icon) {
+    return Tab(
+      height: 40,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Icon(icon, size: 18), const SizedBox(width: 8), Text(title)],
+      ),
+    );
+  }
+
+  // ==========================================
+  // 5. 特殊モードのショップ画面（島や海などから開いた場合）
+  // ==========================================
+  Widget _buildSpecialShopScreen() {
+    final List<Widget> tabs;
     final List<Widget> tabViews;
 
     if (widget.mode == ShopMode.forIsland) {
-      // 島モードの場合、島限定アイテムのみにする
       final islandItems = shopItems.where((item) => item.isIslandOnly).toList();
-
       final buildingItems = islandItems
           .where((item) => item.type == 'building')
           .toList();
@@ -416,36 +789,15 @@ class _ShopScreenState extends State<ShopScreen> {
           .toList();
 
       tabs = [
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.home_work),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.buildings),
-            ],
-          ),
-        ),
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.directions_car),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.vehicles),
-            ],
-          ),
-        ),
+        _buildTab(AppLocalizations.of(context)!.buildings, Icons.home_work),
+        _buildTab(AppLocalizations.of(context)!.vehicles, Icons.directions_car),
       ];
-
       tabViews = [
-        _buildCategoryGrid(buildingItems, crossAxisCount: 7),
-        _buildCategoryGrid(vehicleItems, crossAxisCount: 7),
+        _buildCategoryGrid(buildingItems, crossAxisCount: 8),
+        _buildCategoryGrid(vehicleItems, crossAxisCount: 8),
       ];
     } else if (widget.mode == ShopMode.forSea) {
-      // 海モードの場合、海限定アイテムのみにする
       final isSeaItems = shopItems.where((item) => item.isSeaOnly).toList();
-
       final seaItems = isSeaItems
           .where((item) => item.type == 'sea_item')
           .toList();
@@ -454,36 +806,18 @@ class _ShopScreenState extends State<ShopScreen> {
           .toList();
 
       tabs = [
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.anchor),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.seaItems),
-            ],
-          ),
-        ),
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FaIcon(FontAwesomeIcons.fish),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.seaCreatures),
-            ],
-          ),
+        _buildTab(AppLocalizations.of(context)!.seaItems, Icons.anchor),
+        _buildTab(
+          AppLocalizations.of(context)!.seaCreatures,
+          FontAwesomeIcons.fish,
         ),
       ];
-
       tabViews = [
-        _buildCategoryGrid(seaItems, crossAxisCount: 7),
-        _buildCategoryGrid(livingItems, crossAxisCount: 7),
+        _buildCategoryGrid(seaItems, crossAxisCount: 8),
+        _buildCategoryGrid(livingItems, crossAxisCount: 8),
       ];
     } else if (widget.mode == ShopMode.forSky) {
-      // 空モードの場合、空限定アイテムのみにする
       final isSeaItems = shopItems.where((item) => item.isSkyOnly).toList();
-
       final seaItems = isSeaItems
           .where((item) => item.type == 'sky_item')
           .toList();
@@ -492,36 +826,18 @@ class _ShopScreenState extends State<ShopScreen> {
           .toList();
 
       tabs = [
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.flight),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.skyItems),
-            ],
-          ),
-        ),
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FaIcon(FontAwesomeIcons.dove),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.skyCreatures),
-            ],
-          ),
+        _buildTab(AppLocalizations.of(context)!.skyItems, Icons.flight),
+        _buildTab(
+          AppLocalizations.of(context)!.skyCreatures,
+          FontAwesomeIcons.dove,
         ),
       ];
-
       tabViews = [
-        _buildCategoryGrid(seaItems, crossAxisCount: 7),
-        _buildCategoryGrid(livingItems, crossAxisCount: 7),
+        _buildCategoryGrid(seaItems, crossAxisCount: 8),
+        _buildCategoryGrid(livingItems, crossAxisCount: 8),
       ];
     } else if (widget.mode == ShopMode.forSpace) {
-      // 空モードの場合、空限定アイテムのみにする
       final isSpaceItems = shopItems.where((item) => item.isSpaceOnly).toList();
-
       final spaceItems = isSpaceItems
           .where((item) => item.type == 'space_item')
           .toList();
@@ -530,35 +846,21 @@ class _ShopScreenState extends State<ShopScreen> {
           .toList();
 
       tabs = [
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.rocket_launch),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.spaceItems),
-            ],
-          ),
+        _buildTab(
+          AppLocalizations.of(context)!.spaceItems,
+          Icons.rocket_launch,
         ),
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FaIcon(FontAwesomeIcons.redditAlien),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.spaceCreatures),
-            ],
-          ),
+        _buildTab(
+          AppLocalizations.of(context)!.spaceCreatures,
+          FontAwesomeIcons.redditAlien,
         ),
       ];
-
       tabViews = [
-        _buildCategoryGrid(spaceItems, crossAxisCount: 6),
-        _buildCategoryGrid(livingItems, crossAxisCount: 6),
+        _buildCategoryGrid(spaceItems, crossAxisCount: 8),
+        _buildCategoryGrid(livingItems, crossAxisCount: 8),
       ];
-    } else if (widget.mode == ShopMode.forHouse) {
-      // --- 🏠 家の中モードの時の表示 ---
-
+    } else {
+      // forHouse
       final items = shopItems
           .where((item) => !item.isIslandOnly && !item.isSeaOnly)
           .toList();
@@ -570,109 +872,20 @@ class _ShopScreenState extends State<ShopScreen> {
           .toList();
 
       tabs = [
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.chair),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.furniture),
-            ],
-          ),
-        ),
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.widgets),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.houseItems),
-            ],
-          ),
-        ),
+        _buildTab(AppLocalizations.of(context)!.furniture, Icons.chair),
+        _buildTab(AppLocalizations.of(context)!.houseItems, Icons.widgets),
       ];
-
       tabViews = [
-        _buildCategoryGrid(furnitureItems, crossAxisCount: 7),
-        _buildCategoryGrid(houseItems, crossAxisCount: 7),
-      ];
-    } else {
-      final items = shopItems
-          .where((item) => !item.isIslandOnly && !item.isSeaOnly)
-          .toList();
-      // まず、アイテムをカテゴリ別に分けます
-      final clothesItems = items
-          .where(
-            (item) =>
-                item.type == 'clothes' &&
-                item.name != 'いつものふく' &&
-                item.name != 'おとこのこ',
-          )
-          .toList();
-      final houseItems = items
-          .where((item) => item.type == 'house' && item.name != 'さいしょのおうち')
-          .toList();
-      final characterItems = items
-          .where((item) => item.type == 'character' && item.name != 'ウサギ')
-          .toList();
-      final itemItems = items.where((item) => item.type == 'item').toList();
-
-      tabs = [
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.checkroom),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.customizeTabClothes),
-            ],
-          ),
-        ),
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.house),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.customizeTabHouse),
-            ],
-          ),
-        ),
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.support_agent),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.customizeTabCharacter),
-            ],
-          ),
-        ),
-        Tab(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.star),
-              SizedBox(width: 8), // アイコンとテキストの間のスペース
-              Text(AppLocalizations.of(context)!.customizeTabItem),
-            ],
-          ),
-        ),
-      ];
-
-      tabViews = [
-        _buildCategoryGrid(clothesItems, crossAxisCount: 6),
-        _buildCategoryGrid(houseItems, crossAxisCount: 5),
-        _buildCategoryGrid(characterItems, crossAxisCount: 6),
-        _buildCategoryGrid(itemItems, crossAxisCount: 7),
+        _buildCategoryGrid(furnitureItems, crossAxisCount: 8),
+        _buildCategoryGrid(houseItems, crossAxisCount: 8),
       ];
     }
 
     return DefaultTabController(
-      length: widget.mode == ShopMode.forGeneral ? 4 : 2, // ★タブの数
+      length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 40, // ★ 高さを低く設定
+          toolbarHeight: 40,
           leading: BlinkingEffect(
             isBlinking: _showBackButtonBlinking,
             child: const CustomBackButton(),
@@ -681,54 +894,13 @@ class _ShopScreenState extends State<ShopScreen> {
             AppLocalizations.of(context)!.shopTitle,
             style: const TextStyle(fontSize: 18),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: Center(
-                child: Text(
-                  '$_points ${AppLocalizations.of(context)!.points}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          actions: _buildAppBarActions(),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(40),
-            child: TabBar(
-              isScrollable: true,
-              tabs: tabs.map((tab) {
-                return Tab(
-                  height: 40,
-                  child:
-                      tab.child ??
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (tab.icon != null) ...[
-                            IconTheme(
-                              data: const IconThemeData(size: 18),
-                              child: tab.icon!,
-                            ),
-                            const SizedBox(width: 8),
-                          ],
-                          Text(tab.text ?? ""),
-                        ],
-                      ),
-                );
-              }).toList(),
-            ),
+            child: TabBar(isScrollable: true, tabs: tabs),
           ),
         ),
-        // ★bodyをTabBarViewに変更します
-        body: SafeArea(
-          child: TabBarView(
-            children: tabViews, // 各タブの中身となるGridViewを、共通メソッドで生成します
-          ),
-        ),
-        // 画面下部にバナーを設置（初回起動時は広告を表示しない）
+        body: SafeArea(child: TabBarView(children: tabViews)),
         bottomNavigationBar: const AdBanner(),
       ),
     );

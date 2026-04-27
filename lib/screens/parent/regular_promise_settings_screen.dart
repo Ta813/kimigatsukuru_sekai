@@ -422,10 +422,7 @@ class _RegularPromiseSettingsScreenState
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Image.asset(
-                    'assets/images/clothes_dress_red.gif',
-                    height: 90,
-                  ),
+                  Image.asset('assets/images/character_panda.gif', height: 90),
                   const SizedBox(width: 16),
                   Image.asset('assets/images/character_kuma.gif', height: 90),
                 ],
@@ -518,10 +515,7 @@ class _RegularPromiseSettingsScreenState
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Image.asset(
-                    'assets/images/clothes_dress_red.gif',
-                    height: 90,
-                  ),
+                  Image.asset('assets/images/character_panda.gif', height: 90),
                   const SizedBox(width: 16),
                   Image.asset('assets/images/character_kuma.gif', height: 90),
                 ],

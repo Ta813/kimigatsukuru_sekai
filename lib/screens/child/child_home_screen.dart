@@ -28,7 +28,6 @@ import '../../l10n/app_localizations.dart';
 import 'house_interior_screen.dart';
 import 'world_map_screen.dart';
 import 'package:flutter/services.dart';
-// import 'dart:io';
 
 import 'package:in_app_review/in_app_review.dart';
 import 'help_menu_dialog.dart';
@@ -36,6 +35,7 @@ import '../../managers/login_bonus_manager.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/speech_bubble.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../widgets/avatar_display.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   const ChildHomeScreen({super.key});
@@ -53,7 +53,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   late Animation<double> _fadeAnimation;
   int? _pointsAdded;
 
-  String _equippedClothesPath = 'assets/images/avatar.png'; // デフォルト画像
+  String _equippedFace = 'assets/images/face/face_default.png';
+  String _equippedHair = 'assets/images/hair/hair_default.png';
+  String _equippedClothes = 'assets/images/clothes/clothes_default.png';
+  String? _equippedHeadgear;
+  String? _equippedAccessory;
   String _equippedHousePath = 'assets/images/house.png'; // デフォルト画像
   List<String> _equippedCharacters = [
     'assets/images/character_usagi.gif',
@@ -682,7 +686,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // 左側のキャラクター
-              Image.asset('assets/images/clothes_dress_red.gif', height: 60),
+              Image.asset('assets/images/character_panda.gif', height: 60),
               const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () {
@@ -931,10 +935,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Image.asset(
-                    'assets/images/clothes_dress_red.gif',
-                    height: 90,
-                  ),
+                  Image.asset('assets/images/character_panda.gif', height: 90),
                   const SizedBox(width: 16),
                   Image.asset('assets/images/character_kuma.gif', height: 90),
                 ],
@@ -1035,10 +1036,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Image.asset(
-                    'assets/images/clothes_dress_red.gif',
-                    height: 90,
-                  ),
+                  Image.asset('assets/images/character_panda.gif', height: 90),
                   const SizedBox(width: 8),
                   Image.asset('assets/images/character_kuma.gif', height: 90),
                 ],
@@ -1342,6 +1340,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final level = await SharedPrefsHelper.loadLevel();
     final experience = await SharedPrefsHelper.loadExperience();
 
+    // 🌟 追加・変更: 各パーツのデータを読み込む
+    final face = await SharedPrefsHelper.loadEquippedFace();
+    final hair = await SharedPrefsHelper.loadEquippedHairstyle();
+    final clothes = await SharedPrefsHelper.loadEquippedClothes();
+    final headgear = await SharedPrefsHelper.loadEquippedHeadgear();
+    final accessory = await SharedPrefsHelper.loadEquippedAccessory();
+
     Map<String, dynamic>? nextPromise;
     bool isEmergency = false;
 
@@ -1367,7 +1372,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       }
     }
 
-    final clothes = await SharedPrefsHelper.loadEquippedClothes();
     final house = await SharedPrefsHelper.loadEquippedHouse();
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
     final items = await SharedPrefsHelper.loadEquippedItems();
@@ -1431,7 +1435,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       _points = loadedPoints;
       _displayPromise = nextPromise;
       _isDisplayPromiseEmergency = isEmergency;
-      _equippedClothesPath = clothes ?? 'assets/images/avatar.png';
+
+      // 🌟 追加・変更: 読み込んだパーツをStateにセット
+      _equippedFace = face ?? 'assets/images/face/face_default.png';
+      _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
+      _equippedClothes = clothes ?? 'assets/images/clothes/clothes_default.png';
+      _equippedHeadgear = headgear;
+      _equippedAccessory = accessory;
+
       _equippedHousePath = house ?? 'assets/images/house.png';
       _equippedCharacters = characters.isEmpty
           ? ['assets/images/character_usagi.gif'] // デフォルトキャラ
@@ -1658,7 +1669,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // 左側のキャラクター
-                Image.asset('assets/images/clothes_dress_red.gif', height: 60),
+                Image.asset('assets/images/character_panda.gif', height: 60),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
@@ -3573,7 +3584,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           // ★アバターの表示と操作
           DraggableCharacter(
             id: 'avatar',
-            imagePath: _equippedClothesPath,
+            customWidget: AvatarDisplay(
+              face: _equippedFace,
+              clothes: _equippedClothes,
+              hair: _equippedHair,
+              headgear: _equippedHeadgear,
+              accessory: _equippedAccessory,
+              size: 80,
+            ),
             position: _avatarPosition,
             size: 80,
             isBlinking: _showDraggableBlinking,

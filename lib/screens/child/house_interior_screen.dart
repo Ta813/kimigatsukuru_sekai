@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/helpers/shared_prefs_helper.dart';
+import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
@@ -35,7 +36,11 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
   // ★ 各アイテムの位置を管理するマップ
   Map<String, Offset> _itemPositionsMap = {};
   // 装備中の家パスに基づいて、家の中の背景画像を決定するヘルパーメソッド
-  String _equippedClothesPath = 'assets/images/avatar.png'; // デフォルトの服
+  String _equippedFace = 'assets/images/face/face_default.png';
+  String _equippedHair = 'assets/images/hair/hair_default.png';
+  String _equippedClothes = 'assets/images/clothes/clothes_default.png';
+  String? _equippedHeadgear;
+  String? _equippedAccessory;
   Offset _avatarPosition = const Offset(100, 150); // デフォルトの位置
 
   List<String> _equippedCharacters = [];
@@ -72,7 +77,11 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
     final furniture = await SharedPrefsHelper.loadEquippedFurniture();
     final houseItems = await SharedPrefsHelper.loadEquippedHouseItems();
     // アバターの服を読み込む
+    final face = await SharedPrefsHelper.loadEquippedFace();
+    final hair = await SharedPrefsHelper.loadEquippedHairstyle();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
+    final headgear = await SharedPrefsHelper.loadEquippedHeadgear();
+    final accessory = await SharedPrefsHelper.loadEquippedAccessory();
     // アバターの「家の中での」位置を読み込む
     Offset? position = await SharedPrefsHelper.loadCharacterPosition(
       'avatar_in_house',
@@ -134,8 +143,11 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
         _itemPositionsMap[itemPath] =
             loadedPositions[itemPath] ?? Offset(100, 150); // 読み込んだ位置を保存
       }
-      _equippedClothesPath =
-          clothes ?? 'assets/images/avatar.png'; // 読み込んだ服、なければデフォルト
+      _equippedFace = face ?? 'assets/images/face/face_default.png';
+      _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
+      _equippedClothes = clothes ?? 'assets/images/clothes/clothes_default.png';
+      _equippedHeadgear = headgear;
+      _equippedAccessory = accessory;
       _avatarPosition = position ?? const Offset(100, 150); // 読み込んだ位置、なければデフォルト
       _equippedCharacters = characters;
       _characterPositionsMap = {}; // 一旦クリア
@@ -397,7 +409,14 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
 
           DraggableCharacter(
             id: 'avatar_in_house', // ★ 家の中専用のユニークID
-            imagePath: _equippedClothesPath,
+            customWidget: AvatarDisplay(
+              face: _equippedFace,
+              clothes: _equippedClothes,
+              hair: _equippedHair,
+              headgear: _equippedHeadgear,
+              accessory: _equippedAccessory,
+              size: 80,
+            ),
             position: _avatarPosition,
             size: 80.0, // ホーム画面と同じサイズ感
             onPositionChanged: (delta) {

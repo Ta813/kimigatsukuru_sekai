@@ -363,6 +363,9 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                         if (isPremium) {
                           PurchaseManager.instance.showCustomerCenter();
                         } else {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_premium',
+                          );
                           PurchaseManager.instance.showPaywall();
                         }
                       },

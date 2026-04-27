@@ -332,12 +332,6 @@ class SharedPrefsHelper {
     }
   }
 
-  // 装備中の服を読み込む
-  static Future<String?> loadEquippedClothes() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_equippedClothesKey);
-  }
-
   // 装備中の家を読み込む
   static Future<String?> loadEquippedHouse() async {
     final prefs = await SharedPreferences.getInstance();
@@ -1149,5 +1143,55 @@ class SharedPrefsHelper {
   static Future<bool> hasVisitedMissionScreen() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_keyHasVisitedMissionScreen) ?? false;
+  }
+
+  static Future<void> saveEquippedFace(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('equipped_face', path);
+  }
+
+  static Future<String?> loadEquippedFace() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('equipped_face');
+  }
+
+  static Future<void> saveEquippedHairstyle(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('equipped_hairstyle', path);
+  }
+
+  static Future<String?> loadEquippedHairstyle() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('equipped_hairstyle');
+  }
+
+  static Future<void> saveEquippedClothes(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_equippedClothesKey, path);
+  }
+
+  static Future<String?> loadEquippedClothes() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_equippedClothesKey);
+  }
+
+  static Future<void> saveEquippedHeadgear(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('equipped_headgear', path);
+  }
+
+  static Future<String?> loadEquippedHeadgear() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('equipped_headgear');
+  }
+
+  static Future<void> saveEquippedAccessory(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('equipped_accessory', path);
+  }
+
+  static Future<String?> loadEquippedAccessory() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('equipped_accessory');
   }
 }
