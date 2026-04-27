@@ -634,7 +634,7 @@
   "upgradeToPremium": "プレミアムにアップグレード",
   "premiumActive": "プレミアム会員：有効",
   "manageSubscription": "サブスクリプションの管理",
-  "premiumFeaturesDesc": "広告を無くして快適に！",
+  "premiumFeaturesDesc": "制限なしで、すべての世界をあそび尽くそう！",
   "restorePurchases": "購入情報を復元",
   "restoringPurchases": "購入情報を復元しています...",
   "restoreFailed": "復元に失敗しました。もう一度お試しください。",
@@ -692,5 +692,24 @@
   "missionTutorialBonusChance": "チュートリアル完了で\n200ポイントゲットのチャンス！！",
   "notificationChannelPromiseName": "やくそくの通知",
   "notificationChannelPromiseDesc": "各やくそくの時間に通知します",
-  "notificationChannelWeeklyName": "今週のふりかえり"
+  "notificationChannelWeeklyName": "今週のふりかえり",
+  "premiumShopUnlockMessage": "プレミアムにアップグレードすると自由に買い物できるようになります！",
+  "premiumMapUnlockMessage": "プレミアムにアップグレードすると自由に世界をまわれるようになります！",
+  "seeDetails": "見てみる",
+  "shopLevelLockMessage": "レベルが{level}にならないとかいものできないよ！\n",
+  "@shopLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "mapLevelLockMessage": "レベルが{level}にならないと入れないよ！\n",
+  "@mapLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  }
 }

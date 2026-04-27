@@ -9,6 +9,7 @@ import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
 
 import '../../widgets/blinking_effect.dart';
+import '../../managers/purchase_manager.dart';
 
 class RouletteDialog extends StatefulWidget {
   final int basePoints;
@@ -71,9 +72,15 @@ class _RouletteDialogState extends State<RouletteDialog> {
   Future<void> _loadDisplay() async {
     // 現在のプレイヤーレベルを取得
     _playerLevel = await SharedPrefsHelper.loadLevel();
+    final isPremium = PurchaseManager.instance.isPremium.value;
+
     // レベルに応じて倍率を決定
     setState(() {
-      _winPointMultiplier = 2.0 + (_playerLevel - 1) * 0.1;
+      if (isPremium) {
+        _winPointMultiplier = 2.0 + (_playerLevel - 1) * 0.5;
+      } else {
+        _winPointMultiplier = 2.0 + (_playerLevel - 1) * 0.1;
+      }
     });
   }
 

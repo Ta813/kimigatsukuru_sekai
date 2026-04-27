@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/custom_back_button.dart';
+import '../../managers/purchase_manager.dart';
 
 enum ShopMode {
   forGeneral, // ホーム画面からの通常表示
@@ -237,16 +238,90 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Widget _buildShopItemCard(ShopItem item) {
-    final bool isLocked = widget.currentLevel < item.requiredLevel;
+    final bool isLevelLocked = widget.currentLevel < item.requiredLevel;
+    final bool isLocked =
+        isLevelLocked && !PurchaseManager.instance.isPremium.value;
     final bool isPurchased = _purchasedItemNames.contains(item.name);
 
     Widget card = Card(
       elevation: 2,
       color: (isLocked || isPurchased) ? Colors.grey[200] : Colors.white,
       child: InkWell(
-        onTap: (isLocked || isPurchased)
+        onTap: isPurchased
             ? null
             : () async {
+                if (isLocked) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(
+                        AppLocalizations.of(context)!.upgradeToPremium,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      content: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF3E0),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: const Color(0xFFFF7043).withOpacity(0.5),
+                            width: 2,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.shopLevelLockMessage(item.requiredLevel),
+                              style: const TextStyle(fontSize: 16, height: 1.5, fontWeight: FontWeight.bold, color: Colors.orange),
+                            ),
+                            Text(
+                              AppLocalizations.of(
+                                context,
+                              )!.premiumShopUnlockMessage,
+                              style: const TextStyle(fontSize: 16, height: 1.5),
+                            ),
+                          ],
+                        ),
+                      ),
+                      actionsAlignment: MainAxisAlignment.center,
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text(
+                            AppLocalizations.of(context)!.cancel,
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            await PurchaseManager.instance.showPaywall();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF7043),
+                            foregroundColor: Colors.white,
+                            side: const BorderSide(
+                              color: Color(0xFFFFCA28),
+                              width: 2,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            elevation: 4,
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)!.seeDetails,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+
                 final isTutorialStepShown =
                     await SharedPrefsHelper.isTutorialStepShown(
                       SharedPrefsHelper.tutorialStepShopKey,
@@ -439,22 +514,27 @@ class _ShopScreenState extends State<ShopScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 🌟 ホームからの通常アクセスでない場合（島や家の中など）は、メニューを出さずに従来のタブ表示へ
-    if (widget.mode != ShopMode.forGeneral) {
-      return _buildSpecialShopScreen();
-    }
-
-    // 🌟 ホームからのアクセスの場合はメニュー方式を適用
-    return PopScope(
-      canPop: _currentView == ShopView.menu,
-      onPopInvoked: (didPop) {
-        if (!didPop) {
-          setState(() {
-            _currentView = ShopView.menu;
-          });
+    return ValueListenableBuilder<bool>(
+      valueListenable: PurchaseManager.instance.isPremium,
+      builder: (context, isPremium, child) {
+        // 🌟 ホームからの通常アクセスでない場合（島や家の中など）は、メニューを出さずに従来のタブ表示へ
+        if (widget.mode != ShopMode.forGeneral) {
+          return _buildSpecialShopScreen();
         }
+
+        // 🌟 ホームからのアクセスの場合はメニュー方式を適用
+        return PopScope(
+          canPop: _currentView == ShopView.menu,
+          onPopInvoked: (didPop) {
+            if (!didPop) {
+              setState(() {
+                _currentView = ShopView.menu;
+              });
+            }
+          },
+          child: _buildCurrentView(),
+        );
       },
-      child: _buildCurrentView(),
     );
   }
 

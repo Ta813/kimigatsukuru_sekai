@@ -634,7 +634,7 @@
   "upgradeToPremium": "پریمیم میں اپ گریڈ کریں",
   "premiumActive": "پریمیم فعال ہے",
   "manageSubscription": "سبسکرپشن کا انتظام کریں",
-  "premiumFeaturesDesc": "اشتہارات ہٹائیں اور آرام سے لطف اٹھائیں!",
+  "premiumFeaturesDesc": "بغیر کسی حد کے تمام دنیاؤں میں کھیلیں!",
   "restorePurchases": "خریداری بحال کریں",
   "restoringPurchases": "خریداری بحال ہو رہی ہے...",
   "restoreFailed": "بحالی ناکام رہی۔ براہ کرم دوبارہ کوشش کریں۔",
@@ -692,5 +692,24 @@
   "missionTutorialBonusChance": "ٹیوٹوریل مکمل کرکے\n200 پوائنٹس حاصل کرنے کا موقع!!",
   "notificationChannelPromiseName": "وعدوں کی یاد دہانی",
   "notificationChannelPromiseDesc": "ہر وعدے کے وقت کے لیے اطلاعات",
-  "notificationChannelWeeklyName": "ہفتہ وار یاد دہانی"
+  "notificationChannelWeeklyName": "ہفتہ وار یاد دہانی",
+  "premiumShopUnlockMessage": "آسانی سے آئٹمز خریدنے کے لیے پریمیم میں اپ گریڈ کریں!",
+  "premiumMapUnlockMessage": "آزادانہ طور پر دنیا کو دریافت کرنے کے لیے پریمیم میں اپ گریڈ کریں!",
+  "seeDetails": "تفصیلات دیکھیں",
+  "shopLevelLockMessage": "لیول {level} تک پہنچنے سے پہلے آپ خریداری نہیں کر سکتے!\n",
+  "@shopLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "mapLevelLockMessage": "لیول {level} تک پہنچنے سے پہلے آپ داخل نہیں ہو سکتے!\n",
+  "@mapLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  }
 }

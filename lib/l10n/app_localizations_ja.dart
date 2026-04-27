@@ -1476,7 +1476,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get manageSubscription => 'サブスクリプションの管理';
 
   @override
-  String get premiumFeaturesDesc => '広告を無くして快適に！';
+  String get premiumFeaturesDesc => '制限なしで、すべての世界をあそび尽くそう！';
 
   @override
   String get restorePurchases => '購入情報を復元';
@@ -1599,4 +1599,23 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get notificationChannelWeeklyName => '今週のふりかえり';
+
+  @override
+  String get premiumShopUnlockMessage => 'プレミアムにアップグレードすると自由に買い物できるようになります！';
+
+  @override
+  String get premiumMapUnlockMessage => 'プレミアムにアップグレードすると自由に世界をまわれるようになります！';
+
+  @override
+  String get seeDetails => '見てみる';
+
+  @override
+  String shopLevelLockMessage(int level) {
+    return 'レベルが$levelにならないとかいものできないよ！\n';
+  }
+
+  @override
+  String mapLevelLockMessage(int level) {
+    return 'レベルが$levelにならないと入れないよ！\n';
+  }
 }

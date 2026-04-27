@@ -2956,7 +2956,7 @@ abstract class AppLocalizations {
   /// No description provided for @premiumFeaturesDesc.
   ///
   /// In en, this message translates to:
-  /// **'Remove ads and enjoy comfortably!'**
+  /// **'Play without limits in all worlds!'**
   String get premiumFeaturesDesc;
 
   /// No description provided for @restorePurchases.
@@ -3186,6 +3186,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Weekly Reminder'**
   String get notificationChannelWeeklyName;
+
+  /// No description provided for @premiumShopUnlockMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium to buy items freely!'**
+  String get premiumShopUnlockMessage;
+
+  /// No description provided for @premiumMapUnlockMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium to explore the world freely!'**
+  String get premiumMapUnlockMessage;
+
+  /// No description provided for @seeDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'See Details'**
+  String get seeDetails;
+
+  /// No description provided for @shopLevelLockMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t shop until you reach level {level}!\n'**
+  String shopLevelLockMessage(int level);
+
+  /// No description provided for @mapLevelLockMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can\'t enter until you reach level {level}!\n'**
+  String mapLevelLockMessage(int level);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

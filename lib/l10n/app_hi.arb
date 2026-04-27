@@ -588,7 +588,7 @@
   "upgradeToPremium": "प्रीमियम में अपग्रेड करें",
   "premiumActive": "प्रीमियम सक्रिय है",
   "manageSubscription": "सदस्यता प्रबंधित करें",
-  "premiumFeaturesDesc": "विज्ञापन हटाएं और आराम से आनंद लें!",
+  "premiumFeaturesDesc": "बिना किसी सीमा के सभी दुनिया में खेलें!",
   "restorePurchases": "खरीद बहाल करें",
   "restoringPurchases": "खरीद बहाल की जा रही है...",
   "restoreFailed": "बहाली विफल रही। कृपया पुन: प्रयास करें।",
@@ -646,5 +646,24 @@
   "missionTutorialBonusChance": "ट्यूटोरियल पूरा करके\n200 पॉइंट पाने का मौका!!",
   "notificationChannelPromiseName": "वादे के रिमाइंडर",
   "notificationChannelPromiseDesc": "प्रत्येक वादे के समय के लिए सूचनाएं",
-  "notificationChannelWeeklyName": "साप्ताहिक रिमाइंडर"
+  "notificationChannelWeeklyName": "साप्ताहिक रिमाइंडर",
+  "premiumShopUnlockMessage": "आसानी से आइटम खरीदने के लिए प्रीमियम में अपग्रेड करें!",
+  "premiumMapUnlockMessage": "स्वतंत्र रूप से दुनिया का पता लगाने के लिए प्रीमियम में अपग्रेड करें!",
+  "seeDetails": "विवरण देखें",
+  "shopLevelLockMessage": "लेवल {level} तक पहुंचने से पहले आप खरीदारी नहीं कर सकते!\n",
+  "@shopLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "mapLevelLockMessage": "लेवल {level} तक पहुंचने से पहले आप प्रवेश नहीं कर सकते!\n",
+  "@mapLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  }
 }

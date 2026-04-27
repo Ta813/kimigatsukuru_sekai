@@ -1476,7 +1476,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get manageSubscription => 'إدارة الاشتراك';
 
   @override
-  String get premiumFeaturesDesc => 'أزل الإعلانات واستمتع براحة!';
+  String get premiumFeaturesDesc => 'العب بلا حدود في كل العوالم!';
 
   @override
   String get restorePurchases => 'استعادة المشتريات';
@@ -1599,4 +1599,23 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notificationChannelWeeklyName => 'تذكير أسبوعي';
+
+  @override
+  String get premiumShopUnlockMessage => 'قم بالترقية إلى Premium لشراء العناصر بحرية!';
+
+  @override
+  String get premiumMapUnlockMessage => 'قم بالترقية إلى Premium لاستكشاف العالم بحرية!';
+
+  @override
+  String get seeDetails => 'اطلع على التفاصيل';
+
+  @override
+  String shopLevelLockMessage(int level) {
+    return 'لا يمكنك التسوق حتى تصل إلى المستوى $level!\n';
+  }
+
+  @override
+  String mapLevelLockMessage(int level) {
+    return 'لا يمكنك الدخول حتى تصل إلى المستوى $level!\n';
+  }
 }

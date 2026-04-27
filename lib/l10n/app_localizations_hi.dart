@@ -1476,7 +1476,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get manageSubscription => 'सदस्यता प्रबंधित करें';
 
   @override
-  String get premiumFeaturesDesc => 'विज्ञापन हटाएं और आराम से आनंद लें!';
+  String get premiumFeaturesDesc => 'बिना किसी सीमा के सभी दुनिया में खेलें!';
 
   @override
   String get restorePurchases => 'खरीद बहाल करें';
@@ -1599,4 +1599,23 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get notificationChannelWeeklyName => 'साप्ताहिक रिमाइंडर';
+
+  @override
+  String get premiumShopUnlockMessage => 'आसानी से आइटम खरीदने के लिए प्रीमियम में अपग्रेड करें!';
+
+  @override
+  String get premiumMapUnlockMessage => 'स्वतंत्र रूप से दुनिया का पता लगाने के लिए प्रीमियम में अपग्रेड करें!';
+
+  @override
+  String get seeDetails => 'विवरण देखें';
+
+  @override
+  String shopLevelLockMessage(int level) {
+    return 'लेवल $level तक पहुंचने से पहले आप खरीदारी नहीं कर सकते!\n';
+  }
+
+  @override
+  String mapLevelLockMessage(int level) {
+    return 'लेवल $level तक पहुंचने से पहले आप प्रवेश नहीं कर सकते!\n';
+  }
 }

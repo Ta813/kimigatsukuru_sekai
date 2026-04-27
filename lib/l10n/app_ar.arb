@@ -634,7 +634,7 @@
   "upgradeToPremium": "الترقية إلى بريميوم",
   "premiumActive": "عضوية بريميوم نشطة",
   "manageSubscription": "إدارة الاشتراك",
-  "premiumFeaturesDesc": "أزل الإعلانات واستمتع براحة!",
+  "premiumFeaturesDesc": "العب بلا حدود في كل العوالم!",
   "restorePurchases": "استعادة المشتريات",
   "restoringPurchases": "جاري استعادة المشتريات...",
   "restoreFailed": "فشلت عملية الاستعادة. يرجى المحاولة مرة أخرى.",
@@ -692,5 +692,24 @@
   "missionTutorialBonusChance": "فرصة للحصول على\n200 نقطة بإكمال البرنامج التعليمي!!",
   "notificationChannelPromiseName": "تذكيرات الوعود",
   "notificationChannelPromiseDesc": "إشعارات لكل وقت وعد",
-  "notificationChannelWeeklyName": "تذكير أسبوعي"
+  "notificationChannelWeeklyName": "تذكير أسبوعي",
+  "premiumShopUnlockMessage": "قم بالترقية إلى Premium لشراء العناصر بحرية!",
+  "premiumMapUnlockMessage": "قم بالترقية إلى Premium لاستكشاف العالم بحرية!",
+  "seeDetails": "اطلع على التفاصيل",
+  "shopLevelLockMessage": "لا يمكنك التسوق حتى تصل إلى المستوى {level}!\n",
+  "@shopLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "mapLevelLockMessage": "لا يمكنك الدخول حتى تصل إلى المستوى {level}!\n",
+  "@mapLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  }
 }

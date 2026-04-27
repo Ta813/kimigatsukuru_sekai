@@ -7,6 +7,7 @@ import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
 import 'shop_screen.dart';
 import '../../managers/sfx_manager.dart';
+import '../../managers/purchase_manager.dart';
 import 'space_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 
@@ -175,449 +176,537 @@ class _SkyScreenState extends State<SkyScreen> {
     return 60.0;
   }
 
+  Future<void> _showPremiumUpgradeDialog(int requiredLevel) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          AppLocalizations.of(context)!.upgradeToPremium,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3E0),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFFF7043).withOpacity(0.5),
+              width: 2,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.mapLevelLockMessage(requiredLevel),
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange,
+                ),
+              ),
+              Text(
+                AppLocalizations.of(context)!.premiumMapUnlockMessage,
+                style: const TextStyle(fontSize: 16, height: 1.5),
+              ),
+            ],
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await PurchaseManager.instance.showPaywall();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043), // オレンジ
+              foregroundColor: Colors.white,
+              side: const BorderSide(
+                color: Color(0xFFFFCA28),
+                width: 2,
+              ), // 黄色の輪郭
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.seeDetails,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: null,
-      body: Stack(
-        children: [
-          // --- 背景画像 (空・宇宙) ---
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                // ★ 空用の背景画像を用意してください
-                image: AssetImage('assets/images/sky_background.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          SafeArea(
-            // ★ ノッチやステータスバーを避ける
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 1.0), // 画面下からの余白
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_sky_back',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          // エラーが発生した場合
-                          print('再生エラー: $e');
-                        }
-                        // ★ ワールドマップ画面に戻る
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0), // タップ領域を広げる
-                        child: const AnimatedIconIndicator(
-                          iconData: Icons.arrow_downward, // ★ 下矢印
-                          iconColor: Colors.blueAccent,
-                          iconSize: 40,
-                          offsetY: 5, // 上下動の幅を少し小さめに
-                          duration: Duration(seconds: 1),
-                        ),
-                      ),
-                    ),
-                  ],
+    return ValueListenableBuilder<bool>(
+      valueListenable: PurchaseManager.instance.isPremium,
+      builder: (context, isPremium, child) {
+        return Scaffold(
+          appBar: null,
+          body: Stack(
+            children: [
+              // --- 背景画像 (空・宇宙) ---
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    // ★ 空用の背景画像を用意してください
+                    image: AssetImage('assets/images/sky_background.png'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-          ),
-
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter, // 上に配置
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_sky_space',
-                        );
-                        // ★ レベル20以上で解放
-                        if (widget.currentLevel >= 20) {
-                          try {
-                            SfxManager.instance.playSuccessSound();
-                          } catch (e) {
-                            // エラーが発生した場合
-                            print('再生エラー: $e');
-                          }
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SpaceScreen(
-                                currentLevel: widget.currentLevel,
-                                currentPoints: widget.currentPoints,
-                                requiredExpForNextLevel:
-                                    widget.requiredExpForNextLevel,
-                                experience: widget.experience,
-                                experienceFraction: widget.experienceFraction,
-                              ),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('宇宙はレベル20で解放されます！')),
-                          );
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        // 上向きの矢印
-                        child: const AnimatedIconIndicator(
-                          iconData: Icons.arrow_upward,
-                          iconColor: Colors.purpleAccent,
-                          iconSize: 40,
-                          offsetY: -5, // 上に動くアニメーション
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          Positioned(
-            top: 30, // ポイント表示の下あたり
-            left: 30, // 左端を画面の左端に合わせる
-            child: Center(
-              // ★ Centerウィジェットで中央に配置
-              child: Container(
-                // ★ ここからが白い枠のデザイン設定
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9), // 少し半透明の白
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    // ポイント表示と同じような影をつける
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      spreadRadius: 1,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 220, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min, // Rowが中身のサイズに合わせる
-                            children: [
-                              Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.levelLabel(widget.currentLevel),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Text(
-                                // ★ 次のレベルまでの必要経験値を計算して表示
-                                // _requiredExpForNextLevelは次のレベルに必要な「累計」経験値
-                                AppLocalizations.of(context)!.expToNextLevel(
-                                  widget.requiredExpForNextLevel -
-                                      widget.experience,
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          //経験値バー
-                          LinearProgressIndicator(
-                            value: widget.experienceFraction, // 現在の経験値の割合
-                            backgroundColor: Colors.grey[300],
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.green,
+              SafeArea(
+                // ★ ノッチやステータスバーを避ける
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 1.0), // 画面下からの余白
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_sky_back',
+                            );
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (e) {
+                              // エラーが発生した場合
+                              print('再生エラー: $e');
+                            }
+                            // ★ ワールドマップ画面に戻る
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0), // タップ領域を広げる
+                            child: const AnimatedIconIndicator(
+                              iconData: Icons.arrow_downward, // ★ 下矢印
+                              iconColor: Colors.blueAccent,
+                              iconSize: 40,
+                              offsetY: 5, // 上下動の幅を少し小さめに
+                              duration: Duration(seconds: 1),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
 
-          Positioned(
-            top: 25,
-            right: 10,
-            child: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                SafeArea(
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topCenter, // 上に配置
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_sky_space',
+                            );
+                            // ★ レベル20以上で解放
+                            if (widget.currentLevel >= 20 || isPremium) {
+                              try {
+                                SfxManager.instance.playSuccessSound();
+                              } catch (e) {
+                                // エラーが発生した場合
+                                print('再生エラー: $e');
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SpaceScreen(
+                                    currentLevel: widget.currentLevel,
+                                    currentPoints: widget.currentPoints,
+                                    requiredExpForNextLevel:
+                                        widget.requiredExpForNextLevel,
+                                    experience: widget.experience,
+                                    experienceFraction:
+                                        widget.experienceFraction,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              _showPremiumUpgradeDialog(20);
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            // 上向きの矢印
+                            child: const AnimatedIconIndicator(
+                              iconData: Icons.arrow_upward,
+                              iconColor: Colors.purpleAccent,
+                              iconSize: 40,
+                              offsetY: -5, // 上に動くアニメーション
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              Positioned(
+                top: 30, // ポイント表示の下あたり
+                left: 30, // 左端を画面の左端に合わせる
+                child: Center(
+                  // ★ Centerウィジェットで中央に配置
                   child: Container(
+                    // ★ ここからが白い枠のデザイン設定
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.white.withOpacity(0.9), // 少し半透明の白
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
-                        // 少し影をつけて立体感を出す
+                        // ポイント表示と同じような影をつける
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withOpacity(0.15),
                           spreadRadius: 1,
-                          blurRadius: 3,
+                          blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
                       ],
                     ),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 24),
-                        const SizedBox(width: 8),
-                        Text(
-                          '$_points', // ポイント数を表示
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                        Container(
+                          width: 220, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisSize:
+                                    MainAxisSize.min, // Rowが中身のサイズに合わせる
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.levelLabel(widget.currentLevel),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    // ★ 次のレベルまでの必要経験値を計算して表示
+                                    // _requiredExpForNextLevelは次のレベルに必要な「累計」経験値
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.expToNextLevel(
+                                      widget.requiredExpForNextLevel -
+                                          widget.experience,
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              //経験値バー
+                              LinearProgressIndicator(
+                                value: widget.experienceFraction, // 現在の経験値の割合
+                                backgroundColor: Colors.grey[300],
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.green,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
 
-          // 右側のボタン群
-          Positioned(
-            top: 80.0, // 上からの距離
-            right: 20.0, // 右からの距離
-            // Columnでウィジェットを縦に並べます
-            child: SafeArea(
-              child: Column(
-                children: [
-                  // 家具設定ボタン
-                  Material(
-                    color: const Color(0xFFFF7043).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_sky_customize',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          // エラーが発生した場合
-                          print('再生エラー: $e');
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const FurnitureCustomizeScreen(
-                                  mode: CustomizeMode.sky,
-                                ),
-                          ),
-                        ).then((_) {
-                          // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                          _loadPlacedItems();
-                        });
-                      },
-                      child: Padding(
+              Positioned(
+                top: 25,
+                right: 10,
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    SafeArea(
+                      child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 6.0,
-                          vertical: 4.0,
+                          horizontal: 16,
+                          vertical: 8,
                         ),
-                        child: SizedBox(
-                          width: 60,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.flight,
-                                size: 24,
-                                color: Color(0xFFFFCA28),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            // 少し影をつけて立体感を出す
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              '$_points', // ポイント数を表示
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
-                              const SizedBox(height: 2),
-                              Text(
-                                AppLocalizations.of(context)!.navDressUp,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFFFFCA28),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 6),
+                  ],
+                ),
+              ),
 
-                  // ショップボタン
-                  Material(
-                    color: const Color(0xFFFF7043).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_sky_shop',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          // エラーが発生した場合
-                          print('再生エラー: $e');
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ShopScreen(
-                              currentPoints: _points, // ユーザーの所持ポイント
-                              currentLevel: _level, // ユーザーレベルも渡す
-                              mode: ShopMode.forSky, // ★空モードを指定
+              // 右側のボタン群
+              Positioned(
+                top: 80.0, // 上からの距離
+                right: 20.0, // 右からの距離
+                // Columnでウィジェットを縦に並べます
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      // 家具設定ボタン
+                      Material(
+                        color: const Color(0xFFFF7043).withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(8),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: () {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_sky_customize',
+                            );
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (e) {
+                              // エラーが発生した場合
+                              print('再生エラー: $e');
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const FurnitureCustomizeScreen(
+                                      mode: CustomizeMode.sky,
+                                    ),
+                              ),
+                            ).then((_) {
+                              // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
+                              _loadPlacedItems();
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6.0,
+                              vertical: 4.0,
+                            ),
+                            child: SizedBox(
+                              width: 60,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.flight,
+                                    size: 24,
+                                    color: Color(0xFFFFCA28),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    AppLocalizations.of(context)!.navDressUp,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Color(0xFFFFCA28),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ).then((_) {
-                          // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                          _loadPlacedItems();
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6.0,
-                          vertical: 4.0,
                         ),
-                        child: SizedBox(
-                          width: 60,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.store,
-                                size: 24,
-                                color: Color(0xFFFFCA28),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                AppLocalizations.of(context)!.navShop,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFFFFCA28),
-                                  fontWeight: FontWeight.bold,
+                      ),
+                      // ボタンの間に少し隙間を空けます
+                      const SizedBox(height: 6),
+
+                      // ショップボタン
+                      Material(
+                        color: const Color(0xFFFF7043).withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(8),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: () {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_sky_shop',
+                            );
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (e) {
+                              // エラーが発生した場合
+                              print('再生エラー: $e');
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShopScreen(
+                                  currentPoints: _points, // ユーザーの所持ポイント
+                                  currentLevel: _level, // ユーザーレベルも渡す
+                                  mode: ShopMode.forSky, // ★空モードを指定
                                 ),
                               ),
-                            ],
+                            ).then((_) {
+                              // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
+                              _loadPlacedItems();
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6.0,
+                              vertical: 4.0,
+                            ),
+                            child: SizedBox(
+                              width: 60,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.store,
+                                    size: 24,
+                                    color: Color(0xFFFFCA28),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    AppLocalizations.of(context)!.navShop,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Color(0xFFFFCA28),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+
+              // 配置されたアイテムのリストを表示 (ホーム画面と全く同じ仕組み)
+              ..._equippedSkyItems.map((itemPath) {
+                return DraggableCharacter(
+                  id: itemPath, // IDとして画像パスを使う
+                  imagePath: itemPath,
+                  position:
+                      _itemPositionsMap[itemPath] ?? const Offset(100, 150),
+                  size: _getItemSize(itemPath),
+                  onPositionChanged: (delta) {
+                    setState(() {
+                      final currentPos =
+                          _itemPositionsMap[itemPath] ?? const Offset(100, 150);
+                      _itemPositionsMap[itemPath] = currentPos + delta;
+                    });
+                  },
+                );
+              }).toList(),
+
+              // 配置された生き物のアイテムのリストを表示
+              ..._equippedSkyLivings.map((itemPath) {
+                return DraggableCharacter(
+                  id: itemPath,
+                  imagePath: itemPath,
+                  position:
+                      _itemPositionsMap[itemPath] ?? const Offset(150, 200),
+                  size: _getItemSize(itemPath),
+                  onPositionChanged: (delta) {
+                    setState(() {
+                      final currentPos =
+                          _itemPositionsMap[itemPath] ?? const Offset(150, 200);
+                      _itemPositionsMap[itemPath] = currentPos + delta;
+                    });
+                  },
+                );
+              }).toList(),
+
+              // --- アバターの表示 ---
+              DraggableCharacter(
+                id: 'avatar_on_sky',
+                customWidget: AvatarDisplay(
+                  face: _equippedFace,
+                  clothes: _equippedClothes,
+                  hair: _equippedHair,
+                  headgear: _equippedHeadgear,
+                  accessory: _equippedAccessory,
+                  size: _getItemSize(_equippedClothes),
+                ),
+                position: _avatarPosition,
+                size: _getItemSize(_equippedClothes),
+                onPositionChanged: (delta) {
+                  setState(() => _avatarPosition += delta);
+                },
+              ),
+
+              // ★応援キャラクターの表示と操作
+              ..._equippedCharacters.map((charPath) {
+                return DraggableCharacter(
+                  id: 'sky_$charPath', // IDとして画像パスを使う
+                  imagePath: charPath,
+                  position:
+                      _characterPositionsMap[charPath] ?? Offset(490, 190),
+                  size: _getItemSize(charPath),
+                  onPositionChanged: (delta) {
+                    setState(() {
+                      // ★位置の更新
+                      _characterPositionsMap[charPath] =
+                          (_characterPositionsMap[charPath] ??
+                              const Offset(490, 190)) +
+                          delta;
+                    });
+                  },
+                );
+              }).toList(),
+            ],
           ),
-
-          // 配置されたアイテムのリストを表示 (ホーム画面と全く同じ仕組み)
-          ..._equippedSkyItems.map((itemPath) {
-            return DraggableCharacter(
-              id: itemPath, // IDとして画像パスを使う
-              imagePath: itemPath,
-              position: _itemPositionsMap[itemPath] ?? const Offset(100, 150),
-              size: _getItemSize(itemPath),
-              onPositionChanged: (delta) {
-                setState(() {
-                  final currentPos =
-                      _itemPositionsMap[itemPath] ?? const Offset(100, 150);
-                  _itemPositionsMap[itemPath] = currentPos + delta;
-                });
-              },
-            );
-          }).toList(),
-
-          // 配置された生き物のアイテムのリストを表示
-          ..._equippedSkyLivings.map((itemPath) {
-            return DraggableCharacter(
-              id: itemPath,
-              imagePath: itemPath,
-              position: _itemPositionsMap[itemPath] ?? const Offset(150, 200),
-              size: _getItemSize(itemPath),
-              onPositionChanged: (delta) {
-                setState(() {
-                  final currentPos =
-                      _itemPositionsMap[itemPath] ?? const Offset(150, 200);
-                  _itemPositionsMap[itemPath] = currentPos + delta;
-                });
-              },
-            );
-          }).toList(),
-
-          // --- アバターの表示 ---
-          DraggableCharacter(
-            id: 'avatar_on_sky',
-            customWidget: AvatarDisplay(
-              face: _equippedFace,
-              clothes: _equippedClothes,
-              hair: _equippedHair,
-              headgear: _equippedHeadgear,
-              accessory: _equippedAccessory,
-              size: _getItemSize(_equippedClothes),
-            ),
-            position: _avatarPosition,
-            size: _getItemSize(_equippedClothes),
-            onPositionChanged: (delta) {
-              setState(() => _avatarPosition += delta);
-            },
-          ),
-
-          // ★応援キャラクターの表示と操作
-          ..._equippedCharacters.map((charPath) {
-            return DraggableCharacter(
-              id: 'sky_$charPath', // IDとして画像パスを使う
-              imagePath: charPath,
-              position: _characterPositionsMap[charPath] ?? Offset(490, 190),
-              size: _getItemSize(charPath),
-              onPositionChanged: (delta) {
-                setState(() {
-                  // ★位置の更新
-                  _characterPositionsMap[charPath] =
-                      (_characterPositionsMap[charPath] ??
-                          const Offset(490, 190)) +
-                      delta;
-                });
-              },
-            );
-          }).toList(),
-        ],
-      ),
+        );
+      },
     );
   }
 }

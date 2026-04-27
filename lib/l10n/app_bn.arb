@@ -634,7 +634,7 @@
   "upgradeToPremium": "প্রিমিয়ামে আপগ্রেড করুন",
   "premiumActive": "প্রিমিয়াম সক্রিয়",
   "manageSubscription": "সাবস্ক্রিপশন পরিচালনা করুন",
-  "premiumFeaturesDesc": "বিজ্ঞাপন সরান এবং আরামে উপভোগ করুন!",
+  "premiumFeaturesDesc": "সীমাবদ্ধতা ছাড়াই সব জগতে খেলুন!",
   "restorePurchases": "ক্রয় পুনরুদ্ধার করুন",
   "restoringPurchases": "ক্রয় পুনরুদ্ধার করা হচ্ছে...",
   "restoreFailed": "পুনরুদ্ধার ব্যর্থ হয়েছে। আবার চেষ্টা করুন।",
@@ -692,5 +692,24 @@
   "missionTutorialBonusChance": "টিউটোরিয়াল সম্পন্ন করে\n২০০ পয়েন্ট পাওয়ার সুযোগ!!",
   "notificationChannelPromiseName": "প্রতিশ্রুতির অনুস্মারক",
   "notificationChannelPromiseDesc": "প্রতিটি প্রতিশ্রুতির সময়ের জন্য বিজ্ঞপ্তি",
-  "notificationChannelWeeklyName": "সাপ্তাহিক অনুস্মারক"
+  "notificationChannelWeeklyName": "সাপ্তাহিক অনুস্মারক",
+  "premiumShopUnlockMessage": "অবাধে আইটেম কিনতে প্রিমিয়ামে আপগ্রেড করুন!",
+  "premiumMapUnlockMessage": "অবাধে বিশ্ব অন্বেষণ করতে প্রিমিয়ামে আপগ্রেড করুন!",
+  "seeDetails": "বিস্তারিত দেখুন",
+  "shopLevelLockMessage": "লেভেল {level} এ না পৌঁছানো পর্যন্ত আপনি কেনাকাটা করতে পারবেন না!\n",
+  "@shopLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "mapLevelLockMessage": "লেভেল {level} এ না পৌঁছানো পর্যন্ত আপনি প্রবেশ করতে পারবেন না!\n",
+  "@mapLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -3,6 +3,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'island_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
+import '../../managers/purchase_manager.dart';
 import '../../l10n/app_localizations.dart';
 import 'sea_screen.dart';
 import 'sky_screen.dart';
@@ -141,301 +142,362 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
     return result ?? false;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                //「世界の全貌」の背景画像を指定
-                image: AssetImage('assets/images/world_map_background.png'),
-                fit: BoxFit.cover,
-              ),
+  Future<void> _showPremiumUpgradeDialog(int requiredLevel) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          AppLocalizations.of(context)!.upgradeToPremium,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3E0),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFFF7043).withOpacity(0.5),
+              width: 2,
             ),
           ),
-
-          Positioned(
-            top: 20.0, // 上からの距離
-            left: 20.0, // 左からの距離
-            child: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Material(
-                    color: const Color(0xFFFF7043).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_world_map_back',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          print('再生エラー: $e');
-                        }
-                        Navigator.pop(context);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6.0,
-                          vertical: 4.0,
-                        ),
-                        child: SizedBox(
-                          width: 60,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.keyboard_return,
-                                size: 24,
-                                color: Color(0xFFFFCA28),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                AppLocalizations.of(context)!.navBack,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFFFFCA28),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 6), // ボタンの間に少し隙間をあける
-
-                  Material(
-                    color: const Color(0xFFFF7043).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_world_map_help',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          print('再生エラー: $e');
-                        }
-                        _showGuideSequence();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6.0,
-                          vertical: 4.0,
-                        ),
-                        child: SizedBox(
-                          width: 60,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.question_mark,
-                                size: 24,
-                                color: Color(0xFFFFCA28),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                AppLocalizations.of(context)!.help,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFFFFCA28),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.mapLevelLockMessage(requiredLevel),
+                style: const TextStyle(fontSize: 16, height: 1.5, fontWeight: FontWeight.bold, color: Colors.orange),
               ),
+              Text(
+                AppLocalizations.of(context)!.premiumMapUnlockMessage,
+                style: const TextStyle(fontSize: 16, height: 1.5),
+              ),
+            ],
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: TextStyle(color: Colors.grey[600]),
             ),
           ),
-
-          // ★ --- 下の海エリアのタップ領域 --- ★
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: GestureDetector(
-              onTap: () {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'start_world_map_sea',
-                );
-                // ★ レベル10以上かチェック
-                if (widget.currentLevel >= 10) {
-                  try {
-                    SfxManager.instance.playSuccessSound();
-                  } catch (e) {
-                    // エラーが発生した場合
-                    print('再生エラー: $e');
-                  }
-                  // ★ レベル10以上なら、SeaScreenに遷移
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SeaScreen(
-                        currentLevel: widget.currentLevel,
-                        currentPoints: widget.currentPoints,
-                        requiredExpForNextLevel: widget.requiredExpForNextLevel,
-                        experience: widget.experience,
-                        experienceFraction: widget.experienceFraction,
-                      ),
-                    ),
-                  );
-                } else {
-                  // ★ レベルが足りない場合はメッセージを表示
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        AppLocalizations.of(context)!.seaAreaLocked,
-                      ),
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                width: 300,
-                height: 150,
-                color: Colors.transparent,
-                child: Align(
-                  // ★ アイコンを下中央に配置
-                  alignment: Alignment.bottomCenter,
-                  child: _AnimatedIconIndicator(
-                    iconData: Icons.arrow_downward, // 下矢印
-                    iconColor: Colors.blue, // 海っぽい色
-                    iconSize: 40,
-                    offsetY: 10,
-                    duration: const Duration(seconds: 1),
-                  ),
-                ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await PurchaseManager.instance.showPaywall();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043), // オレンジ
+              foregroundColor: Colors.white,
+              side: const BorderSide(
+                color: Color(0xFFFFCA28),
+                width: 2,
+              ), // 黄色の輪郭
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
+              elevation: 4,
             ),
-          ),
-
-          // ★ --- 上の空エリアのタップ領域 --- ★
-          Align(
-            alignment: Alignment.topCenter,
-            child: GestureDetector(
-              onTap: () {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'start_world_map_sky',
-                );
-                // ★ レベル15以上かチェック
-                if (widget.currentLevel >= 15) {
-                  try {
-                    SfxManager.instance.playSuccessSound();
-                  } catch (e) {
-                    // エラーが発生した場合
-                    print('再生エラー: $e');
-                  }
-                  // ★ レベル15以上なら、SkyScreenに遷移
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SkyScreen(
-                        currentLevel: widget.currentLevel,
-                        currentPoints: widget.currentPoints,
-                        requiredExpForNextLevel: widget.requiredExpForNextLevel,
-                        experience: widget.experience,
-                        experienceFraction: widget.experienceFraction,
-                      ),
-                    ),
-                  );
-                } else {
-                  // レベルが足りない場合
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        AppLocalizations.of(context)!.skyAreaLocked,
-                      ),
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                width: 300,
-                height: 150,
-                color: Colors.transparent,
-                child: Align(
-                  // ★ アイコンを上中央に配置
-                  alignment: Alignment.topCenter,
-                  child: _AnimatedIconIndicator(
-                    iconData: Icons.arrow_upward, // 上矢印
-                    iconColor: Colors.purpleAccent, // 宇宙っぽい色
-                    iconSize: 40,
-                    offsetY: 10,
-                    duration: const Duration(seconds: 1),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // ★ --- 真ん中の島のタップ領域 --- ★
-          Align(
-            alignment: Alignment.center,
-            child: GestureDetector(
-              onTap: () {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'start_world_map_island',
-                );
-                if (widget.currentLevel >= 5) {
-                  try {
-                    SfxManager.instance.playSuccessSound();
-                  } catch (e) {
-                    // エラーが発生した場合
-                    print('再生エラー: $e');
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => IslandScreen(
-                        currentLevel: widget.currentLevel,
-                        currentPoints: widget.currentPoints,
-                        requiredExpForNextLevel: widget.requiredExpForNextLevel,
-                        experience: widget.experience,
-                        experienceFraction: widget.experienceFraction,
-                      ),
-                    ),
-                  );
-                } else {
-                  // レベルが足りない場合はメッセージを表示
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context)!.islandLocked),
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                width: 200, // タップ領域の横幅
-                height: 200, // タップ領域の縦幅
-                color: Colors.transparent, // 透明なので見えない
-                child: Center(
-                  // ★ アイコンを中央に配置
-                  child: _AnimatedIconIndicator(
-                    iconData: Icons.circle_outlined, // ◎マーク
-                    iconColor: Colors.amber, // 色を強調
-                    iconSize: 100,
-                    offsetY: 8, // 上下動の幅
-                    duration: const Duration(seconds: 2), // 2秒で1往復
-                  ),
-                ),
-              ),
+            child: Text(
+              AppLocalizations.of(context)!.seeDetails,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: PurchaseManager.instance.isPremium,
+      builder: (context, isPremium, child) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    //「世界の全貌」の背景画像を指定
+                    image: AssetImage('assets/images/world_map_background.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+
+              Positioned(
+                top: 20.0, // 上からの距離
+                left: 20.0, // 左からの距離
+                child: SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Material(
+                        color: const Color(0xFFFF7043).withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(8),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: () {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_world_map_back',
+                            );
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (e) {
+                              print('再生エラー: $e');
+                            }
+                            Navigator.pop(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6.0,
+                              vertical: 4.0,
+                            ),
+                            child: SizedBox(
+                              width: 60,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.keyboard_return,
+                                    size: 24,
+                                    color: Color(0xFFFFCA28),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    AppLocalizations.of(context)!.navBack,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Color(0xFFFFCA28),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 6), // ボタンの間に少し隙間をあける
+
+                      Material(
+                        color: const Color(0xFFFF7043).withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(8),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: () {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_world_map_help',
+                            );
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (e) {
+                              print('再生エラー: $e');
+                            }
+                            _showGuideSequence();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6.0,
+                              vertical: 4.0,
+                            ),
+                            child: SizedBox(
+                              width: 60,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.question_mark,
+                                    size: 24,
+                                    color: Color(0xFFFFCA28),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    AppLocalizations.of(context)!.help,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Color(0xFFFFCA28),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // ★ --- 下の海エリアのタップ領域 --- ★
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: GestureDetector(
+                  onTap: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_world_map_sea',
+                    );
+                    // ★ レベル10以上かチェック
+                    if (widget.currentLevel >= 10 || isPremium) {
+                      try {
+                        SfxManager.instance.playSuccessSound();
+                      } catch (e) {
+                        // エラーが発生した場合
+                        print('再生エラー: $e');
+                      }
+                      // ★ レベル10以上なら、SeaScreenに遷移
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SeaScreen(
+                            currentLevel: widget.currentLevel,
+                            currentPoints: widget.currentPoints,
+                            requiredExpForNextLevel:
+                                widget.requiredExpForNextLevel,
+                            experience: widget.experience,
+                            experienceFraction: widget.experienceFraction,
+                          ),
+                        ),
+                      );
+                    } else {
+                      // ★ レベルが足りない場合はメッセージを表示
+                      _showPremiumUpgradeDialog(10);
+                    }
+                  },
+                  child: Container(
+                    width: 300,
+                    height: 150,
+                    color: Colors.transparent,
+                    child: Align(
+                      // ★ アイコンを下中央に配置
+                      alignment: Alignment.bottomCenter,
+                      child: _AnimatedIconIndicator(
+                        iconData: Icons.arrow_downward, // 下矢印
+                        iconColor: Colors.blue, // 海っぽい色
+                        iconSize: 40,
+                        offsetY: 10,
+                        duration: const Duration(seconds: 1),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // ★ --- 上の空エリアのタップ領域 --- ★
+              Align(
+                alignment: Alignment.topCenter,
+                child: GestureDetector(
+                  onTap: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_world_map_sky',
+                    );
+                    // ★ レベル15以上かチェック
+                    if (widget.currentLevel >= 15 || isPremium) {
+                      try {
+                        SfxManager.instance.playSuccessSound();
+                      } catch (e) {
+                        // エラーが発生した場合
+                        print('再生エラー: $e');
+                      }
+                      // ★ レベル15以上なら、SkyScreenに遷移
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SkyScreen(
+                            currentLevel: widget.currentLevel,
+                            currentPoints: widget.currentPoints,
+                            requiredExpForNextLevel:
+                                widget.requiredExpForNextLevel,
+                            experience: widget.experience,
+                            experienceFraction: widget.experienceFraction,
+                          ),
+                        ),
+                      );
+                    } else {
+                      // レベルが足りない場合
+                      _showPremiumUpgradeDialog(15);
+                    }
+                  },
+                  child: Container(
+                    width: 300,
+                    height: 150,
+                    color: Colors.transparent,
+                    child: Align(
+                      // ★ アイコンを上中央に配置
+                      alignment: Alignment.topCenter,
+                      child: _AnimatedIconIndicator(
+                        iconData: Icons.arrow_upward, // 上矢印
+                        iconColor: Colors.purpleAccent, // 宇宙っぽい色
+                        iconSize: 40,
+                        offsetY: 10,
+                        duration: const Duration(seconds: 1),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // ★ --- 真ん中の島のタップ領域 --- ★
+              Align(
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  onTap: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_world_map_island',
+                    );
+                    if (widget.currentLevel >= 5 || isPremium) {
+                      try {
+                        SfxManager.instance.playSuccessSound();
+                      } catch (e) {
+                        // エラーが発生した場合
+                        print('再生エラー: $e');
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IslandScreen(
+                            currentLevel: widget.currentLevel,
+                            currentPoints: widget.currentPoints,
+                            requiredExpForNextLevel:
+                                widget.requiredExpForNextLevel,
+                            experience: widget.experience,
+                            experienceFraction: widget.experienceFraction,
+                          ),
+                        ),
+                      );
+                    } else {
+                      // レベルが足りない場合はメッセージを表示
+                      _showPremiumUpgradeDialog(5);
+                    }
+                  },
+                  child: Container(
+                    width: 200, // タップ領域の横幅
+                    height: 200, // タップ領域の縦幅
+                    color: Colors.transparent, // 透明なので見えない
+                    child: Center(
+                      // ★ アイコンを中央に配置
+                      child: _AnimatedIconIndicator(
+                        iconData: Icons.circle_outlined, // ◎マーク
+                        iconColor: Colors.amber, // 色を強調
+                        iconSize: 100,
+                        offsetY: 8, // 上下動の幅
+                        duration: const Duration(seconds: 2), // 2秒で1往復
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

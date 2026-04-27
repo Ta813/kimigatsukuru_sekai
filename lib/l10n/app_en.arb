@@ -634,7 +634,7 @@
   "upgradeToPremium": "Upgrade to Premium",
   "premiumActive": "Premium Active",
   "manageSubscription": "Manage Subscription",
-  "premiumFeaturesDesc": "Remove ads and enjoy comfortably!",
+  "premiumFeaturesDesc": "Play without limits in all worlds!",
   "restorePurchases": "Restore Purchases",
   "restoringPurchases": "Restoring purchases...",
   "restoreFailed": "Failed to restore purchases. Please try again.",
@@ -692,5 +692,24 @@
   "missionTutorialBonusChance": "Chance to get\n200 points by completing the tutorial!!",
   "notificationChannelPromiseName": "Promise Reminders",
   "notificationChannelPromiseDesc": "Notifications for each promise time",
-  "notificationChannelWeeklyName": "Weekly Reminder"
+  "notificationChannelWeeklyName": "Weekly Reminder",
+  "premiumShopUnlockMessage": "Upgrade to Premium to buy items freely!",
+  "premiumMapUnlockMessage": "Upgrade to Premium to explore the world freely!",
+  "seeDetails": "See Details",
+  "shopLevelLockMessage": "You can't shop until you reach level {level}!\n",
+  "@shopLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "mapLevelLockMessage": "You can't enter until you reach level {level}!\n",
+  "@mapLevelLockMessage": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -1476,7 +1476,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manageSubscription => 'Manage Subscription';
 
   @override
-  String get premiumFeaturesDesc => 'Remove ads and enjoy comfortably!';
+  String get premiumFeaturesDesc => 'Play without limits in all worlds!';
 
   @override
   String get restorePurchases => 'Restore Purchases';
@@ -1599,4 +1599,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationChannelWeeklyName => 'Weekly Reminder';
+
+  @override
+  String get premiumShopUnlockMessage => 'Upgrade to Premium to buy items freely!';
+
+  @override
+  String get premiumMapUnlockMessage => 'Upgrade to Premium to explore the world freely!';
+
+  @override
+  String get seeDetails => 'See Details';
+
+  @override
+  String shopLevelLockMessage(int level) {
+    return 'You can\'t shop until you reach level $level!\n';
+  }
+
+  @override
+  String mapLevelLockMessage(int level) {
+    return 'You can\'t enter until you reach level $level!\n';
+  }
 }
