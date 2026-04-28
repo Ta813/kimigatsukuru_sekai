@@ -661,6 +661,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     );
   }
 
+  // ==========================================
+  // 3. おうえんキャラクター画面
+  // ==========================================
   Widget _buildSupportScreen() {
     // 🌟 ここも全て表示する
     final allCharacters = shopItems
@@ -673,19 +676,20 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         title: const Text('おうえんキャラクター', style: TextStyle(fontSize: 18)),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: _buildMultiSelectionGrid(
-            allCharacters,
-            _equippedCharacters,
-            'character',
-          ),
+        // 🌟 修正: Paddingを外して直接呼び出します（Grid側のpaddingを使います）
+        child: _buildMultiSelectionGrid(
+          allCharacters,
+          _equippedCharacters,
+          'character',
         ),
       ),
       bottomNavigationBar: const AdBanner(),
     );
   }
 
+  // ==========================================
+  // 4. きみのせかい（家・アイテム）画面
+  // ==========================================
   Widget _buildWorldScreen() {
     // 🌟 ここも全て表示する
     final allHouses = shopItems.where((item) => item.type == 'house').toList();
@@ -698,19 +702,22 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           toolbarHeight: 40,
           leading: _buildSubBackButton(),
           title: const Text('きみのせかい', style: TextStyle(fontSize: 18)),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(40),
+            child: TabBar(
+              tabs: [
+                _buildTab('おうち', Icons.house, 'house'),
+                _buildTab('アイテム', Icons.star, 'item'),
+              ],
+            ),
+          ),
         ),
         body: SafeArea(
           child: TabBarView(
             children: [
               _buildItemGrid(allHouses, _equippedHouse),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: _buildMultiSelectionGrid(
-                  allItems,
-                  _equippedItems,
-                  'item',
-                ),
-              ),
+              // 🌟 修正: Paddingを外して直接呼び出します
+              _buildMultiSelectionGrid(allItems, _equippedItems, 'item'),
             ],
           ),
         ),
@@ -737,7 +744,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 6, // 左右分割で幅が狭いので列数を4くらいに減らすと綺麗です
+        crossAxisCount: 4, // 🌟 修正: 6や8だと多すぎて潰れるため、安全な4列に統一します
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
         childAspectRatio: 0.75, // 縦を少し長めに
@@ -747,7 +754,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         final item = items[index];
         final isEquipped = item.imagePath == equippedItemPath;
 
-        // 🌟 追加: ロック・未購入の判定
+        // ロック・未購入の判定
         final bool isPurchased = _purchasedItemNames.contains(item.name);
         final bool isLevelLocked = _currentLevel < item.requiredLevel;
         final bool isLocked =
@@ -855,7 +862,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                         ),
                       ),
                     ),
-                    // 🌟 未購入なら値段を表示
+                    // 未購入なら値段を表示
                     if (!isPurchased) ...[
                       Text(
                         '${item.price}P',
@@ -867,7 +874,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       ),
                       const SizedBox(height: 8),
                     ],
-                    // 🌟 装備中ならラベルを表示
+                    // 装備中ならラベルを表示
                     if (isEquipped) ...[
                       Container(
                         color: Colors.amber,
@@ -887,7 +894,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                     ],
                   ],
                 ),
-                // 🌟 ロック状態なら鍵アイコンをオーバーレイ
+                // ロック状態なら鍵アイコンをオーバーレイ
                 if (isLocked)
                   Positioned.fill(
                     child: Container(
@@ -930,9 +937,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     List<String> selected,
     String type,
   ) {
-    int crossAxisCount = type == 'item' ? 8 : 6;
+    // 🌟 修正: 8や6だと多すぎて潰れるため、安全な4に統一します
+    int crossAxisCount = 4;
 
     return GridView.builder(
+      padding: const EdgeInsets.all(16), // 🌟 追加: GridView自体に余白を持たせます
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         crossAxisSpacing: 10,
