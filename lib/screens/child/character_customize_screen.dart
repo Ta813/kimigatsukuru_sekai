@@ -406,6 +406,23 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     }
   }
 
+  List<Widget> _buildAppBarActions() {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(right: 20.0),
+        child: Center(
+          child: Text(
+            '$_currentPoints ${AppLocalizations.of(context)?.points ?? "P"}',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  // ==========================================
+  // 1. トップメニュー画面
+  // ==========================================
   Widget _buildMenuScreen() {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
@@ -419,21 +436,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           AppLocalizations.of(context)?.customizeTitle ?? 'カスタマイズ',
           style: const TextStyle(fontSize: 18),
         ),
-        // 🌟 追加: ポイント数を表示
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: Center(
-              child: Text(
-                '$_currentPoints ${AppLocalizations.of(context)?.points ?? "P"}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
+        // 🌟 修正: 共通メソッドを使用
+        actions: _buildAppBarActions(),
       ),
       body: SafeArea(
         child: Center(
@@ -552,8 +556,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     );
   }
 
+  // ==========================================
+  // 2. きせかえ（アバター）画面
+  // ==========================================
   Widget _buildAvatarScreen() {
-    // 🌟 変更: 未購入のアイテムも全て表示するため `_purchasedItemNames.contains` のフィルターを外す
     final allFaces = shopItems.where((item) => item.type == 'face').toList();
     final allHair = shopItems.where((item) => item.type == 'hair').toList();
     final allClothes = shopItems
@@ -573,21 +579,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           toolbarHeight: 40,
           leading: _buildSubBackButton(),
           title: const Text('きせかえ', style: TextStyle(fontSize: 18)),
-          // 🌟 追加: サブ画面でもポイントを表示
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: Center(
-                child: Text(
-                  '$_currentPoints ${AppLocalizations.of(context)?.points ?? "P"}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          // 🌟 修正: 共通メソッドを使用
+          actions: _buildAppBarActions(),
         ),
         body: SafeArea(
           child: Row(
@@ -665,7 +658,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   // 3. おうえんキャラクター画面
   // ==========================================
   Widget _buildSupportScreen() {
-    // 🌟 ここも全て表示する
     final allCharacters = shopItems
         .where((item) => item.type == 'character')
         .toList();
@@ -674,9 +666,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         toolbarHeight: 40,
         leading: _buildSubBackButton(),
         title: const Text('おうえんキャラクター', style: TextStyle(fontSize: 18)),
+        // 🌟 追加: 共通メソッドを使用
+        actions: _buildAppBarActions(),
       ),
       body: SafeArea(
-        // 🌟 修正: Paddingを外して直接呼び出します（Grid側のpaddingを使います）
         child: _buildMultiSelectionGrid(
           allCharacters,
           _equippedCharacters,
@@ -691,7 +684,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   // 4. きみのせかい（家・アイテム）画面
   // ==========================================
   Widget _buildWorldScreen() {
-    // 🌟 ここも全て表示する
     final allHouses = shopItems.where((item) => item.type == 'house').toList();
     final allItems = shopItems.where((item) => item.type == 'item').toList();
 
@@ -702,6 +694,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           toolbarHeight: 40,
           leading: _buildSubBackButton(),
           title: const Text('きみのせかい', style: TextStyle(fontSize: 18)),
+          // 🌟 追加: 共通メソッドを使用
+          actions: _buildAppBarActions(),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(40),
             child: TabBar(
@@ -716,7 +710,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           child: TabBarView(
             children: [
               _buildItemGrid(allHouses, _equippedHouse),
-              // 🌟 修正: Paddingを外して直接呼び出します
               _buildMultiSelectionGrid(allItems, _equippedItems, 'item'),
             ],
           ),
@@ -744,7 +737,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4, // 🌟 修正: 6や8だと多すぎて潰れるため、安全な4列に統一します
+        crossAxisCount: 6,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
         childAspectRatio: 0.75, // 縦を少し長めに
@@ -938,7 +931,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     String type,
   ) {
     // 🌟 修正: 8や6だと多すぎて潰れるため、安全な4に統一します
-    int crossAxisCount = 4;
+    int crossAxisCount = type == 'item' ? 8 : 6;
 
     return GridView.builder(
       padding: const EdgeInsets.all(16), // 🌟 追加: GridView自体に余白を持たせます
