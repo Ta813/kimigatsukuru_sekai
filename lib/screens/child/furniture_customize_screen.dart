@@ -345,7 +345,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 8,
+        crossAxisCount: 6,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         childAspectRatio: 0.75, // 縦を少し長めに
@@ -410,8 +410,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                       Container(
                         color: Colors.blueAccent,
                         padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: const Text(
-                          'おいている', // 分かりやすいテキスト
+                        child: Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.labelPlaced, // 分かりやすいテキスト
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
