@@ -1,6 +1,7 @@
 // lib/screens/child/furniture_customize_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -212,7 +213,12 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
             ElevatedButton(
               onPressed: () async {
                 Navigator.pop(context);
-                await PurchaseManager.instance.showPaywall();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PremiumPaywallScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043),

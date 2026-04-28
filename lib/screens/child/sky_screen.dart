@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/animated_icon_indicator.dart';
@@ -199,7 +200,9 @@ class _SkyScreenState extends State<SkyScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                AppLocalizations.of(context)!.mapLevelLockMessage(requiredLevel),
+                AppLocalizations.of(
+                  context,
+                )!.mapLevelLockMessage(requiredLevel),
                 style: const TextStyle(
                   fontSize: 16,
                   height: 1.5,
@@ -226,7 +229,12 @@ class _SkyScreenState extends State<SkyScreen> {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
-              await PurchaseManager.instance.showPaywall();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PremiumPaywallScreen(),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043), // オレンジ

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'island_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
@@ -165,8 +166,15 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                AppLocalizations.of(context)!.mapLevelLockMessage(requiredLevel),
-                style: const TextStyle(fontSize: 16, height: 1.5, fontWeight: FontWeight.bold, color: Colors.orange),
+                AppLocalizations.of(
+                  context,
+                )!.mapLevelLockMessage(requiredLevel),
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange,
+                ),
               ),
               Text(
                 AppLocalizations.of(context)!.premiumMapUnlockMessage,
@@ -187,7 +195,12 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
-              await PurchaseManager.instance.showPaywall();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PremiumPaywallScreen(),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043), // オレンジ

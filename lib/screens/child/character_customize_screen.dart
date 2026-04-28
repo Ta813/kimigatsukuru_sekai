@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/screens/child/child_home_screen.dart';
+import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
@@ -272,7 +273,12 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ElevatedButton(
               onPressed: () async {
                 Navigator.pop(context);
-                await PurchaseManager.instance.showPaywall();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PremiumPaywallScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043),

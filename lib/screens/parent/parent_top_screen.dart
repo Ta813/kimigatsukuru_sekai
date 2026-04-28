@@ -1,6 +1,7 @@
 // lib/screens/parent_mode/parent_top_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/blinking_effect.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -366,7 +367,13 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                           FirebaseAnalytics.instance.logEvent(
                             name: 'start_premium',
                           );
-                          PurchaseManager.instance.showPaywall();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const PremiumPaywallScreen(),
+                            ),
+                          );
                         }
                       },
                       borderRadius: BorderRadius.circular(20),
