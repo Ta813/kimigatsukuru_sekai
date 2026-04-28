@@ -1696,4 +1696,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get splashLoadingMessage => 'Building your world...';
+
+  @override
+  String get paywallUpgradeSuccess => 'Upgrade to Premium successful!';
+
+  @override
+  String paywallError(String error) {
+    return 'An error occurred: $error';
+  }
+
+  @override
+  String get paywallRestoreSuccess => 'Purchases restored successfully!';
+
+  @override
+  String get paywallRestoreEmpty => 'No purchases found to restore.';
+
+  @override
+  String get paywallRestoreFailed => 'Failed to restore purchases.';
+
+  @override
+  String get paywallTitle => 'Upgrade to Premium\nfor a better experience! ✨';
+
+  @override
+  String get paywallSubtitle => 'Explore all worlds\nwithout any limits!';
+
+  @override
+  String get paywallFreePlan => 'Free Plan\n(Before)';
+
+  @override
+  String get paywallPremiumPlan => 'Premium Plan\n(After) ✨';
+
+  @override
+  String get paywallAdBefore => 'Ads are displayed';
+
+  @override
+  String get paywallAdAfter => 'Zero Ads!\nSafe and comfortable with no accidental taps.';
+
+  @override
+  String get paywallLimitBefore => 'Items and worlds have\nlevel restrictions';
+
+  @override
+  String get paywallLimitAfter => 'Unlock everything!\nPlay freely with all items and worlds.';
+
+  @override
+  String get paywallBonusBefore => 'Standard roulette\nbonus';
+
+  @override
+  String get paywallBonusAfter => '5x point bonus!\nEarn points faster and feel great!';
+
+  @override
+  String get paywallSelectPlan => 'Please select a plan';
+
+  @override
+  String get paywallContinue => 'Continue';
+
+  @override
+  String get paywallRestoreLink => 'Restore Purchases';
+
+  @override
+  String get paywallTermsLink => 'Terms of Use';
+
+  @override
+  String get paywallPrivacyLink => 'Privacy Policy';
+
+  @override
+  String get paywallFetchError => 'Cannot fetch product info right now.\nPlease check your connection.';
+
+  @override
+  String get paywallPlanMonthly => 'Monthly';
+
+  @override
+  String get paywallPerMonth => '/mo';
+
+  @override
+  String get paywallPlanAnnual => 'Annual';
+
+  @override
+  String get paywallPerYear => '/yr';
+
+  @override
+  String paywallJustPerMonth(String price) {
+    return 'Just $price/mo';
+  }
+
+  @override
+  String get paywallPlanLifetime => 'Lifetime';
 }

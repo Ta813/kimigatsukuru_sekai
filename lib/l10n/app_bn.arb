@@ -737,5 +737,42 @@
   "tabItem": "আইটেম",
   "labelEquipped": "সজ্জিত",
   "labelPlaced": "রাখা হয়েছে",
-  "splashLoadingMessage": "আপনার বিশ্ব তৈরি করা হচ্ছে..."
+  "splashLoadingMessage": "আপনার বিশ্ব তৈরি করা হচ্ছে...",
+  "paywallUpgradeSuccess": "প্রিমিয়ামে আপগ্রেড সফল হয়েছে!",
+  "paywallError": "একটি ত্রুটি ঘটেছে: {error}",
+  "@paywallError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "paywallRestoreSuccess": "কেনাকাটা সফলভাবে পুনরুদ্ধার করা হয়েছে!",
+  "paywallRestoreEmpty": "পুনরুদ্ধার করার জন্য কোনো কেনাকাটা পাওয়া যায়নি।",
+  "paywallRestoreFailed": "কেনাকাটা পুনরুদ্ধার করা যায়নি।",
+  "paywallTitle": "আরও ভালো অভিজ্ঞতার জন্য\nপ্রিমিয়ামে আপগ্রেড করুন! ✨",
+  "paywallSubtitle": "কোনো সীমা ছাড়াই\nসব বিশ্ব ঘুরে দেখুন!",
+  "paywallFreePlan": "ফ্রি প্ল্যান\n(আগে)",
+  "paywallPremiumPlan": "প্রিমিয়াম প্ল্যান\n(পরে) ✨",
+  "paywallAdBefore": "বিজ্ঞাপন দেখানো হয়",
+  "paywallAdAfter": "কোনো বিজ্ঞাপন নেই!\nদুর্ঘটনাবশত ট্যাপ ছাড়াই নিরাপদ ও আরামদায়ক।",
+  "paywallLimitBefore": "আইটেম এবং বিশ্বে\nলেভেল সীমাবদ্ধতা আছে",
+  "paywallLimitAfter": "সবকিছু আনলক করুন!\nশুরু থেকেই সব আইটেম নিয়ে খেলুন।",
+  "paywallBonusBefore": "সাধারণ রুলেট\nবোনাস",
+  "paywallBonusAfter": "৫ গুণ পয়েন্ট বোনাস!\nদ্রুত পয়েন্ট অর্জন করুন!",
+  "paywallSelectPlan": "দয়া করে একটি প্ল্যান বেছে নিন",
+  "paywallContinue": "চালিয়ে যান",
+  "paywallRestoreLink": "কেনাকাটা পুনরুদ্ধার করুন",
+  "paywallTermsLink": "ব্যবহারের শর্তাবলী",
+  "paywallPrivacyLink": "গোপনীয়তা নীতি",
+  "paywallFetchError": "বর্তমানে পণ্যের তথ্য পাওয়া যাচ্ছে না।\nআপনার ইন্টারনেট সংযোগ পরীক্ষা করুন।",
+  "paywallPlanMonthly": "মাসিক",
+  "paywallPerMonth": "/মাস",
+  "paywallPlanAnnual": "বার্ষিক",
+  "paywallPerYear": "/বছর",
+  "paywallJustPerMonth": "মাত্র {price}/মাস",
+  "@paywallJustPerMonth": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "paywallPlanLifetime": "আজীবন"
 }

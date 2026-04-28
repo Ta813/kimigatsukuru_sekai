@@ -737,5 +737,42 @@
   "tabItem": "عنصر",
   "labelEquipped": "مجهز",
   "labelPlaced": "موضوع",
-  "splashLoadingMessage": "جاري بناء عالمك..."
+  "splashLoadingMessage": "جاري بناء عالمك...",
+  "paywallUpgradeSuccess": "تمت الترقية إلى Premium بنجاح!",
+  "paywallError": "حدث خطأ: {error}",
+  "@paywallError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "paywallRestoreSuccess": "تمت استعادة المشتريات بنجاح!",
+  "paywallRestoreEmpty": "لا توجد مشتريات لاستعادتها.",
+  "paywallRestoreFailed": "فشلت استعادة المشتريات.",
+  "paywallTitle": "قم بالترقية إلى Premium\nلتجربة أفضل! ✨",
+  "paywallSubtitle": "استكشف كل العوالم\nبلا حدود!",
+  "paywallFreePlan": "الخطة المجانية\n(قبل)",
+  "paywallPremiumPlan": "خطة Premium\n(بعد) ✨",
+  "paywallAdBefore": "تظهر الإعلانات",
+  "paywallAdAfter": "بدون إعلانات!\nبيئة آمنة ومريحة بدون نقرات خاطئة.",
+  "paywallLimitBefore": "قيود المستوى\nعلى العناصر والعوالم",
+  "paywallLimitAfter": "افتح كل شيء!\nالعب بحرية في كل العناصر والعوالم.",
+  "paywallBonusBefore": "مكافأة الروليت\nالعادية",
+  "paywallBonusAfter": "مكافأة نقاط 5 أضعاف!\nاجمع النقاط بسرعة واستمتع بالإنجاز!",
+  "paywallSelectPlan": "يرجى اختيار خطة",
+  "paywallContinue": "متابعة",
+  "paywallRestoreLink": "استعادة المشتريات",
+  "paywallTermsLink": "شروط الاستخدام",
+  "paywallPrivacyLink": "سياسة الخصوصية",
+  "paywallFetchError": "لا يمكن جلب معلومات المنتج حالياً.\nيرجى التحقق من اتصالك.",
+  "paywallPlanMonthly": "شهرياً",
+  "paywallPerMonth": "/شهر",
+  "paywallPlanAnnual": "سنوياً",
+  "paywallPerYear": "/سنة",
+  "paywallJustPerMonth": "فقط {price}/شهر",
+  "@paywallJustPerMonth": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "paywallPlanLifetime": "مدى الحياة"
 }

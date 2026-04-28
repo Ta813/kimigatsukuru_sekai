@@ -1696,4 +1696,89 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get splashLoadingMessage => 'आपकी दुनिया बनाई जा रही है...';
+
+  @override
+  String get paywallUpgradeSuccess => 'प्रीमियम में अपग्रेड सफल रहा!';
+
+  @override
+  String paywallError(String error) {
+    return 'एक त्रुटि हुई: $error';
+  }
+
+  @override
+  String get paywallRestoreSuccess => 'खरीदारी सफलतापूर्वक पुनर्स्थापित हो गई!';
+
+  @override
+  String get paywallRestoreEmpty => 'पुनर्स्थापित करने के लिए कोई खरीदारी नहीं मिली।';
+
+  @override
+  String get paywallRestoreFailed => 'खरीदारी पुनर्स्थापित करने में विफल।';
+
+  @override
+  String get paywallTitle => 'बेहतर अनुभव के लिए\nप्रीमियम में अपग्रेड करें! ✨';
+
+  @override
+  String get paywallSubtitle => 'बिना किसी सीमा के\nसभी दुनियाओं का अन्वेषण करें!';
+
+  @override
+  String get paywallFreePlan => 'मुफ़्त योजना\n(पहले)';
+
+  @override
+  String get paywallPremiumPlan => 'प्रीमियम योजना\n(बाद में) ✨';
+
+  @override
+  String get paywallAdBefore => 'विज्ञापन दिखाए जाते हैं';
+
+  @override
+  String get paywallAdAfter => 'कोई विज्ञापन नहीं!\nसुरक्षित और आरामदायक।';
+
+  @override
+  String get paywallLimitBefore => 'आइटम और दुनियाओं पर\nस्तर की सीमाएँ हैं';
+
+  @override
+  String get paywallLimitAfter => 'सब कुछ अनलॉक करें!\nशुरू से ही सभी आइटम आज़माएँ।';
+
+  @override
+  String get paywallBonusBefore => 'मानक रूले\nबोनस';
+
+  @override
+  String get paywallBonusAfter => '5x पॉइंट बोनस!\nतेजी से पॉइंट कमाएं और मज़े करें!';
+
+  @override
+  String get paywallSelectPlan => 'कृपया एक योजना चुनें';
+
+  @override
+  String get paywallContinue => 'जारी रखें';
+
+  @override
+  String get paywallRestoreLink => 'खरीदारी पुनर्स्थापित करें';
+
+  @override
+  String get paywallTermsLink => 'उपयोग की शर्तें';
+
+  @override
+  String get paywallPrivacyLink => 'गोपनीयता नीति';
+
+  @override
+  String get paywallFetchError => 'अभी उत्पाद जानकारी प्राप्त नहीं की जा सकती।\nकृपया अपना इंटरनेट कनेक्शन जांचें।';
+
+  @override
+  String get paywallPlanMonthly => 'मासिक';
+
+  @override
+  String get paywallPerMonth => '/माह';
+
+  @override
+  String get paywallPlanAnnual => 'वार्षिक';
+
+  @override
+  String get paywallPerYear => '/वर्ष';
+
+  @override
+  String paywallJustPerMonth(String price) {
+    return 'केवल $price/माह';
+  }
+
+  @override
+  String get paywallPlanLifetime => 'आजीवन';
 }

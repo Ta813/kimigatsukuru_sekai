@@ -737,5 +737,42 @@
   "tabItem": "アイテム",
   "labelEquipped": "そうび中",
   "labelPlaced": "おいている",
-  "splashLoadingMessage": "せかい を つくっています..."
+  "splashLoadingMessage": "せかい を つくっています...",
+  "paywallUpgradeSuccess": "プレミアムプランへのアップグレードが完了しました！",
+  "paywallError": "エラーが発生しました: {error}",
+  "@paywallError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "paywallRestoreSuccess": "購入履歴を復元しました！",
+  "paywallRestoreEmpty": "復元できる購入履歴がありませんでした。",
+  "paywallRestoreFailed": "復元に失敗しました。",
+  "paywallTitle": "プレミアムにアップグレード\nして、より良い体験を！✨",
+  "paywallSubtitle": "制限なしで、すべての世界を\nあそび尽くそう！",
+  "paywallFreePlan": "無料プラン\n(Before)",
+  "paywallPremiumPlan": "プレミアムプラン\n(After) ✨",
+  "paywallAdBefore": "広告が表示される",
+  "paywallAdAfter": "広告完全ゼロ！\n誤タップの心配がなく安心・快適。",
+  "paywallLimitBefore": "アイテムや行く世界に\n「レベル制限」がある",
+  "paywallLimitAfter": "すべてのロックを解除！\n最初からアイテムも世界も遊び放題。",
+  "paywallBonusBefore": "ルーレットの\n当たりボーナスが通常",
+  "paywallBonusAfter": "ポイントボーナス5倍！\nどんどん貯まって達成感がアップ！",
+  "paywallSelectPlan": "プランを選択してください",
+  "paywallContinue": "続行",
+  "paywallRestoreLink": "購入を復元",
+  "paywallTermsLink": "利用規約",
+  "paywallPrivacyLink": "プライバシー",
+  "paywallFetchError": "現在、商品情報を取得できません。\nインターネット接続をご確認ください。",
+  "paywallPlanMonthly": "月額",
+  "paywallPerMonth": "/月",
+  "paywallPlanAnnual": "年額",
+  "paywallPerYear": "/年",
+  "paywallJustPerMonth": "わずか{price}/月",
+  "@paywallJustPerMonth": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "paywallPlanLifetime": "買い切り"
 }

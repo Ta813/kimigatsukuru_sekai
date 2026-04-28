@@ -737,5 +737,42 @@
   "tabItem": "Item",
   "labelEquipped": "Equipped",
   "labelPlaced": "Placed",
-  "splashLoadingMessage": "Building your world..."
+  "splashLoadingMessage": "Building your world...",
+  "paywallUpgradeSuccess": "Upgrade to Premium successful!",
+  "paywallError": "An error occurred: {error}",
+  "@paywallError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "paywallRestoreSuccess": "Purchases restored successfully!",
+  "paywallRestoreEmpty": "No purchases found to restore.",
+  "paywallRestoreFailed": "Failed to restore purchases.",
+  "paywallTitle": "Upgrade to Premium\nfor a better experience! ✨",
+  "paywallSubtitle": "Explore all worlds\nwithout any limits!",
+  "paywallFreePlan": "Free Plan\n(Before)",
+  "paywallPremiumPlan": "Premium Plan\n(After) ✨",
+  "paywallAdBefore": "Ads are displayed",
+  "paywallAdAfter": "Zero Ads!\nSafe and comfortable with no accidental taps.",
+  "paywallLimitBefore": "Items and worlds have\nlevel restrictions",
+  "paywallLimitAfter": "Unlock everything!\nPlay freely with all items and worlds.",
+  "paywallBonusBefore": "Standard roulette\nbonus",
+  "paywallBonusAfter": "5x point bonus!\nEarn points faster and feel great!",
+  "paywallSelectPlan": "Please select a plan",
+  "paywallContinue": "Continue",
+  "paywallRestoreLink": "Restore Purchases",
+  "paywallTermsLink": "Terms of Use",
+  "paywallPrivacyLink": "Privacy Policy",
+  "paywallFetchError": "Cannot fetch product info right now.\nPlease check your connection.",
+  "paywallPlanMonthly": "Monthly",
+  "paywallPerMonth": "/mo",
+  "paywallPlanAnnual": "Annual",
+  "paywallPerYear": "/yr",
+  "paywallJustPerMonth": "Just {price}/mo",
+  "@paywallJustPerMonth": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "paywallPlanLifetime": "Lifetime"
 }

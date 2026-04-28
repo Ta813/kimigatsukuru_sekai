@@ -1696,4 +1696,89 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get splashLoadingMessage => 'せかい を つくっています...';
+
+  @override
+  String get paywallUpgradeSuccess => 'プレミアムプランへのアップグレードが完了しました！';
+
+  @override
+  String paywallError(String error) {
+    return 'エラーが発生しました: $error';
+  }
+
+  @override
+  String get paywallRestoreSuccess => '購入履歴を復元しました！';
+
+  @override
+  String get paywallRestoreEmpty => '復元できる購入履歴がありませんでした。';
+
+  @override
+  String get paywallRestoreFailed => '復元に失敗しました。';
+
+  @override
+  String get paywallTitle => 'プレミアムにアップグレード\nして、より良い体験を！✨';
+
+  @override
+  String get paywallSubtitle => '制限なしで、すべての世界を\nあそび尽くそう！';
+
+  @override
+  String get paywallFreePlan => '無料プラン\n(Before)';
+
+  @override
+  String get paywallPremiumPlan => 'プレミアムプラン\n(After) ✨';
+
+  @override
+  String get paywallAdBefore => '広告が表示される';
+
+  @override
+  String get paywallAdAfter => '広告完全ゼロ！\n誤タップの心配がなく安心・快適。';
+
+  @override
+  String get paywallLimitBefore => 'アイテムや行く世界に\n「レベル制限」がある';
+
+  @override
+  String get paywallLimitAfter => 'すべてのロックを解除！\n最初からアイテムも世界も遊び放題。';
+
+  @override
+  String get paywallBonusBefore => 'ルーレットの\n当たりボーナスが通常';
+
+  @override
+  String get paywallBonusAfter => 'ポイントボーナス5倍！\nどんどん貯まって達成感がアップ！';
+
+  @override
+  String get paywallSelectPlan => 'プランを選択してください';
+
+  @override
+  String get paywallContinue => '続行';
+
+  @override
+  String get paywallRestoreLink => '購入を復元';
+
+  @override
+  String get paywallTermsLink => '利用規約';
+
+  @override
+  String get paywallPrivacyLink => 'プライバシー';
+
+  @override
+  String get paywallFetchError => '現在、商品情報を取得できません。\nインターネット接続をご確認ください。';
+
+  @override
+  String get paywallPlanMonthly => '月額';
+
+  @override
+  String get paywallPerMonth => '/月';
+
+  @override
+  String get paywallPlanAnnual => '年額';
+
+  @override
+  String get paywallPerYear => '/年';
+
+  @override
+  String paywallJustPerMonth(String price) {
+    return 'わずか$price/月';
+  }
+
+  @override
+  String get paywallPlanLifetime => '買い切り';
 }

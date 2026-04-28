@@ -1696,4 +1696,89 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get splashLoadingMessage => 'جاري بناء عالمك...';
+
+  @override
+  String get paywallUpgradeSuccess => 'تمت الترقية إلى Premium بنجاح!';
+
+  @override
+  String paywallError(String error) {
+    return 'حدث خطأ: $error';
+  }
+
+  @override
+  String get paywallRestoreSuccess => 'تمت استعادة المشتريات بنجاح!';
+
+  @override
+  String get paywallRestoreEmpty => 'لا توجد مشتريات لاستعادتها.';
+
+  @override
+  String get paywallRestoreFailed => 'فشلت استعادة المشتريات.';
+
+  @override
+  String get paywallTitle => 'قم بالترقية إلى Premium\nلتجربة أفضل! ✨';
+
+  @override
+  String get paywallSubtitle => 'استكشف كل العوالم\nبلا حدود!';
+
+  @override
+  String get paywallFreePlan => 'الخطة المجانية\n(قبل)';
+
+  @override
+  String get paywallPremiumPlan => 'خطة Premium\n(بعد) ✨';
+
+  @override
+  String get paywallAdBefore => 'تظهر الإعلانات';
+
+  @override
+  String get paywallAdAfter => 'بدون إعلانات!\nبيئة آمنة ومريحة بدون نقرات خاطئة.';
+
+  @override
+  String get paywallLimitBefore => 'قيود المستوى\nعلى العناصر والعوالم';
+
+  @override
+  String get paywallLimitAfter => 'افتح كل شيء!\nالعب بحرية في كل العناصر والعوالم.';
+
+  @override
+  String get paywallBonusBefore => 'مكافأة الروليت\nالعادية';
+
+  @override
+  String get paywallBonusAfter => 'مكافأة نقاط 5 أضعاف!\nاجمع النقاط بسرعة واستمتع بالإنجاز!';
+
+  @override
+  String get paywallSelectPlan => 'يرجى اختيار خطة';
+
+  @override
+  String get paywallContinue => 'متابعة';
+
+  @override
+  String get paywallRestoreLink => 'استعادة المشتريات';
+
+  @override
+  String get paywallTermsLink => 'شروط الاستخدام';
+
+  @override
+  String get paywallPrivacyLink => 'سياسة الخصوصية';
+
+  @override
+  String get paywallFetchError => 'لا يمكن جلب معلومات المنتج حالياً.\nيرجى التحقق من اتصالك.';
+
+  @override
+  String get paywallPlanMonthly => 'شهرياً';
+
+  @override
+  String get paywallPerMonth => '/شهر';
+
+  @override
+  String get paywallPlanAnnual => 'سنوياً';
+
+  @override
+  String get paywallPerYear => '/سنة';
+
+  @override
+  String paywallJustPerMonth(String price) {
+    return 'فقط $price/شهر';
+  }
+
+  @override
+  String get paywallPlanLifetime => 'مدى الحياة';
 }

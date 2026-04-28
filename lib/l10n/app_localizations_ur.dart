@@ -1696,4 +1696,89 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get splashLoadingMessage => 'آپ کی دنیا بنائی جا رہی ہے...';
+
+  @override
+  String get paywallUpgradeSuccess => 'پریمیم میں اپ گریڈ کامیاب ہو گیا!';
+
+  @override
+  String paywallError(String error) {
+    return 'ایک خرابی پیش آ گئی: $error';
+  }
+
+  @override
+  String get paywallRestoreSuccess => 'خریداری کامیابی سے بحال ہو گئی!';
+
+  @override
+  String get paywallRestoreEmpty => 'بحال کرنے کے لیے کوئی خریداری نہیں ملی۔';
+
+  @override
+  String get paywallRestoreFailed => 'خریداری بحال کرنے میں ناکام۔';
+
+  @override
+  String get paywallTitle => 'بہتر تجربے کے لیے\nپریمیم میں اپ گریڈ کریں! ✨';
+
+  @override
+  String get paywallSubtitle => 'بغیر کسی حد کے\nتمام دنیاؤں کو دریافت کریں!';
+
+  @override
+  String get paywallFreePlan => 'مفت پلان\n(پہلے)';
+
+  @override
+  String get paywallPremiumPlan => 'پریمیم پلان\n(بعد میں) ✨';
+
+  @override
+  String get paywallAdBefore => 'اشتہارات دکھائے جاتے ہیں';
+
+  @override
+  String get paywallAdAfter => 'کوئی اشتہار نہیں!\nغلط کلک کے بغیر محفوظ اور آرام دہ۔';
+
+  @override
+  String get paywallLimitBefore => 'آئٹمز اور دنیاؤں پر\nلیول کی پابندیاں ہیں';
+
+  @override
+  String get paywallLimitAfter => 'سب کچھ انلاک کریں!\nشروع سے ہی تمام آئٹمز کے ساتھ کھیلیں۔';
+
+  @override
+  String get paywallBonusBefore => 'معیاری رولیٹی\nبونس';
+
+  @override
+  String get paywallBonusAfter => '5x پوائنٹ بونس!\nتیزی سے پوائنٹس کمائیں!';
+
+  @override
+  String get paywallSelectPlan => 'براہ کرم ایک پلان منتخب کریں';
+
+  @override
+  String get paywallContinue => 'جاری رکھیں';
+
+  @override
+  String get paywallRestoreLink => 'خریداری بحال کریں';
+
+  @override
+  String get paywallTermsLink => 'استعمال کی شرائط';
+
+  @override
+  String get paywallPrivacyLink => 'رازداری کی پالیسی';
+
+  @override
+  String get paywallFetchError => 'پروڈکٹ کی معلومات حاصل نہیں کی جا سکتیں۔\nبراہ کرم اپنا انٹرنیٹ کنکشن چیک کریں۔';
+
+  @override
+  String get paywallPlanMonthly => 'ماہانہ';
+
+  @override
+  String get paywallPerMonth => '/ماہ';
+
+  @override
+  String get paywallPlanAnnual => 'سالانہ';
+
+  @override
+  String get paywallPerYear => '/سال';
+
+  @override
+  String paywallJustPerMonth(String price) {
+    return 'صرف $price/ماہ';
+  }
+
+  @override
+  String get paywallPlanLifetime => 'تاحیات';
 }

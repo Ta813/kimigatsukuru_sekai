@@ -691,5 +691,42 @@
   "tabItem": "आइटम",
   "labelEquipped": "सुसज्जित",
   "labelPlaced": "रखा हुआ",
-  "splashLoadingMessage": "आपकी दुनिया बनाई जा रही है..."
+  "splashLoadingMessage": "आपकी दुनिया बनाई जा रही है...",
+  "paywallUpgradeSuccess": "प्रीमियम में अपग्रेड सफल रहा!",
+  "paywallError": "एक त्रुटि हुई: {error}",
+  "@paywallError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "paywallRestoreSuccess": "खरीदारी सफलतापूर्वक पुनर्स्थापित हो गई!",
+  "paywallRestoreEmpty": "पुनर्स्थापित करने के लिए कोई खरीदारी नहीं मिली।",
+  "paywallRestoreFailed": "खरीदारी पुनर्स्थापित करने में विफल।",
+  "paywallTitle": "बेहतर अनुभव के लिए\nप्रीमियम में अपग्रेड करें! ✨",
+  "paywallSubtitle": "बिना किसी सीमा के\nसभी दुनियाओं का अन्वेषण करें!",
+  "paywallFreePlan": "मुफ़्त योजना\n(पहले)",
+  "paywallPremiumPlan": "प्रीमियम योजना\n(बाद में) ✨",
+  "paywallAdBefore": "विज्ञापन दिखाए जाते हैं",
+  "paywallAdAfter": "कोई विज्ञापन नहीं!\nसुरक्षित और आरामदायक।",
+  "paywallLimitBefore": "आइटम और दुनियाओं पर\nस्तर की सीमाएँ हैं",
+  "paywallLimitAfter": "सब कुछ अनलॉक करें!\nशुरू से ही सभी आइटम आज़माएँ।",
+  "paywallBonusBefore": "मानक रूले\nबोनस",
+  "paywallBonusAfter": "5x पॉइंट बोनस!\nतेजी से पॉइंट कमाएं और मज़े करें!",
+  "paywallSelectPlan": "कृपया एक योजना चुनें",
+  "paywallContinue": "जारी रखें",
+  "paywallRestoreLink": "खरीदारी पुनर्स्थापित करें",
+  "paywallTermsLink": "उपयोग की शर्तें",
+  "paywallPrivacyLink": "गोपनीयता नीति",
+  "paywallFetchError": "अभी उत्पाद जानकारी प्राप्त नहीं की जा सकती।\nकृपया अपना इंटरनेट कनेक्शन जांचें।",
+  "paywallPlanMonthly": "मासिक",
+  "paywallPerMonth": "/माह",
+  "paywallPlanAnnual": "वार्षिक",
+  "paywallPerYear": "/वर्ष",
+  "paywallJustPerMonth": "केवल {price}/माह",
+  "@paywallJustPerMonth": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "paywallPlanLifetime": "आजीवन"
 }

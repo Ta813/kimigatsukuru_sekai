@@ -737,5 +737,42 @@
   "tabItem": "آئٹم",
   "labelEquipped": "لیس ہے",
   "labelPlaced": "رکھا گیا",
-  "splashLoadingMessage": "آپ کی دنیا بنائی جا رہی ہے..."
+  "splashLoadingMessage": "آپ کی دنیا بنائی جا رہی ہے...",
+  "paywallUpgradeSuccess": "پریمیم میں اپ گریڈ کامیاب ہو گیا!",
+  "paywallError": "ایک خرابی پیش آ گئی: {error}",
+  "@paywallError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "paywallRestoreSuccess": "خریداری کامیابی سے بحال ہو گئی!",
+  "paywallRestoreEmpty": "بحال کرنے کے لیے کوئی خریداری نہیں ملی۔",
+  "paywallRestoreFailed": "خریداری بحال کرنے میں ناکام۔",
+  "paywallTitle": "بہتر تجربے کے لیے\nپریمیم میں اپ گریڈ کریں! ✨",
+  "paywallSubtitle": "بغیر کسی حد کے\nتمام دنیاؤں کو دریافت کریں!",
+  "paywallFreePlan": "مفت پلان\n(پہلے)",
+  "paywallPremiumPlan": "پریمیم پلان\n(بعد میں) ✨",
+  "paywallAdBefore": "اشتہارات دکھائے جاتے ہیں",
+  "paywallAdAfter": "کوئی اشتہار نہیں!\nغلط کلک کے بغیر محفوظ اور آرام دہ۔",
+  "paywallLimitBefore": "آئٹمز اور دنیاؤں پر\nلیول کی پابندیاں ہیں",
+  "paywallLimitAfter": "سب کچھ انلاک کریں!\nشروع سے ہی تمام آئٹمز کے ساتھ کھیلیں۔",
+  "paywallBonusBefore": "معیاری رولیٹی\nبونس",
+  "paywallBonusAfter": "5x پوائنٹ بونس!\nتیزی سے پوائنٹس کمائیں!",
+  "paywallSelectPlan": "براہ کرم ایک پلان منتخب کریں",
+  "paywallContinue": "جاری رکھیں",
+  "paywallRestoreLink": "خریداری بحال کریں",
+  "paywallTermsLink": "استعمال کی شرائط",
+  "paywallPrivacyLink": "رازداری کی پالیسی",
+  "paywallFetchError": "پروڈکٹ کی معلومات حاصل نہیں کی جا سکتیں۔\nبراہ کرم اپنا انٹرنیٹ کنکشن چیک کریں۔",
+  "paywallPlanMonthly": "ماہانہ",
+  "paywallPerMonth": "/ماہ",
+  "paywallPlanAnnual": "سالانہ",
+  "paywallPerYear": "/سال",
+  "paywallJustPerMonth": "صرف {price}/ماہ",
+  "@paywallJustPerMonth": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "paywallPlanLifetime": "تاحیات"
 }

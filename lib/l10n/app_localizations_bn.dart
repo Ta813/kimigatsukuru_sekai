@@ -1696,4 +1696,89 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get splashLoadingMessage => 'আপনার বিশ্ব তৈরি করা হচ্ছে...';
+
+  @override
+  String get paywallUpgradeSuccess => 'প্রিমিয়ামে আপগ্রেড সফল হয়েছে!';
+
+  @override
+  String paywallError(String error) {
+    return 'একটি ত্রুটি ঘটেছে: $error';
+  }
+
+  @override
+  String get paywallRestoreSuccess => 'কেনাকাটা সফলভাবে পুনরুদ্ধার করা হয়েছে!';
+
+  @override
+  String get paywallRestoreEmpty => 'পুনরুদ্ধার করার জন্য কোনো কেনাকাটা পাওয়া যায়নি।';
+
+  @override
+  String get paywallRestoreFailed => 'কেনাকাটা পুনরুদ্ধার করা যায়নি।';
+
+  @override
+  String get paywallTitle => 'আরও ভালো অভিজ্ঞতার জন্য\nপ্রিমিয়ামে আপগ্রেড করুন! ✨';
+
+  @override
+  String get paywallSubtitle => 'কোনো সীমা ছাড়াই\nসব বিশ্ব ঘুরে দেখুন!';
+
+  @override
+  String get paywallFreePlan => 'ফ্রি প্ল্যান\n(আগে)';
+
+  @override
+  String get paywallPremiumPlan => 'প্রিমিয়াম প্ল্যান\n(পরে) ✨';
+
+  @override
+  String get paywallAdBefore => 'বিজ্ঞাপন দেখানো হয়';
+
+  @override
+  String get paywallAdAfter => 'কোনো বিজ্ঞাপন নেই!\nদুর্ঘটনাবশত ট্যাপ ছাড়াই নিরাপদ ও আরামদায়ক।';
+
+  @override
+  String get paywallLimitBefore => 'আইটেম এবং বিশ্বে\nলেভেল সীমাবদ্ধতা আছে';
+
+  @override
+  String get paywallLimitAfter => 'সবকিছু আনলক করুন!\nশুরু থেকেই সব আইটেম নিয়ে খেলুন।';
+
+  @override
+  String get paywallBonusBefore => 'সাধারণ রুলেট\nবোনাস';
+
+  @override
+  String get paywallBonusAfter => '৫ গুণ পয়েন্ট বোনাস!\nদ্রুত পয়েন্ট অর্জন করুন!';
+
+  @override
+  String get paywallSelectPlan => 'দয়া করে একটি প্ল্যান বেছে নিন';
+
+  @override
+  String get paywallContinue => 'চালিয়ে যান';
+
+  @override
+  String get paywallRestoreLink => 'কেনাকাটা পুনরুদ্ধার করুন';
+
+  @override
+  String get paywallTermsLink => 'ব্যবহারের শর্তাবলী';
+
+  @override
+  String get paywallPrivacyLink => 'গোপনীয়তা নীতি';
+
+  @override
+  String get paywallFetchError => 'বর্তমানে পণ্যের তথ্য পাওয়া যাচ্ছে না।\nআপনার ইন্টারনেট সংযোগ পরীক্ষা করুন।';
+
+  @override
+  String get paywallPlanMonthly => 'মাসিক';
+
+  @override
+  String get paywallPerMonth => '/মাস';
+
+  @override
+  String get paywallPlanAnnual => 'বার্ষিক';
+
+  @override
+  String get paywallPerYear => '/বছর';
+
+  @override
+  String paywallJustPerMonth(String price) {
+    return 'মাত্র $price/মাস';
+  }
+
+  @override
+  String get paywallPlanLifetime => 'আজীবন';
 }

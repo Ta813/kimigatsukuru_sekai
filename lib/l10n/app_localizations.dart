@@ -3372,6 +3372,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Building your world...'**
   String get splashLoadingMessage;
+
+  /// No description provided for @paywallUpgradeSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium successful!'**
+  String get paywallUpgradeSuccess;
+
+  /// No description provided for @paywallError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred: {error}'**
+  String paywallError(String error);
+
+  /// No description provided for @paywallRestoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases restored successfully!'**
+  String get paywallRestoreSuccess;
+
+  /// No description provided for @paywallRestoreEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No purchases found to restore.'**
+  String get paywallRestoreEmpty;
+
+  /// No description provided for @paywallRestoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to restore purchases.'**
+  String get paywallRestoreFailed;
+
+  /// No description provided for @paywallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium\nfor a better experience! ✨'**
+  String get paywallTitle;
+
+  /// No description provided for @paywallSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore all worlds\nwithout any limits!'**
+  String get paywallSubtitle;
+
+  /// No description provided for @paywallFreePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Plan\n(Before)'**
+  String get paywallFreePlan;
+
+  /// No description provided for @paywallPremiumPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Plan\n(After) ✨'**
+  String get paywallPremiumPlan;
+
+  /// No description provided for @paywallAdBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Ads are displayed'**
+  String get paywallAdBefore;
+
+  /// No description provided for @paywallAdAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Zero Ads!\nSafe and comfortable with no accidental taps.'**
+  String get paywallAdAfter;
+
+  /// No description provided for @paywallLimitBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Items and worlds have\nlevel restrictions'**
+  String get paywallLimitBefore;
+
+  /// No description provided for @paywallLimitAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock everything!\nPlay freely with all items and worlds.'**
+  String get paywallLimitAfter;
+
+  /// No description provided for @paywallBonusBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard roulette\nbonus'**
+  String get paywallBonusBefore;
+
+  /// No description provided for @paywallBonusAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'5x point bonus!\nEarn points faster and feel great!'**
+  String get paywallBonusAfter;
+
+  /// No description provided for @paywallSelectPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a plan'**
+  String get paywallSelectPlan;
+
+  /// No description provided for @paywallContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get paywallContinue;
+
+  /// No description provided for @paywallRestoreLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchases'**
+  String get paywallRestoreLink;
+
+  /// No description provided for @paywallTermsLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get paywallTermsLink;
+
+  /// No description provided for @paywallPrivacyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get paywallPrivacyLink;
+
+  /// No description provided for @paywallFetchError.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot fetch product info right now.\nPlease check your connection.'**
+  String get paywallFetchError;
+
+  /// No description provided for @paywallPlanMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get paywallPlanMonthly;
+
+  /// No description provided for @paywallPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'/mo'**
+  String get paywallPerMonth;
+
+  /// No description provided for @paywallPlanAnnual.
+  ///
+  /// In en, this message translates to:
+  /// **'Annual'**
+  String get paywallPlanAnnual;
+
+  /// No description provided for @paywallPerYear.
+  ///
+  /// In en, this message translates to:
+  /// **'/yr'**
+  String get paywallPerYear;
+
+  /// No description provided for @paywallJustPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Just {price}/mo'**
+  String paywallJustPerMonth(String price);
+
+  /// No description provided for @paywallPlanLifetime.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime'**
+  String get paywallPlanLifetime;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

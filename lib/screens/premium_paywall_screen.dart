@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-// ↓ お使いのアプリのパスに合わせてインポートしてください
 import '../../managers/purchase_manager.dart';
 import '../../managers/sfx_manager.dart';
+import '../../l10n/app_localizations.dart'; // 🌟 追加: ローカライズのインポート
 
 class PremiumPaywallScreen extends StatefulWidget {
   const PremiumPaywallScreen({super.key});
@@ -13,9 +13,13 @@ class PremiumPaywallScreen extends StatefulWidget {
 }
 
 class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
-  Package? _premiumPackage; // RevenueCatから取得する商品情報
-  bool _isLoading = true; // 商品読み込み中
-  bool _isPurchasing = false; // 購入処理中
+  List<Package> _packages = [];
+  Package? _selectedPackage;
+
+  bool _isLoading = true;
+  bool _isPurchasing = false;
+
+  final Color _primaryColor = const Color(0xFF8678F9);
 
   @override
   void initState() {
@@ -23,15 +27,17 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     _fetchOfferings();
   }
 
-  // 🌟 RevenueCatから現在のプラン（商品）を取得する
   Future<void> _fetchOfferings() async {
     try {
       final offerings = await Purchases.getOfferings();
       if (offerings.current != null &&
           offerings.current!.availablePackages.isNotEmpty) {
         setState(() {
-          // とりあえず一番上のパッケージ（月額や年額など）を取得
-          _premiumPackage = offerings.current!.availablePackages.first;
+          _packages = offerings.current!.availablePackages;
+          _selectedPackage = _packages.firstWhere(
+            (p) => p.packageType == PackageType.annual,
+            orElse: () => _packages.first,
+          );
           _isLoading = false;
         });
       } else {
@@ -46,9 +52,11 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     }
   }
 
-  // 🌟 購入ボタンが押された時の処理
   Future<void> _purchasePremium() async {
-    if (_premiumPackage == null) return;
+    if (_selectedPackage == null) return;
+
+    // 🌟 処理開始時にローカライズオブジェクトを取得
+    final l10n = AppLocalizations.of(context)!;
 
     try {
       SfxManager.instance.playTapSound();
@@ -59,74 +67,72 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     });
 
     try {
-      // RevenueCatの購入処理を呼び出す
-      // 型を明示せず result として受け取る
-      final result = await Purchases.purchasePackage(_premiumPackage!);
-
-      // result.customerInfo から entitlements にアクセスする
+      final result = await Purchases.purchasePackage(_selectedPackage!);
       final customerInfo = result is CustomerInfo
           ? result
           : (result as dynamic).customerInfo;
 
-      // 🌟 "premium" の部分は、RevenueCatのダッシュボードで設定したEntitlement IDに書き換えてください
-      if (customerInfo.entitlements.all["premium"]?.isActive == true) {
+      if (customerInfo.entitlements.active.containsKey("premium")) {
         if (!mounted) return;
 
-        // 購入成功！プレミアム状態をONにして画面を閉じる
         PurchaseManager.instance.isPremium.value = true;
         Navigator.pop(context);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('プレミアムプランへのアップグレードが完了しました！')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.paywallUpgradeSuccess)));
       }
     } on PlatformException catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
-      // ユーザーが購入をキャンセルした場合以外はエラーを表示
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('エラーが発生しました: ${e.message}')));
-        }
+        if (mounted)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.paywallError(e.message ?? 'Unknown'))),
+          );
       }
+    } catch (e) {
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.paywallError(e.toString()))),
+        );
     } finally {
-      if (mounted) {
+      if (mounted)
         setState(() {
           _isPurchasing = false;
         });
-      }
     }
   }
 
-  // 🌟 復元（Restore）ボタンの処理
   Future<void> _restorePurchases() async {
+    // 🌟 処理開始時にローカライズオブジェクトを取得
+    final l10n = AppLocalizations.of(context)!;
+
     setState(() {
       _isPurchasing = true;
     });
     try {
-      final customerInfo = await Purchases.restorePurchases();
-      // 🌟 ここもご自身の Entitlement ID に合わせる
-      if (customerInfo.entitlements.all["premium"]?.isActive == true) {
+      final result = await Purchases.restorePurchases();
+      final customerInfo = result is CustomerInfo
+          ? result
+          : (result as dynamic).customerInfo;
+
+      if (customerInfo.entitlements.active.containsKey("premium")) {
         PurchaseManager.instance.isPremium.value = true;
         if (!mounted) return;
         Navigator.pop(context);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('購入履歴を復元しました！')));
+        ).showSnackBar(SnackBar(content: Text(l10n.paywallRestoreSuccess)));
       } else {
-        if (mounted) {
+        if (mounted)
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(const SnackBar(content: Text('復元できる購入履歴がありませんでした。')));
-        }
+          ).showSnackBar(SnackBar(content: Text(l10n.paywallRestoreEmpty)));
       }
     } catch (e) {
-      if (mounted) {
+      if (mounted)
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('復元に失敗しました。')));
-      }
+        ).showSnackBar(SnackBar(content: Text(l10n.paywallRestoreFailed)));
     } finally {
       if (mounted)
         setState(() {
@@ -137,62 +143,113 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF3E0),
-      appBar: AppBar(
-        title: const Text(
-          'プレミアムにアップグレード',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFFFF7043),
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
+      backgroundColor: const Color(0xFFF8F9FA),
       body: Stack(
         children: [
           SafeArea(
-            child: Column(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // ==============================
+                // 🌟 左側：説明テキストと表
+                // ==============================
                 Expanded(
+                  flex: 5,
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.only(
+                      left: 32.0,
+                      right: 32.0,
+                      top: 48.0,
+                      bottom: 24.0,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text(
-                          'プレミアムにアップグレードして、\nお子様のワクワクを最大限に！',
+                        Text(
+                          l10n.paywallTitle,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18,
+                          style: const TextStyle(
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
+                            height: 1.3,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.paywallSubtitle,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
                             height: 1.5,
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        // 🌟 Before / After の比較表
-                        _buildComparisonTable(),
-                        const SizedBox(height: 24),
-                        // 復元ボタン
-                        TextButton(
-                          onPressed: _isPurchasing ? null : _restorePurchases,
-                          child: const Text(
-                            '以前購入された方の復元はこちら',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
+                        const SizedBox(height: 16),
+                        _buildComparisonTable(l10n),
                       ],
                     ),
                   ),
                 ),
-                // 🌟 下部に固定される購入ボタンエリア
-                _buildPurchaseFooter(),
+
+                // ==============================
+                // 🌟 右側：プラン選択と購入ボタン
+                // ==============================
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(-5, 0),
+                        ),
+                      ],
+                    ),
+                    child: _buildRightSidePanel(l10n),
+                  ),
+                ),
               ],
             ),
           ),
-          // 処理中のローディングオーバーレイ
+
+          // ==============================
+          // 🌟 左上の×ボタン
+          // ==============================
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.black87),
+                  onPressed: () {
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (e) {}
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+          ),
+
+          // ローディングオーバーレイ
           if (_isPurchasing)
             Container(
               color: Colors.black.withOpacity(0.4),
@@ -205,8 +262,8 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     );
   }
 
-  // 🌟 Before/Afterの表を作るウィジェット
-  Widget _buildComparisonTable() {
+  // Before/After表のUI
+  Widget _buildComparisonTable(AppLocalizations l10n) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
@@ -217,10 +274,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
         border: TableBorder.symmetric(
           inside: BorderSide(color: Colors.grey.shade300),
         ),
-        columnWidths: const {
-          0: FlexColumnWidth(1.0), // Beforeの幅
-          1: FlexColumnWidth(1.2), // Afterの幅（少し広め）
-        },
+        columnWidths: const {0: FlexColumnWidth(1.0), 1: FlexColumnWidth(1.2)},
         children: [
           TableRow(
             decoration: BoxDecoration(
@@ -230,9 +284,9 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
               ),
             ),
             children: [
-              _buildTableCell('無料プラン\n(Before)', isHeader: true),
+              _buildTableCell(l10n.paywallFreePlan, isHeader: true),
               _buildTableCell(
-                'プレミアムプラン\n(After) ✨',
+                l10n.paywallPremiumPlan,
                 isHeader: true,
                 textColor: const Color(0xFFFF7043),
               ),
@@ -240,26 +294,20 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
           ),
           TableRow(
             children: [
-              _buildTableCell('広告が表示される'),
-              _buildTableCell('広告完全ゼロ！\n誤タップの心配がなく安心・快適。', isHighlight: true),
+              _buildTableCell(l10n.paywallAdBefore),
+              _buildTableCell(l10n.paywallAdAfter, isHighlight: true),
             ],
           ),
           TableRow(
             children: [
-              _buildTableCell('アイテムや行く世界に\n「レベル制限」がある'),
-              _buildTableCell(
-                'すべてのロックを解除！\n最初からアイテムも世界も遊び放題。',
-                isHighlight: true,
-              ),
+              _buildTableCell(l10n.paywallLimitBefore),
+              _buildTableCell(l10n.paywallLimitAfter, isHighlight: true),
             ],
           ),
           TableRow(
             children: [
-              _buildTableCell('ルーレットの\n当たりボーナスが通常'),
-              _buildTableCell(
-                'ポイントボーナス5倍！\nどんどん貯まって達成感がアップ！',
-                isHighlight: true,
-              ),
+              _buildTableCell(l10n.paywallBonusBefore),
+              _buildTableCell(l10n.paywallBonusAfter, isHighlight: true),
             ],
           ),
         ],
@@ -274,70 +322,208 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     Color? textColor,
   }) {
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(7.0),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: isHeader ? 14 : 13,
+          fontSize: isHeader ? 15 : 10,
           fontWeight: (isHeader || isHighlight)
               ? FontWeight.bold
               : FontWeight.normal,
           color: textColor ?? Colors.black87,
-          height: 1.4,
+          height: 1.0,
         ),
         textAlign: isHeader ? TextAlign.center : TextAlign.left,
       ),
     );
   }
 
-  // 🌟 画面下部の購入ボタン
-  Widget _buildPurchaseFooter() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
+  // 右側に配置するパネル
+  Widget _buildRightSidePanel(AppLocalizations l10n) {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (_isLoading)
-              const CircularProgressIndicator()
-            else if (_premiumPackage != null)
+              const Center(child: CircularProgressIndicator())
+            else if (_packages.isNotEmpty) ...[
+              Text(
+                l10n.paywallSelectPlan,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+
+              ..._packages.map((package) => _buildPackageCard(package, l10n)),
+
+              const SizedBox(height: 10),
+
               ElevatedButton(
-                onPressed: _purchasePremium,
+                onPressed: (_selectedPackage != null && !_isPurchasing)
+                    ? _purchasePremium
+                    : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF7043),
+                  backgroundColor: _primaryColor,
                   foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 56),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  elevation: 4,
+                  elevation: 0,
                 ),
                 child: Text(
-                  // RevenueCatから取得した価格（例: "¥300"）を表示
-                  'プレミアムにアップグレード (${_premiumPackage!.storeProduct.priceString} / ${_premiumPackage!.packageType == PackageType.annual ? "年" : "月"})',
+                  l10n.paywallContinue,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              )
-            else
-              const Text(
-                '現在、商品情報を取得できません。\nインターネット接続をご確認ください。',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
               ),
+              const SizedBox(height: 15),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: _isPurchasing ? null : _restorePurchases,
+                    child: Text(
+                      l10n.paywallRestoreLink,
+                      style: const TextStyle(
+                        fontSize: 9,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text(
+                      l10n.paywallTermsLink,
+                      style: const TextStyle(
+                        fontSize: 9,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text(
+                      l10n.paywallPrivacyLink,
+                      style: const TextStyle(
+                        fontSize: 9,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ] else
+              Text(
+                l10n.paywallFetchError,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey, height: 1.5),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPackageCard(Package package, AppLocalizations l10n) {
+    final isSelected = _selectedPackage?.identifier == package.identifier;
+    String title = '';
+    String? subText;
+    String priceString = package.storeProduct.priceString;
+
+    if (package.packageType == PackageType.monthly) {
+      title = l10n.paywallPlanMonthly;
+      priceString = '$priceString${l10n.paywallPerMonth}';
+    } else if (package.packageType == PackageType.annual) {
+      title = l10n.paywallPlanAnnual;
+      priceString = '$priceString${l10n.paywallPerYear}';
+
+      String currencySymbol = package.storeProduct.priceString
+          .replaceAll(RegExp(r'[0-9.,]'), '')
+          .trim();
+      if (currencySymbol.isEmpty)
+        currencySymbol = package.storeProduct.currencyCode;
+      double monthlyPrice = package.storeProduct.price / 12;
+
+      subText = l10n.paywallJustPerMonth(
+        '$currencySymbol${monthlyPrice.toStringAsFixed(0)}',
+      );
+    } else if (package.packageType == PackageType.lifetime) {
+      title = l10n.paywallPlanLifetime;
+    } else {
+      title = package.packageType.toString().split('.').last;
+    }
+
+    return GestureDetector(
+      onTap: () {
+        try {
+          SfxManager.instance.playTapSound();
+        } catch (e) {}
+        setState(() {
+          _selectedPackage = package;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? _primaryColor.withOpacity(0.05) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? _primaryColor : Colors.grey.shade300,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              isSelected ? Icons.check_circle : Icons.circle_outlined,
+              color: isSelected ? _primaryColor : Colors.grey.shade300,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  if (subText != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subText,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Text(
+              priceString,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
           ],
         ),
       ),
