@@ -711,5 +711,31 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupFaceTitle": "ایک چہرہ منتخب کریں!",
+  "setupHairTitle": "ایک ہیئر اسٹائل منتخب کریں!",
+  "setupClothesTitle": "اپنے کپڑے منتخب کریں!",
+  "setupCompanionTitle": "اپنا پہلا ساتھی منتخب کریں!",
+  "currentAppearance": "موجودہ شکل",
+  "companionLabel": "ساتھی",
+  "startWithThis": "اس کے ساتھ شروع کریں!",
+  "nextButton": "اگلا",
+  "chooseButton": "منتخب کریں!",
+  "setupWelcomeMessage": "سب سے پہلے، اپنا اوتار\nاور ساتھی منتخب کریں!",
+  "menuCustomizeAvatar": "ڈریس اپ",
+  "menuCustomizeAvatarSub": "اپنا اوتار تبدیل کریں",
+  "menuSupportChar": "معاون کردار",
+  "menuSupportCharSub": "ایک کردار منتخب کریں",
+  "menuYourWorld": "آپ کی دنیا",
+  "menuYourWorldSub": "گھر اور آئٹمز تبدیل کریں",
+  "tabFace": "چہرہ",
+  "tabHair": "بال",
+  "tabHeadgear": "ہیڈگیئر",
+  "tabClothes": "کپڑے",
+  "tabAccessory": "آلات",
+  "tabHouse": "گھر",
+  "tabItem": "آئٹم",
+  "labelEquipped": "لیس ہے",
+  "labelPlaced": "رکھا گیا",
+  "splashLoadingMessage": "آپ کی دنیا بنائی جا رہی ہے..."
 }

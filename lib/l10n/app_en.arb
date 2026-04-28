@@ -711,5 +711,31 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupFaceTitle": "Choose a face!",
+  "setupHairTitle": "Choose a hairstyle!",
+  "setupClothesTitle": "Choose your clothes!",
+  "setupCompanionTitle": "Choose your first companion!",
+  "currentAppearance": "Current Look",
+  "companionLabel": "Companion",
+  "startWithThis": "Start with this!",
+  "nextButton": "Next",
+  "chooseButton": "Choose!",
+  "setupWelcomeMessage": "First, let's choose your avatar\nand your companion!",
+  "menuCustomizeAvatar": "Dress Up",
+  "menuCustomizeAvatarSub": "Change your avatar",
+  "menuSupportChar": "Support Character",
+  "menuSupportCharSub": "Choose a character",
+  "menuYourWorld": "Your World",
+  "menuYourWorldSub": "Change house & items",
+  "tabFace": "Face",
+  "tabHair": "Hair",
+  "tabHeadgear": "Headgear",
+  "tabClothes": "Clothes",
+  "tabAccessory": "Accessory",
+  "tabHouse": "House",
+  "tabItem": "Item",
+  "labelEquipped": "Equipped",
+  "labelPlaced": "Placed",
+  "splashLoadingMessage": "Building your world..."
 }

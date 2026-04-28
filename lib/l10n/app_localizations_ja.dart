@@ -1618,4 +1618,82 @@ class AppLocalizationsJa extends AppLocalizations {
   String mapLevelLockMessage(int level) {
     return 'レベルが$levelにならないと入れないよ！\n';
   }
+
+  @override
+  String get setupFaceTitle => 'どんな おかお にする？';
+
+  @override
+  String get setupHairTitle => 'どんな かみがた にする？';
+
+  @override
+  String get setupClothesTitle => 'どんな ふく をきる？';
+
+  @override
+  String get setupCompanionTitle => 'さいしょの なかま をえらぼう！';
+
+  @override
+  String get currentAppearance => 'いまのすがた';
+
+  @override
+  String get companionLabel => 'なかま';
+
+  @override
+  String get startWithThis => 'これで はじめる！';
+
+  @override
+  String get nextButton => 'つぎへ';
+
+  @override
+  String get chooseButton => 'えらぶ！';
+
+  @override
+  String get setupWelcomeMessage => 'さいしょに、\nきみのせかいで うごく アバターと\nなかま を えらぼう！';
+
+  @override
+  String get menuCustomizeAvatar => 'きせかえ';
+
+  @override
+  String get menuCustomizeAvatarSub => 'アバターをへんこう';
+
+  @override
+  String get menuSupportChar => 'おうえんキャラクター';
+
+  @override
+  String get menuSupportCharSub => 'キャラクターをえらぶ';
+
+  @override
+  String get menuYourWorld => 'きみのせかい';
+
+  @override
+  String get menuYourWorldSub => 'おうち・アイテムを\nへんこう';
+
+  @override
+  String get tabFace => 'かお';
+
+  @override
+  String get tabHair => 'かみがた';
+
+  @override
+  String get tabHeadgear => 'かぶるもの';
+
+  @override
+  String get tabClothes => 'ふくそう';
+
+  @override
+  String get tabAccessory => 'アクセサリー';
+
+  @override
+  String get tabHouse => 'おうち';
+
+  @override
+  String get tabItem => 'アイテム';
+
+  @override
+  String get labelEquipped => 'そうび中';
+
+  @override
+  String get labelPlaced => 'おいている';
+
+  @override
+  String get splashLoadingMessage => 'せかい を つくっています...';
 }

@@ -711,5 +711,31 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupFaceTitle": "どんな おかお にする？",
+  "setupHairTitle": "どんな かみがた にする？",
+  "setupClothesTitle": "どんな ふく をきる？",
+  "setupCompanionTitle": "さいしょの なかま をえらぼう！",
+  "currentAppearance": "いまのすがた",
+  "companionLabel": "なかま",
+  "startWithThis": "これで はじめる！",
+  "nextButton": "つぎへ",
+  "chooseButton": "えらぶ！",
+  "setupWelcomeMessage": "さいしょに、\nきみのせかいで うごく アバターと\nなかま を えらぼう！",
+  "menuCustomizeAvatar": "きせかえ",
+  "menuCustomizeAvatarSub": "アバターをへんこう",
+  "menuSupportChar": "おうえんキャラクター",
+  "menuSupportCharSub": "キャラクターをえらぶ",
+  "menuYourWorld": "きみのせかい",
+  "menuYourWorldSub": "おうち・アイテムを\nへんこう",
+  "tabFace": "かお",
+  "tabHair": "かみがた",
+  "tabHeadgear": "かぶるもの",
+  "tabClothes": "ふくそう",
+  "tabAccessory": "アクセサリー",
+  "tabHouse": "おうち",
+  "tabItem": "アイテム",
+  "labelEquipped": "そうび中",
+  "labelPlaced": "おいている",
+  "splashLoadingMessage": "せかい を つくっています..."
 }

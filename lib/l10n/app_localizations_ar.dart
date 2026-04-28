@@ -1618,4 +1618,82 @@ class AppLocalizationsAr extends AppLocalizations {
   String mapLevelLockMessage(int level) {
     return 'لا يمكنك الدخول حتى تصل إلى المستوى $level!\n';
   }
+
+  @override
+  String get setupFaceTitle => 'اختر وجهاً!';
+
+  @override
+  String get setupHairTitle => 'اختر تسريحة شعر!';
+
+  @override
+  String get setupClothesTitle => 'اختر ملابسك!';
+
+  @override
+  String get setupCompanionTitle => 'اختر رفيقك الأول!';
+
+  @override
+  String get currentAppearance => 'المظهر الحالي';
+
+  @override
+  String get companionLabel => 'رفيق';
+
+  @override
+  String get startWithThis => 'ابدأ بهذا!';
+
+  @override
+  String get nextButton => 'التالي';
+
+  @override
+  String get chooseButton => 'اختر!';
+
+  @override
+  String get setupWelcomeMessage => 'أولاً، دعنا نختار الأفاتار الخاص بك\nورفيقك!';
+
+  @override
+  String get menuCustomizeAvatar => 'تلبيس';
+
+  @override
+  String get menuCustomizeAvatarSub => 'تغيير الأفاتار';
+
+  @override
+  String get menuSupportChar => 'شخصية الدعم';
+
+  @override
+  String get menuSupportCharSub => 'اختر شخصية';
+
+  @override
+  String get menuYourWorld => 'عالمك';
+
+  @override
+  String get menuYourWorldSub => 'تغيير المنزل والعناصر';
+
+  @override
+  String get tabFace => 'الوجه';
+
+  @override
+  String get tabHair => 'الشعر';
+
+  @override
+  String get tabHeadgear => 'غطاء الرأس';
+
+  @override
+  String get tabClothes => 'الملابس';
+
+  @override
+  String get tabAccessory => 'إكسسوار';
+
+  @override
+  String get tabHouse => 'منزل';
+
+  @override
+  String get tabItem => 'عنصر';
+
+  @override
+  String get labelEquipped => 'مجهز';
+
+  @override
+  String get labelPlaced => 'موضوع';
+
+  @override
+  String get splashLoadingMessage => 'جاري بناء عالمك...';
 }

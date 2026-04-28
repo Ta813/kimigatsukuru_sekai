@@ -3216,6 +3216,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can\'t enter until you reach level {level}!\n'**
   String mapLevelLockMessage(int level);
+
+  /// No description provided for @setupFaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a face!'**
+  String get setupFaceTitle;
+
+  /// No description provided for @setupHairTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a hairstyle!'**
+  String get setupHairTitle;
+
+  /// No description provided for @setupClothesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your clothes!'**
+  String get setupClothesTitle;
+
+  /// No description provided for @setupCompanionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your first companion!'**
+  String get setupCompanionTitle;
+
+  /// No description provided for @currentAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Look'**
+  String get currentAppearance;
+
+  /// No description provided for @companionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Companion'**
+  String get companionLabel;
+
+  /// No description provided for @startWithThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with this!'**
+  String get startWithThis;
+
+  /// No description provided for @nextButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get nextButton;
+
+  /// No description provided for @chooseButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose!'**
+  String get chooseButton;
+
+  /// No description provided for @setupWelcomeMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'First, let\'s choose your avatar\nand your companion!'**
+  String get setupWelcomeMessage;
+
+  /// No description provided for @menuCustomizeAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Dress Up'**
+  String get menuCustomizeAvatar;
+
+  /// No description provided for @menuCustomizeAvatarSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Change your avatar'**
+  String get menuCustomizeAvatarSub;
+
+  /// No description provided for @menuSupportChar.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Character'**
+  String get menuSupportChar;
+
+  /// No description provided for @menuSupportCharSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a character'**
+  String get menuSupportCharSub;
+
+  /// No description provided for @menuYourWorld.
+  ///
+  /// In en, this message translates to:
+  /// **'Your World'**
+  String get menuYourWorld;
+
+  /// No description provided for @menuYourWorldSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Change house & items'**
+  String get menuYourWorldSub;
+
+  /// No description provided for @tabFace.
+  ///
+  /// In en, this message translates to:
+  /// **'Face'**
+  String get tabFace;
+
+  /// No description provided for @tabHair.
+  ///
+  /// In en, this message translates to:
+  /// **'Hair'**
+  String get tabHair;
+
+  /// No description provided for @tabHeadgear.
+  ///
+  /// In en, this message translates to:
+  /// **'Headgear'**
+  String get tabHeadgear;
+
+  /// No description provided for @tabClothes.
+  ///
+  /// In en, this message translates to:
+  /// **'Clothes'**
+  String get tabClothes;
+
+  /// No description provided for @tabAccessory.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessory'**
+  String get tabAccessory;
+
+  /// No description provided for @tabHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'House'**
+  String get tabHouse;
+
+  /// No description provided for @tabItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Item'**
+  String get tabItem;
+
+  /// No description provided for @labelEquipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipped'**
+  String get labelEquipped;
+
+  /// No description provided for @labelPlaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Placed'**
+  String get labelPlaced;
+
+  /// No description provided for @splashLoadingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Building your world...'**
+  String get splashLoadingMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

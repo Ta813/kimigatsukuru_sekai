@@ -1618,4 +1618,82 @@ class AppLocalizationsUr extends AppLocalizations {
   String mapLevelLockMessage(int level) {
     return 'لیول $level تک پہنچنے سے پہلے آپ داخل نہیں ہو سکتے!\n';
   }
+
+  @override
+  String get setupFaceTitle => 'ایک چہرہ منتخب کریں!';
+
+  @override
+  String get setupHairTitle => 'ایک ہیئر اسٹائل منتخب کریں!';
+
+  @override
+  String get setupClothesTitle => 'اپنے کپڑے منتخب کریں!';
+
+  @override
+  String get setupCompanionTitle => 'اپنا پہلا ساتھی منتخب کریں!';
+
+  @override
+  String get currentAppearance => 'موجودہ شکل';
+
+  @override
+  String get companionLabel => 'ساتھی';
+
+  @override
+  String get startWithThis => 'اس کے ساتھ شروع کریں!';
+
+  @override
+  String get nextButton => 'اگلا';
+
+  @override
+  String get chooseButton => 'منتخب کریں!';
+
+  @override
+  String get setupWelcomeMessage => 'سب سے پہلے، اپنا اوتار\nاور ساتھی منتخب کریں!';
+
+  @override
+  String get menuCustomizeAvatar => 'ڈریس اپ';
+
+  @override
+  String get menuCustomizeAvatarSub => 'اپنا اوتار تبدیل کریں';
+
+  @override
+  String get menuSupportChar => 'معاون کردار';
+
+  @override
+  String get menuSupportCharSub => 'ایک کردار منتخب کریں';
+
+  @override
+  String get menuYourWorld => 'آپ کی دنیا';
+
+  @override
+  String get menuYourWorldSub => 'گھر اور آئٹمز تبدیل کریں';
+
+  @override
+  String get tabFace => 'چہرہ';
+
+  @override
+  String get tabHair => 'بال';
+
+  @override
+  String get tabHeadgear => 'ہیڈگیئر';
+
+  @override
+  String get tabClothes => 'کپڑے';
+
+  @override
+  String get tabAccessory => 'آلات';
+
+  @override
+  String get tabHouse => 'گھر';
+
+  @override
+  String get tabItem => 'آئٹم';
+
+  @override
+  String get labelEquipped => 'لیس ہے';
+
+  @override
+  String get labelPlaced => 'رکھا گیا';
+
+  @override
+  String get splashLoadingMessage => 'آپ کی دنیا بنائی جا رہی ہے...';
 }

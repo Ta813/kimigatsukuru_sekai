@@ -711,5 +711,31 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupFaceTitle": "একটি মুখ বেছে নিন!",
+  "setupHairTitle": "একটি চুলের স্টাইল বেছে নিন!",
+  "setupClothesTitle": "আপনার পোশাক বেছে নিন!",
+  "setupCompanionTitle": "আপনার প্রথম সঙ্গী বেছে নিন!",
+  "currentAppearance": "বর্তমান চেহারা",
+  "companionLabel": "সঙ্গী",
+  "startWithThis": "এটি দিয়ে শুরু করুন!",
+  "nextButton": "পরবর্তী",
+  "chooseButton": "বেছে নিন!",
+  "setupWelcomeMessage": "প্রথমে, আসুন আপনার অবতার\nএবং সঙ্গী বেছে নিই!",
+  "menuCustomizeAvatar": "ড্রেস আপ",
+  "menuCustomizeAvatarSub": "আপনার অবতার পরিবর্তন করুন",
+  "menuSupportChar": "সহায়ক চরিত্র",
+  "menuSupportCharSub": "একটি চরিত্র বেছে নিন",
+  "menuYourWorld": "আপনার পৃথিবী",
+  "menuYourWorldSub": "বাড়ি এবং আইটেম পরিবর্তন করুন",
+  "tabFace": "মুখ",
+  "tabHair": "চুল",
+  "tabHeadgear": "হেডগিয়ার",
+  "tabClothes": "পোশাক",
+  "tabAccessory": "ুষঙ্গ",
+  "tabHouse": "বাড়ি",
+  "tabItem": "আইটেম",
+  "labelEquipped": "সজ্জিত",
+  "labelPlaced": "রাখা হয়েছে",
+  "splashLoadingMessage": "আপনার বিশ্ব তৈরি করা হচ্ছে..."
 }

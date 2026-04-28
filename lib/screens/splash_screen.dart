@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../helpers/shared_prefs_helper.dart';
+import '../l10n/app_localizations.dart'; // 🌟 追加: ローカライズ用のインポート
 import 'child/child_home_screen.dart'; // ホーム画面のパスに合わせてください
 import 'child/character_customize_screen.dart'; // カスタマイズ画面のパスに合わせてください
 
@@ -59,9 +60,10 @@ class _SplashScreenState extends State<SplashScreen> {
             // const SizedBox(height: 24),
             const CircularProgressIndicator(color: Color(0xFFFF7043)),
             const SizedBox(height: 16),
-            const Text(
-              'せかい を つくっています...',
-              style: TextStyle(
+            // 🌟 修正: ローカライズ対応
+            Text(
+              AppLocalizations.of(context)!.splashLoadingMessage,
+              style: const TextStyle(
                 color: Colors.black54,
                 fontWeight: FontWeight.bold,
               ),

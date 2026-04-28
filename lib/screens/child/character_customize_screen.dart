@@ -5,22 +5,19 @@ import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
+import '../../managers/bgm_manager.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/avatar_display.dart';
 import '../../managers/purchase_manager.dart';
 
-// 🌟 モードに initialSetup（初回設定）を追加
 enum CustomizeView { menu, avatar, support, world, initialSetup }
 
 class CharacterCustomizeScreen extends StatefulWidget {
-  final bool isInitialSetup; // 🌟 追加: 初回起動時のセットアップモードかどうか
+  final bool isInitialSetup;
 
-  const CharacterCustomizeScreen({
-    super.key,
-    this.isInitialSetup = false, // デフォルトは通常のカスタマイズ画面
-  });
+  const CharacterCustomizeScreen({super.key, this.isInitialSetup = false});
 
   @override
   State<CharacterCustomizeScreen> createState() =>
@@ -35,18 +32,15 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   int _currentLevel = 1;
   int _currentPoints = 0;
 
-  // 初回設定用のステップ管理（0:顔, 1:髪, 2:服, 3:キャラ）
   int _setupStep = 0;
   String? _setupSelectedCharacter;
 
-  // アバターパーツ
   String? _equippedFace;
   String? _equippedHair;
   String? _equippedClothes;
   String? _equippedHeadgear;
   String? _equippedAccessory;
 
-  // 世界・応援キャラパーツ
   String? _equippedHouse;
   List<String> _equippedCharacters = [];
   List<String> _equippedItems = [];
@@ -61,7 +55,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   @override
   void initState() {
     super.initState();
-    // 🌟 初回設定モードなら専用画面からスタート、そうでないならメニューから
     _currentView = widget.isInitialSetup
         ? CustomizeView.initialSetup
         : CustomizeView.menu;
@@ -69,6 +62,23 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     _loadEquippedItems();
     if (!widget.isInitialSetup) {
       _checkTutorialStep();
+    } else {
+      // 🌟 追加: 初回設定モード（アプリ起動直後）の場合はBGMを再生する
+      _playSavedBgm();
+    }
+  }
+
+  // 🌟 追加: BGMを再生するメソッド（ホーム画面と同じ処理）
+  Future<void> _playSavedBgm() async {
+    final trackName = await SharedPrefsHelper.loadSelectedBgm();
+    final track = BgmTrack.values.firstWhere(
+      (e) => e.name == trackName,
+      orElse: () => BgmTrack.main, // デフォルトはmain
+    );
+    try {
+      BgmManager.instance.play(track);
+    } catch (e) {
+      print('再生エラー: $e');
     }
   }
 
@@ -135,7 +145,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       _equippedCharacters = characters;
       _equippedItems = items;
 
-      // 初回設定用のキャラ初期値
       _setupSelectedCharacter = characters.isNotEmpty
           ? characters.first
           : 'assets/images/character_usagi.gif';
@@ -390,7 +399,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       valueListenable: PurchaseManager.instance.isPremium,
       builder: (context, isPremium, child) {
         return PopScope(
-          // 🌟 初回設定中は戻るボタンを無効化する
           canPop: !widget.isInitialSetup && _currentView == CustomizeView.menu,
           onPopInvoked: (didPop) {
             if (!didPop && !widget.isInitialSetup) {
@@ -416,7 +424,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       case CustomizeView.world:
         return _buildWorldScreen();
       case CustomizeView.initialSetup:
-        return _buildInitialSetupScreen(); // 🌟 初回設定画面
+        return _buildInitialSetupScreen();
     }
   }
 
@@ -438,7 +446,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   // 🌟 初回起動時のセットアップ（ウィザード）画面
   // ==========================================
   Widget _buildInitialSetupScreen() {
-    // 🌟 追加: ステップ0 はウェルカム画面
+    final localizations = AppLocalizations.of(context)!;
+
     if (_setupStep == 0) {
       FirebaseAnalytics.instance.logEvent(name: 'setup_1_start');
       return Scaffold(
@@ -448,7 +457,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // アバターと仲間をイメージしたプレビュー
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -467,11 +475,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // ウェルカムメッセージ
-                const Text(
-                  'さいしょに、\nきみのせかいで うごく アバターと\nなかま を えらぼう！',
+                Text(
+                  localizations.setupWelcomeMessage,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     height: 1.5,
@@ -485,7 +492,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       SfxManager.instance.playTapSound();
                     } catch (e) {}
                     setState(() {
-                      _setupStep++; // ステップ1（顔選び）へ進む
+                      _setupStep++;
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -500,9 +507,12 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                     ),
                     elevation: 4,
                   ),
-                  child: const Text(
-                    'えらぶ！',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  child: Text(
+                    localizations.chooseButton,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -512,31 +522,28 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       );
     }
 
-    // --- ここから先は ステップ1〜4 のアイテム選択画面 ---
-
     List<ShopItem> currentItems = [];
     String title = '';
     String? currentEquippedPath;
 
-    // 🌟 修正: ステップ番号をそれぞれ1つずつズラす
     if (_setupStep == 1) {
       FirebaseAnalytics.instance.logEvent(name: 'setup_2_start');
-      title = 'どんな かみがた にする？';
+      title = localizations.setupHairTitle;
       currentItems = shopItems.where((i) => i.type == 'hair').toList();
       currentEquippedPath = _equippedHair;
     } else if (_setupStep == 2) {
       FirebaseAnalytics.instance.logEvent(name: 'setup_3_start');
-      title = 'どんな おかお にする？';
+      title = localizations.setupFaceTitle;
       currentItems = shopItems.where((i) => i.type == 'face').toList();
       currentEquippedPath = _equippedFace;
     } else if (_setupStep == 3) {
       FirebaseAnalytics.instance.logEvent(name: 'setup_4_start');
-      title = 'どんな ふく をきる？';
+      title = localizations.setupClothesTitle;
       currentItems = shopItems.where((i) => i.type == 'clothes').toList();
       currentEquippedPath = _equippedClothes;
     } else if (_setupStep == 4) {
       FirebaseAnalytics.instance.logEvent(name: 'setup_5_start');
-      title = 'さいしょの なかま をえらぼう！';
+      title = localizations.setupCompanionTitle;
       currentItems = shopItems.where((i) => i.type == 'character').toList();
       currentEquippedPath = _setupSelectedCharacter;
     }
@@ -545,7 +552,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       backgroundColor: const Color(0xFFFFF3E0),
       appBar: AppBar(
         toolbarHeight: 50,
-        automaticallyImplyLeading: false, // 戻るボタンを隠す
+        automaticallyImplyLeading: false,
         title: Text(
           title,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -558,7 +565,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             Expanded(
               child: Column(
                 children: [
-                  // ステップ進捗バー
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Row(
@@ -569,7 +575,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                           width: 40,
                           height: 8,
                           decoration: BoxDecoration(
-                            // 🌟 修正: ステップ1〜4 に対応させる
                             color: (_setupStep - 1) >= index
                                 ? const Color(0xFFFF7043)
                                 : Colors.grey[300],
@@ -615,7 +620,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                                 SfxManager.instance.playTapSound();
                               } catch (e) {}
                               setState(() {
-                                // 🌟 修正: ステップ番号に合わせて保存先を変える
                                 if (_setupStep == 1)
                                   _equippedHair = item.imagePath;
                                 else if (_setupStep == 2)
@@ -638,7 +642,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 ],
               ),
             ),
-            // 右側：プレビュー
             Container(
               width: 140,
               decoration: BoxDecoration(
@@ -653,9 +656,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   if (_setupStep == 1 ||
                       _setupStep == 2 ||
                       _setupStep == 3) ...[
-                    const Text(
-                      'いまのすがた',
-                      style: TextStyle(
+                    Text(
+                      localizations.currentAppearance,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black54,
                       ),
@@ -670,9 +673,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   ],
                   if (_setupStep == 4 && _setupSelectedCharacter != null) ...[
                     const SizedBox(height: 20),
-                    const Text(
-                      'なかま',
-                      style: TextStyle(
+                    Text(
+                      localizations.companionLabel,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black54,
                       ),
@@ -704,9 +707,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               SfxManager.instance.playTapSound();
             } catch (e) {}
 
-            // 選択したアイテムを「購入済み」として保存し、装備する
             ShopItem? selectedItem;
-            // 🌟 修正: ステップ番号のズレに対応
             if (_setupStep == 1 && _equippedHair != null) {
               selectedItem = shopItems.firstWhere(
                 (i) => i.imagePath == _equippedHair,
@@ -738,18 +739,15 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               _purchasedItemNames.add(selectedItem.name);
             }
 
-            // 次のステップへ、最後ならホーム画面へ
             if (_setupStep < 4) {
               setState(() {
                 _setupStep++;
               });
             } else {
-              // 1. 初回設定完了のフラグを立てる
               await SharedPrefsHelper.setFirstLaunchCompleted();
 
               if (!mounted) return;
 
-              // 2. ホーム画面へ移動する（二度と戻れないようにpushReplacementを使う）
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -768,7 +766,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             elevation: 4,
           ),
           child: Text(
-            _setupStep == 4 ? 'これで はじめる！' : 'つぎへ',
+            _setupStep == 4
+                ? localizations.startWithThis
+                : localizations.nextButton,
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
@@ -776,7 +776,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     );
   }
 
-  // 🌟 画像の切り抜き表示（FittedBox）を共通化
   Widget _buildItemPreviewImage(ShopItem item) {
     if (item.type == 'face' || item.type == 'headgear') {
       return ClipRect(
@@ -848,6 +847,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   // ==========================================
 
   Widget _buildMenuScreen() {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       appBar: AppBar(
@@ -857,7 +857,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           child: const CustomBackButton(),
         ),
         title: Text(
-          AppLocalizations.of(context)?.customizeTitle ?? 'カスタマイズ',
+          localizations.customizeTitle,
           style: const TextStyle(fontSize: 18),
         ),
         actions: _buildAppBarActions(),
@@ -871,24 +871,24 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildMenuButton(
-                  'きせかえ',
-                  'アバターをへんこう',
+                  localizations.menuCustomizeAvatar,
+                  localizations.menuCustomizeAvatarSub,
                   Icons.checkroom,
                   CustomizeView.avatar,
                   Colors.pinkAccent,
                 ),
                 const SizedBox(width: 20),
                 _buildMenuButton(
-                  'おうえんキャラクター',
-                  'キャラクターをえらぶ',
+                  localizations.menuSupportChar,
+                  localizations.menuSupportCharSub,
                   Icons.support_agent,
                   CustomizeView.support,
                   Colors.orangeAccent,
                 ),
                 const SizedBox(width: 20),
                 _buildMenuButton(
-                  'きみのせかい',
-                  'おうち・アイテムを\nへんこう',
+                  localizations.menuYourWorld,
+                  localizations.menuYourWorldSub,
                   Icons.public,
                   CustomizeView.world,
                   Colors.lightBlue,
@@ -980,6 +980,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   Widget _buildAvatarScreen() {
+    final localizations = AppLocalizations.of(context)!;
     final allFaces = shopItems.where((item) => item.type == 'face').toList();
     final allHair = shopItems.where((item) => item.type == 'hair').toList();
     final allClothes = shopItems
@@ -998,7 +999,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         appBar: AppBar(
           toolbarHeight: 40,
           leading: _buildSubBackButton(),
-          title: const Text('きせかえ', style: TextStyle(fontSize: 18)),
+          title: Text(
+            localizations.menuCustomizeAvatar,
+            style: const TextStyle(fontSize: 18),
+          ),
           actions: _buildAppBarActions(),
         ),
         body: SafeArea(
@@ -1014,11 +1018,23 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       unselectedLabelColor: Colors.grey,
                       indicatorColor: const Color(0xFFFF7043),
                       tabs: [
-                        _buildTab('かお', Icons.face, 'face'),
-                        _buildTab('かみがた', Icons.cut, 'hair'),
-                        _buildTab('かぶるもの', Icons.theater_comedy, 'headgear'),
-                        _buildTab('ふくそう', Icons.checkroom, 'clothes'),
-                        _buildTab('アクセサリー', Icons.backpack, 'accessory'),
+                        _buildTab(localizations.tabFace, Icons.face, 'face'),
+                        _buildTab(localizations.tabHair, Icons.cut, 'hair'),
+                        _buildTab(
+                          localizations.tabHeadgear,
+                          Icons.theater_comedy,
+                          'headgear',
+                        ),
+                        _buildTab(
+                          localizations.tabClothes,
+                          Icons.checkroom,
+                          'clothes',
+                        ),
+                        _buildTab(
+                          localizations.tabAccessory,
+                          Icons.backpack,
+                          'accessory',
+                        ),
                       ],
                     ),
                     Expanded(
@@ -1046,9 +1062,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'いまのすがた',
-                      style: TextStyle(
+                    Text(
+                      localizations.currentAppearance,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black54,
                       ),
@@ -1074,6 +1090,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   Widget _buildSupportScreen() {
+    final localizations = AppLocalizations.of(context)!;
     final allCharacters = shopItems
         .where((item) => item.type == 'character')
         .toList();
@@ -1081,7 +1098,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       appBar: AppBar(
         toolbarHeight: 40,
         leading: _buildSubBackButton(),
-        title: const Text('おうえんキャラクター', style: TextStyle(fontSize: 18)),
+        title: Text(
+          localizations.menuSupportChar,
+          style: const TextStyle(fontSize: 18),
+        ),
         actions: _buildAppBarActions(),
       ),
       body: SafeArea(
@@ -1096,6 +1116,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   Widget _buildWorldScreen() {
+    final localizations = AppLocalizations.of(context)!;
     final allHouses = shopItems.where((item) => item.type == 'house').toList();
     final allItems = shopItems.where((item) => item.type == 'item').toList();
 
@@ -1105,14 +1126,17 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         appBar: AppBar(
           toolbarHeight: 40,
           leading: _buildSubBackButton(),
-          title: const Text('きみのせかい', style: TextStyle(fontSize: 18)),
+          title: Text(
+            localizations.menuYourWorld,
+            style: const TextStyle(fontSize: 18),
+          ),
           actions: _buildAppBarActions(),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(40),
             child: TabBar(
               tabs: [
-                _buildTab('おうち', Icons.house, 'house'),
-                _buildTab('アイテム', Icons.star, 'item'),
+                _buildTab(localizations.tabHouse, Icons.house, 'house'),
+                _buildTab(localizations.tabItem, Icons.star, 'item'),
               ],
             ),
           ),
@@ -1157,6 +1181,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       itemBuilder: (context, index) {
         final item = items[index];
         final isEquipped = item.imagePath == equippedItemPath;
+
         final bool isPurchased = _purchasedItemNames.contains(item.name);
         final bool isLevelLocked = _currentLevel < item.requiredLevel;
         final bool isLocked =
@@ -1210,10 +1235,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       Container(
                         color: Colors.amber,
                         padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: const Text(
-                          'そうび中',
+                        child: Text(
+                          AppLocalizations.of(context)!.labelEquipped,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -1253,6 +1278,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ),
           ),
         );
+
         if (_showItemBlinking && _tutorialPurchasedItemName == item.name) {
           return BlinkingEffect(isBlinking: true, child: card);
         }
@@ -1267,6 +1293,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     String type,
   ) {
     int crossAxisCount = type == 'item' ? 8 : 6;
+
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -1279,6 +1306,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       itemBuilder: (context, index) {
         final item = options[index];
         final isSelected = selected.contains(item.imagePath);
+
         final bool isPurchased = _purchasedItemNames.contains(item.name);
         final bool isLevelLocked = _currentLevel < item.requiredLevel;
         final bool isLocked =
@@ -1291,23 +1319,27 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 SfxManager.instance.playTapSound();
               } catch (e) {}
               setState(() {
-                if (isSelected)
+                if (isSelected) {
                   selected.remove(item.imagePath);
-                else
+                } else {
                   selected.add(item.imagePath);
+                }
               });
+
               if (type == 'character') {
                 await SharedPrefsHelper.saveEquippedCharacters(selected);
               } else if (type == 'item') {
                 await SharedPrefsHelper.saveEquippedItems(selected);
               }
+
               if (!_isTutorialStepCustomizeShown) {
-                if (mounted)
+                if (mounted) {
                   setState(() {
                     _showTabBlinking = false;
                     _showItemBlinking = false;
                     _showBackButtonBlinking = true;
                   });
+                }
               }
             } else {
               _handlePurchaseAttempt(item);
@@ -1341,8 +1373,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Opacity(
-                          opacity: (!isPurchased && isLocked) ? 0.5 : 1.0,
-                          child: _buildItemPreviewImage(item), // 画像表示処理を共通化
+                          opacity: (!isPurchased || isLocked) ? 0.5 : 1.0,
+                          child: _buildItemPreviewImage(item),
                         ),
                       ),
                     ),
@@ -1361,7 +1393,27 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                     ],
                   ],
                 ),
-                if (!isPurchased && isLocked)
+                // 装備中ならラベルを表示
+                if (isSelected)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      color: Colors.blueAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Text(
+                        AppLocalizations.of(context)!.labelPlaced,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (isLocked)
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
@@ -1389,6 +1441,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ),
           ),
         );
+
         if (_showItemBlinking && _tutorialPurchasedItemName == item.name) {
           return BlinkingEffect(isBlinking: true, child: itemWidget);
         }

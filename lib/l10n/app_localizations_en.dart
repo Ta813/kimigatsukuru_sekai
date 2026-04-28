@@ -1618,4 +1618,82 @@ class AppLocalizationsEn extends AppLocalizations {
   String mapLevelLockMessage(int level) {
     return 'You can\'t enter until you reach level $level!\n';
   }
+
+  @override
+  String get setupFaceTitle => 'Choose a face!';
+
+  @override
+  String get setupHairTitle => 'Choose a hairstyle!';
+
+  @override
+  String get setupClothesTitle => 'Choose your clothes!';
+
+  @override
+  String get setupCompanionTitle => 'Choose your first companion!';
+
+  @override
+  String get currentAppearance => 'Current Look';
+
+  @override
+  String get companionLabel => 'Companion';
+
+  @override
+  String get startWithThis => 'Start with this!';
+
+  @override
+  String get nextButton => 'Next';
+
+  @override
+  String get chooseButton => 'Choose!';
+
+  @override
+  String get setupWelcomeMessage => 'First, let\'s choose your avatar\nand your companion!';
+
+  @override
+  String get menuCustomizeAvatar => 'Dress Up';
+
+  @override
+  String get menuCustomizeAvatarSub => 'Change your avatar';
+
+  @override
+  String get menuSupportChar => 'Support Character';
+
+  @override
+  String get menuSupportCharSub => 'Choose a character';
+
+  @override
+  String get menuYourWorld => 'Your World';
+
+  @override
+  String get menuYourWorldSub => 'Change house & items';
+
+  @override
+  String get tabFace => 'Face';
+
+  @override
+  String get tabHair => 'Hair';
+
+  @override
+  String get tabHeadgear => 'Headgear';
+
+  @override
+  String get tabClothes => 'Clothes';
+
+  @override
+  String get tabAccessory => 'Accessory';
+
+  @override
+  String get tabHouse => 'House';
+
+  @override
+  String get tabItem => 'Item';
+
+  @override
+  String get labelEquipped => 'Equipped';
+
+  @override
+  String get labelPlaced => 'Placed';
+
+  @override
+  String get splashLoadingMessage => 'Building your world...';
 }

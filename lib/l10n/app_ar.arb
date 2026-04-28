@@ -711,5 +711,31 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupFaceTitle": "اختر وجهاً!",
+  "setupHairTitle": "اختر تسريحة شعر!",
+  "setupClothesTitle": "اختر ملابسك!",
+  "setupCompanionTitle": "اختر رفيقك الأول!",
+  "currentAppearance": "المظهر الحالي",
+  "companionLabel": "رفيق",
+  "startWithThis": "ابدأ بهذا!",
+  "nextButton": "التالي",
+  "chooseButton": "اختر!",
+  "setupWelcomeMessage": "أولاً، دعنا نختار الأفاتار الخاص بك\nورفيقك!",
+  "menuCustomizeAvatar": "تلبيس",
+  "menuCustomizeAvatarSub": "تغيير الأفاتار",
+  "menuSupportChar": "شخصية الدعم",
+  "menuSupportCharSub": "اختر شخصية",
+  "menuYourWorld": "عالمك",
+  "menuYourWorldSub": "تغيير المنزل والعناصر",
+  "tabFace": "الوجه",
+  "tabHair": "الشعر",
+  "tabHeadgear": "غطاء الرأس",
+  "tabClothes": "الملابس",
+  "tabAccessory": "إكسسوار",
+  "tabHouse": "منزل",
+  "tabItem": "عنصر",
+  "labelEquipped": "مجهز",
+  "labelPlaced": "موضوع",
+  "splashLoadingMessage": "جاري بناء عالمك..."
 }

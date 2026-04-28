@@ -250,7 +250,7 @@ class _ShopScreenState extends State<ShopScreen> {
         onTap: isPurchased
             ? null
             : () async {
-                if (isLocked) {
+                if (isLocked && !isPurchased) {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -428,7 +428,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 const SizedBox(height: 10),
               ],
             ),
-            if (isLocked)
+            if (isLocked && !isPurchased)
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -453,7 +453,7 @@ class _ShopScreenState extends State<ShopScreen> {
                   ),
                 ),
               ),
-            if (isPurchased && !isLocked)
+            if (isPurchased)
               Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(
@@ -562,6 +562,7 @@ class _ShopScreenState extends State<ShopScreen> {
   // 1. トップメニュー画面
   // ==========================================
   Widget _buildMenuScreen() {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       appBar: AppBar(
@@ -585,24 +586,24 @@ class _ShopScreenState extends State<ShopScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildMenuButton(
-                  'きせかえ',
-                  'アバターのアイテム\n（ふく・かみ など）',
+                  localizations.menuCustomizeAvatar,
+                  localizations.menuCustomizeAvatarSub,
                   Icons.checkroom,
                   ShopView.avatar,
                   Colors.pinkAccent,
                 ),
                 const SizedBox(width: 20),
                 _buildMenuButton(
-                  'おうえんキャラクター',
-                  'いっしょにがんばる\nなかま',
+                  localizations.menuSupportChar,
+                  localizations.menuSupportCharSub,
                   Icons.support_agent,
                   ShopView.support,
                   Colors.orangeAccent,
                 ),
                 const SizedBox(width: 20),
                 _buildMenuButton(
-                  'きみのせかい',
-                  'おうちや\nマップのアイテム',
+                  localizations.menuYourWorld,
+                  localizations.menuYourWorldSub,
                   Icons.public,
                   ShopView.world,
                   Colors.lightBlue,
@@ -699,6 +700,7 @@ class _ShopScreenState extends State<ShopScreen> {
   // 2. きせかえ（アバター）ショップ画面
   // ==========================================
   Widget _buildAvatarShopScreen() {
+    final localizations = AppLocalizations.of(context)!;
     final items = shopItems
         .where((item) => !item.isIslandOnly && !item.isSeaOnly)
         .toList();
@@ -745,7 +747,10 @@ class _ShopScreenState extends State<ShopScreen> {
         appBar: AppBar(
           toolbarHeight: 40,
           leading: _buildSubBackButton(),
-          title: const Text('きせかえショップ', style: TextStyle(fontSize: 18)),
+          title: Text(
+            localizations.menuCustomizeAvatar,
+            style: TextStyle(fontSize: 18),
+          ),
           actions: _buildAppBarActions(),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(40),
@@ -753,11 +758,24 @@ class _ShopScreenState extends State<ShopScreen> {
               isScrollable: true,
               tabAlignment: TabAlignment.center,
               tabs: [
-                _buildTab('かお', Icons.face),
-                _buildTab('かみがた', Icons.cut),
-                _buildTab('かぶるもの', Icons.theater_comedy),
-                _buildTab('ふくそう', Icons.checkroom),
-                _buildTab('アクセサリー', Icons.backpack),
+                // 🌟 タブ作成時に、特定のアイテムタイプなら点滅させるロジックを追加
+                _buildTabAvatar(localizations.tabFace, Icons.face, 'face'),
+                _buildTabAvatar(localizations.tabHair, Icons.cut, 'hair'),
+                _buildTabAvatar(
+                  localizations.tabHeadgear,
+                  Icons.theater_comedy,
+                  'headgear',
+                ),
+                _buildTabAvatar(
+                  localizations.tabClothes,
+                  Icons.checkroom,
+                  'clothes',
+                ),
+                _buildTabAvatar(
+                  localizations.tabAccessory,
+                  Icons.backpack,
+                  'accessory',
+                ),
               ],
             ),
           ),
@@ -765,11 +783,11 @@ class _ShopScreenState extends State<ShopScreen> {
         body: SafeArea(
           child: TabBarView(
             children: [
-              _buildCategoryGrid(faceItems, crossAxisCount: 8),
-              _buildCategoryGrid(hairItems, crossAxisCount: 8),
-              _buildCategoryGrid(headgearItems, crossAxisCount: 8),
-              _buildCategoryGrid(clothesItems, crossAxisCount: 8),
-              _buildCategoryGrid(accessoryItems, crossAxisCount: 8),
+              _buildCategoryGrid(faceItems, crossAxisCount: 6),
+              _buildCategoryGrid(hairItems, crossAxisCount: 6),
+              _buildCategoryGrid(headgearItems, crossAxisCount: 6),
+              _buildCategoryGrid(clothesItems, crossAxisCount: 6),
+              _buildCategoryGrid(accessoryItems, crossAxisCount: 6),
             ],
           ),
         ),
@@ -778,10 +796,29 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
+  // 🌟 追加: タブ作成と点滅判定を行うヘルパーメソッド
+  Widget _buildTabAvatar(String title, IconData icon, String targetType) {
+    Widget tab = Tab(
+      height: 40,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Icon(icon, size: 18), const SizedBox(width: 8), Text(title)],
+      ),
+    );
+
+    // チュートリアル中であり、かつ購入してほしい対象のタイプが一致していれば点滅
+    if (_showItemBlinking &&
+        ('clothes' == targetType || 'accessory' == targetType)) {
+      return BlinkingEffect(isBlinking: true, child: tab);
+    }
+    return tab;
+  }
+
   // ==========================================
   // 3. おうえんキャラクターショップ画面
   // ==========================================
   Widget _buildSupportShopScreen() {
+    final localizations = AppLocalizations.of(context)!;
     final items = shopItems
         .where((item) => !item.isIslandOnly && !item.isSeaOnly)
         .toList();
@@ -794,11 +831,14 @@ class _ShopScreenState extends State<ShopScreen> {
       appBar: AppBar(
         toolbarHeight: 40,
         leading: _buildSubBackButton(),
-        title: const Text('おうえんキャラクター', style: TextStyle(fontSize: 18)),
+        title: Text(
+          localizations.menuSupportChar,
+          style: TextStyle(fontSize: 18),
+        ),
         actions: _buildAppBarActions(),
       ),
       body: SafeArea(
-        child: _buildCategoryGrid(characterItems, crossAxisCount: 8),
+        child: _buildCategoryGrid(characterItems, crossAxisCount: 6),
       ),
       bottomNavigationBar: const AdBanner(),
     );
@@ -808,6 +848,7 @@ class _ShopScreenState extends State<ShopScreen> {
   // 4. きみのせかいショップ画面
   // ==========================================
   Widget _buildWorldShopScreen() {
+    final localizations = AppLocalizations.of(context)!;
     final items = shopItems
         .where((item) => !item.isIslandOnly && !item.isSeaOnly)
         .toList();
@@ -823,14 +864,17 @@ class _ShopScreenState extends State<ShopScreen> {
         appBar: AppBar(
           toolbarHeight: 40,
           leading: _buildSubBackButton(),
-          title: const Text('きみのせかいショップ', style: TextStyle(fontSize: 18)),
+          title: Text(
+            localizations.menuYourWorld,
+            style: TextStyle(fontSize: 18),
+          ),
           actions: _buildAppBarActions(),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(40),
             child: TabBar(
               tabs: [
-                _buildTab('おうち', Icons.house),
-                _buildTab('アイテム', Icons.star),
+                _buildTab(localizations.tabHouse, Icons.house),
+                _buildTab(localizations.tabItem, Icons.star),
               ],
             ),
           ),
@@ -839,7 +883,7 @@ class _ShopScreenState extends State<ShopScreen> {
           child: TabBarView(
             children: [
               _buildCategoryGrid(houseItems, crossAxisCount: 4),
-              _buildCategoryGrid(itemItems, crossAxisCount: 8),
+              _buildCategoryGrid(itemItems, crossAxisCount: 6),
             ],
           ),
         ),

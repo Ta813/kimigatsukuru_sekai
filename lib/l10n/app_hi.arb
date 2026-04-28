@@ -665,5 +665,31 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupFaceTitle": "एक चेहरा चुनें!",
+  "setupHairTitle": "एक हेयरस्टाइल चुनें!",
+  "setupClothesTitle": "अपने कपड़े चुनें!",
+  "setupCompanionTitle": "अपना पहला साथी चुनें!",
+  "currentAppearance": "वर्तमान रूप",
+  "companionLabel": "साथी",
+  "startWithThis": "इसके साथ शुरू करें!",
+  "nextButton": "अगला",
+  "chooseButton": "चुनें!",
+  "setupWelcomeMessage": "सबसे पहले, अपना अवतार\nऔर साथी चुनें!",
+  "menuCustomizeAvatar": "ड्रेस अप",
+  "menuCustomizeAvatarSub": "अपना अवतार बदलें",
+  "menuSupportChar": "सहायक चरित्र",
+  "menuSupportCharSub": "एक चरित्र चुनें",
+  "menuYourWorld": "आपकी दुनिया",
+  "menuYourWorldSub": "घर और आइटम बदलें",
+  "tabFace": "चेहरा",
+  "tabHair": "बाल",
+  "tabHeadgear": "हेडगियर",
+  "tabClothes": "कपड़े",
+  "tabAccessory": "एक्सेसरी",
+  "tabHouse": "घर",
+  "tabItem": "आइटम",
+  "labelEquipped": "सुसज्जित",
+  "labelPlaced": "रखा हुआ",
+  "splashLoadingMessage": "आपकी दुनिया बनाई जा रही है..."
 }

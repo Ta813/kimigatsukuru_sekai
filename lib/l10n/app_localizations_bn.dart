@@ -1618,4 +1618,82 @@ class AppLocalizationsBn extends AppLocalizations {
   String mapLevelLockMessage(int level) {
     return 'লেভেল $level এ না পৌঁছানো পর্যন্ত আপনি প্রবেশ করতে পারবেন না!\n';
   }
+
+  @override
+  String get setupFaceTitle => 'একটি মুখ বেছে নিন!';
+
+  @override
+  String get setupHairTitle => 'একটি চুলের স্টাইল বেছে নিন!';
+
+  @override
+  String get setupClothesTitle => 'আপনার পোশাক বেছে নিন!';
+
+  @override
+  String get setupCompanionTitle => 'আপনার প্রথম সঙ্গী বেছে নিন!';
+
+  @override
+  String get currentAppearance => 'বর্তমান চেহারা';
+
+  @override
+  String get companionLabel => 'সঙ্গী';
+
+  @override
+  String get startWithThis => 'এটি দিয়ে শুরু করুন!';
+
+  @override
+  String get nextButton => 'পরবর্তী';
+
+  @override
+  String get chooseButton => 'বেছে নিন!';
+
+  @override
+  String get setupWelcomeMessage => 'প্রথমে, আসুন আপনার অবতার\nএবং সঙ্গী বেছে নিই!';
+
+  @override
+  String get menuCustomizeAvatar => 'ড্রেস আপ';
+
+  @override
+  String get menuCustomizeAvatarSub => 'আপনার অবতার পরিবর্তন করুন';
+
+  @override
+  String get menuSupportChar => 'সহায়ক চরিত্র';
+
+  @override
+  String get menuSupportCharSub => 'একটি চরিত্র বেছে নিন';
+
+  @override
+  String get menuYourWorld => 'আপনার পৃথিবী';
+
+  @override
+  String get menuYourWorldSub => 'বাড়ি এবং আইটেম পরিবর্তন করুন';
+
+  @override
+  String get tabFace => 'মুখ';
+
+  @override
+  String get tabHair => 'চুল';
+
+  @override
+  String get tabHeadgear => 'হেডগিয়ার';
+
+  @override
+  String get tabClothes => 'পোশাক';
+
+  @override
+  String get tabAccessory => 'ুষঙ্গ';
+
+  @override
+  String get tabHouse => 'বাড়ি';
+
+  @override
+  String get tabItem => 'আইটেম';
+
+  @override
+  String get labelEquipped => 'সজ্জিত';
+
+  @override
+  String get labelPlaced => 'রাখা হয়েছে';
+
+  @override
+  String get splashLoadingMessage => 'আপনার বিশ্ব তৈরি করা হচ্ছে...';
 }
