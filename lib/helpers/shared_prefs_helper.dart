@@ -866,6 +866,7 @@ class SharedPrefsHelper {
     await prefs.remove(_childTutorialStartKey);
     await prefs.remove(_parentTutorialStartKey);
     await prefs.remove(_keyHasVisitedMissionScreen);
+    await prefs.remove(isFirstLaunchKey);
 
     // ホーム画面のアドバイスフラグをリセット（trueに戻す）
     await prefs.remove('is_first_home_advice');
@@ -1193,5 +1194,19 @@ class SharedPrefsHelper {
   static Future<String?> loadEquippedAccessory() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('equipped_accessory');
+  }
+
+  static const String isFirstLaunchKey = 'is_first_launch_completed';
+
+  // 初回起動かどうかをチェックする（記録がなければ true(初回) を返す）
+  static Future<bool> isFirstLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+    return !(prefs.getBool(isFirstLaunchKey) ?? false);
+  }
+
+  // 初回設定が完了したことを記録する
+  static Future<void> setFirstLaunchCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(isFirstLaunchKey, true);
   }
 }

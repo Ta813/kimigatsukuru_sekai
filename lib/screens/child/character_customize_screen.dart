@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/screens/child/child_home_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
@@ -8,13 +9,18 @@ import '../../l10n/app_localizations.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/avatar_display.dart';
-import '../../managers/purchase_manager.dart'; // 🌟 追加: プレミアムプランの判定用
+import '../../managers/purchase_manager.dart';
 
-// 表示する画面を切り替えるためのモード
-enum CustomizeView { menu, avatar, support, world }
+// 🌟 モードに initialSetup（初回設定）を追加
+enum CustomizeView { menu, avatar, support, world, initialSetup }
 
 class CharacterCustomizeScreen extends StatefulWidget {
-  const CharacterCustomizeScreen({super.key});
+  final bool isInitialSetup; // 🌟 追加: 初回起動時のセットアップモードかどうか
+
+  const CharacterCustomizeScreen({
+    super.key,
+    this.isInitialSetup = false, // デフォルトは通常のカスタマイズ画面
+  });
 
   @override
   State<CharacterCustomizeScreen> createState() =>
@@ -22,13 +28,16 @@ class CharacterCustomizeScreen extends StatefulWidget {
 }
 
 class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
-  CustomizeView _currentView = CustomizeView.menu;
+  late CustomizeView _currentView;
 
   List<String> _purchasedItemNames = [];
 
-  // 🌟 追加: レベルとポイントを管理
   int _currentLevel = 1;
   int _currentPoints = 0;
+
+  // 初回設定用のステップ管理（0:顔, 1:髪, 2:服, 3:キャラ）
+  int _setupStep = 0;
+  String? _setupSelectedCharacter;
 
   // アバターパーツ
   String? _equippedFace;
@@ -52,8 +61,15 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   @override
   void initState() {
     super.initState();
+    // 🌟 初回設定モードなら専用画面からスタート、そうでないならメニューから
+    _currentView = widget.isInitialSetup
+        ? CustomizeView.initialSetup
+        : CustomizeView.menu;
+
     _loadEquippedItems();
-    _checkTutorialStep();
+    if (!widget.isInitialSetup) {
+      _checkTutorialStep();
+    }
   }
 
   Future<void> _checkTutorialStep() async {
@@ -78,12 +94,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
 
   Future<void> _loadEquippedItems() async {
     final purchased = await SharedPrefsHelper.loadPurchasedItems();
-
-    // 🌟 追加: 現在のレベルとポイントを読み込む
     final level = await SharedPrefsHelper.loadLevel();
     final points = await SharedPrefsHelper.loadPoints();
 
-    // 読み込み処理
     final face = await SharedPrefsHelper.loadEquippedFace();
     final hair = await SharedPrefsHelper.loadEquippedHairstyle();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
@@ -104,9 +117,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     if (!purchased.contains('おとこのこのかみがた')) purchased.add('おとこのこのかみがた');
     if (!purchased.contains('アシメかみがた')) purchased.add('アシメかみがた');
     if (!purchased.contains('いつものふく')) purchased.add('いつものふく');
-    if (!purchased.contains('さいしょのおうち')) purchased.add('さいしょのおうち');
-    if (!purchased.contains('ウサギ')) purchased.add('ウサギ');
     if (!purchased.contains('おとこのこ')) purchased.add('おとこのこ');
+    if (!purchased.contains('さいしょのおうち')) purchased.add('さいしょのおうち');
 
     setState(() {
       _purchasedItemNames = purchased;
@@ -122,6 +134,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       _equippedHouse = house ?? 'assets/images/house.png';
       _equippedCharacters = characters;
       _equippedItems = items;
+
+      // 初回設定用のキャラ初期値
+      _setupSelectedCharacter = characters.isNotEmpty
+          ? characters.first
+          : 'assets/images/character_usagi.gif';
     });
   }
 
@@ -189,14 +206,12 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     _loadEquippedItems();
   }
 
-  // 🌟 追加: 未購入のアイテムをタップした時の処理（ショップと同じ）
   void _handlePurchaseAttempt(ShopItem item) async {
     final bool isLevelLocked = _currentLevel < item.requiredLevel;
     final bool isLocked =
         isLevelLocked && !PurchaseManager.instance.isPremium.value;
 
     if (isLocked) {
-      // プレミアム誘導ダイアログ
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -270,7 +285,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       return;
     }
 
-    // 購入確認ダイアログ
     if (_currentPoints < item.price) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -322,7 +336,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               FirebaseAnalytics.instance.logEvent(
                 name: 'start_customize_buy_item',
               );
-
               final l10n = AppLocalizations.of(context);
               final lang = l10n?.localeName ?? 'en';
               if (lang == 'ja') {
@@ -338,7 +351,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 } catch (e) {}
               }
 
-              // ポイント消費・アイテム追加・装備をまとめて行う
               final newPoints = _currentPoints - item.price;
               await SharedPrefsHelper.savePoints(newPoints);
               await SharedPrefsHelper.addPurchasedItem(item.name);
@@ -350,7 +362,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   _currentPoints = newPoints;
                   _purchasedItemNames.add(item.name);
                 });
-                _equipItem(item); // 買ってすぐ装備！
+                _equipItem(item);
               }
             },
             style: ElevatedButton.styleFrom(
@@ -374,14 +386,14 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 🌟 追加: プレミアムプランの変更を監視して即時UIを更新する
     return ValueListenableBuilder<bool>(
       valueListenable: PurchaseManager.instance.isPremium,
       builder: (context, isPremium, child) {
         return PopScope(
-          canPop: _currentView == CustomizeView.menu,
+          // 🌟 初回設定中は戻るボタンを無効化する
+          canPop: !widget.isInitialSetup && _currentView == CustomizeView.menu,
           onPopInvoked: (didPop) {
-            if (!didPop) {
+            if (!didPop && !widget.isInitialSetup) {
               setState(() {
                 _currentView = CustomizeView.menu;
               });
@@ -403,6 +415,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         return _buildSupportScreen();
       case CustomizeView.world:
         return _buildWorldScreen();
+      case CustomizeView.initialSetup:
+        return _buildInitialSetupScreen(); // 🌟 初回設定画面
     }
   }
 
@@ -421,8 +435,418 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   // ==========================================
-  // 1. トップメニュー画面
+  // 🌟 初回起動時のセットアップ（ウィザード）画面
   // ==========================================
+  Widget _buildInitialSetupScreen() {
+    // 🌟 追加: ステップ0 はウェルカム画面
+    if (_setupStep == 0) {
+      FirebaseAnalytics.instance.logEvent(name: 'setup_1_start');
+      return Scaffold(
+        backgroundColor: const Color(0xFFFFF3E0),
+        body: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // アバターと仲間をイメージしたプレビュー
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    AvatarDisplay(
+                      face: _equippedFace,
+                      hair: _equippedHair,
+                      clothes: _equippedClothes,
+                      size: 100,
+                    ),
+                    const SizedBox(width: 20),
+                    Image.asset(
+                      'assets/images/character_usagi.gif',
+                      height: 100,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                // ウェルカムメッセージ
+                const Text(
+                  'さいしょに、\nきみのせかいで うごく アバターと\nなかま を えらぼう！',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    height: 1.5,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (e) {}
+                    setState(() {
+                      _setupStep++; // ステップ1（顔選び）へ進む
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF7043),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 4,
+                  ),
+                  child: const Text(
+                    'えらぶ！',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // --- ここから先は ステップ1〜4 のアイテム選択画面 ---
+
+    List<ShopItem> currentItems = [];
+    String title = '';
+    String? currentEquippedPath;
+
+    // 🌟 修正: ステップ番号をそれぞれ1つずつズラす
+    if (_setupStep == 1) {
+      FirebaseAnalytics.instance.logEvent(name: 'setup_2_start');
+      title = 'どんな かみがた にする？';
+      currentItems = shopItems.where((i) => i.type == 'hair').toList();
+      currentEquippedPath = _equippedHair;
+    } else if (_setupStep == 2) {
+      FirebaseAnalytics.instance.logEvent(name: 'setup_3_start');
+      title = 'どんな おかお にする？';
+      currentItems = shopItems.where((i) => i.type == 'face').toList();
+      currentEquippedPath = _equippedFace;
+    } else if (_setupStep == 3) {
+      FirebaseAnalytics.instance.logEvent(name: 'setup_4_start');
+      title = 'どんな ふく をきる？';
+      currentItems = shopItems.where((i) => i.type == 'clothes').toList();
+      currentEquippedPath = _equippedClothes;
+    } else if (_setupStep == 4) {
+      FirebaseAnalytics.instance.logEvent(name: 'setup_5_start');
+      title = 'さいしょの なかま をえらぼう！';
+      currentItems = shopItems.where((i) => i.type == 'character').toList();
+      currentEquippedPath = _setupSelectedCharacter;
+    }
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      appBar: AppBar(
+        toolbarHeight: 50,
+        automaticallyImplyLeading: false, // 戻るボタンを隠す
+        title: Text(
+          title,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  // ステップ進捗バー
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(4, (index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: 40,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            // 🌟 修正: ステップ1〜4 に対応させる
+                            color: (_setupStep - 1) >= index
+                                ? const Color(0xFFFF7043)
+                                : Colors.grey[300],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 6,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8,
+                            childAspectRatio: 0.8,
+                          ),
+                      itemCount: currentItems.length,
+                      itemBuilder: (context, index) {
+                        final item = currentItems[index];
+                        final isSelected =
+                            item.imagePath == currentEquippedPath;
+
+                        return Card(
+                          elevation: isSelected ? 6 : 2,
+                          color: isSelected
+                              ? const Color(0xFFFFF9C4)
+                              : Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: isSelected
+                                  ? Colors.amber
+                                  : Colors.transparent,
+                              width: 4,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (e) {}
+                              setState(() {
+                                // 🌟 修正: ステップ番号に合わせて保存先を変える
+                                if (_setupStep == 1)
+                                  _equippedHair = item.imagePath;
+                                else if (_setupStep == 2)
+                                  _equippedFace = item.imagePath;
+                                else if (_setupStep == 3)
+                                  _equippedClothes = item.imagePath;
+                                else if (_setupStep == 4)
+                                  _setupSelectedCharacter = item.imagePath;
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: _buildItemPreviewImage(item),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // 右側：プレビュー
+            Container(
+              width: 140,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  left: BorderSide(color: Colors.grey.shade300, width: 2),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (_setupStep == 1 ||
+                      _setupStep == 2 ||
+                      _setupStep == 3) ...[
+                    const Text(
+                      'いまのすがた',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    AvatarDisplay(
+                      face: _equippedFace,
+                      hair: _equippedHair,
+                      clothes: _equippedClothes,
+                      size: 100,
+                    ),
+                  ],
+                  if (_setupStep == 4 && _setupSelectedCharacter != null) ...[
+                    const SizedBox(height: 20),
+                    const Text(
+                      'なかま',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Image.asset(_setupSelectedCharacter!, height: 100),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, -2),
+            ),
+          ],
+        ),
+        child: ElevatedButton(
+          onPressed: () async {
+            try {
+              SfxManager.instance.playTapSound();
+            } catch (e) {}
+
+            // 選択したアイテムを「購入済み」として保存し、装備する
+            ShopItem? selectedItem;
+            // 🌟 修正: ステップ番号のズレに対応
+            if (_setupStep == 1 && _equippedHair != null) {
+              selectedItem = shopItems.firstWhere(
+                (i) => i.imagePath == _equippedHair,
+              );
+              await SharedPrefsHelper.saveEquippedHairstyle(_equippedHair!);
+            }
+            if (_setupStep == 2 && _equippedFace != null) {
+              selectedItem = shopItems.firstWhere(
+                (i) => i.imagePath == _equippedFace,
+              );
+              await SharedPrefsHelper.saveEquippedFace(_equippedFace!);
+            } else if (_setupStep == 3 && _equippedClothes != null) {
+              selectedItem = shopItems.firstWhere(
+                (i) => i.imagePath == _equippedClothes,
+              );
+              await SharedPrefsHelper.saveEquippedClothes(_equippedClothes!);
+            } else if (_setupStep == 4 && _setupSelectedCharacter != null) {
+              selectedItem = shopItems.firstWhere(
+                (i) => i.imagePath == _setupSelectedCharacter,
+              );
+              await SharedPrefsHelper.saveEquippedCharacters([
+                _setupSelectedCharacter!,
+              ]);
+            }
+
+            if (selectedItem != null &&
+                !_purchasedItemNames.contains(selectedItem.name)) {
+              await SharedPrefsHelper.addPurchasedItem(selectedItem.name);
+              _purchasedItemNames.add(selectedItem.name);
+            }
+
+            // 次のステップへ、最後ならホーム画面へ
+            if (_setupStep < 4) {
+              setState(() {
+                _setupStep++;
+              });
+            } else {
+              // 1. 初回設定完了のフラグを立てる
+              await SharedPrefsHelper.setFirstLaunchCompleted();
+
+              if (!mounted) return;
+
+              // 2. ホーム画面へ移動する（二度と戻れないようにpushReplacementを使う）
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChildHomeScreen(),
+                ),
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFF7043),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            elevation: 4,
+          ),
+          child: Text(
+            _setupStep == 4 ? 'これで はじめる！' : 'つぎへ',
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 🌟 画像の切り抜き表示（FittedBox）を共通化
+  Widget _buildItemPreviewImage(ShopItem item) {
+    if (item.type == 'face' || item.type == 'headgear') {
+      return ClipRect(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: ClipRect(
+            child: Align(
+              alignment: Alignment.topCenter,
+              heightFactor: 0.5,
+              child: Image.asset(item.imagePath),
+            ),
+          ),
+        ),
+      );
+    } else if (item.type == 'hair') {
+      return ClipRect(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: ClipRect(
+            child: Align(
+              alignment: Alignment.topCenter,
+              heightFactor: 0.7,
+              child: Image.asset(item.imagePath),
+            ),
+          ),
+        ),
+      );
+    } else if (item.type == 'clothes') {
+      return ClipRect(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: ClipRect(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              heightFactor: 0.5,
+              child: Image.asset(item.imagePath),
+            ),
+          ),
+        ),
+      );
+    } else if (item.type == 'accessory') {
+      return ClipRect(
+        child: Transform.scale(
+          scale: 2.0,
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: ClipRect(
+              child: Align(
+                alignment: Alignment.topCenter,
+                heightFactor: 0.5,
+                child: ClipRect(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    heightFactor: 0.5,
+                    child: Image.asset(item.imagePath),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return Image.asset(item.imagePath);
+  }
+
+  // ==========================================
+  // 通常のカスタマイズ画面（以下、既存のまま）
+  // ==========================================
+
   Widget _buildMenuScreen() {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
@@ -436,7 +860,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           AppLocalizations.of(context)?.customizeTitle ?? 'カスタマイズ',
           style: const TextStyle(fontSize: 18),
         ),
-        // 🌟 修正: 共通メソッドを使用
         actions: _buildAppBarActions(),
       ),
       body: SafeArea(
@@ -556,9 +979,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     );
   }
 
-  // ==========================================
-  // 2. きせかえ（アバター）画面
-  // ==========================================
   Widget _buildAvatarScreen() {
     final allFaces = shopItems.where((item) => item.type == 'face').toList();
     final allHair = shopItems.where((item) => item.type == 'hair').toList();
@@ -579,7 +999,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           toolbarHeight: 40,
           leading: _buildSubBackButton(),
           title: const Text('きせかえ', style: TextStyle(fontSize: 18)),
-          // 🌟 修正: 共通メソッドを使用
           actions: _buildAppBarActions(),
         ),
         body: SafeArea(
@@ -654,9 +1073,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     );
   }
 
-  // ==========================================
-  // 3. おうえんキャラクター画面
-  // ==========================================
   Widget _buildSupportScreen() {
     final allCharacters = shopItems
         .where((item) => item.type == 'character')
@@ -666,7 +1082,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         toolbarHeight: 40,
         leading: _buildSubBackButton(),
         title: const Text('おうえんキャラクター', style: TextStyle(fontSize: 18)),
-        // 🌟 追加: 共通メソッドを使用
         actions: _buildAppBarActions(),
       ),
       body: SafeArea(
@@ -680,9 +1095,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     );
   }
 
-  // ==========================================
-  // 4. きみのせかい（家・アイテム）画面
-  // ==========================================
   Widget _buildWorldScreen() {
     final allHouses = shopItems.where((item) => item.type == 'house').toList();
     final allItems = shopItems.where((item) => item.type == 'item').toList();
@@ -694,7 +1106,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           toolbarHeight: 40,
           leading: _buildSubBackButton(),
           title: const Text('きみのせかい', style: TextStyle(fontSize: 18)),
-          // 🌟 追加: 共通メソッドを使用
           actions: _buildAppBarActions(),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(40),
@@ -740,14 +1151,12 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         crossAxisCount: 6,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
-        childAspectRatio: 0.75, // 縦を少し長めに
+        childAspectRatio: 0.75,
       ),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
         final isEquipped = item.imagePath == equippedItemPath;
-
-        // ロック・未購入の判定
         final bool isPurchased = _purchasedItemNames.contains(item.name);
         final bool isLevelLocked = _currentLevel < item.requiredLevel;
         final bool isLocked =
@@ -768,7 +1177,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               if (isPurchased) {
                 _equipItem(item);
               } else {
-                _handlePurchaseAttempt(item); // 未購入なら購入処理へ
+                _handlePurchaseAttempt(item);
               }
             },
             child: Stack(
@@ -781,81 +1190,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Opacity(
-                          opacity: (!isPurchased || isLocked) ? 0.5 : 1.0,
-                          child: Builder(
-                            builder: (context) {
-                              if (item.type == 'face' ||
-                                  item.type == 'headgear') {
-                                return ClipRect(
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: ClipRect(
-                                      child: Align(
-                                        alignment: Alignment.topCenter,
-                                        heightFactor: 0.5,
-                                        child: Image.asset(item.imagePath),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              } else if (item.type == 'hair') {
-                                return ClipRect(
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: ClipRect(
-                                      child: Align(
-                                        alignment: Alignment.topCenter,
-                                        heightFactor: 0.7,
-                                        child: Image.asset(item.imagePath),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              } else if (item.type == 'clothes') {
-                                return ClipRect(
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: ClipRect(
-                                      child: Align(
-                                        alignment: Alignment.bottomCenter,
-                                        heightFactor: 0.5,
-                                        child: Image.asset(item.imagePath),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              } else if (item.type == 'accessory') {
-                                return ClipRect(
-                                  child: Transform.scale(
-                                    scale: 2.0,
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: ClipRect(
-                                        child: Align(
-                                          alignment: Alignment.topCenter,
-                                          heightFactor: 0.5,
-                                          child: ClipRect(
-                                            child: Align(
-                                              alignment: Alignment.bottomCenter,
-                                              heightFactor: 0.5,
-                                              child: Image.asset(
-                                                item.imagePath,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-                              return Image.asset(item.imagePath);
-                            },
-                          ),
+                          opacity: (!isPurchased && isLocked) ? 0.5 : 1.0,
+                          child: _buildItemPreviewImage(item),
                         ),
                       ),
                     ),
-                    // 未購入なら値段を表示
                     if (!isPurchased) ...[
                       Text(
                         '${item.price}P',
@@ -867,7 +1206,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       ),
                       const SizedBox(height: 8),
                     ],
-                    // 装備中ならラベルを表示
                     if (isEquipped) ...[
                       Container(
                         color: Colors.amber,
@@ -883,12 +1221,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                         ),
                       ),
                     ] else if (isPurchased) ...[
-                      const SizedBox(height: 16), // レイアウト崩れ防止
+                      const SizedBox(height: 16),
                     ],
                   ],
                 ),
-                // ロック状態なら鍵アイコンをオーバーレイ
-                if (isLocked)
+                if (!isPurchased && isLocked)
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
@@ -916,7 +1253,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ),
           ),
         );
-
         if (_showItemBlinking && _tutorialPurchasedItemName == item.name) {
           return BlinkingEffect(isBlinking: true, child: card);
         }
@@ -930,11 +1266,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     List<String> selected,
     String type,
   ) {
-    // 🌟 修正: 8や6だと多すぎて潰れるため、安全な4に統一します
     int crossAxisCount = type == 'item' ? 8 : 6;
-
     return GridView.builder(
-      padding: const EdgeInsets.all(16), // 🌟 追加: GridView自体に余白を持たせます
+      padding: const EdgeInsets.all(16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
         crossAxisSpacing: 10,
@@ -945,7 +1279,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       itemBuilder: (context, index) {
         final item = options[index];
         final isSelected = selected.contains(item.imagePath);
-
         final bool isPurchased = _purchasedItemNames.contains(item.name);
         final bool isLevelLocked = _currentLevel < item.requiredLevel;
         final bool isLocked =
@@ -958,30 +1291,26 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 SfxManager.instance.playTapSound();
               } catch (e) {}
               setState(() {
-                if (isSelected) {
+                if (isSelected)
                   selected.remove(item.imagePath);
-                } else {
+                else
                   selected.add(item.imagePath);
-                }
               });
-
               if (type == 'character') {
                 await SharedPrefsHelper.saveEquippedCharacters(selected);
               } else if (type == 'item') {
                 await SharedPrefsHelper.saveEquippedItems(selected);
               }
-
               if (!_isTutorialStepCustomizeShown) {
-                if (mounted) {
+                if (mounted)
                   setState(() {
                     _showTabBlinking = false;
                     _showItemBlinking = false;
                     _showBackButtonBlinking = true;
                   });
-                }
               }
             } else {
-              _handlePurchaseAttempt(item); // 未購入なら購入処理へ
+              _handlePurchaseAttempt(item);
             }
           },
           child: Container(
@@ -1012,8 +1341,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Opacity(
-                          opacity: (!isPurchased || isLocked) ? 0.5 : 1.0,
-                          child: Image.asset(item.imagePath),
+                          opacity: (!isPurchased && isLocked) ? 0.5 : 1.0,
+                          child: _buildItemPreviewImage(item), // 画像表示処理を共通化
                         ),
                       ),
                     ),
@@ -1032,7 +1361,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                     ],
                   ],
                 ),
-                if (isLocked)
+                if (!isPurchased && isLocked)
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
@@ -1060,7 +1389,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ),
           ),
         );
-
         if (_showItemBlinking && _tutorialPurchasedItemName == item.name) {
           return BlinkingEffect(isBlinking: true, child: itemWidget);
         }

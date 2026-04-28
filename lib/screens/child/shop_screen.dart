@@ -787,7 +787,7 @@ class _ShopScreenState extends State<ShopScreen> {
         .toList();
     // デフォルトのウサギは除外
     final characterItems = items
-        .where((item) => item.type == 'character' && item.name != 'ウサギ')
+        .where((item) => item.type == 'character')
         .toList();
 
     return Scaffold(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'screens/child/child_home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -15,6 +14,7 @@ import 'providers/locale_provider.dart';
 import 'package:audio_session/audio_session.dart';
 import 'managers/notification_manager.dart';
 import 'managers/purchase_manager.dart';
+import 'screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -179,7 +179,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // このアプリの「玄関」となる画面を指定します
-      home: const ChildHomeScreen(),
+      home: const SplashScreen(),
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
       ],
