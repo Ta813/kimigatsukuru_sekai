@@ -24,10 +24,14 @@ class PurchaseManager {
       final deviceInfo = DeviceInfoPlugin();
       if (Platform.isAndroid) {
         final androidInfo = await deviceInfo.androidInfo;
-        debugPrint('Device Info (Android): Brand=${androidInfo.brand}, Model=${androidInfo.model}, SDK=${androidInfo.version.sdkInt}');
+        debugPrint(
+          'Device Info (Android): Brand=${androidInfo.brand}, Model=${androidInfo.model}, SDK=${androidInfo.version.sdkInt}',
+        );
       } else if (Platform.isIOS) {
         final iosInfo = await deviceInfo.iosInfo;
-        debugPrint('Device Info (iOS): Name=${iosInfo.name}, Model=${iosInfo.model}, SystemName=${iosInfo.systemName}, SystemVersion=${iosInfo.systemVersion}');
+        debugPrint(
+          'Device Info (iOS): Name=${iosInfo.name}, Model=${iosInfo.model}, SystemName=${iosInfo.systemName}, SystemVersion=${iosInfo.systemVersion}',
+        );
       }
     } catch (e) {
       debugPrint('Device info logging failed: $e');
@@ -37,7 +41,8 @@ class PurchaseManager {
   Future<void> _checkGooglePlayServices() async {
     if (!Platform.isAndroid) return;
     try {
-      final availability = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
+      final availability = await GoogleApiAvailability.instance
+          .checkGooglePlayServicesAvailability();
       debugPrint('Google Play Services Availability: $availability');
     } catch (e) {
       debugPrint('Google Play Services check failed: $e');
@@ -101,7 +106,9 @@ class PurchaseManager {
       // OnePlus等のアグレッシブなバックグラウンドKillでOfferingsが
       // 失われている場合への対策
       if (offerings == null) {
-        debugPrint('Warning: Offerings is null before showing paywall. Attempting to fetch...');
+        debugPrint(
+          'Warning: Offerings is null before showing paywall. Attempting to fetch...',
+        );
         for (int attempt = 1; attempt <= 3; attempt++) {
           try {
             offerings = await Purchases.getOfferings();
@@ -111,14 +118,17 @@ class PurchaseManager {
             }
           } catch (e) {
             debugPrint('Offerings fetch attempt $attempt failed: $e');
-            if (attempt < 3) await Future.delayed(const Duration(milliseconds: 500));
+            if (attempt < 3)
+              await Future.delayed(const Duration(milliseconds: 500));
           }
         }
       }
       debugPrint('Offerings status: ${offerings?.all.keys.toList()}');
 
       final customerInfo = await Purchases.getCustomerInfo();
-      debugPrint('CustomerInfo at showPaywall: ${customerInfo.entitlements.active.keys.toList()}');
+      debugPrint(
+        'CustomerInfo at showPaywall: ${customerInfo.entitlements.active.keys.toList()}',
+      );
 
       // OnePlus等の端末で前の画面トランジションが完了する前に
       // Billing UI が起動されると PendingIntent が null になるケースへの対策。
@@ -165,7 +175,9 @@ class PurchaseManager {
 
       debugPrint('Billing Flow Initiation: showCustomerCenter');
       final customerInfo = await Purchases.getCustomerInfo();
-      debugPrint('CustomerInfo at showCustomerCenter: ${customerInfo.entitlements.active.keys.toList()}');
+      debugPrint(
+        'CustomerInfo at showCustomerCenter: ${customerInfo.entitlements.active.keys.toList()}',
+      );
 
       await RevenueCatUI.presentCustomerCenter();
 
