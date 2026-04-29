@@ -116,9 +116,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     });
     try {
       final result = await Purchases.restorePurchases();
-      final customerInfo = result is CustomerInfo
-          ? result
-          : (result as dynamic).customerInfo;
+      final customerInfo = result;
 
       if (customerInfo.entitlements.active.containsKey(
         "KimigatsukuruSekai Premium",
