@@ -931,8 +931,8 @@ class _ShopScreenState extends State<ShopScreen> {
         _buildTab(AppLocalizations.of(context)!.vehicles, Icons.directions_car),
       ];
       tabViews = [
-        _buildCategoryGrid(buildingItems, crossAxisCount: 8),
-        _buildCategoryGrid(vehicleItems, crossAxisCount: 8),
+        _buildCategoryGrid(buildingItems, crossAxisCount: 6),
+        _buildCategoryGrid(vehicleItems, crossAxisCount: 6),
       ];
     } else if (widget.mode == ShopMode.forSea) {
       final isSeaItems = shopItems.where((item) => item.isSeaOnly).toList();
@@ -951,8 +951,8 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       ];
       tabViews = [
-        _buildCategoryGrid(seaItems, crossAxisCount: 8),
-        _buildCategoryGrid(livingItems, crossAxisCount: 8),
+        _buildCategoryGrid(seaItems, crossAxisCount: 6),
+        _buildCategoryGrid(livingItems, crossAxisCount: 6),
       ];
     } else if (widget.mode == ShopMode.forSky) {
       final isSeaItems = shopItems.where((item) => item.isSkyOnly).toList();
@@ -971,8 +971,8 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       ];
       tabViews = [
-        _buildCategoryGrid(seaItems, crossAxisCount: 8),
-        _buildCategoryGrid(livingItems, crossAxisCount: 8),
+        _buildCategoryGrid(seaItems, crossAxisCount: 6),
+        _buildCategoryGrid(livingItems, crossAxisCount: 6),
       ];
     } else if (widget.mode == ShopMode.forSpace) {
       final isSpaceItems = shopItems.where((item) => item.isSpaceOnly).toList();
@@ -994,8 +994,8 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       ];
       tabViews = [
-        _buildCategoryGrid(spaceItems, crossAxisCount: 8),
-        _buildCategoryGrid(livingItems, crossAxisCount: 8),
+        _buildCategoryGrid(spaceItems, crossAxisCount: 6),
+        _buildCategoryGrid(livingItems, crossAxisCount: 6),
       ];
     } else {
       // forHouse
@@ -1014,8 +1014,8 @@ class _ShopScreenState extends State<ShopScreen> {
         _buildTab(AppLocalizations.of(context)!.houseItems, Icons.widgets),
       ];
       tabViews = [
-        _buildCategoryGrid(furnitureItems, crossAxisCount: 8),
-        _buildCategoryGrid(houseItems, crossAxisCount: 8),
+        _buildCategoryGrid(furnitureItems, crossAxisCount: 6),
+        _buildCategoryGrid(houseItems, crossAxisCount: 6),
       ];
     }
 
