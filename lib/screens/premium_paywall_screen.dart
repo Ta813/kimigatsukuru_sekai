@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../managers/purchase_manager.dart';
 import '../../managers/sfx_manager.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../l10n/app_localizations.dart'; // 🌟 追加: ローカライズのインポート
 
 class PremiumPaywallScreen extends StatefulWidget {
@@ -403,7 +404,16 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {}
+                      final isJapanese = l10n.localeName.startsWith('ja');
+                      final url = isJapanese
+                          ? 'https://www.koto-app.com/home-ja/kimigatsukuru_sekai/terms' // 🇯🇵 日本語の利用規約URL
+                          : 'https://www.koto-app.com/home-en/kimigatsukuru_sekai/terms'; // 🇺🇸 その他の利用規約URL
+                      _launchURL(url);
+                    },
                     child: Text(
                       l10n.paywallTermsLink,
                       style: const TextStyle(
@@ -414,7 +424,16 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {}
+                      final isJapanese = l10n.localeName.startsWith('ja');
+                      final url = isJapanese
+                          ? 'https://www.koto-app.com/home-ja/kimigatsukuru_sekai/privacy' // 🇯🇵 日本語のプライバシーポリシーURL
+                          : 'https://www.koto-app.com/home-en/kimigatsukuru_sekai/privacy'; // 🇺🇸 その他のプライバシーポリシーURL
+                      _launchURL(url);
+                    },
                     child: Text(
                       l10n.paywallPrivacyLink,
                       style: const TextStyle(
@@ -436,6 +455,27 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _launchURL(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication); // 外部ブラウザで開く
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('ページを開けませんでした')));
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('ページを開けませんでした')));
+      }
+    }
   }
 
   Widget _buildPackageCard(Package package, AppLocalizations l10n) {
