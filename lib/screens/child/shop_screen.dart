@@ -304,6 +304,9 @@ class _ShopScreenState extends State<ShopScreen> {
                         ),
                         ElevatedButton(
                           onPressed: () async {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'premium_open_shop',
+                            );
                             Navigator.pop(context);
                             Navigator.push(
                               context,

@@ -365,7 +365,7 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                           PurchaseManager.instance.showCustomerCenter();
                         } else {
                           FirebaseAnalytics.instance.logEvent(
-                            name: 'start_premium',
+                            name: 'premium_open_parent_top',
                           );
                           Navigator.push(
                             context,

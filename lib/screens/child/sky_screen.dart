@@ -228,6 +228,7 @@ class _SkyScreenState extends State<SkyScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
+              FirebaseAnalytics.instance.logEvent(name: 'premium_open_sky');
               Navigator.pop(context);
               Navigator.push(
                 context,

@@ -194,6 +194,9 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
+              FirebaseAnalytics.instance.logEvent(
+                name: 'premium_open_world_map',
+              );
               Navigator.pop(context);
               Navigator.push(
                 context,

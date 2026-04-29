@@ -212,6 +212,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'premium_open_furniture_customize',
+                );
                 Navigator.pop(context);
                 Navigator.push(
                   context,

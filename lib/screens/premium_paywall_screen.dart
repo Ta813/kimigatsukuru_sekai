@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -54,6 +55,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
   }
 
   Future<void> _purchasePremium() async {
+    FirebaseAnalytics.instance.logEvent(name: 'premium_purchase');
     if (_selectedPackage == null) return;
 
     // 🌟 処理開始時にローカライズオブジェクトを取得
@@ -73,7 +75,9 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
           ? result
           : (result as dynamic).customerInfo;
 
-      if (customerInfo.entitlements.active.containsKey("premium")) {
+      if (customerInfo.entitlements.active.containsKey(
+        "KimigatsukuruSekai Premium",
+      )) {
         if (!mounted) return;
 
         PurchaseManager.instance.isPremium.value = true;
@@ -116,7 +120,9 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
           ? result
           : (result as dynamic).customerInfo;
 
-      if (customerInfo.entitlements.active.containsKey("premium")) {
+      if (customerInfo.entitlements.active.containsKey(
+        "KimigatsukuruSekai Premium",
+      )) {
         PurchaseManager.instance.isPremium.value = true;
         if (!mounted) return;
         Navigator.pop(context);
@@ -240,6 +246,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                 child: IconButton(
                   icon: const Icon(Icons.close, color: Colors.black87),
                   onPressed: () {
+                    FirebaseAnalytics.instance.logEvent(name: 'premium_close');
                     try {
                       SfxManager.instance.playTapSound();
                     } catch (e) {}

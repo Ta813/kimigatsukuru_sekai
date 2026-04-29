@@ -272,6 +272,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'premium_open_character_customize',
+                );
                 Navigator.pop(context);
                 Navigator.push(
                   context,
