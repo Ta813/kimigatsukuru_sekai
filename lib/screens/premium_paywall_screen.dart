@@ -402,7 +402,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                     child: Text(
                       l10n.paywallRestoreLink,
                       style: const TextStyle(
-                        fontSize: 9,
+                        fontSize: 8,
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
                       ),
@@ -422,7 +422,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                     child: Text(
                       l10n.paywallTermsLink,
                       style: const TextStyle(
-                        fontSize: 9,
+                        fontSize: 8,
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
                       ),
@@ -442,7 +442,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                     child: Text(
                       l10n.paywallPrivacyLink,
                       style: const TextStyle(
-                        fontSize: 9,
+                        fontSize: 8,
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
                       ),
