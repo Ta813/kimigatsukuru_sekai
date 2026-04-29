@@ -96,14 +96,36 @@ class PurchaseManager {
 
       // ペイウォール表示前のデバッグログ（OnePlus等でのNullPointerException調査用）
       debugPrint('Billing Flow Initiation: showPaywall');
+
+      // Offerings が null の場合は最大3回リトライして取得する
+      // OnePlus等のアグレッシブなバックグラウンドKillでOfferingsが
+      // 失われている場合への対策
       if (offerings == null) {
         debugPrint('Warning: Offerings is null before showing paywall. Attempting to fetch...');
-        offerings = await Purchases.getOfferings();
+        for (int attempt = 1; attempt <= 3; attempt++) {
+          try {
+            offerings = await Purchases.getOfferings();
+            if (offerings != null) {
+              debugPrint('Offerings fetched successfully on attempt $attempt');
+              break;
+            }
+          } catch (e) {
+            debugPrint('Offerings fetch attempt $attempt failed: $e');
+            if (attempt < 3) await Future.delayed(const Duration(milliseconds: 500));
+          }
+        }
       }
       debugPrint('Offerings status: ${offerings?.all.keys.toList()}');
 
       final customerInfo = await Purchases.getCustomerInfo();
       debugPrint('CustomerInfo at showPaywall: ${customerInfo.entitlements.active.keys.toList()}');
+
+      // OnePlus等の端末で前の画面トランジションが完了する前に
+      // Billing UI が起動されると PendingIntent が null になるケースへの対策。
+      // Androidでは画面遷移後に短い遅延を挟む。
+      if (Platform.isAndroid) {
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
 
       // 2024年現在のモダンな実装: RevenueCat公式のPaywall UIを表示
       await RevenueCatUI.presentPaywall();
@@ -124,6 +146,8 @@ class PurchaseManager {
       }
     } catch (e) {
       debugPrint('ペイウォール表示エラー: $e');
+      // スタックトレースもログに残してクラッシュ調査に役立てる
+      debugPrint('ペイウォール表示エラー (stackTrace): ${StackTrace.current}');
     }
   }
 
