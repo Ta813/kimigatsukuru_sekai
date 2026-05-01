@@ -1209,4 +1209,30 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(isFirstLaunchKey, true);
   }
+
+  // --- セットアップ進行状況の管理 ---
+  static const String _setupPatternKey = 'setup_progress_pattern';
+  static const String _setupStepKey = 'setup_progress_step';
+
+  static Future<void> saveSetupProgress(String pattern, int step) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_setupPatternKey, pattern);
+    await prefs.setInt(_setupStepKey, step);
+  }
+
+  static Future<String?> loadSetupPattern() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_setupPatternKey);
+  }
+
+  static Future<int> loadSetupStep() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_setupStepKey) ?? 0;
+  }
+
+  static Future<void> clearSetupProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_setupPatternKey);
+    await prefs.remove(_setupStepKey);
+  }
 }

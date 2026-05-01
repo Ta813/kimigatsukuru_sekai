@@ -1789,5 +1789,52 @@ class AppLocalizationsAr extends AppLocalizations {
   String get setupCompleteMessage => 'دعنا نستكشف عالمك الخاص!';
 
   @override
-  String get setupCompleteButton => 'هيا بنا!';
+  String get setupFinishButton => 'هيا بنا!';
+
+  @override
+  String get setupAgeQuestion => 'كم عمرك؟';
+
+  @override
+  String get setupAgeUnder7 => 'تحت 7 سنوات';
+
+  @override
+  String get setupAge8to12 => '8 - 12 سنة';
+
+  @override
+  String get setupAge13to18 => '13 - 18 سنة';
+
+  @override
+  String get setupAgeAdult => '18+ (ولي الأمر)';
+
+  @override
+  String get setupIntroMessage => 'لنبدأ إعداد التطبيق!\nسيستغرق الأمر حوالي 3 دقائق.';
+
+  @override
+  String get setupIntroNext => 'التالي';
+
+  @override
+  String get setupFinishTitle100 => 'اكتمل الإعداد بنسبة 100%!';
+
+  @override
+  String get setupFinishMessage => 'لننطلق إلى عالمك الخاص!';
+
+  @override
+  String setupProgressComplete(int progress) {
+    return 'اكتمل الإعداد بنسبة $progress%!';
+  }
+
+  @override
+  String get setupPassToChild => 'يرجى تسليم الهاتف\nللطفل!';
+
+  @override
+  String get setupPassToAdult => 'يرجى تسليم الهاتف\nلولي الأمر!';
+
+  @override
+  String get setupReceivedButton => 'استلمت!';
+
+  @override
+  String get initialSetupSettingsMessage => 'قم بإعداد الوعود.\nيمكنك تغييرها لاحقاً، لذا إذا لم تقرر بعد، فقط اضغط على \'إكمال الإعداد\'!';
+
+  @override
+  String get initialSetupCompleteButton => 'إكمال الإعداد';
 }

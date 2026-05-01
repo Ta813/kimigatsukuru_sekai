@@ -1789,5 +1789,52 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupCompleteMessage => 'Let\'s explore your very own world!';
 
   @override
-  String get setupCompleteButton => 'Let\'s Go!';
+  String get setupFinishButton => 'Let\'s Go!';
+
+  @override
+  String get setupAgeQuestion => 'How old are you?';
+
+  @override
+  String get setupAgeUnder7 => 'Under 7';
+
+  @override
+  String get setupAge8to12 => '8 - 12';
+
+  @override
+  String get setupAge13to18 => '13 - 18';
+
+  @override
+  String get setupAgeAdult => '18+ (Parent/Guardian)';
+
+  @override
+  String get setupIntroMessage => 'Let\'s start setting up the app!\nIt will take about 3 minutes.';
+
+  @override
+  String get setupIntroNext => 'Next';
+
+  @override
+  String get setupFinishTitle100 => 'Setup 100% Complete!';
+
+  @override
+  String get setupFinishMessage => 'Let\'s go to your own world!';
+
+  @override
+  String setupProgressComplete(int progress) {
+    return 'Setup $progress% complete!';
+  }
+
+  @override
+  String get setupPassToChild => 'Please pass the phone\nto the child!';
+
+  @override
+  String get setupPassToAdult => 'Please pass the phone\nto the adult!';
+
+  @override
+  String get setupReceivedButton => 'Received!';
+
+  @override
+  String get initialSetupSettingsMessage => 'Set up the promises.\nYou can change them later, so if you haven\'t decided yet, just press \'Complete\'!';
+
+  @override
+  String get initialSetupCompleteButton => 'Complete';
 }

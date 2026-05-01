@@ -777,5 +777,27 @@
   "paywallPlanLifetime": "আজীবন",
   "setupCompleteTitle": "সেটআপ সম্পন্ন!",
   "setupCompleteMessage": "চলুন আপনার নিজের বিশ্ব অন্বেষণ করি!",
-  "setupCompleteButton": "চলুন যাই!"
+  "setupFinishButton": "চলুন শুরু করি!",
+  "setupAgeQuestion": "তোমার বয়স কত?",
+  "setupAgeUnder7": "৭ বছরের নিচে",
+  "setupAge8to12": "৮ - ১২ বছর",
+  "setupAge13to18": "১৩ - ১৮ বছর",
+  "setupAgeAdult": "১৮+ (অভিভাবক)",
+  "setupIntroMessage": "চলুন অ্যাপটি সেট আপ করা শুরু করি!\nএতে প্রায় ৩ মিনিট সময় লাগবে।",
+  "setupIntroNext": "পরবর্তী",
+  "setupFinishTitle100": "সেটআপ ১০০% সম্পন্ন!",
+  "setupFinishMessage": "চলুন আপনার নিজের পৃথিবীতে যাই!",
+  "setupProgressComplete": "সেটআপ {progress}% সম্পন্ন!",
+  "@setupProgressComplete": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "setupPassToChild": "দয়া করে ফোনটি\nশিশুকে দিন!",
+  "setupPassToAdult": "দয়া করে ফোনটি\nঅভিভাবককে দিন!",
+  "setupReceivedButton": "পেয়েছি!",
+  "initialSetupSettingsMessage": "প্রতিশ্রুতিগুলো সেট করুন।\nআপনি এগুলো পরে পরিবর্তন করতে পারেন, তাই আপনি যদি এখনও সিদ্ধান্ত না নিয়ে থাকেন, তবে শুধু 'সেটআপ সম্পন্ন' চাপুন!",
+  "initialSetupCompleteButton": "সেটআপ সম্পন্ন"
 }

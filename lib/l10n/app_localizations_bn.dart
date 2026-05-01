@@ -1789,5 +1789,52 @@ class AppLocalizationsBn extends AppLocalizations {
   String get setupCompleteMessage => 'চলুন আপনার নিজের বিশ্ব অন্বেষণ করি!';
 
   @override
-  String get setupCompleteButton => 'চলুন যাই!';
+  String get setupFinishButton => 'চলুন শুরু করি!';
+
+  @override
+  String get setupAgeQuestion => 'তোমার বয়স কত?';
+
+  @override
+  String get setupAgeUnder7 => '৭ বছরের নিচে';
+
+  @override
+  String get setupAge8to12 => '৮ - ১২ বছর';
+
+  @override
+  String get setupAge13to18 => '১৩ - ১৮ বছর';
+
+  @override
+  String get setupAgeAdult => '১৮+ (অভিভাবক)';
+
+  @override
+  String get setupIntroMessage => 'চলুন অ্যাপটি সেট আপ করা শুরু করি!\nএতে প্রায় ৩ মিনিট সময় লাগবে।';
+
+  @override
+  String get setupIntroNext => 'পরবর্তী';
+
+  @override
+  String get setupFinishTitle100 => 'সেটআপ ১০০% সম্পন্ন!';
+
+  @override
+  String get setupFinishMessage => 'চলুন আপনার নিজের পৃথিবীতে যাই!';
+
+  @override
+  String setupProgressComplete(int progress) {
+    return 'সেটআপ $progress% সম্পন্ন!';
+  }
+
+  @override
+  String get setupPassToChild => 'দয়া করে ফোনটি\nশিশুকে দিন!';
+
+  @override
+  String get setupPassToAdult => 'দয়া করে ফোনটি\nঅভিভাবককে দিন!';
+
+  @override
+  String get setupReceivedButton => 'পেয়েছি!';
+
+  @override
+  String get initialSetupSettingsMessage => 'প্রতিশ্রুতিগুলো সেট করুন।\nআপনি এগুলো পরে পরিবর্তন করতে পারেন, তাই আপনি যদি এখনও সিদ্ধান্ত না নিয়ে থাকেন, তবে শুধু \'সেটআপ সম্পন্ন\' চাপুন!';
+
+  @override
+  String get initialSetupCompleteButton => 'সেটআপ সম্পন্ন';
 }

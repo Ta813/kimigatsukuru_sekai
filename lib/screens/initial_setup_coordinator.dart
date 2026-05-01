@@ -6,6 +6,7 @@ import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart'; // 本物の画面
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart'; // 🌟 プレミアム画面をインポート
 import '../helpers/shared_prefs_helper.dart';
+import '../l10n/app_localizations.dart';
 import '../managers/sfx_manager.dart';
 import 'child/child_home_screen.dart';
 import 'child/character_customize_screen.dart';
@@ -18,13 +19,82 @@ class InitialSetupCoordinator extends StatefulWidget {
       _InitialSetupCoordinatorState();
 }
 
-class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
+class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
+    with WidgetsBindingObserver, TickerProviderStateMixin {
   // 最初のイントロ画面を表示するかどうかのフラグ
   bool _showIntro = true;
+  bool _isCheckingResume = true; // 🌟 追加: 再開チェック中かどうか
 
   @override
   void initState() {
     super.initState();
+    _playSavedBgm();
+    _checkResumeStatus();
+  }
+
+  Future<void> _checkResumeStatus() async {
+    final pattern = await SharedPrefsHelper.loadSetupPattern();
+    final step = await SharedPrefsHelper.loadSetupStep();
+
+    if (pattern != null && step > 0) {
+      if (!mounted) return;
+      setState(() {
+        _showIntro = false;
+        _isCheckingResume = false;
+      });
+
+      // 画面構築後に自動で再開
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        if (pattern == 'A') _startPatternA(context, resumeStep: step);
+        if (pattern == 'B') _startPatternB(context, resumeStep: step);
+        if (pattern == 'C') _startPatternC(context, resumeStep: step);
+      });
+    } else {
+      if (!mounted) return;
+      setState(() {
+        _isCheckingResume = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  // ★アプリの状態が変化した時に呼ばれるメソッド
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // ★ 自分が現在表示されている画面の場合のみ、BGM再生を行う
+      if (ModalRoute.of(context)?.isCurrent ?? false) {
+        // アプリが前面に戻ってきたら、日付のチェックとBGM再生を行う
+        _handleAppResumed();
+      }
+    } else if (state == AppLifecycleState.paused) {
+      // アプリが完全にバックグラウンドへ移行した時のみBGMを停止
+      // ※ inactive（ネイティブオーバーレイ表示中など）では止めない
+      try {
+        BgmManager.instance.stopBgm();
+      } catch (e) {
+        // エラーが発生した場合
+        print('再生エラー: $e');
+      }
+    } else if (state == AppLifecycleState.detached) {
+      // 🌟 【ここを追加！】アプリが完全にキルされた瞬間の処理
+      try {
+        BgmManager.instance.stopBgm();
+      } catch (e) {
+        print('再生エラー: $e');
+      }
+    }
+  }
+
+  // アプリが前面に戻ってきた時の処理
+  Future<void> _handleAppResumed() async {
+    // 保存されたBGMを再生
     _playSavedBgm();
   }
 
@@ -43,9 +113,20 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isCheckingResume) {
+      return const Scaffold(
+        backgroundColor: Color(0xFFFFF3E0),
+        body: Center(
+          child: CircularProgressIndicator(color: Color(0xFFFF7043)),
+        ),
+      );
+    }
+
     if (_showIntro) {
       return _buildIntroScreen();
     }
+
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
@@ -54,9 +135,9 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'なんさい ですか？',
-                style: TextStyle(
+              Text(
+                l10n.setupAgeQuestion,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
@@ -66,7 +147,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
               // 年齢選択のリスト
               _buildAgeButton(
                 context,
-                label: '〜 7さい',
+                label: l10n.setupAgeUnder7,
                 onTap: () {
                   FirebaseAnalytics.instance.logEvent(name: 'setup_age_-7');
                   _startPatternB(context); // パターンB: こども ➔ おとな
@@ -74,7 +155,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
               ),
               _buildAgeButton(
                 context,
-                label: '8 〜 12さい',
+                label: l10n.setupAge8to12,
                 onTap: () {
                   FirebaseAnalytics.instance.logEvent(name: 'setup_age_8-12');
                   _startPatternC(context); // パターンC: こども ➔ おとな（バトンなし）
@@ -82,7 +163,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
               ),
               _buildAgeButton(
                 context,
-                label: '13 〜 18さい',
+                label: l10n.setupAge13to18,
                 onTap: () {
                   FirebaseAnalytics.instance.logEvent(name: 'setup_age_13-18');
                   _startPatternC(context); // パターンC: こども ➔ おとな（バトンなし）
@@ -90,7 +171,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
               ),
               _buildAgeButton(
                 context,
-                label: '18さい 〜 (ほごしゃ)',
+                label: l10n.setupAgeAdult,
                 isAdult: true,
                 onTap: () {
                   FirebaseAnalytics.instance.logEvent(name: 'setup_age_18-');
@@ -106,6 +187,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
 
   // 年齢を聞く前のイントロ画面
   Widget _buildIntroScreen() {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       body: SafeArea(
@@ -123,10 +205,10 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
                 ],
               ),
               const SizedBox(height: 32),
-              const Text(
-                'アプリの せってい を はじめます！\nおよそ 3分 ていどで おわります。',
+              Text(
+                l10n.setupIntroMessage,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
@@ -156,9 +238,12 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
                   ),
                   elevation: 4,
                 ),
-                child: const Text(
-                  'つぎへ',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                child: Text(
+                  l10n.setupIntroNext,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -207,111 +292,184 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
   // ==============================================================
   // 🌟 パターンA: おとな ➔ 子供（バトンタッチあり）
   // ==============================================================
-  Future<void> _startPatternA(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) =>
-            const RegularPromiseSettingsScreen(isInitialSetup: true),
-      ),
-    );
+  Future<void> _startPatternA(
+    BuildContext context, {
+    int resumeStep = 0,
+  }) async {
+    if (resumeStep <= 1) {
+      await SharedPrefsHelper.saveSetupProgress('A', 1);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              const RegularPromiseSettingsScreen(isInitialSetup: true),
+        ),
+      );
+    }
+
     if (!context.mounted) return;
 
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const PassDeviceScreen(isToChild: true, progress: 0.5),
-      ),
-    );
+    if (resumeStep <= 2) {
+      await SharedPrefsHelper.saveSetupProgress('A', 2);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              const PassDeviceScreen(isToChild: true, progress: 0.5),
+        ),
+      );
+    }
+
     if (!context.mounted) return;
 
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const CharacterCustomizeScreen(isInitialSetup: true),
-      ),
-    );
+    if (resumeStep <= 3) {
+      await SharedPrefsHelper.saveSetupProgress('A', 3);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const CharacterCustomizeScreen(isInitialSetup: true),
+        ),
+      );
+    }
+
     if (!context.mounted) return;
 
-    await _finishSetup(context);
+    await _finishSetup(context, pattern: 'A', resumeStep: resumeStep);
   }
 
   // ==============================================================
   // 🌟 パターンB: 子供 ➔ おとな（バトンタッチあり）
   // ==============================================================
-  Future<void> _startPatternB(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const CharacterCustomizeScreen(isInitialSetup: true),
-      ),
-    );
+  Future<void> _startPatternB(
+    BuildContext context, {
+    int resumeStep = 0,
+  }) async {
+    if (resumeStep <= 1) {
+      await SharedPrefsHelper.saveSetupProgress('B', 1);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const CharacterCustomizeScreen(isInitialSetup: true),
+        ),
+      );
+    }
+
     if (!context.mounted) return;
 
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const PassDeviceScreen(isToChild: false, progress: 0.5),
-      ),
-    );
+    if (resumeStep <= 2) {
+      await SharedPrefsHelper.saveSetupProgress('B', 2);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              const PassDeviceScreen(isToChild: false, progress: 0.5),
+        ),
+      );
+    }
+
     if (!context.mounted) return;
 
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) =>
-            const RegularPromiseSettingsScreen(isInitialSetup: true),
-      ),
-    );
+    if (resumeStep <= 3) {
+      await SharedPrefsHelper.saveSetupProgress('B', 3);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              const RegularPromiseSettingsScreen(isInitialSetup: true),
+        ),
+      );
+    }
+
     if (!context.mounted) return;
 
-    await _finishSetup(context);
+    await _finishSetup(context, pattern: 'B', resumeStep: resumeStep);
   }
 
   // ==============================================================
   // 🌟 パターンC: 子供 ➔ おとな（バトンタッチなし）
   // ==============================================================
-  Future<void> _startPatternC(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const CharacterCustomizeScreen(isInitialSetup: true),
-      ),
-    );
+  Future<void> _startPatternC(
+    BuildContext context, {
+    int resumeStep = 0,
+  }) async {
+    if (resumeStep <= 1) {
+      await SharedPrefsHelper.saveSetupProgress('C', 1);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const CharacterCustomizeScreen(isInitialSetup: true),
+        ),
+      );
+    }
+
     if (!context.mounted) return;
 
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) =>
-            const RegularPromiseSettingsScreen(isInitialSetup: true),
-      ),
-    );
+    if (resumeStep <= 2) {
+      await SharedPrefsHelper.saveSetupProgress('C', 2);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              const RegularPromiseSettingsScreen(isInitialSetup: true),
+        ),
+      );
+    }
+
     if (!context.mounted) return;
 
-    await _finishSetup(context);
+    await _finishSetup(context, pattern: 'C', resumeStep: resumeStep);
   }
 
   // ==============================================================
   // 🌟 すべての設定が終わったあとの処理（Paywall ➔ 100%完了画面 ➔ ホーム）
   // ==============================================================
-  Future<void> _finishSetup(BuildContext context) async {
+  Future<void> _finishSetup(
+    BuildContext context, {
+    required String pattern,
+    int resumeStep = 0,
+  }) async {
+    // 各パターンの最終ステップ番号を特定
+    int paywallStep = (pattern == 'C') ? 3 : 4;
+    int completeStep = (pattern == 'C') ? 4 : 5;
+
     // 1. プレミアムプランへの誘導
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const PremiumPaywallScreen()),
-    );
+    if (resumeStep <= paywallStep) {
+      await SharedPrefsHelper.saveSetupProgress(pattern, paywallStep);
+      if (!context.mounted) return;
+      FirebaseAnalytics.instance.logEvent(name: 'setup_paywall_screen_show');
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const PremiumPaywallScreen()),
+      );
+    }
+
     if (!context.mounted) return;
 
     // 2. ダイアログではなく、「100%完了画面（全画面）」へ遷移
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const SetupCompleteScreen()),
-    );
+    if (resumeStep <= completeStep) {
+      await SharedPrefsHelper.saveSetupProgress(pattern, completeStep);
+      if (!context.mounted) return;
+      FirebaseAnalytics.instance.logEvent(name: 'setup_complete_screen_show');
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SetupCompleteScreen()),
+      );
+    }
+
     if (!context.mounted) return;
 
     // 3. 全て完了したのでフラグを保存してホームへ
+    FirebaseAnalytics.instance.logEvent(name: 'setup_finish');
     await SharedPrefsHelper.setFirstLaunchCompleted();
+    await SharedPrefsHelper.clearSetupProgress(); // 進行状況をクリア
     if (!context.mounted) return;
 
     Navigator.pushReplacement(
@@ -329,6 +487,7 @@ class SetupCompleteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       body: Center(
@@ -340,9 +499,9 @@ class SetupCompleteScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 48),
               child: Column(
                 children: [
-                  const Text(
-                    'セットアップ 100% かんりょう！',
-                    style: TextStyle(
+                  Text(
+                    l10n.setupFinishTitle100,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.black54,
@@ -375,10 +534,10 @@ class SetupCompleteScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 32),
-            const Text(
-              'きみだけの せかいへ\nしゅっぱつしよう！',
+            Text(
+              l10n.setupFinishMessage,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
@@ -405,9 +564,12 @@ class SetupCompleteScreen extends StatelessWidget {
                 ),
                 elevation: 4,
               ),
-              child: const Text(
-                'しゅっぱつ！',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              child: Text(
+                l10n.setupFinishButton,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -432,6 +594,7 @@ class PassDeviceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: isToChild
           ? const Color(0xFFFFF3E0)
@@ -445,7 +608,7 @@ class PassDeviceScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'セットアップ ${(progress * 100).toInt()}% かんりょう！',
+                    l10n.setupProgressComplete((progress * 100).toInt()),
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -476,7 +639,7 @@ class PassDeviceScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              isToChild ? 'スマホを お子さまに\nわたしてね！' : 'スマホを おうちの人に\nわたしてね！',
+              isToChild ? l10n.setupPassToChild : l10n.setupPassToAdult,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
@@ -501,9 +664,12 @@ class PassDeviceScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              child: const Text(
-                'うけとった！',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              child: Text(
+                l10n.setupReceivedButton,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],

@@ -3547,11 +3547,101 @@ abstract class AppLocalizations {
   /// **'Let\'s explore your very own world!'**
   String get setupCompleteMessage;
 
-  /// No description provided for @setupCompleteButton.
+  /// No description provided for @setupFinishButton.
   ///
   /// In en, this message translates to:
   /// **'Let\'s Go!'**
-  String get setupCompleteButton;
+  String get setupFinishButton;
+
+  /// No description provided for @setupAgeQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How old are you?'**
+  String get setupAgeQuestion;
+
+  /// No description provided for @setupAgeUnder7.
+  ///
+  /// In en, this message translates to:
+  /// **'Under 7'**
+  String get setupAgeUnder7;
+
+  /// No description provided for @setupAge8to12.
+  ///
+  /// In en, this message translates to:
+  /// **'8 - 12'**
+  String get setupAge8to12;
+
+  /// No description provided for @setupAge13to18.
+  ///
+  /// In en, this message translates to:
+  /// **'13 - 18'**
+  String get setupAge13to18;
+
+  /// No description provided for @setupAgeAdult.
+  ///
+  /// In en, this message translates to:
+  /// **'18+ (Parent/Guardian)'**
+  String get setupAgeAdult;
+
+  /// No description provided for @setupIntroMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s start setting up the app!\nIt will take about 3 minutes.'**
+  String get setupIntroMessage;
+
+  /// No description provided for @setupIntroNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get setupIntroNext;
+
+  /// No description provided for @setupFinishTitle100.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup 100% Complete!'**
+  String get setupFinishTitle100;
+
+  /// No description provided for @setupFinishMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s go to your own world!'**
+  String get setupFinishMessage;
+
+  /// No description provided for @setupProgressComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup {progress}% complete!'**
+  String setupProgressComplete(int progress);
+
+  /// No description provided for @setupPassToChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Please pass the phone\nto the child!'**
+  String get setupPassToChild;
+
+  /// No description provided for @setupPassToAdult.
+  ///
+  /// In en, this message translates to:
+  /// **'Please pass the phone\nto the adult!'**
+  String get setupPassToAdult;
+
+  /// No description provided for @setupReceivedButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Received!'**
+  String get setupReceivedButton;
+
+  /// No description provided for @initialSetupSettingsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up the promises.\nYou can change them later, so if you haven\'t decided yet, just press \'Complete\'!'**
+  String get initialSetupSettingsMessage;
+
+  /// No description provided for @initialSetupCompleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get initialSetupCompleteButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

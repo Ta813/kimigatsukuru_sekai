@@ -731,5 +731,27 @@
   "paywallPlanLifetime": "आजीवन",
   "setupCompleteTitle": "सेटअप पूरा हुआ!",
   "setupCompleteMessage": "आइए अपनी खुद की दुनिया का अन्वेषण करें!",
-  "setupCompleteButton": "चलो चलें!"
+  "setupFinishButton": "शुरू करें!",
+  "setupAgeQuestion": "आपकी उम्र क्या है?",
+  "setupAgeUnder7": "7 साल से कम",
+  "setupAge8to12": "8 - 12 साल",
+  "setupAge13to18": "13 - 18 साल",
+  "setupAgeAdult": "18+ (अभिभावक)",
+  "setupIntroMessage": "आइए ऐप सेटअप करना शुरू करें!\nइसमें लगभग 3 मिनट लगेंगे।",
+  "setupIntroNext": "अगला",
+  "setupFinishTitle100": "सेटअप 100% पूरा हुआ!",
+  "setupFinishMessage": "आइए आपकी अपनी दुनिया में चलें!",
+  "setupProgressComplete": "सेटअप {progress}% पूरा हुआ!",
+  "@setupProgressComplete": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "setupPassToChild": "कृपया फोन\nबच्चे को दें!",
+  "setupPassToAdult": "कृपया फोन\nअभिभावक को दें!",
+  "setupReceivedButton": "मिल गया!",
+  "initialSetupSettingsMessage": "वादे सेट करें।\nआप उन्हें बाद में बदल सकते हैं, इसलिए यदि आपने अभी तक निर्णय नहीं लिया है, तो बस 'सेटअप पूरा करें' दबाएं!",
+  "initialSetupCompleteButton": "सेटअप पूरा करें"
 }

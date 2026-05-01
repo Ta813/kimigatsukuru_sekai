@@ -777,5 +777,27 @@
   "paywallPlanLifetime": "تاحیات",
   "setupCompleteTitle": "سیٹ اپ مکمل!",
   "setupCompleteMessage": "آئیے اپنی خود کی دنیا دریافت کریں!",
-  "setupCompleteButton": "چلو چلیں!"
+  "setupFinishButton": "شروع کریں!",
+  "setupAgeQuestion": "آپ کی عمر کیا ہے؟",
+  "setupAgeUnder7": "7 سال سے کم",
+  "setupAge8to12": "8 - 12 سال",
+  "setupAge13to18": "13 - 18 سال",
+  "setupAgeAdult": "18+ (والدین/سرپرست)",
+  "setupIntroMessage": "آئیے ایپ سیٹ اپ کرنا شروع کریں!\nاس میں تقریباً 3 منٹ لگیں گے۔",
+  "setupIntroNext": "اگلا",
+  "setupFinishTitle100": "سیٹ اپ 100% مکمل ہو گیا!",
+  "setupFinishMessage": "آئیے آپ کی اپنی دنیا میں چلیں!",
+  "setupProgressComplete": "سیٹ اپ {progress}% مکمل ہو گیا!",
+  "@setupProgressComplete": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "setupPassToChild": "براہ کرم فون\nبچے کو دیں!",
+  "setupPassToAdult": "براہ کرم فون\nبڑے کو دیں!",
+  "setupReceivedButton": "مل گیا!",
+  "initialSetupSettingsMessage": "وعدے سیٹ کریں۔\nآپ انہیں بعد میں تبدیل کر سکتے ہیں، لہذا اگر آپ نے ابھی تک فیصلہ نہیں کیا ہے، تو بس 'سیٹ اپ مکمل' دبائیں!",
+  "initialSetupCompleteButton": "سیٹ اپ مکمل"
 }

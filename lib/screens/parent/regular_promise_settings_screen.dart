@@ -1281,7 +1281,7 @@ class _RegularPromiseSettingsScreenState
                       ),
                     ),
                     child: Row(
-                      children: const [
+                      children: [
                         Icon(
                           Icons.info_outline,
                           color: Colors.blueAccent,
@@ -1290,9 +1290,9 @@ class _RegularPromiseSettingsScreenState
                         SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'やくそくの 設定を行います。\nあとで変更できるから、決まっていない場合は「設定完了」ボタンを押してね！',
-                            style: TextStyle(
-                              fontSize: 14,
+                            l10n.initialSetupSettingsMessage,
+                            style: const TextStyle(
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
@@ -1550,9 +1550,9 @@ class _RegularPromiseSettingsScreenState
                         ),
                         elevation: 4,
                       ),
-                      child: const Text(
-                        '設定完了',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.initialSetupCompleteButton,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),

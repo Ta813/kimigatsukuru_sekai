@@ -777,5 +777,27 @@
   "paywallPlanLifetime": "مدى الحياة",
   "setupCompleteTitle": "اكتمل الإعداد!",
   "setupCompleteMessage": "دعنا نستكشف عالمك الخاص!",
-  "setupCompleteButton": "هيا بنا!"
+  "setupFinishButton": "هيا بنا!",
+  "setupAgeQuestion": "كم عمرك؟",
+  "setupAgeUnder7": "تحت 7 سنوات",
+  "setupAge8to12": "8 - 12 سنة",
+  "setupAge13to18": "13 - 18 سنة",
+  "setupAgeAdult": "18+ (ولي الأمر)",
+  "setupIntroMessage": "لنبدأ إعداد التطبيق!\nسيستغرق الأمر حوالي 3 دقائق.",
+  "setupIntroNext": "التالي",
+  "setupFinishTitle100": "اكتمل الإعداد بنسبة 100%!",
+  "setupFinishMessage": "لننطلق إلى عالمك الخاص!",
+  "setupProgressComplete": "اكتمل الإعداد بنسبة {progress}%!",
+  "@setupProgressComplete": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "setupPassToChild": "يرجى تسليم الهاتف\nللطفل!",
+  "setupPassToAdult": "يرجى تسليم الهاتف\nلولي الأمر!",
+  "setupReceivedButton": "استلمت!",
+  "initialSetupSettingsMessage": "قم بإعداد الوعود.\nيمكنك تغييرها لاحقاً، لذا إذا لم تقرر بعد، فقط اضغط على 'إكمال الإعداد'!",
+  "initialSetupCompleteButton": "إكمال الإعداد"
 }

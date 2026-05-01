@@ -1789,5 +1789,52 @@ class AppLocalizationsJa extends AppLocalizations {
   String get setupCompleteMessage => 'きみだけの せかいへ しゅっぱつしよう！';
 
   @override
-  String get setupCompleteButton => 'しゅっぱつ！';
+  String get setupFinishButton => 'しゅっぱつ！';
+
+  @override
+  String get setupAgeQuestion => 'なんさい ですか？';
+
+  @override
+  String get setupAgeUnder7 => '〜 7さい';
+
+  @override
+  String get setupAge8to12 => '8 〜 12さい';
+
+  @override
+  String get setupAge13to18 => '13 〜 18さい';
+
+  @override
+  String get setupAgeAdult => '18さい 〜 (ほごしゃ)';
+
+  @override
+  String get setupIntroMessage => 'アプリの せってい を はじめます！\nおよそ 3分 ていどで おわります。';
+
+  @override
+  String get setupIntroNext => 'つぎへ';
+
+  @override
+  String get setupFinishTitle100 => 'セットアップ 100% かんりょう！';
+
+  @override
+  String get setupFinishMessage => 'きみだけの せかいへ\nしゅっぱつしよう！';
+
+  @override
+  String setupProgressComplete(int progress) {
+    return 'セットアップ $progress% かんりょう！';
+  }
+
+  @override
+  String get setupPassToChild => 'スマホを お子さまに\nわたしてね！';
+
+  @override
+  String get setupPassToAdult => 'スマホを おうちの人に\nわたしてね！';
+
+  @override
+  String get setupReceivedButton => 'うけとった！';
+
+  @override
+  String get initialSetupSettingsMessage => 'やくそくの 設定を行います。\nあとで変更できるから、決まっていない場合は「設定完了」ボタンを押してね！';
+
+  @override
+  String get initialSetupCompleteButton => '設定完了';
 }

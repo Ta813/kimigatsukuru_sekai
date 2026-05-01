@@ -777,5 +777,27 @@
   "paywallPlanLifetime": "買い切り",
   "setupCompleteTitle": "せってい かんりょう！",
   "setupCompleteMessage": "きみだけの せかいへ しゅっぱつしよう！",
-  "setupCompleteButton": "しゅっぱつ！"
+  "setupFinishButton": "しゅっぱつ！",
+  "setupAgeQuestion": "なんさい ですか？",
+  "setupAgeUnder7": "〜 7さい",
+  "setupAge8to12": "8 〜 12さい",
+  "setupAge13to18": "13 〜 18さい",
+  "setupAgeAdult": "18さい 〜 (ほごしゃ)",
+  "setupIntroMessage": "アプリの せってい を はじめます！\nおよそ 3分 ていどで おわります。",
+  "setupIntroNext": "つぎへ",
+  "setupFinishTitle100": "セットアップ 100% かんりょう！",
+  "setupFinishMessage": "きみだけの せかいへ\nしゅっぱつしよう！",
+  "setupProgressComplete": "セットアップ {progress}% かんりょう！",
+  "@setupProgressComplete": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "setupPassToChild": "スマホを お子さまに\nわたしてね！",
+  "setupPassToAdult": "スマホを おうちの人に\nわたしてね！",
+  "setupReceivedButton": "うけとった！",
+  "initialSetupSettingsMessage": "やくそくの 設定を行います。\nあとで変更できるから、決まっていない場合は「設定完了」ボタンを押してね！",
+  "initialSetupCompleteButton": "設定完了"
 }

@@ -777,5 +777,27 @@
   "paywallPlanLifetime": "Lifetime",
   "setupCompleteTitle": "Setup Complete!",
   "setupCompleteMessage": "Let's explore your very own world!",
-  "setupCompleteButton": "Let's Go!"
+  "setupFinishButton": "Let's Go!",
+  "setupAgeQuestion": "How old are you?",
+  "setupAgeUnder7": "Under 7",
+  "setupAge8to12": "8 - 12",
+  "setupAge13to18": "13 - 18",
+  "setupAgeAdult": "18+ (Parent/Guardian)",
+  "setupIntroMessage": "Let's start setting up the app!\nIt will take about 3 minutes.",
+  "setupIntroNext": "Next",
+  "setupFinishTitle100": "Setup 100% Complete!",
+  "setupFinishMessage": "Let's go to your own world!",
+  "setupProgressComplete": "Setup {progress}% complete!",
+  "@setupProgressComplete": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "setupPassToChild": "Please pass the phone\nto the child!",
+  "setupPassToAdult": "Please pass the phone\nto the adult!",
+  "setupReceivedButton": "Received!",
+  "initialSetupSettingsMessage": "Set up the promises.\nYou can change them later, so if you haven't decided yet, just press 'Complete'!",
+  "initialSetupCompleteButton": "Complete"
 }
