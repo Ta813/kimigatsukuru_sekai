@@ -1232,80 +1232,37 @@ class _RegularPromiseSettingsScreenState
     return Stack(
       children: [
         Scaffold(
-          appBar: AppBar(
-            leading: isFinishPhase
-                ? BlinkingEffect(
-                    isBlinking: true,
-                    borderRadius: 8,
-                    child: BackButton(
-                      onPressed: () {
-                        if (widget.isTutorial)
-                          FirebaseAnalytics.instance.logEvent(
-                            name: 'finish_regular_promise_settings_tutorial',
-                          );
-                        if (Navigator.of(context).canPop())
-                          Navigator.of(context).pop();
-                      },
-                    ),
-                  )
-                : IgnorePointer(
-                    ignoring: blockOtherButtons,
-                    child: const CustomBackButton(),
-                  ),
-            title: Text(l10n.regularPromiseSettingsTitle),
-            actions: [
-              IgnorePointer(
-                ignoring:
-                    widget.isTutorial &&
-                    !widget.isInitialSetup &&
-                    _tutorialPhase != _TutorialPhase.done &&
-                    _tutorialPhase != _TutorialPhase.finish,
-                child: Opacity(
-                  opacity:
-                      widget.isTutorial &&
-                          !widget.isInitialSetup &&
-                          _tutorialPhase != _TutorialPhase.done &&
-                          _tutorialPhase != _TutorialPhase.finish
-                      ? 0.4
-                      : 1.0,
-                  child: InkWell(
-                    onTap: () {
-                      FirebaseAnalytics.instance.logEvent(
-                        name: 'start_regular_promise_settings_add',
-                      );
-                      _navigateToAddScreen();
-                    },
-                    borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 4.0,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.add),
-                          Text(
-                            l10n.customAdd,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
+          // 🌟 変更: 初期設定モードの場合はAppBarを非表示にする
+          appBar: widget.isInitialSetup
+              ? null
+              : AppBar(
+                  leading: isFinishPhase
+                      ? BlinkingEffect(
+                          isBlinking: true,
+                          borderRadius: 8,
+                          child: BackButton(
+                            onPressed: () {
+                              if (widget.isTutorial)
+                                FirebaseAnalytics.instance.logEvent(
+                                  name:
+                                      'finish_regular_promise_settings_tutorial',
+                                );
+                              if (Navigator.of(context).canPop())
+                                Navigator.of(context).pop();
+                            },
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        )
+                      : IgnorePointer(
+                          ignoring: blockOtherButtons,
+                          child: const CustomBackButton(),
+                        ),
+                  title: Text(l10n.regularPromiseSettingsTitle),
                 ),
-              ),
-            ],
-          ),
           body: SafeArea(
             child: Column(
               children: [
                 // ==========================================================
-                // 🌟 追加: 初期設定（オンボーディング）モード時のメッセージエリア
+                // 🌟 変更: 初期設定モード時のメッセージエリア (ボタンは下へ移動)
                 // ==========================================================
                 if (widget.isInitialSetup)
                   Container(
@@ -1323,14 +1280,14 @@ class _RegularPromiseSettingsScreenState
                       ),
                     ),
                     child: Row(
-                      children: [
-                        const Icon(
+                      children: const [
+                        Icon(
                           Icons.info_outline,
                           color: Colors.blueAccent,
                           size: 28,
                         ),
-                        const SizedBox(width: 12),
-                        const Expanded(
+                        SizedBox(width: 12),
+                        Expanded(
                           child: Text(
                             'やくそくの 設定を行います。\nあとで変更できるから、決まっていない場合は「設定完了」ボタンを押してね！',
                             style: TextStyle(
@@ -1338,22 +1295,6 @@ class _RegularPromiseSettingsScreenState
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        ElevatedButton(
-                          onPressed: _completeInitialSetup, // ★ 完了処理と通知ダイアログへ
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF7043),
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            elevation: 2,
-                          ),
-                          child: const Text(
-                            '設定完了',
-                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -1453,16 +1394,84 @@ class _RegularPromiseSettingsScreenState
                               child: Column(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12.0,
+                                    padding: const EdgeInsets.fromLTRB(
+                                      8,
+                                      8,
+                                      4,
+                                      8,
                                     ),
-                                    child: Text(
-                                      '📝 ${l10n.currentPromiseTitle}',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
+                                    child: Row(
+                                      children: [
+                                        const Spacer(),
+                                        Text(
+                                          '📝 ${l10n.currentPromiseTitle}',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(
+                                              context,
+                                            ).primaryColor,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        // カスタム追加ボタン
+                                        IgnorePointer(
+                                          ignoring:
+                                              widget.isTutorial &&
+                                              !widget.isInitialSetup &&
+                                              _tutorialPhase !=
+                                                  _TutorialPhase.done &&
+                                              _tutorialPhase !=
+                                                  _TutorialPhase.finish,
+                                          child: Opacity(
+                                            opacity:
+                                                widget.isTutorial &&
+                                                    !widget.isInitialSetup &&
+                                                    _tutorialPhase !=
+                                                        _TutorialPhase.done &&
+                                                    _tutorialPhase !=
+                                                        _TutorialPhase.finish
+                                                ? 0.4
+                                                : 1.0,
+                                            child: InkWell(
+                                              onTap: () {
+                                                FirebaseAnalytics.instance.logEvent(
+                                                  name:
+                                                      'start_regular_promise_settings_add',
+                                                );
+                                                _navigateToAddScreen();
+                                              },
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 4.0,
+                                                    ),
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.add,
+                                                      size: 20,
+                                                    ),
+                                                    Text(
+                                                      l10n.customAdd,
+                                                      style: const TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Expanded(
@@ -1511,7 +1520,46 @@ class _RegularPromiseSettingsScreenState
               ],
             ),
           ),
-          bottomNavigationBar: const AdBanner(),
+          // 🌟 変更: 初期設定時はAdBannerの代わりに「設定完了」ボタンを表示
+          bottomNavigationBar: widget.isInitialSetup
+              ? SafeArea(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          offset: Offset(0, -4),
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: _completeInitialSetup,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF7043),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 4,
+                      ),
+                      child: const Text(
+                        '設定完了',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : const AdBanner(),
         ),
         if (widget.isTutorial &&
             !widget.isInitialSetup &&
