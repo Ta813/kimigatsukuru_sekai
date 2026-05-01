@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
+import 'package:permission_handler/permission_handler.dart'; // 🌟 追加: 通知許可ダイアログ用
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../helpers/shared_prefs_helper.dart';
@@ -16,7 +17,13 @@ enum _TutorialPhase { add, delete, finish, done }
 
 class RegularPromiseSettingsScreen extends StatefulWidget {
   final bool isTutorial;
-  const RegularPromiseSettingsScreen({super.key, this.isTutorial = false});
+  final bool isInitialSetup; // 🌟 追加: 初回起動セットアップかどうか
+
+  const RegularPromiseSettingsScreen({
+    super.key,
+    this.isTutorial = false,
+    this.isInitialSetup = false, // デフォルトはfalse
+  });
 
   @override
   State<RegularPromiseSettingsScreen> createState() =>
@@ -183,7 +190,8 @@ class _RegularPromiseSettingsScreenState
   void initState() {
     super.initState();
     _loadPromises();
-    if (widget.isTutorial) {
+    // 初期設定モードでなく、純粋なチュートリアルモードの場合のみダイアログを出す
+    if (widget.isTutorial && !widget.isInitialSetup) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showTutorialStep3Dialog();
       });
@@ -254,6 +262,7 @@ class _RegularPromiseSettingsScreenState
     NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
 
     if (widget.isTutorial &&
+        !widget.isInitialSetup &&
         _tutorialPhase == _TutorialPhase.delete &&
         deletedPromiseTitle == _getTrialTemplate(context)['title']) {
       setState(() => _tutorialPhase = _TutorialPhase.finish);
@@ -362,7 +371,6 @@ class _RegularPromiseSettingsScreenState
               ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  // キーボード高さを差し引いた実際の表示可能領域に制限する
                   maxHeight: screenHeight - keyboardHeight - 48,
                 ),
                 child: SingleChildScrollView(
@@ -374,7 +382,6 @@ class _RegularPromiseSettingsScreenState
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // タイトル
                           Text(
                             initialPromise == null
                                 ? AppLocalizations.of(
@@ -390,7 +397,6 @@ class _RegularPromiseSettingsScreenState
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 12),
-                          // やくそく名（上部に配置してキーボード表示時も見えるようにする）
                           TextFormField(
                             controller: titleController,
                             scrollPadding: EdgeInsets.only(
@@ -413,7 +419,6 @@ class _RegularPromiseSettingsScreenState
                             },
                           ),
                           const SizedBox(height: 16),
-                          // 開始時間
                           InputDecorator(
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(
@@ -474,7 +479,6 @@ class _RegularPromiseSettingsScreenState
                             ),
                           ),
                           const SizedBox(height: 16),
-                          // 長さとポイント
                           Row(
                             children: [
                               Expanded(
@@ -532,7 +536,6 @@ class _RegularPromiseSettingsScreenState
                             ],
                           ),
                           const SizedBox(height: 16),
-                          // アイコン選択
                           Wrap(
                             spacing: 6.0,
                             runSpacing: 6.0,
@@ -571,7 +574,6 @@ class _RegularPromiseSettingsScreenState
                               );
                             }).toList(),
                           ),
-                          // ボタン行
                           const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -630,11 +632,8 @@ class _RegularPromiseSettingsScreenState
     );
   }
 
-  // =========================================================================
-
   void _navigateToAddScreen() async {
     _playTapSound();
-    // 🌟 別画面ではなくダイアログを開く
     final newPromise = await _showAddEditPromiseDialog();
 
     if (newPromise != null) {
@@ -663,7 +662,6 @@ class _RegularPromiseSettingsScreenState
 
   void _navigateToEditScreen(int index) async {
     final promiseToEdit = _regularPromises[index];
-    // 🌟 別画面ではなくダイアログを開いて編集する
     final updatedPromise = await _showAddEditPromiseDialog(
       initialPromise: promiseToEdit,
     );
@@ -726,6 +724,7 @@ class _RegularPromiseSettingsScreenState
     });
 
     if (widget.isTutorial &&
+        !widget.isInitialSetup &&
         _tutorialPhase == _TutorialPhase.add &&
         template['title'] == _getTrialTemplate(context)['title']) {
       setState(() => _tutorialPhase = _TutorialPhase.delete);
@@ -744,6 +743,115 @@ class _RegularPromiseSettingsScreenState
         duration: const Duration(seconds: 2),
       ),
     );
+  }
+
+  // =========================================================================
+  // 🌟 追加: 初期設定（オンボーディング）時の完了ボタン押下処理
+  // =========================================================================
+  Future<void> _completeInitialSetup() async {
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (_) {}
+
+    // 通知許可ダイアログを呼び出す
+    await _requestNotificationPermission(context);
+
+    if (!mounted) return;
+
+    // ダイアログが終わったら、画面を閉じてCoordinatorに処理を返す
+    Navigator.pop(context);
+  }
+
+  // 🌟 追加: 通知の許可を求める処理（ChildHomeScreenから移植）
+  Future<bool> _requestNotificationPermission(BuildContext context) async {
+    PermissionStatus status = await Permission.notification.status;
+
+    // すでに許可されている場合は何もしない
+    if (status.isGranted) return false;
+
+    // プレダイアログを出す
+    bool? shouldRequest = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(
+          AppLocalizations.of(context)!.notificationRequestTitle,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3E0),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFFF7043).withOpacity(0.5),
+              width: 2,
+            ),
+          ),
+          child: Text(
+            AppLocalizations.of(context)!.notificationRequestMessage,
+            style: const TextStyle(fontSize: 15, height: 1.5),
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        actions: [
+          TextButton(
+            onPressed: () {
+              FirebaseAnalytics.instance.logEvent(
+                name: 'initial_setup_notification_later',
+              );
+              Navigator.pop(context, false);
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.grey),
+            child: Text(
+              AppLocalizations.of(context)!.notificationLater,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              FirebaseAnalytics.instance.logEvent(
+                name: 'initial_setup_notification_force',
+              );
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (_) {}
+              Navigator.pop(context, true);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043),
+              foregroundColor: Colors.white,
+              side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.notificationAccept,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // ユーザーが「うけとる！」を選んだ時だけOS標準のダイアログを出す
+    if (shouldRequest == true) {
+      final bool granted = await NotificationManager.instance
+          .requestPermission();
+      if (granted) {
+        FirebaseAnalytics.instance.logEvent(
+          name: 'notification_permission_granted',
+        );
+      } else {
+        FirebaseAnalytics.instance.logEvent(
+          name: 'notification_permission_denied',
+        );
+      }
+    }
+    return true;
   }
 
   // ---- チュートリアルダイアログ ----
@@ -948,10 +1056,12 @@ class _RegularPromiseSettingsScreenState
   }) {
     final bool isTutorialTrialCard =
         widget.isTutorial &&
+        !widget.isInitialSetup &&
         _tutorialPhase == _TutorialPhase.add &&
         template['title'] == _getTrialTemplate(context)['title'];
     final bool isDisabledInTutorial =
         widget.isTutorial &&
+        !widget.isInitialSetup &&
         (_tutorialPhase == _TutorialPhase.add ||
             _tutorialPhase == _TutorialPhase.delete) &&
         template['title'] != _getTrialTemplate(context)['title'];
@@ -1017,6 +1127,7 @@ class _RegularPromiseSettingsScreenState
     final iconEmoji = promise['icon'] ?? '✨';
     final bool isTutorialTrialCard =
         widget.isTutorial &&
+        !widget.isInitialSetup &&
         _tutorialPhase == _TutorialPhase.delete &&
         promise['title'] == _getTrialTemplate(context)['title'];
 
@@ -1038,6 +1149,7 @@ class _RegularPromiseSettingsScreenState
     } else {
       final bool disabled =
           widget.isTutorial &&
+          !widget.isInitialSetup &&
           (_tutorialPhase == _TutorialPhase.add ||
               _tutorialPhase == _TutorialPhase.delete);
       deleteButton = IgnorePointer(
@@ -1061,13 +1173,12 @@ class _RegularPromiseSettingsScreenState
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      // 🌟 ここでタップ時に編集ダイアログを開くようにしました！
       child: ListTile(
         dense: true,
         onTap: () {
-          // チュートリアルのaddやdelete中はタップをブロックする
           final bool disabled =
               widget.isTutorial &&
+              !widget.isInitialSetup &&
               (_tutorialPhase == _TutorialPhase.add ||
                   _tutorialPhase == _TutorialPhase.delete);
           if (disabled) return;
@@ -1084,7 +1195,6 @@ class _RegularPromiseSettingsScreenState
           '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
           style: const TextStyle(fontSize: 11),
         ),
-        // 🌟 不要になった鉛筆アイコン(Edit)は削除し、削除ボタンのみにしました
         trailing: deleteButton,
       ),
     );
@@ -1097,7 +1207,9 @@ class _RegularPromiseSettingsScreenState
     final recommendedTemplates = _getRecommendedTemplates(context);
 
     final baseTemplates =
-        widget.isTutorial && _tutorialPhase == _TutorialPhase.add
+        widget.isTutorial &&
+            !widget.isInitialSetup &&
+            _tutorialPhase == _TutorialPhase.add
         ? [trialTemplate, ...recommendedTemplates]
         : recommendedTemplates;
 
@@ -1108,9 +1220,12 @@ class _RegularPromiseSettingsScreenState
     }).toList();
 
     final bool isFinishPhase =
-        widget.isTutorial && _tutorialPhase == _TutorialPhase.finish;
+        widget.isTutorial &&
+        !widget.isInitialSetup &&
+        _tutorialPhase == _TutorialPhase.finish;
     final bool blockOtherButtons =
         widget.isTutorial &&
+        !widget.isInitialSetup &&
         (_tutorialPhase == _TutorialPhase.add ||
             _tutorialPhase == _TutorialPhase.delete);
 
@@ -1142,11 +1257,13 @@ class _RegularPromiseSettingsScreenState
               IgnorePointer(
                 ignoring:
                     widget.isTutorial &&
+                    !widget.isInitialSetup &&
                     _tutorialPhase != _TutorialPhase.done &&
                     _tutorialPhase != _TutorialPhase.finish,
                 child: Opacity(
                   opacity:
                       widget.isTutorial &&
+                          !widget.isInitialSetup &&
                           _tutorialPhase != _TutorialPhase.done &&
                           _tutorialPhase != _TutorialPhase.finish
                       ? 0.4
@@ -1185,134 +1302,210 @@ class _RegularPromiseSettingsScreenState
             ],
           ),
           body: SafeArea(
-            child: Row(
+            child: Column(
               children: [
-                Expanded(
-                  flex: 4,
-                  child: Container(
+                // ==========================================================
+                // 🌟 追加: 初期設定（オンボーディング）モード時のメッセージエリア
+                // ==========================================================
+                if (widget.isInitialSetup)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5),
+                      color: const Color(0xFFE3F2FD),
                       border: Border(
-                        right: BorderSide(
-                          color: Theme.of(
-                            context,
-                          ).primaryColor.withOpacity(0.2),
+                        bottom: BorderSide(
+                          color: Colors.blue.shade200,
+                          width: 2,
                         ),
                       ),
                     ),
-                    child: Column(
+                    child: Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        const Icon(
+                          Icons.info_outline,
+                          color: Colors.blueAccent,
+                          size: 28,
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
                           child: Text(
-                            '💡 ${l10n.recommendedTitle}',
+                            'やくそくの 設定を行います。\nあとで変更できるから、決まっていない場合は「設定完了」ボタンを押してね！',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
+                              color: Colors.black87,
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: ListView.builder(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: availableTemplates.length,
-                            itemBuilder: (context, index) {
-                              final template = availableTemplates[index];
-                              final bool disableLeft =
-                                  widget.isTutorial &&
-                                  _tutorialPhase != _TutorialPhase.add &&
-                                  _tutorialPhase != _TutorialPhase.finish;
-                              return IgnorePointer(
-                                ignoring: disableLeft,
-                                child: LongPressDraggable<Map<String, dynamic>>(
-                                  data: template,
-                                  feedback: Material(
-                                    color: Colors.transparent,
-                                    child: _buildRecommendedCard(
-                                      template,
-                                      isDragging: true,
-                                    ),
-                                  ),
-                                  childWhenDragging: Opacity(
-                                    opacity: 0.5,
-                                    child: _buildRecommendedCard(template),
-                                  ),
-                                  child: _buildRecommendedCard(template),
-                                ),
-                              );
-                            },
+                        const SizedBox(width: 12),
+                        ElevatedButton(
+                          onPressed: _completeInitialSetup, // ★ 完了処理と通知ダイアログへ
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF7043),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            elevation: 2,
+                          ),
+                          child: const Text(
+                            '設定完了',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
+
+                // ----------------------------------------------------------
                 Expanded(
-                  flex: 6,
-                  child: DragTarget<Map<String, dynamic>>(
-                    onWillAcceptWithDetails: (details) => true,
-                    onAcceptWithDetails: (details) =>
-                        _addRecommendedPromise(details.data),
-                    builder: (context, candidateData, rejectedData) {
-                      final isHovered = candidateData.isNotEmpty;
-                      return Container(
-                        color: isHovered
-                            ? Theme.of(context).primaryColor.withOpacity(0.1)
-                            : Colors.transparent,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12.0,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.5),
+                            border: Border(
+                              right: BorderSide(
+                                color: Theme.of(
+                                  context,
+                                ).primaryColor.withOpacity(0.2),
                               ),
-                              child: Text(
-                                '📝 ${l10n.currentPromiseTitle}',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                ),
+                                child: Text(
+                                  '💡 ${l10n.recommendedTitle}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: _regularPromises.isEmpty
-                                  ? Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.arrow_back,
-                                            size: 48,
-                                            color: Colors.grey[400],
-                                          ),
-                                          const SizedBox(height: 16),
-                                          Text(
-                                            l10n.dragToAddInstruction,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.grey[600],
-                                              fontSize: 16,
+                              Expanded(
+                                child: ListView.builder(
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  itemCount: availableTemplates.length,
+                                  itemBuilder: (context, index) {
+                                    final template = availableTemplates[index];
+                                    final bool disableLeft =
+                                        widget.isTutorial &&
+                                        !widget.isInitialSetup &&
+                                        _tutorialPhase != _TutorialPhase.add &&
+                                        _tutorialPhase != _TutorialPhase.finish;
+                                    return IgnorePointer(
+                                      ignoring: disableLeft,
+                                      child:
+                                          LongPressDraggable<
+                                            Map<String, dynamic>
+                                          >(
+                                            data: template,
+                                            feedback: Material(
+                                              color: Colors.transparent,
+                                              child: _buildRecommendedCard(
+                                                template,
+                                                isDragging: true,
+                                              ),
+                                            ),
+                                            childWhenDragging: Opacity(
+                                              opacity: 0.5,
+                                              child: _buildRecommendedCard(
+                                                template,
+                                              ),
+                                            ),
+                                            child: _buildRecommendedCard(
+                                              template,
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    )
-                                  : ListView.builder(
-                                      itemCount: _regularPromises.length,
-                                      itemBuilder: (context, index) {
-                                        return _buildCurrentPromiseCard(
-                                          _regularPromises[index],
-                                          index,
-                                        );
-                                      },
-                                    ),
-                            ),
-                          ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      );
-                    },
+                      ),
+                      Expanded(
+                        flex: 6,
+                        child: DragTarget<Map<String, dynamic>>(
+                          onWillAcceptWithDetails: (details) => true,
+                          onAcceptWithDetails: (details) =>
+                              _addRecommendedPromise(details.data),
+                          builder: (context, candidateData, rejectedData) {
+                            final isHovered = candidateData.isNotEmpty;
+                            return Container(
+                              color: isHovered
+                                  ? Theme.of(
+                                      context,
+                                    ).primaryColor.withOpacity(0.1)
+                                  : Colors.transparent,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12.0,
+                                    ),
+                                    child: Text(
+                                      '📝 ${l10n.currentPromiseTitle}',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: _regularPromises.isEmpty
+                                        ? Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.arrow_back,
+                                                  size: 48,
+                                                  color: Colors.grey[400],
+                                                ),
+                                                const SizedBox(height: 16),
+                                                Text(
+                                                  l10n.dragToAddInstruction,
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.grey[600],
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : ListView.builder(
+                                            itemCount: _regularPromises.length,
+                                            itemBuilder: (context, index) {
+                                              return _buildCurrentPromiseCard(
+                                                _regularPromises[index],
+                                                index,
+                                              );
+                                            },
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -1320,7 +1513,9 @@ class _RegularPromiseSettingsScreenState
           ),
           bottomNavigationBar: const AdBanner(),
         ),
-        if (widget.isTutorial && _tutorialPhase == _TutorialPhase.add)
+        if (widget.isTutorial &&
+            !widget.isInitialSetup &&
+            _tutorialPhase == _TutorialPhase.add)
           CompositedTransformFollower(
             link: _addIconLink,
             showWhenUnlinked: false,
@@ -1332,7 +1527,9 @@ class _RegularPromiseSettingsScreenState
               tailDirection: TailDirection.top,
             ),
           ),
-        if (widget.isTutorial && _tutorialPhase == _TutorialPhase.delete)
+        if (widget.isTutorial &&
+            !widget.isInitialSetup &&
+            _tutorialPhase == _TutorialPhase.delete)
           CompositedTransformFollower(
             link: _deleteIconLink,
             showWhenUnlinked: false,

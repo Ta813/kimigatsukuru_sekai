@@ -2,6 +2,7 @@
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart';
 import '../helpers/shared_prefs_helper.dart';
 import '../managers/sfx_manager.dart';
 import 'child/child_home_screen.dart';
@@ -118,7 +119,10 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     // 1. おとな（親）向け設定
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const DummyParentSetupScreen()),
+      MaterialPageRoute(
+        builder: (_) =>
+            const RegularPromiseSettingsScreen(isInitialSetup: true),
+      ),
     );
     if (!context.mounted) return;
 
@@ -168,7 +172,10 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     // 3. おとな（親）向け設定
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const DummyParentSetupScreen()),
+      MaterialPageRoute(
+        builder: (_) =>
+            const RegularPromiseSettingsScreen(isInitialSetup: true),
+      ),
     );
     if (!context.mounted) return;
 
@@ -191,7 +198,10 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     // 2. おとな（親）向け設定（そのまま連続して表示）
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const DummyParentSetupScreen()),
+      MaterialPageRoute(
+        builder: (_) =>
+            const RegularPromiseSettingsScreen(isInitialSetup: true),
+      ),
     );
     if (!context.mounted) return;
 
@@ -262,46 +272,6 @@ class PassDeviceScreen extends StatelessWidget {
                 'うけとった！',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ==============================================================
-// 🌟 親向け設定のダミー画面
-// ==============================================================
-class DummyParentSetupScreen extends StatelessWidget {
-  const DummyParentSetupScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFE3F2FD),
-      appBar: AppBar(
-        title: const Text('保護者向け設定'),
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              '「約束」と「通知」の設定をします。',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: () {
-                try {
-                  SfxManager.instance.playTapSound();
-                } catch (e) {}
-                Navigator.pop(context);
-              },
-              child: const Text('設定を完了する'),
             ),
           ],
         ),
