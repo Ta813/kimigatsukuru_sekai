@@ -1,3 +1,5 @@
+// lib/screens/child/character_customize_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
@@ -5,7 +7,6 @@ import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
-import '../../managers/bgm_manager.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/custom_back_button.dart';
@@ -62,23 +63,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     _loadEquippedItems();
     if (!widget.isInitialSetup) {
       _checkTutorialStep();
-    } else {
-      // 🌟 追加: 初回設定モード（アプリ起動直後）の場合はBGMを再生する
-      _playSavedBgm();
-    }
-  }
-
-  // 🌟 追加: BGMを再生するメソッド（ホーム画面と同じ処理）
-  Future<void> _playSavedBgm() async {
-    final trackName = await SharedPrefsHelper.loadSelectedBgm();
-    final track = BgmTrack.values.firstWhere(
-      (e) => e.name == trackName,
-      orElse: () => BgmTrack.main, // デフォルトはmain
-    );
-    try {
-      BgmManager.instance.play(track);
-    } catch (e) {
-      print('再生エラー: $e');
     }
   }
 
@@ -117,7 +101,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
     final items = await SharedPrefsHelper.loadEquippedItems();
 
-    // デフォルトアイテム
     if (!purchased.contains('いつものかお')) purchased.add('いつものかお');
     if (!purchased.contains('頑張るかお')) purchased.add('頑張るかお');
     if (!purchased.contains('困ったかお')) purchased.add('困ったかお');
@@ -758,69 +741,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 _setupStep++;
               });
             } else {
-              showDialog(
-                context: context,
-                barrierDismissible: false, // 画面外タップで閉じられないようにする
-                builder: (BuildContext dialogContext) {
-                  return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    title: Text(
-                      localizations.setupCompleteTitle,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFFF7043),
-                      ),
-                    ),
-                    content: Text(
-                      localizations.setupCompleteMessage,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    actionsAlignment: MainAxisAlignment.center,
-                    actions: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          FirebaseAnalytics.instance.logEvent(
-                            name: 'setup_child_finish',
-                          );
-                          try {
-                            SfxManager.instance.playTapSound();
-                          } catch (e) {}
-
-                          if (!mounted) return;
-
-                          // 🌟 1. 完了ダイアログを閉じる
-                          Navigator.pop(dialogContext);
-
-                          // 🌟 2. 直接ホームへは行かず、司令塔画面に処理を返す
-                          Navigator.pop(context, true);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF7043),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child: Text(
-                          localizations.setupCompleteButton,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
+              // 🌟 変更: ここのダイアログ表示を削除し、すぐに呼び出し元（司令塔）に返します
+              FirebaseAnalytics.instance.logEvent(name: 'setup_child_finish');
+              if (!mounted) return;
+              Navigator.pop(context, true); // trueを返して完了を知らせる
             }
           },
           style: ElevatedButton.styleFrom(
@@ -1460,7 +1384,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                     ],
                   ],
                 ),
-                // 装備中ならラベルを表示
                 if (isSelected)
                   Positioned(
                     bottom: 0,

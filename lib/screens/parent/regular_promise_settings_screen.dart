@@ -750,6 +750,7 @@ class _RegularPromiseSettingsScreenState
   // =========================================================================
   Future<void> _completeInitialSetup() async {
     try {
+      FirebaseAnalytics.instance.logEvent(name: 'setup_parent_finish');
       SfxManager.instance.playTapSound();
     } catch (_) {}
 
@@ -799,7 +800,7 @@ class _RegularPromiseSettingsScreenState
           TextButton(
             onPressed: () {
               FirebaseAnalytics.instance.logEvent(
-                name: 'initial_setup_notification_later',
+                name: 'setup_notification_later',
               );
               Navigator.pop(context, false);
             },
@@ -812,7 +813,7 @@ class _RegularPromiseSettingsScreenState
           ElevatedButton(
             onPressed: () {
               FirebaseAnalytics.instance.logEvent(
-                name: 'initial_setup_notification_force',
+                name: 'setup_notification_force',
               );
               try {
                 SfxManager.instance.playTapSound();

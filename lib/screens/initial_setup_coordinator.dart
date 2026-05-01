@@ -2,7 +2,8 @@
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart';
+import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
+import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart'; // 本物の画面
 import '../helpers/shared_prefs_helper.dart';
 import '../managers/sfx_manager.dart';
 import 'child/child_home_screen.dart';
@@ -17,8 +18,34 @@ class InitialSetupCoordinator extends StatefulWidget {
 }
 
 class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
+  // 🌟 追加: 最初のイントロ画面を表示するかどうかのフラグ
+  bool _showIntro = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _playSavedBgm();
+  }
+
+  Future<void> _playSavedBgm() async {
+    final trackName = await SharedPrefsHelper.loadSelectedBgm();
+    final track = BgmTrack.values.firstWhere(
+      (e) => e.name == trackName,
+      orElse: () => BgmTrack.main,
+    );
+    try {
+      BgmManager.instance.play(track);
+    } catch (e) {
+      print('再生エラー: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_showIntro) {
+      return _buildIntroScreen();
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       body: SafeArea(
@@ -41,24 +68,24 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
                 label: '〜 7さい',
                 onTap: () {
                   FirebaseAnalytics.instance.logEvent(name: 'setup_age_-7');
-                  _startPatternB(context);
-                }, // パターンB: こども ➔ おとな
+                  _startPatternB(context); // パターンB: こども ➔ おとな
+                },
               ),
               _buildAgeButton(
                 context,
                 label: '8 〜 12さい',
                 onTap: () {
                   FirebaseAnalytics.instance.logEvent(name: 'setup_age_8-12');
-                  _startPatternC(context);
-                }, // パターンC: こども ➔ おとな（バトンなし）
+                  _startPatternC(context); // パターンC: こども ➔ おとな（バトンなし）
+                },
               ),
               _buildAgeButton(
                 context,
                 label: '13 〜 18さい',
                 onTap: () {
                   FirebaseAnalytics.instance.logEvent(name: 'setup_age_13-18');
-                  _startPatternC(context);
-                }, // パターンC: こども ➔ おとな（バトンなし）
+                  _startPatternC(context); // パターンC: こども ➔ おとな（バトンなし）
+                },
               ),
               _buildAgeButton(
                 context,
@@ -66,8 +93,72 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
                 isAdult: true,
                 onTap: () {
                   FirebaseAnalytics.instance.logEvent(name: 'setup_age_18-');
-                  _startPatternA(context);
-                }, // パターンA: おとな ➔ こども
+                  _startPatternA(context); // パターンA: おとな ➔ こども
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 🌟 追加: 年齢を聞く前のイントロ画面
+  Widget _buildIntroScreen() {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Image.asset('assets/images/character_panda.gif', height: 100),
+                  const SizedBox(width: 20),
+                  Image.asset('assets/images/character_kuma.gif', height: 100),
+                ],
+              ),
+              const SizedBox(height: 32),
+              const Text(
+                'アプリの せってい を はじめます！\nおよそ 3分 ていどで おわります。',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () {
+                  try {
+                    FirebaseAnalytics.instance.logEvent(name: 'setup_start');
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {}
+                  setState(() {
+                    _showIntro = false;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF7043),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 48,
+                    vertical: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  elevation: 4,
+                ),
+                child: const Text(
+                  'つぎへ',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),
@@ -126,11 +217,11 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    // 2. スマホを子供に渡す画面
+    // 2. スマホを子供に渡す画面（進捗率: 50%）
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const PassDeviceScreen(isToChild: true),
+        builder: (_) => const PassDeviceScreen(isToChild: true, progress: 0.5),
       ),
     );
     if (!context.mounted) return;
@@ -160,11 +251,11 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    // 2. スマホを親に渡す画面
+    // 2. スマホを親に渡す画面（進捗率: 50%）
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const PassDeviceScreen(isToChild: false),
+        builder: (_) => const PassDeviceScreen(isToChild: false, progress: 0.5),
       ),
     );
     if (!context.mounted) return;
@@ -195,7 +286,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    // 2. おとな（親）向け設定（そのまま連続して表示）
+    // 2. おとな（親）向け設定（バトンタッチなしでそのまま表示）
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -208,9 +299,69 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     _finishSetup(context);
   }
 
+  // ==============================================================
+  // 🌟 すべての設定が終わったあとの最終ダイアログ
+  // ==============================================================
   void _finishSetup(BuildContext context) async {
     await SharedPrefsHelper.setFirstLaunchCompleted();
     if (!context.mounted) return;
+
+    // 🌟 全ての設定が終わった後にダイアログを表示
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text(
+            'せってい かんりょう！',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xFFFF7043),
+            ),
+          ),
+          content: const Text(
+            'きみだけの せかいへ しゅっぱつしよう！',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (_) {}
+                Navigator.pop(dialogContext); // ダイアログを閉じる
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF7043),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                elevation: 4,
+              ),
+              child: const Text(
+                'しゅっぱつ！',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!context.mounted) return;
+
+    // ダイアログを閉じたらホームへ遷移
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const ChildHomeScreen()),
@@ -223,8 +374,13 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
 // ==============================================================
 class PassDeviceScreen extends StatelessWidget {
   final bool isToChild;
+  final double progress; // 🌟 追加: 進捗率（0.0 ~ 1.0）
 
-  const PassDeviceScreen({super.key, required this.isToChild});
+  const PassDeviceScreen({
+    super.key,
+    required this.isToChild,
+    this.progress = 0.5, // デフォルトは半分
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -236,6 +392,36 @@ class PassDeviceScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // 🌟 追加: 進捗バーの表示
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48),
+              child: Column(
+                children: [
+                  Text(
+                    'セットアップ ${(progress * 100).toInt()}% かんりょう！',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: Colors.white54,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        isToChild ? Colors.orangeAccent : Colors.blueAccent,
+                      ),
+                      minHeight: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 60),
+
             Icon(
               isToChild ? Icons.child_care : Icons.face_retouching_natural,
               size: 100,
