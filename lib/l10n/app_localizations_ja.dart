@@ -1781,4 +1781,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get paywallPlanLifetime => '買い切り';
+
+  @override
+  String get setupCompleteTitle => 'せってい かんりょう！';
+
+  @override
+  String get setupCompleteMessage => 'きみだけの せかいへ しゅっぱつしよう！';
+
+  @override
+  String get setupCompleteButton => 'しゅっぱつ！';
 }

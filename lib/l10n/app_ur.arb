@@ -774,5 +774,8 @@
       "price": { "type": "String" }
     }
   },
-  "paywallPlanLifetime": "تاحیات"
+  "paywallPlanLifetime": "تاحیات",
+  "setupCompleteTitle": "سیٹ اپ مکمل!",
+  "setupCompleteMessage": "آئیے اپنی خود کی دنیا دریافت کریں!",
+  "setupCompleteButton": "چلو چلیں!"
 }

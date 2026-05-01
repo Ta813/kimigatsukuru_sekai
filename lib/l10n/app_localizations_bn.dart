@@ -1781,4 +1781,13 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get paywallPlanLifetime => 'আজীবন';
+
+  @override
+  String get setupCompleteTitle => 'সেটআপ সম্পন্ন!';
+
+  @override
+  String get setupCompleteMessage => 'চলুন আপনার নিজের বিশ্ব অন্বেষণ করি!';
+
+  @override
+  String get setupCompleteButton => 'চলুন যাই!';
 }

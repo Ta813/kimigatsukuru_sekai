@@ -1781,4 +1781,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paywallPlanLifetime => 'Lifetime';
+
+  @override
+  String get setupCompleteTitle => 'Setup Complete!';
+
+  @override
+  String get setupCompleteMessage => 'Let\'s explore your very own world!';
+
+  @override
+  String get setupCompleteButton => 'Let\'s Go!';
 }

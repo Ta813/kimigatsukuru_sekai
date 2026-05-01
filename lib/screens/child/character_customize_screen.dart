@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:kimigatsukuru_sekai/screens/child/child_home_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
@@ -753,15 +752,68 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 _setupStep++;
               });
             } else {
-              await SharedPrefsHelper.setFirstLaunchCompleted();
+              showDialog(
+                context: context,
+                barrierDismissible: false, // 画面外タップで閉じられないようにする
+                builder: (BuildContext dialogContext) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    title: Text(
+                      localizations.setupCompleteTitle,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFFF7043),
+                      ),
+                    ),
+                    content: Text(
+                      localizations.setupCompleteMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    actionsAlignment: MainAxisAlignment.center,
+                    actions: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'setup_child_finish',
+                          );
+                          try {
+                            SfxManager.instance.playTapSound();
+                          } catch (e) {}
 
-              if (!mounted) return;
+                          if (!mounted) return;
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ChildHomeScreen(),
-                ),
+                          // 🌟 1. 完了ダイアログを閉じる
+                          Navigator.pop(dialogContext);
+
+                          // 🌟 2. 直接ホームへは行かず、司令塔画面に処理を返す
+                          Navigator.pop(context, true);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF7043),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: Text(
+                          localizations.setupCompleteButton,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               );
             }
           },

@@ -7,7 +7,6 @@ import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../helpers/shared_prefs_helper.dart';
-import 'add_edit_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/speech_bubble.dart';
@@ -36,10 +35,9 @@ class _RegularPromiseSettingsScreenState
   final LayerLink _addIconLink = LayerLink();
   final LayerLink _deleteIconLink = LayerLink();
 
-  // ▼ 追加: チュートリアル用のおためしテンプレートを取得するメソッド
+  // チュートリアル用のおためしテンプレート
   Map<String, dynamic> _getTrialTemplate(BuildContext context) {
     return {
-      // child_home_screen.dartなどで使っている既存キーを再利用
       'title': AppLocalizations.of(context)!.trialPromiseTitle,
       'icon': '⭐',
       'time': '06:00',
@@ -48,7 +46,7 @@ class _RegularPromiseSettingsScreenState
     };
   }
 
-  // ▼ 変更: ハードコードされていたおすすめリストを、ローカライズ対応のメソッドに変更
+  // ハードコードされていたおすすめリストを、ローカライズ対応のメソッドに変更
   List<Map<String, dynamic>> _getRecommendedTemplates(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return [
@@ -186,7 +184,6 @@ class _RegularPromiseSettingsScreenState
     super.initState();
     _loadPromises();
     if (widget.isTutorial) {
-      // チュートリアルモード: 初回ダイアログ（ステップ3）を表示
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showTutorialStep3Dialog();
       });
@@ -254,10 +251,8 @@ class _RegularPromiseSettingsScreenState
       _regularPromises.removeAt(index);
     });
     SharedPrefsHelper.saveRegularPromises(_regularPromises);
-
     NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
 
-    // チュートリアル中にやくそく（おためし）を削除したらステップ5へ
     if (widget.isTutorial &&
         _tutorialPhase == _TutorialPhase.delete &&
         deletedPromiseTitle == _getTrialTemplate(context)['title']) {
@@ -279,12 +274,327 @@ class _RegularPromiseSettingsScreenState
     );
   }
 
+  // =========================================================================
+  // 🌟 追加・編集を同じダイアログで行うメソッド
+  // =========================================================================
+  Future<Map<String, dynamic>?> _showAddEditPromiseDialog({
+    Map<String, dynamic>? initialPromise,
+  }) async {
+    final formKey = GlobalKey<FormState>();
+    final titleController = TextEditingController(
+      text: initialPromise?['title'] ?? '',
+    );
+
+    final List<String> hours = List.generate(
+      24,
+      (i) => i.toString().padLeft(2, '0'),
+    );
+    final List<String> minutes = List.generate(
+      60,
+      (i) => i.toString().padLeft(2, '0'),
+    );
+    final List<String> durationOptions = List.generate(
+      120,
+      (i) => (i + 1).toString(),
+    );
+    final List<String> pointOptions = List.generate(
+      50,
+      (i) => (i + 1).toString(),
+    );
+
+    final List<String> emojiList = [
+      '🪥',
+      '👕',
+      '👚',
+      '👟',
+      '🧼',
+      '✍️',
+      '🎹',
+      '📚',
+      '✨',
+      '🧸',
+      '🎒',
+      '💤',
+      '⭐',
+    ];
+
+    String selectedHour = '07';
+    String selectedMinute = '00';
+    String selectedDuration = '10';
+    String selectedPoints = '10';
+    String selectedIconKey = '⭐';
+
+    if (initialPromise != null) {
+      final timeStr = initialPromise['time'] as String?;
+      if (timeStr != null && timeStr.contains(':')) {
+        final parts = timeStr.split(':');
+        selectedHour = parts[0];
+        selectedMinute = parts[1];
+      }
+      selectedDuration = initialPromise['duration']?.toString() ?? '10';
+      selectedPoints = initialPromise['points']?.toString() ?? '10';
+      selectedIconKey = initialPromise['icon'] ?? '⭐';
+
+      if (!emojiList.contains(selectedIconKey)) emojiList.add(selectedIconKey);
+      if (!hours.contains(selectedHour)) hours.add(selectedHour);
+      if (!minutes.contains(selectedMinute)) minutes.add(selectedMinute);
+      if (!durationOptions.contains(selectedDuration))
+        durationOptions.add(selectedDuration);
+      if (!pointOptions.contains(selectedPoints))
+        pointOptions.add(selectedPoints);
+    }
+
+    return showDialog<Map<String, dynamic>>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: Text(
+                initialPromise == null
+                    ? AppLocalizations.of(context)!.addRegularPromiseTitle
+                    : AppLocalizations.of(context)!.editRegularPromiseTitle,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              content: SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // アイコン選択
+                      Wrap(
+                        spacing: 6.0,
+                        runSpacing: 6.0,
+                        alignment: WrapAlignment.center,
+                        children: emojiList.map((emoji) {
+                          final isSelected = selectedIconKey == emoji;
+                          return GestureDetector(
+                            onTap: () {
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (_) {}
+                              setStateDialog(() => selectedIconKey = emoji);
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Theme.of(
+                                        context,
+                                      ).primaryColor.withOpacity(0.15)
+                                    : Colors.transparent,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.grey.shade300,
+                                  width: isSelected ? 2 : 1,
+                                ),
+                              ),
+                              child: Text(
+                                emoji,
+                                style: const TextStyle(fontSize: 24),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 16),
+                      // やくそく名
+                      TextFormField(
+                        controller: titleController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(
+                            context,
+                          )!.promiseNameLabel,
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppLocalizations.of(
+                              context,
+                            )!.promiseNameHint;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      // 開始時間
+                      InputDecorator(
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(
+                            context,
+                          )!.startTimeLabel,
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: DropdownButton<String>(
+                                  value: selectedHour,
+                                  isExpanded: true,
+                                  items: hours
+                                      .map(
+                                        (h) => DropdownMenuItem(
+                                          value: h,
+                                          child: Center(child: Text(h)),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (v) =>
+                                      setStateDialog(() => selectedHour = v!),
+                                ),
+                              ),
+                              const Text(
+                                ':',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Expanded(
+                                child: DropdownButton<String>(
+                                  value: selectedMinute,
+                                  isExpanded: true,
+                                  items: minutes
+                                      .map(
+                                        (m) => DropdownMenuItem(
+                                          value: m,
+                                          child: Center(child: Text(m)),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (v) =>
+                                      setStateDialog(() => selectedMinute = v!),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // 長さとポイント
+                      Row(
+                        children: [
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              value: selectedDuration,
+                              decoration: InputDecoration(
+                                labelText: AppLocalizations.of(
+                                  context,
+                                )!.durationLabel,
+                                border: const OutlineInputBorder(),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
+                              ),
+                              items: durationOptions
+                                  .map(
+                                    (d) => DropdownMenuItem(
+                                      value: d,
+                                      child: Text(d),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (v) =>
+                                  setStateDialog(() => selectedDuration = v!),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              value: selectedPoints,
+                              decoration: InputDecoration(
+                                labelText: AppLocalizations.of(context)!.points,
+                                border: const OutlineInputBorder(),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
+                              ),
+                              items: pointOptions
+                                  .map(
+                                    (p) => DropdownMenuItem(
+                                      value: p,
+                                      child: Text(p),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (v) =>
+                                  setStateDialog(() => selectedPoints = v!),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actionsAlignment: MainAxisAlignment.spaceEvenly,
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    _playTapSound();
+                    Navigator.pop(dialogContext);
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.cancel,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    _playTapSound();
+                    if (formKey.currentState!.validate()) {
+                      final newPromise = {
+                        'title': titleController.text,
+                        'time': '$selectedHour:$selectedMinute',
+                        'duration': int.tryParse(selectedDuration) ?? 0,
+                        'points': int.tryParse(selectedPoints) ?? 0,
+                        'icon': selectedIconKey,
+                      };
+                      Navigator.pop(dialogContext, newPromise);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(AppLocalizations.of(context)!.registerButton),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // =========================================================================
+
   void _navigateToAddScreen() async {
     _playTapSound();
-    final newPromise = await Navigator.push<Map<String, dynamic>>(
-      context,
-      MaterialPageRoute(builder: (context) => const AddEditPromiseScreen()),
-    );
+    // 🌟 別画面ではなくダイアログを開く
+    final newPromise = await _showAddEditPromiseDialog();
 
     if (newPromise != null) {
       setState(() {
@@ -296,7 +606,6 @@ class _RegularPromiseSettingsScreenState
         });
       });
       SharedPrefsHelper.saveRegularPromises(_regularPromises);
-
       NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
 
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -313,12 +622,9 @@ class _RegularPromiseSettingsScreenState
 
   void _navigateToEditScreen(int index) async {
     final promiseToEdit = _regularPromises[index];
-    final updatedPromise = await Navigator.push<Map<String, dynamic>>(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            AddEditPromiseScreen(initialPromise: promiseToEdit),
-      ),
+    // 🌟 別画面ではなくダイアログを開いて編集する
+    final updatedPromise = await _showAddEditPromiseDialog(
+      initialPromise: promiseToEdit,
     );
 
     if (updatedPromise != null) {
@@ -331,7 +637,6 @@ class _RegularPromiseSettingsScreenState
         });
       });
       SharedPrefsHelper.saveRegularPromises(_regularPromises);
-
       NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
 
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -353,7 +658,6 @@ class _RegularPromiseSettingsScreenState
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          // ▼ 変更: 多言語対応
           content: Text(
             AppLocalizations.of(
               context,
@@ -380,7 +684,6 @@ class _RegularPromiseSettingsScreenState
       });
     });
 
-    // チュートリアル中におためしを追加したらフェーズをdeleteへ
     if (widget.isTutorial &&
         _tutorialPhase == _TutorialPhase.add &&
         template['title'] == _getTrialTemplate(context)['title']) {
@@ -389,7 +692,6 @@ class _RegularPromiseSettingsScreenState
     }
 
     SharedPrefsHelper.saveRegularPromises(_regularPromises);
-
     NotificationManager.instance.scheduleAllRegularPromises(_regularPromises);
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -639,11 +941,10 @@ class _RegularPromiseSettingsScreenState
                       color: Theme.of(context).primaryColor,
                     ),
                     onPressed: () {
-                      if (widget.isTutorial) {
+                      if (widget.isTutorial)
                         FirebaseAnalytics.instance.logEvent(
                           name: 'start_promise_add_tutorial',
                         );
-                      }
                       _playTapSound();
                       _addRecommendedPromise(template);
                     },
@@ -705,11 +1006,10 @@ class _RegularPromiseSettingsScreenState
           child: IconButton(
             icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
             onPressed: () {
-              if (widget.isTutorial) {
+              if (widget.isTutorial)
                 FirebaseAnalytics.instance.logEvent(
                   name: 'start_promise_delete_tutorial',
                 );
-              }
               _playTapSound();
               _deletePromise(index);
             },
@@ -720,8 +1020,20 @@ class _RegularPromiseSettingsScreenState
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      // 🌟 ここでタップ時に編集ダイアログを開くようにしました！
       child: ListTile(
         dense: true,
+        onTap: () {
+          // チュートリアルのaddやdelete中はタップをブロックする
+          final bool disabled =
+              widget.isTutorial &&
+              (_tutorialPhase == _TutorialPhase.add ||
+                  _tutorialPhase == _TutorialPhase.delete);
+          if (disabled) return;
+
+          _playTapSound();
+          _navigateToEditScreen(index);
+        },
         leading: Text(iconEmoji, style: const TextStyle(fontSize: 24)),
         title: Text(
           promise['title'],
@@ -731,33 +1043,8 @@ class _RegularPromiseSettingsScreenState
           '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
           style: const TextStyle(fontSize: 11),
         ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IgnorePointer(
-              ignoring:
-                  widget.isTutorial &&
-                  (_tutorialPhase == _TutorialPhase.add ||
-                      _tutorialPhase == _TutorialPhase.delete),
-              child: Opacity(
-                opacity:
-                    widget.isTutorial &&
-                        (_tutorialPhase == _TutorialPhase.add ||
-                            _tutorialPhase == _TutorialPhase.delete)
-                    ? 0.4
-                    : 1.0,
-                child: IconButton(
-                  icon: const Icon(Icons.edit, size: 20),
-                  onPressed: () {
-                    _playTapSound();
-                    _navigateToEditScreen(index);
-                  },
-                ),
-              ),
-            ),
-            deleteButton,
-          ],
-        ),
+        // 🌟 不要になった鉛筆アイコン(Edit)は削除し、削除ボタンのみにしました
+        trailing: deleteButton,
       ),
     );
   }
@@ -768,23 +1055,19 @@ class _RegularPromiseSettingsScreenState
     final trialTemplate = _getTrialTemplate(context);
     final recommendedTemplates = _getRecommendedTemplates(context);
 
-    // チュートリアル中の場合はおためしテンプレートを先頭に追加
     final baseTemplates =
         widget.isTutorial && _tutorialPhase == _TutorialPhase.add
         ? [trialTemplate, ...recommendedTemplates]
         : recommendedTemplates;
 
-    // 現在のやくそくに「無い」テンプレートだけを抽出する
     final availableTemplates = baseTemplates.where((template) {
       return !_regularPromises.any(
         (promise) => promise['title'] == template['title'],
       );
     }).toList();
 
-    // チュートリアル finish フェーズ: 戻るボタン点滅、他はすべて操作可能
     final bool isFinishPhase =
         widget.isTutorial && _tutorialPhase == _TutorialPhase.finish;
-    // チュートリアル add/delete フェーズ: 他のボタンをブロック
     final bool blockOtherButtons =
         widget.isTutorial &&
         (_tutorialPhase == _TutorialPhase.add ||
@@ -800,11 +1083,10 @@ class _RegularPromiseSettingsScreenState
                     borderRadius: 8,
                     child: BackButton(
                       onPressed: () {
-                        if (widget.isTutorial) {
+                        if (widget.isTutorial)
                           FirebaseAnalytics.instance.logEvent(
                             name: 'finish_regular_promise_settings_tutorial',
                           );
-                        }
                         if (Navigator.of(context).canPop())
                           Navigator.of(context).pop();
                       },
@@ -847,7 +1129,6 @@ class _RegularPromiseSettingsScreenState
                         children: [
                           const Icon(Icons.add),
                           Text(
-                            // ▼ 変更: 多言語対応
                             l10n.customAdd,
                             style: const TextStyle(
                               fontSize: 10,
@@ -865,7 +1146,6 @@ class _RegularPromiseSettingsScreenState
           body: SafeArea(
             child: Row(
               children: [
-                // 左側：おすすめのやくそく
                 Expanded(
                   flex: 4,
                   child: Container(
@@ -884,7 +1164,6 @@ class _RegularPromiseSettingsScreenState
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: Text(
-                            // ▼ 変更: 多言語対応
                             '💡 ${l10n.recommendedTitle}',
                             style: TextStyle(
                               fontSize: 18,
@@ -899,7 +1178,6 @@ class _RegularPromiseSettingsScreenState
                             itemCount: availableTemplates.length,
                             itemBuilder: (context, index) {
                               final template = availableTemplates[index];
-                              // チュートリアルのadd以外フェーズでは左側全体をブロック
                               final bool disableLeft =
                                   widget.isTutorial &&
                                   _tutorialPhase != _TutorialPhase.add &&
@@ -929,14 +1207,12 @@ class _RegularPromiseSettingsScreenState
                     ),
                   ),
                 ),
-                // 右側：今のやくそく
                 Expanded(
                   flex: 6,
                   child: DragTarget<Map<String, dynamic>>(
                     onWillAcceptWithDetails: (details) => true,
-                    onAcceptWithDetails: (details) {
-                      _addRecommendedPromise(details.data);
-                    },
+                    onAcceptWithDetails: (details) =>
+                        _addRecommendedPromise(details.data),
                     builder: (context, candidateData, rejectedData) {
                       final isHovered = candidateData.isNotEmpty;
                       return Container(
@@ -950,7 +1226,6 @@ class _RegularPromiseSettingsScreenState
                                 vertical: 12.0,
                               ),
                               child: Text(
-                                // ▼ 変更: 多言語対応
                                 '📝 ${l10n.currentPromiseTitle}',
                                 style: TextStyle(
                                   fontSize: 18,
@@ -973,7 +1248,6 @@ class _RegularPromiseSettingsScreenState
                                           ),
                                           const SizedBox(height: 16),
                                           Text(
-                                            // ▼ 変更: 多言語対応
                                             l10n.dragToAddInstruction,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
@@ -987,9 +1261,8 @@ class _RegularPromiseSettingsScreenState
                                   : ListView.builder(
                                       itemCount: _regularPromises.length,
                                       itemBuilder: (context, index) {
-                                        final promise = _regularPromises[index];
                                         return _buildCurrentPromiseCard(
-                                          promise,
+                                          _regularPromises[index],
                                           index,
                                         );
                                       },
@@ -1004,7 +1277,6 @@ class _RegularPromiseSettingsScreenState
               ],
             ),
           ),
-          // 画面下部にバナーを設置
           bottomNavigationBar: const AdBanner(),
         ),
         if (widget.isTutorial && _tutorialPhase == _TutorialPhase.add)

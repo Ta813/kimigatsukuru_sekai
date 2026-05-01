@@ -774,5 +774,8 @@
       "price": { "type": "String" }
     }
   },
-  "paywallPlanLifetime": "Lifetime"
+  "paywallPlanLifetime": "Lifetime",
+  "setupCompleteTitle": "Setup Complete!",
+  "setupCompleteMessage": "Let's explore your very own world!",
+  "setupCompleteButton": "Let's Go!"
 }

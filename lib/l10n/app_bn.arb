@@ -774,5 +774,8 @@
       "price": { "type": "String" }
     }
   },
-  "paywallPlanLifetime": "আজীবন"
+  "paywallPlanLifetime": "আজীবন",
+  "setupCompleteTitle": "সেটআপ সম্পন্ন!",
+  "setupCompleteMessage": "চলুন আপনার নিজের বিশ্ব অন্বেষণ করি!",
+  "setupCompleteButton": "চলুন যাই!"
 }

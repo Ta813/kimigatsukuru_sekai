@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../helpers/shared_prefs_helper.dart';
 import '../l10n/app_localizations.dart'; // 🌟 追加: ローカライズ用のインポート
 import 'child/child_home_screen.dart'; // ホーム画面のパスに合わせてください
-import 'child/character_customize_screen.dart'; // カスタマイズ画面のパスに合わせてください
+import 'initial_setup_coordinator.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -34,8 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              const CharacterCustomizeScreen(isInitialSetup: true),
+          builder: (context) => const InitialSetupCoordinator(),
         ),
       );
     } else {

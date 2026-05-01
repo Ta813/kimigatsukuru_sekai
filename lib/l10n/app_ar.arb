@@ -774,5 +774,8 @@
       "price": { "type": "String" }
     }
   },
-  "paywallPlanLifetime": "مدى الحياة"
+  "paywallPlanLifetime": "مدى الحياة",
+  "setupCompleteTitle": "اكتمل الإعداد!",
+  "setupCompleteMessage": "دعنا نستكشف عالمك الخاص!",
+  "setupCompleteButton": "هيا بنا!"
 }

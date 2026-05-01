@@ -3534,6 +3534,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Lifetime'**
   String get paywallPlanLifetime;
+
+  /// No description provided for @setupCompleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup Complete!'**
+  String get setupCompleteTitle;
+
+  /// No description provided for @setupCompleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s explore your very own world!'**
+  String get setupCompleteMessage;
+
+  /// No description provided for @setupCompleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s Go!'**
+  String get setupCompleteButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

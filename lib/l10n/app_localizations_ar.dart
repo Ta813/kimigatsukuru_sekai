@@ -1781,4 +1781,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paywallPlanLifetime => 'مدى الحياة';
+
+  @override
+  String get setupCompleteTitle => 'اكتمل الإعداد!';
+
+  @override
+  String get setupCompleteMessage => 'دعنا نستكشف عالمك الخاص!';
+
+  @override
+  String get setupCompleteButton => 'هيا بنا!';
 }

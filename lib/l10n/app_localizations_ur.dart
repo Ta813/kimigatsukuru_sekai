@@ -1781,4 +1781,13 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get paywallPlanLifetime => 'تاحیات';
+
+  @override
+  String get setupCompleteTitle => 'سیٹ اپ مکمل!';
+
+  @override
+  String get setupCompleteMessage => 'آئیے اپنی خود کی دنیا دریافت کریں!';
+
+  @override
+  String get setupCompleteButton => 'چلو چلیں!';
 }

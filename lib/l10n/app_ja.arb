@@ -774,5 +774,8 @@
       "price": { "type": "String" }
     }
   },
-  "paywallPlanLifetime": "買い切り"
+  "paywallPlanLifetime": "買い切り",
+  "setupCompleteTitle": "せってい かんりょう！",
+  "setupCompleteMessage": "きみだけの せかいへ しゅっぱつしよう！",
+  "setupCompleteButton": "しゅっぱつ！"
 }
