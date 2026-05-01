@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart'; // 本物の画面
+import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart'; // 🌟 プレミアム画面をインポート
 import '../helpers/shared_prefs_helper.dart';
 import '../managers/sfx_manager.dart';
 import 'child/child_home_screen.dart';
@@ -18,7 +19,7 @@ class InitialSetupCoordinator extends StatefulWidget {
 }
 
 class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
-  // 🌟 追加: 最初のイントロ画面を表示するかどうかのフラグ
+  // 最初のイントロ画面を表示するかどうかのフラグ
   bool _showIntro = true;
 
   @override
@@ -103,7 +104,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
   }
 
-  // 🌟 追加: 年齢を聞く前のイントロ画面
+  // 年齢を聞く前のイントロ画面
   Widget _buildIntroScreen() {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
@@ -207,7 +208,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
   // 🌟 パターンA: おとな ➔ 子供（バトンタッチあり）
   // ==============================================================
   Future<void> _startPatternA(BuildContext context) async {
-    // 1. おとな（親）向け設定
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -217,7 +217,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    // 2. スマホを子供に渡す画面（進捗率: 50%）
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -226,7 +225,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    // 3. 子供向け設定（アバターなど）
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -235,14 +233,13 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    _finishSetup(context);
+    await _finishSetup(context);
   }
 
   // ==============================================================
   // 🌟 パターンB: 子供 ➔ おとな（バトンタッチあり）
   // ==============================================================
   Future<void> _startPatternB(BuildContext context) async {
-    // 1. 子供向け設定
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -251,7 +248,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    // 2. スマホを親に渡す画面（進捗率: 50%）
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -260,7 +256,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    // 3. おとな（親）向け設定
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -270,14 +265,13 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    _finishSetup(context);
+    await _finishSetup(context);
   }
 
   // ==============================================================
   // 🌟 パターンC: 子供 ➔ おとな（バトンタッチなし）
   // ==============================================================
   Future<void> _startPatternC(BuildContext context) async {
-    // 1. 子供向け設定
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -286,7 +280,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    // 2. おとな（親）向け設定（バトンタッチなしでそのまま表示）
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -296,53 +289,116 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
     );
     if (!context.mounted) return;
 
-    _finishSetup(context);
+    await _finishSetup(context);
   }
 
   // ==============================================================
-  // 🌟 すべての設定が終わったあとの最終ダイアログ
+  // 🌟 すべての設定が終わったあとの処理（Paywall ➔ 100%完了画面 ➔ ホーム）
   // ==============================================================
-  void _finishSetup(BuildContext context) async {
+  Future<void> _finishSetup(BuildContext context) async {
+    // 1. プレミアムプランへの誘導
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const PremiumPaywallScreen()),
+    );
+    if (!context.mounted) return;
+
+    // 2. ダイアログではなく、「100%完了画面（全画面）」へ遷移
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SetupCompleteScreen()),
+    );
+    if (!context.mounted) return;
+
+    // 3. 全て完了したのでフラグを保存してホームへ
     await SharedPrefsHelper.setFirstLaunchCompleted();
     if (!context.mounted) return;
 
-    // 🌟 全ての設定が終わった後にダイアログを表示
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Text(
-            'せってい かんりょう！',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color(0xFFFF7043),
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const ChildHomeScreen()),
+    );
+  }
+}
+
+// ==============================================================
+// 🌟 最終のセットアップ100%完了画面 (全画面)
+// ==============================================================
+class SetupCompleteScreen extends StatelessWidget {
+  const SetupCompleteScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 🌟 100%の進捗バー
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48),
+              child: Column(
+                children: [
+                  const Text(
+                    'セットアップ 100% かんりょう！',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: const LinearProgressIndicator(
+                      value: 1.0, // 100%完了
+                      backgroundColor: Colors.white54,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.orangeAccent,
+                      ),
+                      minHeight: 12,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          content: const Text(
-            'きみだけの せかいへ しゅっぱつしよう！',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: [
+            const SizedBox(height: 60),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Image.asset('assets/images/character_panda.gif', height: 100),
+                const SizedBox(width: 20),
+                Image.asset('assets/images/character_kuma.gif', height: 100),
+              ],
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'きみだけの せかいへ\nしゅっぱつしよう！',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
                 try {
                   SfxManager.instance.playTapSound();
                 } catch (_) {}
-                Navigator.pop(dialogContext); // ダイアログを閉じる
+                Navigator.pop(context); // 画面を閉じて、呼び出し元(_finishSetup)へ返す
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 12,
+                  horizontal: 48,
+                  vertical: 16,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -351,20 +407,12 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
               ),
               child: const Text(
                 'しゅっぱつ！',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
             ),
           ],
-        );
-      },
-    );
-
-    if (!context.mounted) return;
-
-    // ダイアログを閉じたらホームへ遷移
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const ChildHomeScreen()),
+        ),
+      ),
     );
   }
 }
@@ -374,12 +422,12 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator> {
 // ==============================================================
 class PassDeviceScreen extends StatelessWidget {
   final bool isToChild;
-  final double progress; // 🌟 追加: 進捗率（0.0 ~ 1.0）
+  final double progress;
 
   const PassDeviceScreen({
     super.key,
     required this.isToChild,
-    this.progress = 0.5, // デフォルトは半分
+    this.progress = 0.5,
   });
 
   @override
@@ -392,7 +440,6 @@ class PassDeviceScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 🌟 追加: 進捗バーの表示
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 48),
               child: Column(
