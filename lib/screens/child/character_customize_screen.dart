@@ -457,7 +457,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     final localizations = AppLocalizations.of(context)!;
 
     if (_setupStep == 0) {
-      FirebaseAnalytics.instance.logEvent(name: 'setup_1_start');
       return Scaffold(
         backgroundColor: const Color(0xFFFFF3E0),
         body: SafeArea(
@@ -535,22 +534,18 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     String? currentEquippedPath;
 
     if (_setupStep == 1) {
-      FirebaseAnalytics.instance.logEvent(name: 'setup_2_start');
       title = localizations.setupHairTitle;
       currentItems = shopItems.where((i) => i.type == 'hair').toList();
       currentEquippedPath = _equippedHair;
     } else if (_setupStep == 2) {
-      FirebaseAnalytics.instance.logEvent(name: 'setup_3_start');
       title = localizations.setupFaceTitle;
       currentItems = shopItems.where((i) => i.type == 'face').toList();
       currentEquippedPath = _equippedFace;
     } else if (_setupStep == 3) {
-      FirebaseAnalytics.instance.logEvent(name: 'setup_4_start');
       title = localizations.setupClothesTitle;
       currentItems = shopItems.where((i) => i.type == 'clothes').toList();
       currentEquippedPath = _equippedClothes;
     } else if (_setupStep == 4) {
-      FirebaseAnalytics.instance.logEvent(name: 'setup_5_start');
       title = localizations.setupCompanionTitle;
       currentItems = shopItems.where((i) => i.type == 'character').toList();
       currentEquippedPath = _setupSelectedCharacter;
@@ -748,6 +743,17 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             }
 
             if (_setupStep < 4) {
+              if (_setupStep == 0) {
+                FirebaseAnalytics.instance.logEvent(name: 'setup_1_start');
+              } else if (_setupStep == 1) {
+                FirebaseAnalytics.instance.logEvent(name: 'setup_2_start');
+              } else if (_setupStep == 2) {
+                FirebaseAnalytics.instance.logEvent(name: 'setup_3_start');
+              } else if (_setupStep == 3) {
+                FirebaseAnalytics.instance.logEvent(name: 'setup_4_start');
+              } else if (_setupStep == 4) {
+                FirebaseAnalytics.instance.logEvent(name: 'setup_5_start');
+              }
               setState(() {
                 _setupStep++;
               });

@@ -350,238 +350,279 @@ class _RegularPromiseSettingsScreenState
       builder: (BuildContext dialogContext) {
         return StatefulBuilder(
           builder: (context, setStateDialog) {
-            return AlertDialog(
+            final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+            final screenHeight = MediaQuery.of(context).size.height;
+            return Dialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              title: Text(
-                initialPromise == null
-                    ? AppLocalizations.of(context)!.addRegularPromiseTitle
-                    : AppLocalizations.of(context)!.editRegularPromiseTitle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-                textAlign: TextAlign.center,
+              insetPadding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 24,
               ),
-              content: SingleChildScrollView(
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // アイコン選択
-                      Wrap(
-                        spacing: 6.0,
-                        runSpacing: 6.0,
-                        alignment: WrapAlignment.center,
-                        children: emojiList.map((emoji) {
-                          final isSelected = selectedIconKey == emoji;
-                          return GestureDetector(
-                            onTap: () {
-                              try {
-                                SfxManager.instance.playTapSound();
-                              } catch (_) {}
-                              setStateDialog(() => selectedIconKey = emoji);
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  // キーボード高さを差し引いた実際の表示可能領域に制限する
+                  maxHeight: screenHeight - keyboardHeight - 48,
+                ),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // タイトル
+                          Text(
+                            initialPromise == null
+                                ? AppLocalizations.of(
+                                    context,
+                                  )!.addRegularPromiseTitle
+                                : AppLocalizations.of(
+                                    context,
+                                  )!.editRegularPromiseTitle,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 12),
+                          // やくそく名（上部に配置してキーボード表示時も見えるようにする）
+                          TextFormField(
+                            controller: titleController,
+                            scrollPadding: EdgeInsets.only(
+                              bottom: keyboardHeight + 24,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(
+                                context,
+                              )!.promiseNameLabel,
+                              border: const OutlineInputBorder(),
+                              isDense: true,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppLocalizations.of(
+                                  context,
+                                )!.promiseNameHint;
+                              }
+                              return null;
                             },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? Theme.of(
-                                        context,
-                                      ).primaryColor.withOpacity(0.15)
-                                    : Colors.transparent,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? Theme.of(context).primaryColor
-                                      : Colors.grey.shade300,
-                                  width: isSelected ? 2 : 1,
-                                ),
-                              ),
-                              child: Text(
-                                emoji,
-                                style: const TextStyle(fontSize: 24),
+                          ),
+                          const SizedBox(height: 16),
+                          // 開始時間
+                          InputDecorator(
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(
+                                context,
+                              )!.startTimeLabel,
+                              border: const OutlineInputBorder(),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
                               ),
                             ),
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 16),
-                      // やくそく名
-                      TextFormField(
-                        controller: titleController,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(
-                            context,
-                          )!.promiseNameLabel,
-                          border: const OutlineInputBorder(),
-                          isDense: true,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return AppLocalizations.of(
-                              context,
-                            )!.promiseNameHint;
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      // 開始時間
-                      InputDecorator(
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(
-                            context,
-                          )!.startTimeLabel,
-                          border: const OutlineInputBorder(),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
+                            child: DropdownButtonHideUnderline(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: DropdownButton<String>(
+                                      value: selectedHour,
+                                      isExpanded: true,
+                                      items: hours
+                                          .map(
+                                            (h) => DropdownMenuItem(
+                                              value: h,
+                                              child: Center(child: Text(h)),
+                                            ),
+                                          )
+                                          .toList(),
+                                      onChanged: (v) => setStateDialog(
+                                        () => selectedHour = v!,
+                                      ),
+                                    ),
+                                  ),
+                                  const Text(
+                                    ':',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: DropdownButton<String>(
+                                      value: selectedMinute,
+                                      isExpanded: true,
+                                      items: minutes
+                                          .map(
+                                            (m) => DropdownMenuItem(
+                                              value: m,
+                                              child: Center(child: Text(m)),
+                                            ),
+                                          )
+                                          .toList(),
+                                      onChanged: (v) => setStateDialog(
+                                        () => selectedMinute = v!,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          const SizedBox(height: 16),
+                          // 長さとポイント
+                          Row(
                             children: [
                               Expanded(
-                                child: DropdownButton<String>(
-                                  value: selectedHour,
-                                  isExpanded: true,
-                                  items: hours
+                                child: DropdownButtonFormField<String>(
+                                  value: selectedDuration,
+                                  decoration: InputDecoration(
+                                    labelText: AppLocalizations.of(
+                                      context,
+                                    )!.durationLabel,
+                                    border: const OutlineInputBorder(),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                  items: durationOptions
                                       .map(
-                                        (h) => DropdownMenuItem(
-                                          value: h,
-                                          child: Center(child: Text(h)),
+                                        (d) => DropdownMenuItem(
+                                          value: d,
+                                          child: Text(d),
                                         ),
                                       )
                                       .toList(),
-                                  onChanged: (v) =>
-                                      setStateDialog(() => selectedHour = v!),
+                                  onChanged: (v) => setStateDialog(
+                                    () => selectedDuration = v!,
+                                  ),
                                 ),
                               ),
-                              const Text(
-                                ':',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
+                              const SizedBox(width: 8),
                               Expanded(
-                                child: DropdownButton<String>(
-                                  value: selectedMinute,
-                                  isExpanded: true,
-                                  items: minutes
+                                child: DropdownButtonFormField<String>(
+                                  value: selectedPoints,
+                                  decoration: InputDecoration(
+                                    labelText: AppLocalizations.of(
+                                      context,
+                                    )!.points,
+                                    border: const OutlineInputBorder(),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                  items: pointOptions
                                       .map(
-                                        (m) => DropdownMenuItem(
-                                          value: m,
-                                          child: Center(child: Text(m)),
+                                        (p) => DropdownMenuItem(
+                                          value: p,
+                                          child: Text(p),
                                         ),
                                       )
                                       .toList(),
                                   onChanged: (v) =>
-                                      setStateDialog(() => selectedMinute = v!),
+                                      setStateDialog(() => selectedPoints = v!),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      // 長さとポイント
-                      Row(
-                        children: [
-                          Expanded(
-                            child: DropdownButtonFormField<String>(
-                              value: selectedDuration,
-                              decoration: InputDecoration(
-                                labelText: AppLocalizations.of(
-                                  context,
-                                )!.durationLabel,
-                                border: const OutlineInputBorder(),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
-                                ),
-                              ),
-                              items: durationOptions
-                                  .map(
-                                    (d) => DropdownMenuItem(
-                                      value: d,
-                                      child: Text(d),
+                          const SizedBox(height: 16),
+                          // アイコン選択
+                          Wrap(
+                            spacing: 6.0,
+                            runSpacing: 6.0,
+                            alignment: WrapAlignment.center,
+                            children: emojiList.map((emoji) {
+                              final isSelected = selectedIconKey == emoji;
+                              return GestureDetector(
+                                onTap: () {
+                                  try {
+                                    SfxManager.instance.playTapSound();
+                                  } catch (_) {}
+                                  setStateDialog(() => selectedIconKey = emoji);
+                                },
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? Theme.of(
+                                            context,
+                                          ).primaryColor.withOpacity(0.15)
+                                        : Colors.transparent,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.grey.shade300,
+                                      width: isSelected ? 2 : 1,
                                     ),
-                                  )
-                                  .toList(),
-                              onChanged: (v) =>
-                                  setStateDialog(() => selectedDuration = v!),
-                            ),
+                                  ),
+                                  child: Text(
+                                    emoji,
+                                    style: const TextStyle(fontSize: 24),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: DropdownButtonFormField<String>(
-                              value: selectedPoints,
-                              decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context)!.points,
-                                border: const OutlineInputBorder(),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
+                          // ボタン行
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  _playTapSound();
+                                  Navigator.pop(dialogContext);
+                                },
+                                child: Text(
+                                  AppLocalizations.of(context)!.cancel,
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                               ),
-                              items: pointOptions
-                                  .map(
-                                    (p) => DropdownMenuItem(
-                                      value: p,
-                                      child: Text(p),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (v) =>
-                                  setStateDialog(() => selectedPoints = v!),
-                            ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  _playTapSound();
+                                  if (formKey.currentState!.validate()) {
+                                    final newPromise = {
+                                      'title': titleController.text,
+                                      'time': '$selectedHour:$selectedMinute',
+                                      'duration':
+                                          int.tryParse(selectedDuration) ?? 0,
+                                      'points':
+                                          int.tryParse(selectedPoints) ?? 0,
+                                      'icon': selectedIconKey,
+                                    };
+                                    Navigator.pop(dialogContext, newPromise);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).primaryColor,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child: Text(
+                                  AppLocalizations.of(context)!.registerButton,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-              actionsAlignment: MainAxisAlignment.spaceEvenly,
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    _playTapSound();
-                    Navigator.pop(dialogContext);
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)!.cancel,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _playTapSound();
-                    if (formKey.currentState!.validate()) {
-                      final newPromise = {
-                        'title': titleController.text,
-                        'time': '$selectedHour:$selectedMinute',
-                        'duration': int.tryParse(selectedDuration) ?? 0,
-                        'points': int.tryParse(selectedPoints) ?? 0,
-                        'icon': selectedIconKey,
-                      };
-                      Navigator.pop(dialogContext, newPromise);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: Text(AppLocalizations.of(context)!.registerButton),
-                ),
-              ],
             );
           },
         );
