@@ -251,138 +251,140 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
       body: Stack(
         clipBehavior: Clip.none,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 左側：本日のやくそくリスト
-              Expanded(
-                flex: 3,
-                child: _promises.isEmpty
-                    ? Center(
-                        child: Text(
-                          AppLocalizations.of(context)!.noRegularPromises,
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: _promises.length,
-                        itemBuilder: (context, index) {
-                          final promise = _promises[index];
-                          // このやくそくが、今日達成済みかどうかをチェック
-                          final bool isCompleted = _todaysCompletedTitles
-                              .contains(promise['title']);
+          SafeArea(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 左側：本日のやくそくリスト
+                Expanded(
+                  flex: 3,
+                  child: _promises.isEmpty
+                      ? Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.noRegularPromises,
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: _promises.length,
+                          itemBuilder: (context, index) {
+                            final promise = _promises[index];
+                            // このやくそくが、今日達成済みかどうかをチェック
+                            final bool isCompleted = _todaysCompletedTitles
+                                .contains(promise['title']);
 
-                          // このやくそくが、今日スキップ済みかどうかをチェック
-                          final bool isSkipped = _todaysSkippedTitles.contains(
-                            promise['title'],
-                          );
+                            // このやくそくが、今日スキップ済みかどうかをチェック
+                            final bool isSkipped = _todaysSkippedTitles
+                                .contains(promise['title']);
 
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            child: ListTile(
-                              leading: Text(
-                                promise['time'] ?? '',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              child: ListTile(
+                                leading: Text(
+                                  promise['time'] ?? '',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              // ▼ 変更: タイトルと一緒にアイコン（絵文字）を表示
-                              title: Row(
-                                children: [
-                                  Text(
-                                    promise['icon'] ?? '⭐', // 保存されていなければデフォルトの星
-                                    style: const TextStyle(fontSize: 22),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      promise['title'] ??
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.untitled,
-                                      overflow: TextOverflow
-                                          .ellipsis, // 長い名前は「...」で省略
-                                      style: const TextStyle(fontSize: 14),
+                                // ▼ 変更: タイトルと一緒にアイコン（絵文字）を表示
+                                title: Row(
+                                  children: [
+                                    Text(
+                                      promise['icon'] ??
+                                          '⭐', // 保存されていなければデフォルトの星
+                                      style: const TextStyle(fontSize: 22),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              trailing: isCompleted
-                                  ? const Icon(
-                                      Icons.check_circle,
-                                      color: Colors.green,
-                                      size: 40,
-                                    )
-                                  : isSkipped
-                                  ? const Icon(
-                                      Icons.remove_circle_outline,
-                                      color: Colors.grey,
-                                      size: 40,
-                                    )
-                                  : Row(
-                                      mainAxisSize:
-                                          MainAxisSize.min, // Rowが必要な分だけ幅をとる
-                                      children: [
-                                        // 「やらなかった」ボタン
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.close,
-                                            color: Colors.grey[400],
-                                          ),
-                                          onPressed: () {
-                                            try {
-                                              SfxManager.instance
-                                                  .playTapSound();
-                                            } catch (e) {
-                                              // エラーが発生した場合
-                                              print('再生エラー: $e');
-                                            }
-                                            _skipPromiseOnBoard(
-                                              promise['title'],
-                                            );
-                                          },
-                                        ),
-                                        // 「はじめる」ボタン
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            _startPromise(promise);
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Theme.of(
-                                              context,
-                                            ).colorScheme.secondary,
-                                          ),
-                                          child: Text(
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        promise['title'] ??
                                             AppLocalizations.of(
                                               context,
-                                            )!.startPromise,
-                                          ),
-                                        ),
-                                      ],
+                                            )!.untitled,
+                                        overflow: TextOverflow
+                                            .ellipsis, // 長い名前は「...」で省略
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
                                     ),
-                            ),
-                          );
-                        },
-                      ),
-              ),
+                                  ],
+                                ),
+                                trailing: isCompleted
+                                    ? const Icon(
+                                        Icons.check_circle,
+                                        color: Colors.green,
+                                        size: 40,
+                                      )
+                                    : isSkipped
+                                    ? const Icon(
+                                        Icons.remove_circle_outline,
+                                        color: Colors.grey,
+                                        size: 40,
+                                      )
+                                    : Row(
+                                        mainAxisSize:
+                                            MainAxisSize.min, // Rowが必要な分だけ幅をとる
+                                        children: [
+                                          // 「やらなかった」ボタン
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.grey[400],
+                                            ),
+                                            onPressed: () {
+                                              try {
+                                                SfxManager.instance
+                                                    .playTapSound();
+                                              } catch (e) {
+                                                // エラーが発生した場合
+                                                print('再生エラー: $e');
+                                              }
+                                              _skipPromiseOnBoard(
+                                                promise['title'],
+                                              );
+                                            },
+                                          ),
+                                          // 「はじめる」ボタン
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              _startPromise(promise);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Theme.of(
+                                                context,
+                                              ).colorScheme.secondary,
+                                            ),
+                                            child: Text(
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.startPromise,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
 
-              // 中央の区切り線
-              const VerticalDivider(width: 1, color: Colors.grey),
+                // 中央の区切り線
+                const VerticalDivider(width: 1, color: Colors.grey),
 
-              // 右側：達成記録のヒートマップ
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ContributionHeatmap(
-                    data: _heatmapData,
-                    initialViewType: HeatmapViewType.month,
+                // 右側：達成記録のヒートマップ
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ContributionHeatmap(
+                      data: _heatmapData,
+                      initialViewType: HeatmapViewType.month,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

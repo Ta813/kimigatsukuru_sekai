@@ -793,11 +793,11 @@ class _ShopScreenState extends State<ShopScreen> {
         body: SafeArea(
           child: TabBarView(
             children: [
-              _buildCategoryGrid(faceItems, crossAxisCount: 6),
-              _buildCategoryGrid(hairItems, crossAxisCount: 6),
-              _buildCategoryGrid(headgearItems, crossAxisCount: 6),
-              _buildCategoryGrid(clothesItems, crossAxisCount: 6),
-              _buildCategoryGrid(accessoryItems, crossAxisCount: 6),
+              _buildCategoryGrid(faceItems, crossAxisCount: 7),
+              _buildCategoryGrid(hairItems, crossAxisCount: 7),
+              _buildCategoryGrid(headgearItems, crossAxisCount: 7),
+              _buildCategoryGrid(clothesItems, crossAxisCount: 7),
+              _buildCategoryGrid(accessoryItems, crossAxisCount: 7),
             ],
           ),
         ),
@@ -848,7 +848,7 @@ class _ShopScreenState extends State<ShopScreen> {
         actions: _buildAppBarActions(),
       ),
       body: SafeArea(
-        child: _buildCategoryGrid(characterItems, crossAxisCount: 6),
+        child: _buildCategoryGrid(characterItems, crossAxisCount: 7),
       ),
       bottomNavigationBar: const AdBanner(),
     );
@@ -893,7 +893,7 @@ class _ShopScreenState extends State<ShopScreen> {
           child: TabBarView(
             children: [
               _buildCategoryGrid(houseItems, crossAxisCount: 4),
-              _buildCategoryGrid(itemItems, crossAxisCount: 6),
+              _buildCategoryGrid(itemItems, crossAxisCount: 7),
             ],
           ),
         ),
@@ -934,8 +934,8 @@ class _ShopScreenState extends State<ShopScreen> {
         _buildTab(AppLocalizations.of(context)!.vehicles, Icons.directions_car),
       ];
       tabViews = [
-        _buildCategoryGrid(buildingItems, crossAxisCount: 6),
-        _buildCategoryGrid(vehicleItems, crossAxisCount: 6),
+        _buildCategoryGrid(buildingItems, crossAxisCount: 7),
+        _buildCategoryGrid(vehicleItems, crossAxisCount: 7),
       ];
     } else if (widget.mode == ShopMode.forSea) {
       final isSeaItems = shopItems.where((item) => item.isSeaOnly).toList();
@@ -954,8 +954,8 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       ];
       tabViews = [
-        _buildCategoryGrid(seaItems, crossAxisCount: 6),
-        _buildCategoryGrid(livingItems, crossAxisCount: 6),
+        _buildCategoryGrid(seaItems, crossAxisCount: 7),
+        _buildCategoryGrid(livingItems, crossAxisCount: 7),
       ];
     } else if (widget.mode == ShopMode.forSky) {
       final isSeaItems = shopItems.where((item) => item.isSkyOnly).toList();
@@ -974,8 +974,8 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       ];
       tabViews = [
-        _buildCategoryGrid(seaItems, crossAxisCount: 6),
-        _buildCategoryGrid(livingItems, crossAxisCount: 6),
+        _buildCategoryGrid(seaItems, crossAxisCount: 7),
+        _buildCategoryGrid(livingItems, crossAxisCount: 7),
       ];
     } else if (widget.mode == ShopMode.forSpace) {
       final isSpaceItems = shopItems.where((item) => item.isSpaceOnly).toList();
@@ -997,8 +997,8 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       ];
       tabViews = [
-        _buildCategoryGrid(spaceItems, crossAxisCount: 6),
-        _buildCategoryGrid(livingItems, crossAxisCount: 6),
+        _buildCategoryGrid(spaceItems, crossAxisCount: 7),
+        _buildCategoryGrid(livingItems, crossAxisCount: 7),
       ];
     } else {
       // forHouse
@@ -1017,8 +1017,8 @@ class _ShopScreenState extends State<ShopScreen> {
         _buildTab(AppLocalizations.of(context)!.houseItems, Icons.widgets),
       ];
       tabViews = [
-        _buildCategoryGrid(furnitureItems, crossAxisCount: 6),
-        _buildCategoryGrid(houseItems, crossAxisCount: 6),
+        _buildCategoryGrid(furnitureItems, crossAxisCount: 7),
+        _buildCategoryGrid(houseItems, crossAxisCount: 7),
       ];
     }
 

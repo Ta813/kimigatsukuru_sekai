@@ -14,7 +14,8 @@ class SharedPrefsHelper {
   static const String _regularPromisesKey = 'regular_promises';
 
   static List<Map<String, dynamic>> _getDefaultPromises(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return [];
     return [
       {
         'title': l10n.promiseDefault1Title,
@@ -1173,7 +1174,7 @@ class SharedPrefsHelper {
 
   static Future<String?> loadEquippedClothes() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_equippedClothesKey);
+    return _sanitizePath(prefs.getString(_equippedClothesKey));
   }
 
   static Future<void> saveEquippedHeadgear(String path) async {
@@ -1234,5 +1235,13 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_setupPatternKey);
     await prefs.remove(_setupStepKey);
+  }
+
+  // --- パスサニタイズ（古いアセットパスの除去） ---
+  static String? _sanitizePath(String? path) {
+    if (path == 'assets/images/avatar.png') {
+      return null;
+    }
+    return path;
   }
 }

@@ -198,7 +198,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                                 promise['title'] as String,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 14,
+                                  fontSize: 18,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -209,7 +209,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                                   promise['points'].toString(),
                                 ),
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   color: Colors.grey.shade600,
                                 ),
                               ),

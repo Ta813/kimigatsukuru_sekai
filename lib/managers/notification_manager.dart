@@ -52,12 +52,18 @@ class NotificationManager {
           iOS: initializationSettingsIOS,
         );
 
-    await _flutterLocalNotificationsPlugin.initialize(
-      settings: initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {},
-    );
-
-    _isInitialized = true; // ★追加: 初期化完了
+    await _flutterLocalNotificationsPlugin
+        .initialize(
+          settings: initializationSettings,
+          onDidReceiveNotificationResponse: (NotificationResponse response) {},
+        )
+        .then((_) {
+          _isInitialized = true;
+          print("✅ NotificationManager: Initialized successfully.");
+        })
+        .catchError((e) {
+          print("❌ NotificationManager: Failed to initialize plugin: $e");
+        });
   }
 
   /// 通知許可をリクエストするメソッド
@@ -153,7 +159,7 @@ class NotificationManager {
               importance: Importance.high,
               priority: Priority.high,
               color: Color(0xFFFF7043),
-              icon: 'ic_notification', // ★明示的に指定
+              // icon: 'ic_notification', // 削除: AndroidInitializationSettings のデフォルトを使用する
             ),
             iOS: DarwinNotificationDetails(),
           ),
@@ -220,7 +226,7 @@ class NotificationManager {
             importance: Importance.high,
             priority: Priority.high,
             color: Color(0xFFFF7043),
-            icon: 'ic_notification', // ★明示的に指定
+            // icon: 'ic_notification', // 削除: AndroidInitializationSettings のデフォルトを使用する
           ),
           iOS: DarwinNotificationDetails(),
         ),

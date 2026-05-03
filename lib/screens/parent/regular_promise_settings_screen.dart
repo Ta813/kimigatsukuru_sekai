@@ -1076,11 +1076,11 @@ class _RegularPromiseSettingsScreenState
         leading: Text(template['icon'], style: const TextStyle(fontSize: 28)),
         title: Text(
           template['title'],
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         subtitle: Text(
           '${template['time']} / ${AppLocalizations.of(context)!.durationAndPoints(template['duration'].toString(), template['points'].toString())}',
-          style: const TextStyle(fontSize: 10),
+          style: const TextStyle(fontSize: 14),
         ),
         trailing: isTutorialTrialCard
             ? CompositedTransformTarget(
@@ -1190,11 +1190,11 @@ class _RegularPromiseSettingsScreenState
         leading: Text(iconEmoji, style: const TextStyle(fontSize: 24)),
         title: Text(
           promise['title'],
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         subtitle: Text(
           '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
-          style: const TextStyle(fontSize: 11),
+          style: const TextStyle(fontSize: 14),
         ),
         trailing: deleteButton,
       ),

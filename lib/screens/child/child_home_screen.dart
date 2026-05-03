@@ -1283,8 +1283,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   // データを読み込み、表示するやくそくを決定する
   Future<void> _loadAndDetermineDisplayPromise() async {
+    if (!mounted) return;
     // まず、SharedPreferencesから両方のデータを読み込む
     final loadedPoints = await SharedPrefsHelper.loadPoints();
+    if (!mounted) return;
     final regular = await SharedPrefsHelper.loadRegularPromises(context);
     final emergency = await SharedPrefsHelper.loadEmergencyPromise();
     var todaysCompletedTitles =
@@ -1382,7 +1384,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         await SharedPrefsHelper.getChildTutorial() ==
         SharedPrefsHelper.tutorialPhaseStart;
 
-    final orientation = MediaQuery.of(context).orientation;
+    final mediaQuery = MediaQuery.maybeOf(context);
+    final orientation = mediaQuery?.orientation ?? Orientation.landscape;
 
     late double screenWidth;
     late double screenHeight;
@@ -1391,16 +1394,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     // 画面の向きに応じて幅と高さを設定
     if (orientation == Orientation.landscape) {
-      screenWidth = MediaQuery.of(context).size.width;
-      screenHeight = MediaQuery.of(context).size.height;
+      screenWidth = mediaQuery?.size.width ?? 0;
+      screenHeight = mediaQuery?.size.height ?? 0;
       // 右のノッチ（セーフエリア外）の幅を足す
-      rightPadding = MediaQuery.of(context).padding.right;
+      rightPadding = mediaQuery?.padding.right ?? 0;
       safeAreaWidth = screenWidth - rightPadding;
     } else {
-      screenWidth = MediaQuery.of(context).size.height;
-      screenHeight = MediaQuery.of(context).size.width;
+      screenWidth = mediaQuery?.size.height ?? 0;
+      screenHeight = mediaQuery?.size.width ?? 0;
       // 右のノッチ（セーフエリア外）の幅を足す
-      rightPadding = MediaQuery.of(context).padding.right;
+      rightPadding = mediaQuery?.padding.right ?? 0;
       safeAreaWidth = screenWidth - rightPadding;
     }
 
@@ -3347,234 +3350,246 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           // 下のバー（つぎのやくそく）
           _displayPromise != null
               ? Positioned(
-                  bottom: 10,
-                  left: 10,
-                  right: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      // 点滅中は透明にして背景の暗さに溶け込ませる
-                      color: _showStartBlinking
-                          ? Colors.transparent
-                          : (_isDisplayPromiseEmergency
-                                ? Colors.red[400]
-                                : Colors.white.withOpacity(0.85)),
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: _showStartBlinking
-                          ? []
-                          : [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
-                                spreadRadius: 2,
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: IgnorePointer(
-                            ignoring: isAnyTutorialBlinking,
-                            child: Opacity(
-                              opacity: isAnyTutorialBlinking ? 0.3 : 1.0,
-
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // 緊急の場合のみ「きんきゅう！」と表示
-                                  if (_isDisplayPromiseEmergency)
-                                    Text(
-                                      AppLocalizations.of(context)!.emergency,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.white70,
-                                      ),
-                                    ),
-                                  // 定例の場合は「つぎのやくそく」と表示
-                                  if (!_isDisplayPromiseEmergency)
-                                    Text(
-                                      AppLocalizations.of(context)!.nextPromise,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: isAnyTutorialBlinking
-                                            ? Colors.white70
-                                            : Colors.grey[700],
-                                      ),
-                                    ),
-
-                                  const SizedBox(height: 2),
-
-                                  // やくそくの名前とポイントを表示
-                                  Text(
-                                    _isDisplayPromiseEmergency
-                                        ? '${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}'
-                                        : '${_displayPromise!['time']}〜 ${_displayPromise!['icon']} ${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      // 緊急やくそくか点滅中なら文字は白
-                                      color:
-                                          (_isDisplayPromiseEmergency ||
-                                              isAnyTutorialBlinking)
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                    overflow:
-                                        TextOverflow.ellipsis, // 長いテキストは...で省略
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-
-                        // 「やらなかった」ボタン（TextButtonで見え方を少し変える）
-                        IgnorePointer(
-                          ignoring: isAnyTutorialBlinking,
-                          child: Opacity(
-                            opacity: isAnyTutorialBlinking ? 0.3 : 1.0,
-
-                            child: TextButton(
-                              onPressed: _skipPromise,
-                              child: Text(
-                                AppLocalizations.of(context)!.didNotDo,
-                                style: TextStyle(
-                                  color:
-                                      (_isDisplayPromiseEmergency ||
-                                          _showStartBlinking)
-                                      ? Colors.white70
-                                      : Colors.grey[600],
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: SafeArea(
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        // 点滅中は透明にして背景の暗さに溶け込ませる
+                        color: _showStartBlinking
+                            ? Colors.transparent
+                            : (_isDisplayPromiseEmergency
+                                  ? Colors.red[400]
+                                  : Colors.white.withOpacity(0.85)),
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: _showStartBlinking
+                            ? []
+                            : [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.15),
+                                  spreadRadius: 2,
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
+                              ],
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: IgnorePointer(
+                              ignoring: isAnyTutorialBlinking,
+                              child: Opacity(
+                                opacity: isAnyTutorialBlinking ? 0.3 : 1.0,
 
-                        Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.center,
-                          children: [
-                            BlinkingEffect(
-                              isBlinking: _showStartBlinking,
-                              borderRadius: 10,
-                              child: IgnorePointer(
-                                ignoring:
-                                    isAnyTutorialBlinking &&
-                                    !_showStartBlinking,
-                                child: Opacity(
-                                  opacity:
-                                      (isAnyTutorialBlinking &&
-                                          !_showStartBlinking)
-                                      ? 0.3
-                                      : 1.0,
-                                  child: ElevatedButton(
-                                    onPressed: _startPromise,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          _isDisplayPromiseEmergency
-                                          ? Colors.white
-                                          : Colors.blue,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      _isDisplayPromiseEmergency
-                                          ? AppLocalizations.of(
-                                              context,
-                                            )!.startNow
-                                          : AppLocalizations.of(
-                                              context,
-                                            )!.startPromise,
-                                      style: TextStyle(
-                                        color: _isDisplayPromiseEmergency
-                                            ? Colors.red[400]
-                                            : Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (_showStartBlinking)
-                              Positioned(
-                                top: -60, // ボタンの上に配置
                                 child: Column(
-                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
+                                    // 緊急の場合のみ「きんきゅう！」と表示
+                                    if (_isDisplayPromiseEmergency)
+                                      Text(
+                                        AppLocalizations.of(context)!.emergency,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white70,
+                                        ),
                                       ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            blurRadius: 4,
-                                            offset: Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Text(
+                                    // 定例の場合は「つぎのやくそく」と表示
+                                    if (!_isDisplayPromiseEmergency)
+                                      Text(
                                         AppLocalizations.of(
                                           context,
-                                        )!.tutorialStartBubble,
-                                        style: const TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold,
+                                        )!.nextPromise,
+                                        style: TextStyle(
                                           fontSize: 12,
+                                          color: isAnyTutorialBlinking
+                                              ? Colors.white70
+                                              : Colors.grey[700],
                                         ),
-                                        textAlign: TextAlign.center,
                                       ),
-                                    ),
-                                    ClipPath(
-                                      clipper: SpeechBubbleTailDownClipper(),
-                                      child: Container(
-                                        width: 16,
-                                        height: 8,
-                                        color: Colors.white,
+
+                                    const SizedBox(height: 2),
+
+                                    // やくそくの名前とポイントを表示
+                                    Text(
+                                      _isDisplayPromiseEmergency
+                                          ? '${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}'
+                                          : '${_displayPromise!['time']}〜 ${_displayPromise!['icon']} ${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        // 緊急やくそくか点滅中なら文字は白
+                                        color:
+                                            (_isDisplayPromiseEmergency ||
+                                                isAnyTutorialBlinking)
+                                            ? Colors.white
+                                            : Colors.black,
                                       ),
+                                      overflow: TextOverflow
+                                          .ellipsis, // 長いテキストは...で省略
                                     ),
                                   ],
                                 ),
                               ),
-                          ],
-                        ),
-                      ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+
+                          // 「やらなかった」ボタン（TextButtonで見え方を少し変える）
+                          IgnorePointer(
+                            ignoring: isAnyTutorialBlinking,
+                            child: Opacity(
+                              opacity: isAnyTutorialBlinking ? 0.3 : 1.0,
+
+                              child: TextButton(
+                                onPressed: _skipPromise,
+                                child: Text(
+                                  AppLocalizations.of(context)!.didNotDo,
+                                  style: TextStyle(
+                                    color:
+                                        (_isDisplayPromiseEmergency ||
+                                            _showStartBlinking)
+                                        ? Colors.white70
+                                        : Colors.grey[600],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Stack(
+                            clipBehavior: Clip.none,
+                            alignment: Alignment.center,
+                            children: [
+                              BlinkingEffect(
+                                isBlinking: _showStartBlinking,
+                                borderRadius: 10,
+                                child: IgnorePointer(
+                                  ignoring:
+                                      isAnyTutorialBlinking &&
+                                      !_showStartBlinking,
+                                  child: Opacity(
+                                    opacity:
+                                        (isAnyTutorialBlinking &&
+                                            !_showStartBlinking)
+                                        ? 0.3
+                                        : 1.0,
+                                    child: ElevatedButton(
+                                      onPressed: _startPromise,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            _isDisplayPromiseEmergency
+                                            ? Colors.white
+                                            : Colors.blue,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        _isDisplayPromiseEmergency
+                                            ? AppLocalizations.of(
+                                                context,
+                                              )!.startNow
+                                            : AppLocalizations.of(
+                                                context,
+                                              )!.startPromise,
+                                        style: TextStyle(
+                                          color: _isDisplayPromiseEmergency
+                                              ? Colors.red[400]
+                                              : Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (_showStartBlinking)
+                                Positioned(
+                                  top: -60, // ボタンの上に配置
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black26,
+                                              blurRadius: 4,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.tutorialStartBubble,
+                                          style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      ClipPath(
+                                        clipper: SpeechBubbleTailDownClipper(),
+                                        child: Container(
+                                          width: 16,
+                                          height: 8,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 )
               :
                 // もしやくそくがない場合は、メッセージを表示
                 Positioned(
-                  bottom: 10,
-                  left: 10,
-                  right: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.85),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.allPromisesDone,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: SafeArea(
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.allPromisesDone,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),

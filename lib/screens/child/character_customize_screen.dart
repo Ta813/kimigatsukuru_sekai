@@ -575,7 +575,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 6,
+                            crossAxisCount: 7,
                             crossAxisSpacing: 8,
                             mainAxisSpacing: 8,
                             childAspectRatio: 0.8,
@@ -1163,7 +1163,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 6,
+        crossAxisCount: 7,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
         childAspectRatio: 0.75,
@@ -1283,7 +1283,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     List<String> selected,
     String type,
   ) {
-    int crossAxisCount = type == 'item' ? 8 : 6;
+    int crossAxisCount = type == 'item' ? 8 : 7;
 
     return GridView.builder(
       padding: const EdgeInsets.all(16),

@@ -583,7 +583,7 @@ class _MissionScreenState extends State<MissionScreen>
         ),
         body: Stack(
           children: [
-            TabBarView(children: tabViews),
+            SafeArea(child: TabBarView(children: tabViews)),
             Align(
               alignment: Alignment.topCenter,
               child: ConfettiWidget(
