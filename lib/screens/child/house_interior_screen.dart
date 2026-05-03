@@ -9,6 +9,7 @@ import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
 import 'shop_screen.dart';
 import '../../managers/sfx_manager.dart';
+import '../../widgets/round_menu_button.dart';
 
 class HouseInteriorScreen extends StatefulWidget {
   // ★ホーム画面から、現在装備中の家の画像パスを受け取る
@@ -196,55 +197,27 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
             ),
           ),
 
+          // 戻るボタン
           Positioned(
-            top: 20.0, // 上からの距離
-            left: 20.0, // 左からの距離
+            top: 20.0,
+            left: 20.0,
             child: SafeArea(
-              child: Material(
-                color: const Color(0xFFFF7043).withOpacity(0.9),
-                borderRadius: BorderRadius.circular(8),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(8),
-                  onTap: () {
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'start_house_interior_back',
-                    );
-                    try {
-                      SfxManager.instance.playTapSound();
-                    } catch (e) {
-                      print('再生エラー: $e');
-                    }
-                    Navigator.pop(context);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6.0,
-                      vertical: 4.0,
-                    ),
-                    child: SizedBox(
-                      width: 60,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.keyboard_return,
-                            size: 24,
-                            color: Color(0xFFFFCA28),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            AppLocalizations.of(context)!.navBack,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Color(0xFFFFCA28),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              child: RoundMenuButton(
+                icon: Icons.keyboard_return,
+                label: AppLocalizations.of(context)!.navBack,
+                iconColor: const Color(0xFF5D4037),
+                backgroundColor: const Color(0xFFCFD8DC), // ブルーグレー
+                onTap: () {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_house_interior_back',
+                  );
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {
+                    print('再生エラー: $e');
+                  }
+                  Navigator.pop(context);
+                },
               ),
             ),
           ),
@@ -447,131 +420,71 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
 
           // 右側のボタン群
           Positioned(
-            top: 80.0, // 上からの距離
-            right: 20.0, // 右からの距離
-            // Columnでウィジェットを縦に並べます
+            top: 80.0,
+            right: 20.0,
             child: SafeArea(
               child: Column(
                 children: [
                   // 家具設定ボタン
-                  Material(
-                    color: const Color(0xFFFF7043).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_house_interior_customize',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          print('再生エラー: $e');
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const FurnitureCustomizeScreen(
-                                  mode: CustomizeMode.house,
-                                ),
-                          ),
-                        ).then((_) {
-                          // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                          _loadItemsAndPositions();
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6.0,
-                          vertical: 4.0,
-                        ),
-                        child: SizedBox(
-                          width: 60,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.chair,
-                                size: 24,
-                                color: Color(0xFFFFCA28),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                AppLocalizations.of(context)!.navDressUp,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFFFFCA28),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                  RoundMenuButton(
+                    icon: Icons.chair,
+                    label: AppLocalizations.of(context)!.navDressUp,
+                    iconColor: const Color(0xFF5D4037),
+                    backgroundColor: const Color(0xFFD1F2E1), // ライトミントグリーン
+                    onTap: () {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'start_house_interior_customize',
+                      );
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FurnitureCustomizeScreen(
+                            mode: CustomizeMode.house,
                           ),
                         ),
-                      ),
-                    ),
+                      ).then((_) {
+                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
+                        _loadItemsAndPositions();
+                      });
+                    },
                   ),
                   // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 0),
 
                   // ショップボタン
-                  Material(
-                    color: const Color(0xFFFF7043).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_house_interior_shop',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          print('再生エラー: $e');
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ShopScreen(
-                              currentPoints: _points, // ユーザーの所持ポイント
-                              currentLevel: _level, // ユーザーレベルも渡す
-                              mode: ShopMode.forHouse, // ★家の中モードを指定
-                            ),
-                          ),
-                        ).then((_) {
-                          // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                          _loadItemsAndPositions();
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6.0,
-                          vertical: 4.0,
-                        ),
-                        child: SizedBox(
-                          width: 60,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.store,
-                                size: 24,
-                                color: Color(0xFFFFCA28),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                AppLocalizations.of(context)!.navShop,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFFFFCA28),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                  RoundMenuButton(
+                    icon: Icons.store,
+                    label: AppLocalizations.of(context)!.navShop,
+                    iconColor: const Color(0xFF5D4037),
+                    backgroundColor: const Color(0xFFFFE0B2), // ライトオレンジ
+                    onTap: () {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'start_house_interior_shop',
+                      );
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShopScreen(
+                            currentPoints: _points, // ユーザーの所持ポイント
+                            currentLevel: _level, // ユーザーレベルも渡す
+                            mode: ShopMode.forHouse, // ★家の中モードを指定
                           ),
                         ),
-                      ),
-                    ),
+                      ).then((_) {
+                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
+                        _loadItemsAndPositions();
+                      });
+                    },
                   ),
                 ],
               ),

@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
@@ -95,6 +96,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   // 🌟 追加: 達成済みで未受け取りのミッションがあるかどうかのフラグ
   bool _hasUnclaimedMissions = true; // テスト用に最初はtrueにしておきます
   bool _showMissionHint = false; // ミッション画面への初回案内
+
+  // 🌟 追加: 今日のやくそくの達成状況を星で表示するための変数
+  int _totalPromisesCount = 0;
+  List<bool> _isPromiseCompletedList = []; // 🌟 各やくそくごとの達成状況リスト
+  int? _currentPromiseIndex; // 🌟 現在達成可能なやくそくのインデックス
+  late AnimationController _allCompletedAnimationController; // 🌟 全部達成時のアニメーション
 
   final List<int> requiredExpForLevelUp = [
     0,
@@ -207,6 +214,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       duration: const Duration(milliseconds: 700),
     )..repeat(reverse: true); // 繰り返し再生（ポワンポワンさせる）
 
+    _allCompletedAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
     // 1. リモコンの準備（アニメーション全体の長さを少し長くする）
     _animationController = AnimationController(
       vsync: this,
@@ -302,8 +314,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   @override
   void dispose() {
-    _midnightTimer?.cancel(); // ★ disposeでタイマーをキャンセル
-    _tutorialMoveTimer?.cancel(); // ★ チュートリアルタイマーもキャンセル
+    _allCompletedAnimationController.dispose();
+    _midnightTimer?.cancel();
+    _tutorialMoveTimer?.cancel();
     _hintAnimationController.dispose();
     _animationController.dispose();
     _pointsAddedAnimationController.dispose();
@@ -489,6 +502,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   Future<void> _handleAppResumed() async {
     // 保存されたBGMを再生
     _playSavedBgm();
+
+    // 🌟 購入ステータスの同期（Androidでの課金フロー停止・クラッシュ対策）
+    PurchaseManager.instance.refreshCustomerInfo();
 
     // --- 日付変更チェック ---
     final lastActiveDateStr = await SharedPrefsHelper.loadLastActiveDate();
@@ -1438,6 +1454,33 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       _points = loadedPoints;
       _displayPromise = nextPromise;
       _isDisplayPromiseEmergency = isEmergency;
+      _totalPromisesCount = regular.length;
+      _isPromiseCompletedList = regular
+          .map((p) => todaysCompletedTitles.contains(p["title"]))
+          .toList();
+
+      // 🌟 現在達成可能なやくそくのインデックスを特定
+      _currentPromiseIndex = null;
+      if (nextPromise != null && !isEmergency) {
+        final nextTitle = nextPromise["title"];
+        for (int i = 0; i < regular.length; i++) {
+          if (regular[i]["title"] == nextTitle) {
+            _currentPromiseIndex = i;
+            break;
+          }
+        }
+      }
+
+      // 🌟 全部達成したかチェックしてアニメーション開始/停止
+      final areAllCompleted =
+          _totalPromisesCount > 0 &&
+          _isPromiseCompletedList.every((completed) => completed);
+      if (areAllCompleted) {
+        _allCompletedAnimationController.repeat(reverse: true);
+      } else {
+        _allCompletedAnimationController.stop();
+        _allCompletedAnimationController.value = 0.0; // 停止時は元のサイズ(スケール1.0相当)
+      }
 
       // 🌟 追加・変更: 読み込んだパーツをStateにセット
       _equippedFace = face ?? 'assets/images/face/face_default.png';
@@ -1981,6 +2024,65 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     }
   }
 
+  Widget _buildRoundMenuButton({
+    required IconData icon,
+    required String label,
+    required Color iconColor,
+    required Color backgroundColor,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 53,
+            height: 53,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 4),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Icon(icon, size: 28, color: iconColor),
+          ),
+          Transform.translate(
+            offset: const Offset(0, -8),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 2,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: Color(0xFF5D4037),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // 画面サイズを取得（位置計算に使用）
@@ -2194,48 +2296,190 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            width: 220, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            width: 380, // ★ 幅を広げて「やくそく」を追加
+                            child: Row(
                               children: [
-                                Row(
-                                  mainAxisSize:
-                                      MainAxisSize.min, // Rowが中身のサイズに合わせる
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.levelLabel(_level),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                                // 左側: レベルと経験値バー
+                                Expanded(
+                                  flex: 5,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.levelLabel(_level),
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.expToNextLevel(
+                                              _requiredExpForNextLevel -
+                                                  _experience,
+                                            ),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Text(
-                                      // ★ 次のレベルまでの必要経験値を計算して表示
-                                      // _requiredExpForNextLevelは次のレベルに必要な「累計」経験値
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.expToNextLevel(
-                                        _requiredExpForNextLevel - _experience,
+                                      const SizedBox(height: 6),
+                                      //経験値バー
+                                      LinearProgressIndicator(
+                                        value: _experienceFraction, // 現在の経験値の割合
+                                        backgroundColor: Colors.grey[300],
+                                        valueColor:
+                                            const AlwaysStoppedAnimation<Color>(
+                                              Colors.green,
+                                            ),
                                       ),
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black54,
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
 
-                                const SizedBox(height: 8),
+                                // 境界線
+                                Container(
+                                  height: 30,
+                                  width: 1,
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
+                                  color: Colors.grey.withOpacity(0.3),
+                                ),
 
-                                //経験値バー
-                                LinearProgressIndicator(
-                                  value: _experienceFraction, // 現在の経験値の割合
-                                  backgroundColor: Colors.grey[300],
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.green,
+                                // 右側: きょうのやくそく（星表示）
+                                Expanded(
+                                  flex: 4,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (_displayPromise != null) {
+                                        _startPromise();
+                                      }
+                                    },
+                                    behavior: HitTestBehavior.opaque,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.todaysPromise,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: List.generate(
+                                              _totalPromisesCount == 0
+                                                  ? 1
+                                                  : _totalPromisesCount,
+                                              (index) {
+                                                if (_totalPromisesCount == 0) {
+                                                  return const Text(
+                                                    'なし',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  );
+                                                }
+                                                final isCompleted =
+                                                    index <
+                                                        _isPromiseCompletedList
+                                                            .length
+                                                    ? _isPromiseCompletedList[index]
+                                                    : false;
+
+                                                // 🌟 現在達成可能なやくそくかどうか
+                                                final isCurrent =
+                                                    index ==
+                                                    _currentPromiseIndex;
+
+                                                final starIcon = Icon(
+                                                  Icons.star,
+                                                  size: 18,
+                                                  color: (isCompleted)
+                                                      ? Colors.amber
+                                                      : Colors.grey[300],
+                                                );
+
+                                                // 🌟 現在達成可能なやくそくについては、黄色点滅にする
+                                                if (isCurrent && !isCompleted) {
+                                                  return BlinkingEffect(
+                                                    isBlinking: true,
+                                                    color: Colors.amber,
+                                                    borderRadius: 10,
+                                                    child: starIcon,
+                                                  );
+                                                }
+
+                                                // 🌟 全部達成している場合、黄色い星をポワンポワン＆少し横回転させる
+                                                if (isCompleted) {
+                                                  return AnimatedBuilder(
+                                                    animation:
+                                                        _allCompletedAnimationController,
+                                                    builder: (context, child) {
+                                                      final animValue =
+                                                          _allCompletedAnimationController
+                                                              .value;
+                                                      // スケール: 1.0 〜 1.3
+                                                      final scale =
+                                                          1.0 +
+                                                          (animValue * 0.3);
+                                                      // 横回転 (Y軸): 0 〜 2π (一回転)
+                                                      final rotationY =
+                                                          animValue *
+                                                          2 *
+                                                          math.pi;
+
+                                                      return Transform(
+                                                        transform:
+                                                            Matrix4.identity()
+                                                              ..setEntry(
+                                                                3,
+                                                                2,
+                                                                0.002,
+                                                              ) // 奥行き感（パース）
+                                                              ..rotateY(
+                                                                rotationY,
+                                                              )
+                                                              ..scale(
+                                                                scale,
+                                                                scale,
+                                                              ),
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: child,
+                                                      );
+                                                    },
+                                                    child: starIcon,
+                                                  );
+                                                }
+                                                return starIcon;
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -2332,7 +2576,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             // 🌟 初回限定のミッション案内吹き出し
                             if (_showMissionHint && !isAnyTutorialActive)
                               Positioned(
-                                bottom: 50, // ボタンのすぐ上に表示
+                                bottom: 60, // ボタンのすぐ上に表示
                                 right: 0, // 吹き出しのしっぽをボタンの上に合わせる
                                 child: IgnorePointer(
                                   child: ScaleTransition(
@@ -2359,7 +2603,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             BlinkingEffect(
                               isBlinking: _isTutorialMissionIncomplete,
                               child: Material(
-                                color: const Color(0xFFFF7043).withOpacity(0.9),
+                                color: const Color.fromRGBO(0, 0, 0, 0),
                                 borderRadius: BorderRadius.circular(8),
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(8),
@@ -2422,37 +2666,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       }
                                     });
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6.0,
-                                      vertical: 4.0,
-                                    ),
-                                    child: SizedBox(
-                                      width: 55,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons
-                                                .assignment_turned_in, // ミッションっぽいアイコン
-                                            size: 24,
-                                            color: Color(0xFFFFCA28),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.missionScreenTitle,
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                              color: Color(0xFFFFCA28),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                  child: _buildRoundMenuButton(
+                                    icon: Icons.assignment_turned_in,
+                                    label: AppLocalizations.of(
+                                      context,
+                                    )!.missionScreenTitle,
+                                    iconColor: const Color(0xFF5D4037),
+                                    backgroundColor: const Color(
+                                      0xFFE1BEE7,
+                                    ), // ライトパープル
                                   ),
                                 ),
                               ),
@@ -2460,8 +2682,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             // 🌟 「！」バッジの表示
                             if (_hasUnclaimedMissions)
                               Positioned(
-                                top: -14, // バッジを大きくしたので少し位置を調整
-                                right: -8,
+                                top: -8, // バッジを大きくしたので少し位置を調整
+                                right: -2,
                                 // 🌟 既存のアニメーションを使い回してポヨポヨンさせる！
                                 child: ScaleTransition(
                                   scale: Tween<double>(begin: 1.0, end: 1.3)
@@ -2503,10 +2725,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               ),
                           ],
                         ),
-                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
+                        const SizedBox(height: 0), // ボタンの間に少し隙間をあける
                         // ★ BGM変更ボタンを一番上に追加
                         Material(
-                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          color: Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(8),
@@ -2526,40 +2748,20 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 ),
                               );
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6.0,
-                                vertical: 4.0,
-                              ),
-                              child: SizedBox(
-                                width: 55,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.music_note,
-                                      size: 24,
-                                      color: Color(0xFFFFCA28),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      AppLocalizations.of(context)!.navMusic,
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                        color: Color(0xFFFFCA28),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            child: _buildRoundMenuButton(
+                              icon: Icons.music_note,
+                              label: AppLocalizations.of(context)!.navMusic,
+                              iconColor: const Color(0xFF5D4037),
+                              backgroundColor: const Color(
+                                0xFFB3E5FC,
+                              ), // ライトブルー
                             ),
                           ),
                         ),
-                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
+                        const SizedBox(height: 0), // ボタンの間に少し隙間をあける
 
                         Material(
-                          color: const Color(0xFFFF7043).withOpacity(0.9),
+                          color: Colors.transparent,
                           borderRadius: BorderRadius.circular(8),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(8),
@@ -2588,33 +2790,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 _loadAndDetermineDisplayPromise();
                               });
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6.0,
-                                vertical: 4.0,
-                              ),
-                              child: SizedBox(
-                                width: 55,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.public,
-                                      size: 24,
-                                      color: Color(0xFFFFCA28),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      AppLocalizations.of(context)!.navWorldMap,
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                        color: Color(0xFFFFCA28),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            child: _buildRoundMenuButton(
+                              icon: Icons.public,
+                              label: AppLocalizations.of(context)!.navWorldMap,
+                              iconColor: const Color(0xFF5D4037),
+                              backgroundColor: const Color(
+                                0xFFC8E6C9,
+                              ), // ライトグリーン
                             ),
                           ),
                         ),
@@ -2652,9 +2834,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               child: Opacity(
                                 opacity: (isAnyTutorialBlinking) ? 0.6 : 1.0,
                                 child: Material(
-                                  color: const Color(
-                                    0xFFFF7043,
-                                  ).withOpacity(0.9),
+                                  color: Colors.transparent,
                                   borderRadius: BorderRadius.circular(8),
                                   child: InkWell(
                                     borderRadius: BorderRadius.circular(8),
@@ -2723,35 +2903,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       // ★やくそくボード画面から戻ってきたら、必ずデータを再読み込みする！
                                       _loadAndDetermineDisplayPromise();
                                     },
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 6.0,
-                                        vertical: 4.0,
-                                      ),
-                                      child: SizedBox(
-                                        width: 55,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const Icon(
-                                              Icons.article_rounded,
-                                              size: 24,
-                                              color: Color(0xFFFFCA28),
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!.navPromiseBoard,
-                                              style: const TextStyle(
-                                                fontSize: 10,
-                                                color: Color(0xFFFFCA28),
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    child: _buildRoundMenuButton(
+                                      icon: Icons.article_rounded,
+                                      label: AppLocalizations.of(
+                                        context,
+                                      )!.navPromiseBoard,
+                                      iconColor: const Color(0xFF5D4037),
+                                      backgroundColor: const Color(
+                                        0xFFF8BBD0,
+                                      ), // ライトピンク
                                     ),
                                   ),
                                 ),
@@ -2760,7 +2920,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           ],
                         ),
 
-                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
+                        const SizedBox(height: 0), // ボタンの間に少し隙間をあける
                         Stack(
                           clipBehavior: Clip.none,
                           alignment: Alignment.centerLeft,
@@ -2778,9 +2938,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 child: BlinkingEffect(
                                   isBlinking: _showCustomizeBlinking,
                                   child: Material(
-                                    color: const Color(
-                                      0xFFFF7043,
-                                    ).withOpacity(0.9),
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(8),
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(8),
@@ -2877,35 +3035,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                           }
                                         });
                                       },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6.0,
-                                          vertical: 4.0,
-                                        ),
-                                        child: SizedBox(
-                                          width: 55,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.face,
-                                                size: 24,
-                                                color: Color(0xFFFFCA28),
-                                              ),
-                                              const SizedBox(height: 2),
-                                              Text(
-                                                AppLocalizations.of(
-                                                  context,
-                                                )!.navDressUp,
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                  color: Color(0xFFFFCA28),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                      child: _buildRoundMenuButton(
+                                        icon: Icons.face,
+                                        label: AppLocalizations.of(
+                                          context,
+                                        )!.navDressUp,
+                                        iconColor: const Color(0xFF5D4037),
+                                        backgroundColor: const Color(
+                                          0xFFD1F2E1,
+                                        ), // ライトミントグリーン
                                       ),
                                     ),
                                   ),
@@ -2961,7 +3099,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           ],
                         ),
                         // BlinkingEffect Customize
-                        const SizedBox(height: 6), // ボタンの間に少し隙間をあける
+                        const SizedBox(height: 0), // ボタンの間に少し隙間をあける
                         Stack(
                           clipBehavior: Clip.none,
                           alignment: Alignment.centerLeft,
@@ -2978,9 +3116,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 child: BlinkingEffect(
                                   isBlinking: _showShopBlinking,
                                   child: Material(
-                                    color: const Color(
-                                      0xFFFF7043,
-                                    ).withOpacity(0.9),
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(8),
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(8),
@@ -3065,35 +3201,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                           }
                                         });
                                       },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6.0,
-                                          vertical: 4.0,
-                                        ),
-                                        child: SizedBox(
-                                          width: 55,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.store,
-                                                size: 24,
-                                                color: Color(0xFFFFCA28),
-                                              ),
-                                              const SizedBox(height: 2),
-                                              Text(
-                                                AppLocalizations.of(
-                                                  context,
-                                                )!.navShop,
-                                                style: const TextStyle(
-                                                  fontSize: 10,
-                                                  color: Color(0xFFFFCA28),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                      child: _buildRoundMenuButton(
+                                        icon: Icons.store,
+                                        label: AppLocalizations.of(
+                                          context,
+                                        )!.navShop,
+                                        iconColor: const Color(0xFF5D4037),
+                                        backgroundColor: const Color(
+                                          0xFFFFE0B2,
+                                        ), // ライトオレンジ
                                       ),
                                     ),
                                   ),
@@ -3177,9 +3293,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 child: BlinkingEffect(
                                   isBlinking: _showParentSettingsBlinking,
                                   child: Material(
-                                    color: const Color(
-                                      0xFFFF7043,
-                                    ).withOpacity(0.9),
+                                    color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(8),
                                     child: InkWell(
                                       onTap:
@@ -3200,33 +3314,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                               await _openParentMode();
                                             },
                                       borderRadius: BorderRadius.circular(8),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                          width: 64,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.settings,
-                                                size: 28,
-                                                color: Color(0xFFFFCA28),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                AppLocalizations.of(
-                                                  context,
-                                                )!.parentSettings,
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: Color(0xFFFFCA28),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                      child: _buildRoundMenuButton(
+                                        icon: Icons.settings,
+                                        label: AppLocalizations.of(
+                                          context,
+                                        )!.parentSettings,
+                                        iconColor: const Color(0xFF5D4037),
+                                        backgroundColor: const Color(
+                                          0xFFCFD8DC,
+                                        ), // ブルーグレー
                                       ),
                                     ),
                                   ),
@@ -3280,13 +3376,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               ),
                           ],
                         ),
-                        const SizedBox(height: 10), // ボタンの間に少し隙間をあける
+                        const SizedBox(height: 0), // ボタンの間に少し隙間をあける
                         IgnorePointer(
                           ignoring: isAnyTutorialBlinking,
                           child: Opacity(
                             opacity: isAnyTutorialBlinking ? 0.6 : 1.0,
                             child: Material(
-                              color: const Color(0xFFFF7043).withOpacity(0.9),
+                              color: Colors.transparent,
                               borderRadius: BorderRadius.circular(8),
                               child: InkWell(
                                 onTap: () {
@@ -3301,31 +3397,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   _onHelpButtonPressed();
                                 },
                                 borderRadius: BorderRadius.circular(8),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    width: 64,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.question_mark,
-                                          size: 28,
-                                          color: Color(0xFFFFCA28),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          AppLocalizations.of(context)!.help,
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xFFFFCA28),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                child: _buildRoundMenuButton(
+                                  icon: Icons.question_mark,
+                                  label: AppLocalizations.of(context)!.help,
+                                  iconColor: const Color(0xFF5D4037),
+                                  backgroundColor: const Color(
+                                    0xFFFFF9C4,
+                                  ), // ライトイエロー
                                 ),
                               ),
                             ),
@@ -3412,8 +3490,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                               : Colors.grey[700],
                                         ),
                                       ),
-
-                                    const SizedBox(height: 2),
 
                                     // やくそくの名前とポイントを表示
                                     Text(

@@ -354,7 +354,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 6,
+        crossAxisCount: 7,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         childAspectRatio: 0.75, // 縦を少し長めに

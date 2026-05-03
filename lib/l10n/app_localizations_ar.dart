@@ -1837,4 +1837,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get initialSetupCompleteButton => 'إكمال الإعداد';
+
+  @override
+  String get todaysPromise => 'وعود اليوم';
 }

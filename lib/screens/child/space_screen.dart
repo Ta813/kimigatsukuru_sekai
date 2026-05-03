@@ -8,6 +8,7 @@ import 'furniture_customize_screen.dart';
 import 'shop_screen.dart';
 import '../../managers/sfx_manager.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
+import '../../widgets/round_menu_button.dart';
 
 class SpaceScreen extends StatefulWidget {
   final int currentLevel;
@@ -359,126 +360,65 @@ class _SpaceScreenState extends State<SpaceScreen> {
               child: Column(
                 children: [
                   // 家具設定ボタン
-                  Material(
-                    color: const Color(0xFFFF7043).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_space_customize',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          // エラーが発生した場合
-                          print('再生エラー: $e');
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const FurnitureCustomizeScreen(
-                                  mode: CustomizeMode.space,
-                                ),
-                          ),
-                        ).then((_) {
-                          // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                          _loadPlacedItems();
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6.0,
-                          vertical: 4.0,
-                        ),
-                        child: SizedBox(
-                          width: 60,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.rocket_launch,
-                                size: 24,
-                                color: Color(0xFFFFCA28),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                AppLocalizations.of(context)!.navDressUp,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFFFFCA28),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                  RoundMenuButton(
+                    icon: Icons.rocket_launch,
+                    label: AppLocalizations.of(context)!.navDressUp,
+                    iconColor: const Color(0xFF5D4037),
+                    backgroundColor: const Color(0xFFD1F2E1), // ライトミントグリーン
+                    onTap: () {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'start_space_customize',
+                      );
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FurnitureCustomizeScreen(
+                            mode: CustomizeMode.space,
                           ),
                         ),
-                      ),
-                    ),
+                      ).then((_) {
+                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
+                        _loadPlacedItems();
+                      });
+                    },
                   ),
                   // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 0),
 
                   // ショップボタン
-                  Material(
-                    color: const Color(0xFFFF7043).withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(8),
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_space_shop',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          // エラーが発生した場合
-                          print('再生エラー: $e');
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ShopScreen(
-                              currentPoints: _points, // ユーザーの所持ポイント
-                              currentLevel: _level, // ユーザーレベルも渡す
-                              mode: ShopMode.forSpace, // ★宇宙モードを指定
-                            ),
-                          ),
-                        ).then((_) {
-                          // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                          _loadPlacedItems();
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6.0,
-                          vertical: 4.0,
-                        ),
-                        child: SizedBox(
-                          width: 60,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.store,
-                                size: 24,
-                                color: Color(0xFFFFCA28),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                AppLocalizations.of(context)!.navShop,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFFFFCA28),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                  RoundMenuButton(
+                    icon: Icons.store,
+                    label: AppLocalizations.of(context)!.navShop,
+                    iconColor: const Color(0xFF5D4037),
+                    backgroundColor: const Color(0xFFFFE0B2), // ライトオレンジ
+                    onTap: () {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'start_space_shop',
+                      );
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShopScreen(
+                            currentPoints: _points, // ユーザーの所持ポイント
+                            currentLevel: _level, // ユーザーレベルも渡す
+                            mode: ShopMode.forSpace, // ★宇宙モードを指定
                           ),
                         ),
-                      ),
-                    ),
+                      ).then((_) {
+                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
+                        _loadPlacedItems();
+                      });
+                    },
                   ),
                 ],
               ),

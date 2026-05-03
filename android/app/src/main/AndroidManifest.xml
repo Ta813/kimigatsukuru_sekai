@@ -38,6 +38,7 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
+            android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="adjustResize">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
@@ -72,6 +73,9 @@
         <package android:name="com.android.vending" />
         <intent>
             <action android:name="com.google.android.gms.auth.api.signin.SERVICE_CONFIG_RETRIEVE" />
+        </intent>
+        <intent>
+            <action android:name="com.google.android.gms.auth.api.signin.SignInHubActivity" />
         </intent>
         <!-- Android 11+ package visibility: In-App Billing activity -->
         <intent>

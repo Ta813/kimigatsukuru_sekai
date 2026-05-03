@@ -799,5 +799,6 @@
   "setupPassToAdult": "スマホを おうちの人に\nわたしてね！",
   "setupReceivedButton": "うけとった！",
   "initialSetupSettingsMessage": "やくそくの 設定を行います。\nあとで変更できるから、決まっていない場合は「設定完了」ボタンを押してね！",
-  "initialSetupCompleteButton": "設定完了"
+  "initialSetupCompleteButton": "設定完了",
+  "todaysPromise": "きょうのやくそく"
 }

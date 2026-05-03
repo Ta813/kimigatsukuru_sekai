@@ -60,7 +60,23 @@ class BackupService {
       if (account == null) {
         // ここで account が null の場合に限り、UI（SignInHubActivity）を起動する
         debugPrint("Initiating interactive Google Sign-In...");
-        account = await _googleSignIn.signIn();
+
+        // 🌟 OnePlus等の端末でのクラッシュ（SignInHubActivity.onCreateでのNPE）対策。
+        // 前の画面遷移やダイアログの処理が完全に終わる前にインテントを投げると、
+        // インテントデータが欠落したり、アクティビティ生成に失敗するケースがある。
+        if (Platform.isAndroid) {
+          debugPrint("Applying transition delay for Android Google Sign-In...");
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
+
+        try {
+          account = await _googleSignIn.signIn();
+          debugPrint("Interactive Google Sign-In completed: ${account?.email}");
+        } catch (e) {
+          debugPrint("Error during interactive Google Sign-In: $e");
+          // サインイン失敗時に詳細なログを出力
+          rethrow;
+        }
       }
 
       if (account == null) {

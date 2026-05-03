@@ -1837,4 +1837,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get initialSetupCompleteButton => 'Complete';
+
+  @override
+  String get todaysPromise => 'Today\'s Promise';
 }

@@ -80,6 +80,18 @@ class PurchaseManager {
     }
   }
 
+  /// 現在の購入情報を強制的に同期する
+  Future<void> refreshCustomerInfo() async {
+    try {
+      debugPrint('購入情報の同期を開始...');
+      final CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      _updatePremiumStatus(customerInfo);
+      debugPrint('購入情報の同期完了');
+    } catch (e) {
+      debugPrint('購入情報の同期エラー: $e');
+    }
+  }
+
   /// プレミアム会員かどうか（エンタイトルメントの状態）を更新する
   void _updatePremiumStatus(CustomerInfo customerInfo) {
     final activeEntitlements = customerInfo.entitlements.active;
@@ -118,13 +130,25 @@ class PurchaseManager {
             }
           } catch (e) {
             debugPrint('Offerings fetch attempt $attempt failed: $e');
+            // 設定が壊れている可能性を考慮して再設定を試みる（Androidのみ、非常に稀なケース）
+            if (Platform.isAndroid && attempt == 2) {
+              debugPrint('Re-configuring Purchases as a last resort...');
+              String apiKey = _android_apiKey;
+              await Purchases.configure(PurchasesConfiguration(apiKey));
+            }
             if (attempt < 3)
               await Future.delayed(const Duration(milliseconds: 500));
           }
         }
       }
+
+      if (offerings == null) {
+        throw Exception('Offerings could not be fetched after retries.');
+      }
+
       debugPrint('Offerings status: ${offerings?.all.keys.toList()}');
 
+      // 🌟 Androidでの接続確認を兼ねて最新情報を取得
       final customerInfo = await Purchases.getCustomerInfo();
       debugPrint(
         'CustomerInfo at showPaywall: ${customerInfo.entitlements.active.keys.toList()}',
@@ -132,13 +156,16 @@ class PurchaseManager {
 
       // OnePlus等の端末で前の画面トランジションが完了する前に
       // Billing UI が起動されると PendingIntent が null になるケースへの対策。
-      // Androidでは画面遷移後に短い遅延を挟む。
+      // Androidでは画面遷移後に少し長めの遅延を挟む（300ms -> 500msに強化）。
       if (Platform.isAndroid) {
-        await Future.delayed(const Duration(milliseconds: 300));
+        debugPrint('Applying transition delay for Android billing flow...');
+        await Future.delayed(const Duration(milliseconds: 500));
       }
 
+      debugPrint('Calling RevenueCatUI.presentPaywall()...');
       // 2024年現在のモダンな実装: RevenueCat公式のPaywall UIを表示
       await RevenueCatUI.presentPaywall();
+      debugPrint('RevenueCatUI.presentPaywall() returned.');
 
       // BGMの再開を試みる（ネイティブUIや回転で止まる場合があるため）
       try {

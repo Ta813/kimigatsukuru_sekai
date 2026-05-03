@@ -1837,4 +1837,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get initialSetupCompleteButton => 'সেটআপ সম্পন্ন';
+
+  @override
+  String get todaysPromise => 'আজকের প্রতিশ্রুতি';
 }

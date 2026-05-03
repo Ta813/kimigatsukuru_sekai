@@ -1837,4 +1837,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get initialSetupCompleteButton => '設定完了';
+
+  @override
+  String get todaysPromise => 'きょうのやくそく';
 }

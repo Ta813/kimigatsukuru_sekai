@@ -799,5 +799,6 @@
   "setupPassToAdult": "براہ کرم فون\nبڑے کو دیں!",
   "setupReceivedButton": "مل گیا!",
   "initialSetupSettingsMessage": "وعدے سیٹ کریں۔\nآپ انہیں بعد میں تبدیل کر سکتے ہیں، لہذا اگر آپ نے ابھی تک فیصلہ نہیں کیا ہے، تو بس 'سیٹ اپ مکمل' دبائیں!",
-  "initialSetupCompleteButton": "سیٹ اپ مکمل"
+  "initialSetupCompleteButton": "سیٹ اپ مکمل",
+  "todaysPromise": "آج کا وعدہ"
 }

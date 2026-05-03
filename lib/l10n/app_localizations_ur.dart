@@ -1837,4 +1837,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get initialSetupCompleteButton => 'سیٹ اپ مکمل';
+
+  @override
+  String get todaysPromise => 'آج کا وعدہ';
 }

@@ -143,7 +143,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 10),
               // 年齢選択のリスト
               _buildAgeButton(
                 context,
@@ -260,7 +260,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     bool isAdult = false,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 40),
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 40),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: isAdult ? Colors.blueAccent : Colors.white,
@@ -522,7 +522,7 @@ class SetupCompleteScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 30),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -533,7 +533,7 @@ class SetupCompleteScreen extends StatelessWidget {
                 Image.asset('assets/images/character_kuma.gif', height: 100),
               ],
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 16),
             Text(
               l10n.setupFinishMessage,
               textAlign: TextAlign.center,
@@ -544,7 +544,7 @@ class SetupCompleteScreen extends StatelessWidget {
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
                 try {
@@ -630,20 +630,20 @@ class PassDeviceScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 30),
 
             Icon(
               isToChild ? Icons.child_care : Icons.face_retouching_natural,
               size: 100,
               color: isToChild ? Colors.orangeAccent : Colors.blueAccent,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             Text(
               isToChild ? l10n.setupPassToChild : l10n.setupPassToAdult,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
                 try {

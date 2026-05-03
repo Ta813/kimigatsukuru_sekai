@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -70,6 +72,14 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     });
 
     try {
+      // OnePlus等の端末で前の画面トランジションやダイアログの開閉が完了する前に
+      // Billing UI が起動されると PendingIntent が null になりクラッシュするケースへの対策。
+      if (Platform.isAndroid) {
+        debugPrint('Applying transition delay before purchasePackage...');
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+
+      debugPrint('Calling Purchases.purchasePackage()...');
       final result = await Purchases.purchasePackage(_selectedPackage!);
       final customerInfo = result is CustomerInfo
           ? result
@@ -152,118 +162,186 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      body: Stack(
-        children: [
-          SafeArea(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // ==============================
-                // 🌟 左側：説明テキストと表
-                // ==============================
-                Expanded(
-                  flex: 5,
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.only(
-                      left: 32.0,
-                      right: 32.0,
-                      top: 48.0,
-                      bottom: 24.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          l10n.paywallTitle,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            height: 1.3,
-                            color: Colors.black87,
-                          ),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          bool isLandscape = orientation == Orientation.landscape;
+
+          if (isLandscape) {
+            return _buildLandscapeLayout(l10n);
+          } else {
+            return _buildPortraitLayout(l10n);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildLandscapeLayout(AppLocalizations l10n) {
+    return Stack(
+      children: [
+        SafeArea(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 🌟 左側：説明テキストと表
+              Expanded(
+                flex: 5,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(
+                    left: 32.0,
+                    right: 32.0,
+                    top: 48.0,
+                    bottom: 24.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        l10n.paywallTitle,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          height: 1.3,
+                          color: Colors.black87,
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          l10n.paywallSubtitle,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
-                            height: 1.5,
-                          ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.paywallSubtitle,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          height: 1.5,
                         ),
-                        const SizedBox(height: 16),
-                        _buildComparisonTable(l10n),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildComparisonTable(l10n),
+                    ],
                   ),
                 ),
+              ),
 
-                // ==============================
-                // 🌟 右側：プラン選択と購入ボタン
-                // ==============================
-                Expanded(
-                  flex: 4,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(-5, 0),
-                        ),
-                      ],
-                    ),
-                    child: _buildRightSidePanel(l10n),
+              // 🌟 右側：プラン選択と購入ボタン
+              Expanded(
+                flex: 4,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(-5, 0),
+                      ),
+                    ],
                   ),
+                  child: _buildRightSidePanel(l10n),
+                ),
+              ),
+            ],
+          ),
+        ),
+        _buildCloseButton(),
+        if (_isPurchasing) _buildLoadingOverlay(),
+      ],
+    );
+  }
+
+  Widget _buildPortraitLayout(AppLocalizations l10n) {
+    return Stack(
+      children: [
+        SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
+                      Text(
+                        l10n.paywallTitle,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          height: 1.3,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.paywallSubtitle,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      _buildComparisonTable(l10n),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(24.0),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(32),
+                    ),
+                  ),
+                  child: _buildRightSidePanel(l10n),
                 ),
               ],
             ),
           ),
+        ),
+        _buildCloseButton(),
+        if (_isPurchasing) _buildLoadingOverlay(),
+      ],
+    );
+  }
 
-          // ==============================
-          // 🌟 左上の×ボタン
-          // ==============================
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.black87),
-                  onPressed: () {
-                    FirebaseAnalytics.instance.logEvent(name: 'premium_close');
-                    try {
-                      SfxManager.instance.playTapSound();
-                    } catch (e) {}
-                    Navigator.pop(context);
-                  },
-                ),
+  Widget _buildCloseButton() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-            ),
+            ],
           ),
+          child: IconButton(
+            icon: const Icon(Icons.close, color: Colors.black87),
+            onPressed: () {
+              FirebaseAnalytics.instance.logEvent(name: 'premium_close');
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (e) {}
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ),
+    );
+  }
 
-          // ローディングオーバーレイ
-          if (_isPurchasing)
-            Container(
-              color: Colors.black.withOpacity(0.4),
-              child: const Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              ),
-            ),
-        ],
+  Widget _buildLoadingOverlay() {
+    return Container(
+      color: Colors.black.withOpacity(0.4),
+      child: const Center(
+        child: CircularProgressIndicator(color: Colors.white),
       ),
     );
   }
@@ -348,7 +426,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
   Widget _buildRightSidePanel(AppLocalizations l10n) {
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -538,13 +616,15 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
               isSelected ? Icons.check_circle : Icons.circle_outlined,
               color: isSelected ? _primaryColor : Colors.grey.shade300,
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

@@ -6,6 +6,7 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../managers/purchase_manager.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/round_menu_button.dart';
 import 'sea_screen.dart';
 import 'sky_screen.dart';
 
@@ -252,100 +253,42 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Material(
-                        color: const Color(0xFFFF7043).withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(8),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: () {
-                            FirebaseAnalytics.instance.logEvent(
-                              name: 'start_world_map_back',
-                            );
-                            try {
-                              SfxManager.instance.playTapSound();
-                            } catch (e) {
-                              print('再生エラー: $e');
-                            }
-                            Navigator.pop(context);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6.0,
-                              vertical: 4.0,
-                            ),
-                            child: SizedBox(
-                              width: 60,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.keyboard_return,
-                                    size: 24,
-                                    color: Color(0xFFFFCA28),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    AppLocalizations.of(context)!.navBack,
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Color(0xFFFFCA28),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                      RoundMenuButton(
+                        icon: Icons.keyboard_return,
+                        label: AppLocalizations.of(context)!.navBack,
+                        iconColor: const Color(0xFF5D4037),
+                        backgroundColor: const Color(0xFFCFD8DC), // ブルーグレー
+                        onTap: () {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_world_map_back',
+                          );
+                          try {
+                            SfxManager.instance.playTapSound();
+                          } catch (e) {
+                            print('再生エラー: $e');
+                          }
+                          Navigator.pop(context);
+                        },
                       ),
 
-                      const SizedBox(height: 6), // ボタンの間に少し隙間をあける
+                      const SizedBox(height: 0), // ボタンの間に少し隙間をあける
 
-                      Material(
-                        color: const Color(0xFFFF7043).withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(8),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: () {
-                            FirebaseAnalytics.instance.logEvent(
-                              name: 'start_world_map_help',
-                            );
-                            try {
-                              SfxManager.instance.playTapSound();
-                            } catch (e) {
-                              print('再生エラー: $e');
-                            }
-                            _showGuideSequence();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6.0,
-                              vertical: 4.0,
-                            ),
-                            child: SizedBox(
-                              width: 60,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(
-                                    Icons.question_mark,
-                                    size: 24,
-                                    color: Color(0xFFFFCA28),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    AppLocalizations.of(context)!.help,
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Color(0xFFFFCA28),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                      RoundMenuButton(
+                        icon: Icons.question_mark,
+                        label: AppLocalizations.of(context)!.help,
+                        iconColor: const Color(0xFF5D4037),
+                        backgroundColor: const Color(0xFFFFF9C4), // ライトイエロー
+                        onTap: () {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_world_map_help',
+                          );
+                          try {
+                            SfxManager.instance.playTapSound();
+                          } catch (e) {
+                            print('再生エラー: $e');
+                          }
+                          _showGuideSequence();
+                        },
                       ),
                     ],
                   ),

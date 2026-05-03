@@ -799,5 +799,6 @@
   "setupPassToAdult": "يرجى تسليم الهاتف\nلولي الأمر!",
   "setupReceivedButton": "استلمت!",
   "initialSetupSettingsMessage": "قم بإعداد الوعود.\nيمكنك تغييرها لاحقاً، لذا إذا لم تقرر بعد، فقط اضغط على 'إكمال الإعداد'!",
-  "initialSetupCompleteButton": "إكمال الإعداد"
+  "initialSetupCompleteButton": "إكمال الإعداد",
+  "todaysPromise": "وعود اليوم"
 }

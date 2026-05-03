@@ -3642,6 +3642,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Complete'**
   String get initialSetupCompleteButton;
+
+  /// No description provided for @todaysPromise.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Promise'**
+  String get todaysPromise;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

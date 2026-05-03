@@ -31,21 +31,54 @@ class MainActivity: FlutterFragmentActivity() {
     // エンジンが正常にネイティブと接続され、Dartを実行しているかを確認する
     private fun isEngineHealthy(engine: FlutterEngine): Boolean {
         return try {
-            // 1. Dartを実行中かチェック
-            if (!engine.dartExecutor.isExecutingDart) return false
+            // 1. DartExecutorのチェック
+            val dartExecutor = engine.dartExecutor
+            if (!dartExecutor.isExecutingDart) {
+                Log.w("MainActivity", "Engine Health: Dart is not executing")
+                return false
+            }
 
-            // 2. リフレクションを使用して内部のFlutterJNIがアタッチされているかチェック
-            // これが "FlutterJNI is not attached to native" を防ぐ最も確実な方法です
-            val flutterJniField = engine.javaClass.getDeclaredField("flutterJNI")
+            // 2. Rendererのチェック（setViewportMetricsのクラッシュ箇所に関連）
+            val renderer = engine.renderer
+            if (renderer == null) {
+                Log.w("MainActivity", "Engine Health: Renderer is null")
+                return false
+            }
+
+            // 3. リフレクションを使用して内部のFlutterJNIがアタッチされているかチェック
+            // io.flutter.embedding.engine.FlutterEngine の内部フィールド flutterJNI を取得
+            val flutterJniField = try {
+                engine.javaClass.getDeclaredField("flutterJNI")
+            } catch (e: NoSuchFieldException) {
+                // フィールド名が変更されている可能性（プロガード等）への予備チェック
+                engine.javaClass.declaredFields.firstOrNull { it.type.name.contains("FlutterJNI") }
+            }
+
+            if (flutterJniField == null) {
+                Log.w("MainActivity", "Engine Health: Could not find flutterJNI field")
+                return false
+            }
+
             flutterJniField.isAccessible = true
             val flutterJni = flutterJniField.get(engine)
+            
+            if (flutterJni == null) {
+                Log.w("MainActivity", "Engine Health: flutterJNI is null")
+                return false
+            }
+
+            // FlutterJNI.isAttached() メソッドを呼び出す
             val isAttachedMethod = flutterJni.javaClass.getDeclaredMethod("isAttached")
             val isAttached = isAttachedMethod.invoke(flutterJni) as Boolean
             
+            if (!isAttached) {
+                Log.w("MainActivity", "Engine Health: FlutterJNI is NOT attached")
+            }
+            
             isAttached
         } catch (e: Exception) {
-            Log.e("MainActivity", "Engine health check failed: ${e.message}")
-            // 判定に失敗した場合は、安全のため不健全とみなす
+            Log.e("MainActivity", "Engine health check failed: ${e.message}", e)
+            // 判定に失敗した場合は、安全のため不健全とみなして新しいエンジンを作らせる
             false
         }
     }

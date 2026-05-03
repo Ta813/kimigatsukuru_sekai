@@ -1072,15 +1072,15 @@ class _RegularPromiseSettingsScreenState
       elevation: isDragging ? 8 : 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        leading: Text(template['icon'], style: const TextStyle(fontSize: 28)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+        leading: Text(template['icon'], style: const TextStyle(fontSize: 26)),
         title: Text(
           template['title'],
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
         ),
         subtitle: Text(
           '${template['time']} / ${AppLocalizations.of(context)!.durationAndPoints(template['duration'].toString(), template['points'].toString())}',
-          style: const TextStyle(fontSize: 14),
+          style: const TextStyle(fontSize: 9),
         ),
         trailing: isTutorialTrialCard
             ? CompositedTransformTarget(
@@ -1292,7 +1292,7 @@ class _RegularPromiseSettingsScreenState
                           child: Text(
                             l10n.initialSetupSettingsMessage,
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),

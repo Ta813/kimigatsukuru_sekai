@@ -799,5 +799,6 @@
   "setupPassToAdult": "Please pass the phone\nto the adult!",
   "setupReceivedButton": "Received!",
   "initialSetupSettingsMessage": "Set up the promises.\nYou can change them later, so if you haven't decided yet, just press 'Complete'!",
-  "initialSetupCompleteButton": "Complete"
+  "initialSetupCompleteButton": "Complete",
+  "todaysPromise": "Today's Promise"
 }
