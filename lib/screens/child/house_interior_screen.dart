@@ -173,8 +173,14 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
     if (itemPath.contains('/house_interior_items/mokuba.png')) return 60.0;
     if (itemPath.contains('/house_interior_items/kumanonuigurumi.png'))
       return 60.0;
+    if (itemPath.contains('/house_interior_items/sea_kagami.png')) return 80.0;
     if (itemPath.contains('/house_interior_items/')) return 40.0;
     if (itemPath.contains('/house_interior_furniture/rantan.png')) return 70.0;
+    if (itemPath.contains('/house_interior_furniture/sea_isu.png')) return 80.0;
+    if (itemPath.contains('/house_interior_furniture/sea_isu2.png'))
+      return 60.0;
+    if (itemPath.contains('/house_interior_furniture/sea_table.png'))
+      return 80.0;
     return 100.0; // デフォルトサイズ
   }
 

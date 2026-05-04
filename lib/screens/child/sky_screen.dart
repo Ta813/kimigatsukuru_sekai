@@ -279,42 +279,26 @@ class _SkyScreenState extends State<SkyScreen> {
                   ),
                 ),
               ),
-              SafeArea(
-                // ★ ノッチやステータスバーを避ける
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 1.0), // 画面下からの余白
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            FirebaseAnalytics.instance.logEvent(
-                              name: 'start_sky_back',
-                            );
-                            try {
-                              SfxManager.instance.playTapSound();
-                            } catch (e) {
-                              // エラーが発生した場合
-                              print('再生エラー: $e');
-                            }
-                            // ★ ワールドマップ画面に戻る
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8.0), // タップ領域を広げる
-                            child: const AnimatedIconIndicator(
-                              iconData: Icons.arrow_downward, // ★ 下矢印
-                              iconColor: Colors.blueAccent,
-                              iconSize: 40,
-                              offsetY: 5, // 上下動の幅を少し小さめに
-                              duration: Duration(seconds: 1),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+              Positioned(
+                top: 20.0, // 上からの距離
+                left: 20.0, // 左からの距離
+                child: SafeArea(
+                  child: RoundMenuButton(
+                    icon: Icons.keyboard_return,
+                    label: AppLocalizations.of(context)!.navBack,
+                    iconColor: const Color(0xFF5D4037),
+                    backgroundColor: const Color(0xFFCFD8DC), // ブルーグレー
+                    onTap: () {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'start_sky_back',
+                      );
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
               ),
@@ -378,7 +362,8 @@ class _SkyScreenState extends State<SkyScreen> {
 
               Positioned(
                 top: 30, // ポイント表示の下あたり
-                left: 30, // 左端を画面の左端に合わせる
+                left: 0,
+                right: 0,
                 child: Center(
                   // ★ Centerウィジェットで中央に配置
                   child: Container(

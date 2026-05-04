@@ -1925,6 +1925,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   double _getItemSize(String itemPath) {
     if (itemPath.contains('assets/images/item_kuruma.png')) {
       return 100.0;
+    } else if (itemPath.contains('assets/images/item_sea_toudai.png')) {
+      return 200.0;
     } else if (itemPath.contains('assets/images/item_jitensya.png')) {
       return 70.0;
     } else if (itemPath.contains('assets/images/item_jouro.png')) {

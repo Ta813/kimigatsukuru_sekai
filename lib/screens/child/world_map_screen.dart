@@ -7,8 +7,11 @@ import '../../managers/sfx_manager.dart';
 import '../../managers/purchase_manager.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/round_menu_button.dart';
+import '../../widgets/animated_placeholder_thumbnail.dart';
 import 'sea_screen.dart';
 import 'sky_screen.dart';
+import 'space_screen.dart';
+import 'world_map2_screen.dart';
 
 class WorldMapScreen extends StatefulWidget {
   // ★ StatefulWidgetに変更
@@ -335,14 +338,11 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                     height: 150,
                     color: Colors.transparent,
                     child: Align(
-                      // ★ アイコンを下中央に配置
-                      alignment: Alignment.bottomCenter,
-                      child: _AnimatedIconIndicator(
-                        iconData: Icons.arrow_downward, // 下矢印
-                        iconColor: Colors.blue, // 海っぽい色
-                        iconSize: 40,
-                        offsetY: 10,
-                        duration: const Duration(seconds: 1),
+                      // ★ サムネイル画像に変更
+                      child: const _AnimatedMapThumbnail(
+                        imagePath: 'assets/images/sea_background.png',
+                        offsetY: 8,
+                        duration: Duration(seconds: 2),
                       ),
                     ),
                   ),
@@ -351,7 +351,7 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
 
               // ★ --- 上の空エリアのタップ領域 --- ★
               Align(
-                alignment: Alignment.topCenter,
+                alignment: const Alignment(-0.7, -0.3), // 左のほうにずらす
                 child: GestureDetector(
                   onTap: () {
                     FirebaseAnalytics.instance.logEvent(
@@ -385,18 +385,63 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                     }
                   },
                   child: Container(
-                    width: 300,
+                    width: 150,
                     height: 150,
                     color: Colors.transparent,
-                    child: Align(
-                      // ★ アイコンを上中央に配置
-                      alignment: Alignment.topCenter,
-                      child: _AnimatedIconIndicator(
-                        iconData: Icons.arrow_upward, // 上矢印
-                        iconColor: Colors.purpleAccent, // 宇宙っぽい色
-                        iconSize: 40,
-                        offsetY: 10,
-                        duration: const Duration(seconds: 1),
+                    child: Center(
+                      // ★ サムネイル画像に変更
+                      child: const _AnimatedMapThumbnail(
+                        imagePath: 'assets/images/sky_background.png',
+                        offsetY: 8,
+                        duration: Duration(seconds: 2),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // ★ --- さらに上の宇宙エリアのタップ領域 --- ★
+              Align(
+                alignment: const Alignment(-0.7, -1.1), // 空のさらに上に配置
+                child: GestureDetector(
+                  onTap: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_world_map_space',
+                    );
+                    // ★ レベル20以上かチェック
+                    if (widget.currentLevel >= 20 || isPremium) {
+                      try {
+                        SfxManager.instance.playSuccessSound();
+                      } catch (e) {
+                        print('再生エラー: $e');
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SpaceScreen(
+                            currentLevel: widget.currentLevel,
+                            currentPoints: widget.currentPoints,
+                            requiredExpForNextLevel:
+                                widget.requiredExpForNextLevel,
+                            experience: widget.experience,
+                            experienceFraction: widget.experienceFraction,
+                          ),
+                        ),
+                      );
+                    } else {
+                      // レベルが足りない場合
+                      _showPremiumUpgradeDialog(20);
+                    }
+                  },
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    color: Colors.transparent,
+                    child: Center(
+                      child: const _AnimatedMapThumbnail(
+                        imagePath: 'assets/images/space_background.png',
+                        offsetY: 8,
+                        duration: Duration(seconds: 2),
                       ),
                     ),
                   ),
@@ -405,7 +450,7 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
 
               // ★ --- 真ん中の島のタップ領域 --- ★
               Align(
-                alignment: Alignment.center,
+                alignment: const Alignment(0.0, -0.6),
                 child: GestureDetector(
                   onTap: () {
                     FirebaseAnalytics.instance.logEvent(
@@ -441,13 +486,55 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                     height: 200, // タップ領域の縦幅
                     color: Colors.transparent, // 透明なので見えない
                     child: Center(
-                      // ★ アイコンを中央に配置
-                      child: _AnimatedIconIndicator(
-                        iconData: Icons.circle_outlined, // ◎マーク
-                        iconColor: Colors.amber, // 色を強調
-                        iconSize: 100,
-                        offsetY: 8, // 上下動の幅
-                        duration: const Duration(seconds: 2), // 2秒で1往復
+                      // ★ サムネイル画像に変更
+                      child: const _AnimatedMapThumbnail(
+                        imagePath: 'assets/images/island.png',
+                        offsetY: 8,
+                        duration: Duration(seconds: 2),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // ★ --- 右端のマップ（世界地図2）のタップ領域 --- ★
+              Align(
+                alignment: const Alignment(0.9, 0.0), // 右端中央
+                child: GestureDetector(
+                  onTap: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_world_map2',
+                    );
+                    try {
+                      SfxManager.instance.playSuccessSound();
+                    } catch (e) {
+                      print('再生エラー: $e');
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WorldMap2Screen(
+                          currentLevel: widget.currentLevel,
+                          currentPoints: widget.currentPoints,
+                          requiredExpForNextLevel:
+                              widget.requiredExpForNextLevel,
+                          experience: widget.experience,
+                          experienceFraction: widget.experienceFraction,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    color: Colors.transparent,
+                    child: Center(
+                      child: const AnimatedPlaceholderThumbnail(
+                        text: '次の世界へ',
+                        imagePath: 'assets/images/world_map_background2.png',
+                        offsetY: 8,
+                        duration: Duration(seconds: 2),
+                        iconData: Icons.arrow_forward_ios,
                       ),
                     ),
                   ),
@@ -461,31 +548,29 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
   }
 }
 
-class _AnimatedIconIndicator extends StatefulWidget {
-  final IconData iconData;
-  final Color iconColor;
-  final double iconSize;
-  final double offsetY; // アニメーションのオフセット量
-  final Duration duration; // アニメーションの速度
-  final double rotationAngle; // アイコンの回転角度 (ラジアン)
+class _AnimatedMapThumbnail extends StatefulWidget {
+  final String imagePath;
+  final double width;
+  final double height;
+  final double offsetY;
+  final Duration duration;
 
-  const _AnimatedIconIndicator({
-    required this.iconData,
-    this.iconColor = Colors.white,
-    this.iconSize = 30,
-    this.offsetY = 10, // デフォルトで10ピクセル上下する
-    this.duration = const Duration(seconds: 1), // デフォルトで1秒間
+  const _AnimatedMapThumbnail({
+    required this.imagePath,
     // ignore: unused_element_parameter
-    this.rotationAngle = 0, // デフォルトで回転なし
+    this.width = 120,
+    // ignore: unused_element_parameter
+    this.height = 80,
+    this.offsetY = 5,
+    this.duration = const Duration(seconds: 2),
   });
 
   @override
-  State<_AnimatedIconIndicator> createState() => _AnimatedIconIndicatorState();
+  State<_AnimatedMapThumbnail> createState() => _AnimatedMapThumbnailState();
 }
 
-class _AnimatedIconIndicatorState extends State<_AnimatedIconIndicator>
+class _AnimatedMapThumbnailState extends State<_AnimatedMapThumbnail>
     with SingleTickerProviderStateMixin {
-  // ★ SingleTickerProviderStateMixinを追加
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -493,14 +578,11 @@ class _AnimatedIconIndicatorState extends State<_AnimatedIconIndicator>
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: widget.duration)
-      ..repeat(reverse: true); // ★ ここで無限リピート（往復）を設定
+      ..repeat(reverse: true);
 
     _animation = Tween<double>(begin: -widget.offsetY, end: widget.offsetY)
         .animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeInOutSine, // ★ 滑らかな上下動のカーブ
-          ),
+          CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
         );
   }
 
@@ -513,17 +595,27 @@ class _AnimatedIconIndicatorState extends State<_AnimatedIconIndicator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      // ★ AnimatedBuilderでアニメーションを適用
       animation: _animation,
       builder: (context, child) {
         return Transform.translate(
-          offset: Offset(0, _animation.value), // _animation.valueが直接オフセットになる
-          child: Transform.rotate(
-            angle: widget.rotationAngle,
-            child: Icon(
-              widget.iconData,
-              color: widget.iconColor,
-              size: widget.iconSize,
+          offset: Offset(0, _animation.value),
+          child: Container(
+            width: widget.width,
+            height: widget.height,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white, width: 4),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+              image: DecorationImage(
+                image: AssetImage(widget.imagePath),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         );

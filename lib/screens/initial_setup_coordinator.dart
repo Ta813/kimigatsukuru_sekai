@@ -8,6 +8,7 @@ import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart'; // �
 import '../helpers/shared_prefs_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../managers/sfx_manager.dart';
+import '../managers/purchase_manager.dart';
 import 'child/child_home_screen.dart';
 import 'child/character_customize_screen.dart';
 
@@ -149,7 +150,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 context,
                 label: l10n.setupAgeUnder7,
                 onTap: () {
-                  FirebaseAnalytics.instance.logEvent(name: 'setup_age_-7');
                   _startPatternB(context); // パターンB: こども ➔ おとな
                 },
               ),
@@ -157,7 +157,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 context,
                 label: l10n.setupAge8to12,
                 onTap: () {
-                  FirebaseAnalytics.instance.logEvent(name: 'setup_age_8-12');
                   _startPatternC(context); // パターンC: こども ➔ おとな（バトンなし）
                 },
               ),
@@ -165,7 +164,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 context,
                 label: l10n.setupAge13to18,
                 onTap: () {
-                  FirebaseAnalytics.instance.logEvent(name: 'setup_age_13-18');
                   _startPatternC(context); // パターンC: こども ➔ おとな（バトンなし）
                 },
               ),
@@ -174,7 +172,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 label: l10n.setupAgeAdult,
                 isAdult: true,
                 onTap: () {
-                  FirebaseAnalytics.instance.logEvent(name: 'setup_age_18-');
                   _startPatternA(context); // パターンA: おとな ➔ こども
                 },
               ),
@@ -279,6 +276,17 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
           try {
             SfxManager.instance.playTapSound();
           } catch (e) {}
+
+          final l10n = AppLocalizations.of(context)!;
+          if (isAdult) {
+            FirebaseAnalytics.instance.logEvent(name: 'setup_age_18-');
+          } else if (label == l10n.setupAgeUnder7) {
+            FirebaseAnalytics.instance.logEvent(name: 'setup_age_-7');
+          } else if (label == l10n.setupAge8to12) {
+            FirebaseAnalytics.instance.logEvent(name: 'setup_age_8-12');
+          } else if (label == l10n.setupAge13to18) {
+            FirebaseAnalytics.instance.logEvent(name: 'setup_age_13-18');
+          }
           onTap();
         },
         child: Text(
@@ -444,11 +452,13 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     if (resumeStep <= paywallStep) {
       await SharedPrefsHelper.saveSetupProgress(pattern, paywallStep);
       if (!context.mounted) return;
-      FirebaseAnalytics.instance.logEvent(name: 'setup_paywall_screen_show');
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const PremiumPaywallScreen()),
-      );
+      if (!PurchaseManager.instance.isPremium.value) {
+        FirebaseAnalytics.instance.logEvent(name: 'setup_paywall_screen_show');
+        await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const PremiumPaywallScreen()),
+        );
+      }
     }
 
     if (!context.mounted) return;

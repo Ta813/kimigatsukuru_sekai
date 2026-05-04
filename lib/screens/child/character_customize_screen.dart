@@ -204,84 +204,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         isLevelLocked && !PurchaseManager.instance.isPremium.value;
 
     if (isLocked) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(
-            AppLocalizations.of(context)!.upgradeToPremium,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          content: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF3E0),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFFFF7043).withOpacity(0.5),
-                width: 2,
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  AppLocalizations.of(
-                    context,
-                  )!.shopLevelLockMessage(item.requiredLevel),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    height: 1.5,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
-                ),
-                Text(
-                  AppLocalizations.of(context)!.premiumShopUnlockMessage,
-                  style: const TextStyle(fontSize: 16, height: 1.5),
-                ),
-              ],
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                AppLocalizations.of(context)!.cancel,
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'premium_open_character_customize',
-                );
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PremiumPaywallScreen(),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF7043),
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 4,
-              ),
-              child: Text(
-                AppLocalizations.of(context)!.seeDetails,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      );
+      _showPremiumUpgradeDialog(item);
       return;
     }
 
@@ -297,11 +220,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(
-          item.getDisplayName(context),
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
         content: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -376,6 +294,87 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ),
             child: Text(
               AppLocalizations.of(context)!.exchange,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPremiumUpgradeDialog(ShopItem item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          AppLocalizations.of(context)!.upgradeToPremium,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3E0),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFFF7043).withOpacity(0.5),
+              width: 2,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppLocalizations.of(
+                  context,
+                )!.shopLevelLockMessage(item.requiredLevel),
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange,
+                ),
+              ),
+              Text(
+                AppLocalizations.of(context)!.premiumShopUnlockMessage,
+                style: const TextStyle(fontSize: 16, height: 1.5),
+              ),
+            ],
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              FirebaseAnalytics.instance.logEvent(
+                name: 'premium_open_character_customize',
+              );
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PremiumPaywallScreen(),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043),
+              foregroundColor: Colors.white,
+              side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.seeDetails,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -585,6 +584,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                         final item = currentItems[index];
                         final isSelected =
                             item.imagePath == currentEquippedPath;
+                        final isLocked =
+                            item.requiredLevel >= 10 &&
+                            !PurchaseManager.instance.isPremium.value;
 
                         return Card(
                           elevation: isSelected ? 6 : 2,
@@ -602,6 +604,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                           ),
                           child: InkWell(
                             onTap: () {
+                              if (isLocked) {
+                                _showPremiumUpgradeDialog(item);
+                                return;
+                              }
                               try {
                                 SfxManager.instance.playTapSound();
                               } catch (e) {}
@@ -616,9 +622,45 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                                   _setupSelectedCharacter = item.imagePath;
                               });
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: _buildItemPreviewImage(item),
+                            child: Stack(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Opacity(
+                                    opacity: isLocked ? 0.5 : 1.0,
+                                    child: _buildItemPreviewImage(item),
+                                  ),
+                                ),
+                                if (isLocked)
+                                  Positioned.fill(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.6),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(
+                                            Icons.lock,
+                                            color: Colors.white,
+                                            size: 28,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Lv.${item.requiredLevel}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                         );
@@ -727,15 +769,25 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
 
             if (_setupStep < 4) {
               if (_setupStep == 0) {
-                FirebaseAnalytics.instance.logEvent(name: 'setup_1_start');
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'setup_child_1_start',
+                );
               } else if (_setupStep == 1) {
-                FirebaseAnalytics.instance.logEvent(name: 'setup_2_start');
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'setup_child_2_start',
+                );
               } else if (_setupStep == 2) {
-                FirebaseAnalytics.instance.logEvent(name: 'setup_3_start');
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'setup_child_3_start',
+                );
               } else if (_setupStep == 3) {
-                FirebaseAnalytics.instance.logEvent(name: 'setup_4_start');
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'setup_child_4_start',
+                );
               } else if (_setupStep == 4) {
-                FirebaseAnalytics.instance.logEvent(name: 'setup_5_start');
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'setup_child_5_start',
+                );
               }
               setState(() {
                 _setupStep++;
@@ -768,6 +820,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   Widget _buildItemPreviewImage(ShopItem item) {
+    if (item.imagePath.isEmpty) {
+      return const Center(
+        child: Icon(Icons.do_not_disturb_alt, size: 40, color: Colors.grey),
+      );
+    }
     if (item.type == 'face' || item.type == 'headgear') {
       return ClipRect(
         child: FittedBox(
@@ -977,12 +1034,29 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     final allClothes = shopItems
         .where((item) => item.type == 'clothes')
         .toList();
-    final allHeadgear = shopItems
-        .where((item) => item.type == 'headgear')
-        .toList();
-    final allAccessories = shopItems
-        .where((item) => item.type == 'accessory')
-        .toList();
+    final noneHeadgear = ShopItem(
+      name: 'なし',
+      imagePath: '',
+      type: 'headgear',
+      price: 0,
+      requiredLevel: 1,
+    );
+    final noneAccessory = ShopItem(
+      name: 'なし',
+      imagePath: '',
+      type: 'accessory',
+      price: 0,
+      requiredLevel: 1,
+    );
+
+    final allHeadgear = [
+      noneHeadgear,
+      ...shopItems.where((item) => item.type == 'headgear'),
+    ];
+    final allAccessories = [
+      noneAccessory,
+      ...shopItems.where((item) => item.type == 'accessory'),
+    ];
 
     return DefaultTabController(
       length: 5,
@@ -1173,10 +1247,13 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         final item = items[index];
         final isEquipped = item.imagePath == equippedItemPath;
 
-        final bool isPurchased = _purchasedItemNames.contains(item.name);
+        final bool isPurchased =
+            item.imagePath.isEmpty || _purchasedItemNames.contains(item.name);
         final bool isLevelLocked = _currentLevel < item.requiredLevel;
         final bool isLocked =
-            isLevelLocked && !PurchaseManager.instance.isPremium.value;
+            item.imagePath.isNotEmpty &&
+            isLevelLocked &&
+            !PurchaseManager.instance.isPremium.value;
 
         Widget card = Card(
           elevation: isEquipped ? 4 : 2,
@@ -1298,10 +1375,13 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         final item = options[index];
         final isSelected = selected.contains(item.imagePath);
 
-        final bool isPurchased = _purchasedItemNames.contains(item.name);
+        final bool isPurchased =
+            item.imagePath.isEmpty || _purchasedItemNames.contains(item.name);
         final bool isLevelLocked = _currentLevel < item.requiredLevel;
         final bool isLocked =
-            isLevelLocked && !PurchaseManager.instance.isPremium.value;
+            item.imagePath.isNotEmpty &&
+            isLevelLocked &&
+            !PurchaseManager.instance.isPremium.value;
 
         Widget itemWidget = GestureDetector(
           onTap: () async {

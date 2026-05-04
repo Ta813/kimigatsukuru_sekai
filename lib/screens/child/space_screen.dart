@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
-import '../../widgets/animated_icon_indicator.dart';
 import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
 import 'shop_screen.dart';
@@ -188,41 +187,24 @@ class _SpaceScreenState extends State<SpaceScreen> {
             ),
           ),
 
-          // --- 下に戻る矢印 (空へ戻る) ---
-          SafeArea(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_space_back',
-                        );
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {
-                          // エラーが発生した場合
-                          print('再生エラー: $e');
-                        }
-                        // 空の画面に戻る
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        child: const AnimatedIconIndicator(
-                          iconData: Icons.arrow_downward,
-                          iconColor: Colors.white,
-                          iconSize: 40,
-                          offsetY: 5,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+          Positioned(
+            top: 20.0, // 上からの距離
+            left: 20.0, // 左からの距離
+            child: SafeArea(
+              child: RoundMenuButton(
+                icon: Icons.keyboard_return,
+                label: AppLocalizations.of(context)!.navBack,
+                iconColor: const Color(0xFF5D4037),
+                backgroundColor: const Color(0xFFCFD8DC), // ブルーグレー
+                onTap: () {
+                  FirebaseAnalytics.instance.logEvent(name: 'start_space_back');
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {
+                    print('再生エラー: $e');
+                  }
+                  Navigator.pop(context);
+                },
               ),
             ),
           ),

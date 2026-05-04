@@ -256,11 +256,6 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(
-          item.getDisplayName(context),
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
         content: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(

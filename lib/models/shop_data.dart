@@ -1,8 +1,5 @@
 // lib/models/shop_data.dart
 
-import 'package:flutter/material.dart';
-import '../l10n/app_localizations.dart';
-
 // ショップに並べるアイテムのデータ構造を定義
 class ShopItem {
   final String name;
@@ -26,345 +23,6 @@ class ShopItem {
     this.isSkyOnly = false,
     this.isSpaceOnly = false,
   });
-
-  String getDisplayName(BuildContext context) {
-    // AppLocalizationsを使って、翻訳された文字列を返します
-    final l10n = AppLocalizations.of(context);
-    if (l10n == null) return name;
-
-    switch (name) {
-      case 'あおいふく':
-        return l10n.itemClothesBlue;
-      case 'あかいふく':
-        return l10n.itemClothesRed;
-      case 'みどりのふく':
-        return l10n.itemClothesGreen;
-      case 'みずいろのふく':
-        return l10n.itemClothesLightBlue;
-      case 'ふつうのおうち':
-        return l10n.itemHouseNormal;
-      case 'りっぱなおうち':
-        return l10n.itemHouseGrand;
-      case 'いつものふく':
-        return l10n.itemClothesDefault;
-      case 'さいしょのおうち':
-        return l10n.itemHouseDefault;
-      case 'おとこのこ':
-        return l10n.itemAvatarBoy;
-      case 'ウサギ':
-        return l10n.charRabbit;
-      case 'ネコ':
-        return l10n.charCat;
-      case 'キリン':
-        return l10n.charGiraffe;
-      case 'ゾウ':
-        return l10n.charElephant;
-      case 'クマ':
-        return l10n.charBear;
-      case 'パンダ':
-        return l10n.charPanda;
-      case 'サル':
-        return l10n.charMonkey;
-      case 'はな１':
-        return l10n.itemFlower1;
-      case 'はな２':
-        return l10n.itemFlower2;
-      case 'はっぱ１':
-        return l10n.itemLeaf1;
-      case 'はっぱ２':
-        return l10n.itemLeaf2;
-      case 'はちうえ':
-        return l10n.itemPotPlant;
-      case 'くさ1':
-        return l10n.itemGrass1;
-      case 'くさ2':
-        return l10n.itemGrass2;
-      case 'き':
-        return l10n.itemTree;
-      case 'じょうろ':
-        return l10n.itemWateringCan;
-      case 'コイン':
-        return l10n.itemCoin;
-      case 'たからばこ':
-        return l10n.itemTreasureChest;
-      case 'ボール':
-        return l10n.itemBall;
-      case 'たいよう':
-        return l10n.itemSun;
-      case 'つき':
-        return l10n.itemMoon;
-      case 'ほし':
-        return l10n.itemStar;
-      case 'じてんしゃ':
-        return l10n.itemBicycle;
-      case 'くるま':
-        return l10n.itemCar;
-      case 'ベット':
-        return l10n.itemBed;
-      case 'いす１':
-        return l10n.itemChair1;
-      case 'いす２':
-        return l10n.itemChair2;
-      case 'いす３':
-        return l10n.itemChair3;
-      case 'キッチン':
-        return l10n.itemKitchen;
-      case 'ランタン':
-        return l10n.itemLantern;
-      case 'しょっきだな':
-        return l10n.itemCupboard;
-      case 'テーブル':
-        return l10n.itemTable;
-      case 'たな':
-        return l10n.itemShelf;
-      case 'バナナ':
-        return l10n.itemBanana;
-      case 'ぶどう':
-        return l10n.itemGrapes;
-      case 'パイナップル':
-        return l10n.itemPineapple;
-      case 'リンゴ':
-        return l10n.itemApple;
-      case 'びん':
-        return l10n.itemBottle;
-      case 'ぎゅうにゅう':
-        return l10n.itemMilk;
-      case 'コップ':
-        return l10n.itemCup;
-      case 'なべ':
-        return l10n.itemPot;
-      case 'ほん':
-        return l10n.itemBook;
-      case 'かびん':
-        return l10n.itemVase;
-      case 'ぬいぐるみ':
-        return l10n.itemStuffedAnimal;
-      case 'もくば':
-        return l10n.itemRockingHorse;
-      case 'おもちゃ':
-        return l10n.itemToy;
-      case 'タブレット':
-        return l10n.itemTablet;
-      case 'つみき':
-        return l10n.itemBlocks;
-      case 'いえ１':
-        return l10n.itemHouse1;
-      case 'いえ２':
-        return l10n.itemHouse2;
-      case 'いえ３':
-        return l10n.itemHouse3;
-      case 'いえ４':
-        return l10n.itemHouse4;
-      case 'いえ５':
-        return l10n.itemHouse5;
-      case 'いえ６':
-        return l10n.itemHouse6;
-      case 'いえ７':
-        return l10n.itemHouse7;
-      case 'コンビニ':
-        return l10n.itemConvenienceStore;
-      case 'スーパー':
-        return l10n.itemSupermarket;
-      case 'びょういん':
-        return l10n.itemHospital;
-      case 'けいさつしょ':
-        return l10n.itemPoliceStation;
-      case 'こうえん１':
-        return l10n.itemPark1;
-      case 'こうえん２':
-        return l10n.itemPark2;
-      case 'おしろ':
-        return l10n.itemCastle;
-      case 'くるま（しま）':
-        return l10n.itemCarIsland;
-      case 'タクシー（しま）':
-        return l10n.itemTaxiIsland;
-      case 'バス（しま）':
-        return l10n.itemBusIsland;
-      case 'ヘリコプター（しま）':
-        return l10n.itemHelicopterIsland;
-      case 'ひこうせん１（しま）':
-        return l10n.itemAirship1Island;
-      case 'ひこうせん２（しま）':
-        return l10n.itemAirship2Island;
-      case 'あかのドレス':
-        return l10n.itemClothesRedDress;
-      case 'あおのドレス':
-        return l10n.itemClothesBlueDress;
-      case 'ピンクドレス':
-        return l10n.itemClothesPinkDress;
-      case 'くま':
-        return l10n.itemClothesBear;
-      case 'きょうりゅう':
-        return l10n.itemClothesDinosaur;
-      case 'おうじさま':
-        return l10n.itemClothesPrince;
-      case 'ぼうけんしゃ':
-        return l10n.itemClothesAdventurer;
-      case 'ヒーロー':
-        return l10n.itemClothesHero;
-      case 'カウボーイ':
-        return l10n.itemClothesCowboy;
-      case 'せんし':
-        return l10n.itemClothesWarrior;
-      case 'おんなのこ':
-        return l10n.charGirl;
-      case 'おひめさま':
-        return l10n.charPrincess;
-      case 'おうじさま（おうえん）':
-        return l10n.charPrince;
-      case 'きょうりゅう（おうえん）':
-        return l10n.charDinosaur;
-      case 'ロボット':
-        return l10n.charRobot;
-      case 'びん（うみ）':
-        return l10n.itemSeaBottle;
-      case 'イカリ（うみ）':
-        return l10n.itemSeaAnchor;
-      case 'かいがら（うみ）':
-        return l10n.itemSeaShell;
-      case 'こんぶ１（うみ）':
-        return l10n.itemSeaKelp1;
-      case 'こんぶ２（うみ）':
-        return l10n.itemSeaKelp2;
-      case 'さんご１（うみ）':
-        return l10n.itemSeaCoral1;
-      case 'さんご２（うみ）':
-        return l10n.itemSeaCoral2;
-      case 'たからばこ（うみ）':
-        return l10n.itemSeaTreasure;
-      case 'トライデント（うみ）':
-        return l10n.itemSeaTrident;
-      case 'つぼ（うみ）':
-        return l10n.itemSeaPot;
-      case 'せんすいかん（うみ）':
-        return l10n.itemSeaSubmarine;
-      case 'ちんぼつせん（うみ）':
-        return l10n.itemSeaSunkenShip;
-      case 'ふぐ':
-        return l10n.livingPufferfish;
-      case 'ひとで':
-        return l10n.livingStarfish;
-      case 'いか':
-        return l10n.livingSquid;
-      case 'イルカ':
-        return l10n.livingDolphin;
-      case 'かめ':
-        return l10n.livingTurtle;
-      case 'かに':
-        return l10n.livingCrab;
-      case 'クラゲ':
-        return l10n.livingJellyfish;
-      case 'さかな１':
-        return l10n.livingFish1;
-      case 'さかな２':
-        return l10n.livingFish2;
-      case 'さかな３':
-        return l10n.livingFish3;
-      case 'さかな４':
-        return l10n.livingFish4;
-      case 'サメ１':
-        return l10n.livingShark1;
-      case 'サメ２':
-        return l10n.livingShark2;
-      case 'たつのおとしご':
-        return l10n.livingSeahorse;
-      case 'ヤドカリ':
-        return l10n.livingHermitCrab;
-      case 'ふうせん１（そら）':
-        return l10n.skyBalloon1;
-      case 'ふうせん２（そら）':
-        return l10n.skyBalloon2;
-      case 'ふうせん３（そら）':
-        return l10n.skyBalloon3;
-      case 'ふうせん４（そら）':
-        return l10n.skyBalloon4;
-      case 'くも（そら）':
-        return l10n.skyCloud;
-      case 'ヘリコプター（そら）':
-        return l10n.skyHelicopter;
-      case 'ひこうき１（そら）':
-        return l10n.skyAirplane1;
-      case 'ひこうき２（そら）':
-        return l10n.skyAirplane2;
-      case 'ひこうき３（そら）':
-        return l10n.skyAirplane3;
-      case 'ひこうき４（そら）':
-        return l10n.skyAirplane4;
-      case 'ひこうせん（そら）':
-        return l10n.skyAirship;
-      case 'ききゅう（そら）':
-        return l10n.skyBalloonRide;
-      case 'せんとうき１（そら）':
-        return l10n.skyFighter1;
-      case 'せんとうき２（そら）':
-        return l10n.skyFighter2;
-      case 'はち（そら）':
-        return l10n.skyBee;
-      case 'フクロウ（そら）':
-        return l10n.skyOwl;
-      case 'コウモリ（そら）':
-        return l10n.skyBat;
-      case 'モモンガ（そら）':
-        return l10n.skyFlyingSquirrel;
-      case 'オウム（そら）':
-        return l10n.skyParrot;
-      case 'スズメ（そら）':
-        return l10n.skySparrow;
-      case 'てんとうむし（そら）':
-        return l10n.skyLadybug;
-      case 'とんぼ（そら）':
-        return l10n.skyDragonfly;
-      case 'ツル（そら）':
-        return l10n.skyCrane;
-      case 'ちょうちょ（そら）':
-        return l10n.skyButterfly;
-      case 'ワシ（そら）':
-        return l10n.skyEagle;
-      case 'いんせき１（宇宙）':
-        return l10n.spaceMeteorite1;
-      case 'いんせき２（宇宙）':
-        return l10n.spaceMeteorite2;
-      case 'いんせき３（宇宙）':
-        return l10n.spaceMeteorite3;
-      case 'えいせい１（宇宙）':
-        return l10n.spaceSatellite1;
-      case 'えいせい２（宇宙）':
-        return l10n.spaceSatellite2;
-      case 'わくせい１（宇宙）':
-        return l10n.spacePlanet1;
-      case 'わくせい２（宇宙）':
-        return l10n.spacePlanet2;
-      case 'わくせい３（宇宙）':
-        return l10n.spacePlanet3;
-      case 'ロケット（宇宙）':
-        return l10n.spaceRocket;
-      case 'シャトル（宇宙）':
-        return l10n.spaceShuttle;
-      case 'ユーフォー（宇宙）':
-        return l10n.spaceUfo;
-      case 'うちゅうじん１（宇宙）':
-        return l10n.spaceAlien1;
-      case 'うちゅうじん２（宇宙）':
-        return l10n.spaceAlien2;
-      case 'うちゅうじん３（宇宙）':
-        return l10n.spaceAlien3;
-      case 'うちゅうじん４（宇宙）':
-        return l10n.spaceAlien4;
-      case 'うちゅうじん５（宇宙）':
-        return l10n.spaceAlien5;
-      case 'うちゅうじん６（宇宙）':
-        return l10n.spaceAlien6;
-      case 'うちゅうじん７（宇宙）':
-        return l10n.spaceAlien7;
-      case 'うちゅうじん８（宇宙）':
-        return l10n.spaceAlien8;
-      case 'うちゅうじん９（宇宙）':
-        return l10n.spaceAlien9;
-      default:
-        return name;
-    }
-  }
 }
 
 // ショップのカタログデータ
@@ -511,6 +169,41 @@ final List<ShopItem> shopItems = [
     requiredLevel: 5,
   ),
   ShopItem(
+    name: 'アロハシャツ（海）',
+    imagePath: 'assets/images/clothes/clothes_sea_aroha.png',
+    price: 300,
+    type: 'clothes',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'にんぎょ（海）',
+    imagePath: 'assets/images/clothes/clothes_sea_ningyo.png',
+    price: 300,
+    type: 'clothes',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'すいへい（海）',
+    imagePath: 'assets/images/clothes/clothes_sea_suihei.png',
+    price: 300,
+    type: 'clothes',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'せんすいちょう（海）',
+    imagePath: 'assets/images/clothes/clothes_sea_sensuityo.png',
+    price: 300,
+    type: 'clothes',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'かいぞく（海）',
+    imagePath: 'assets/images/clothes/clothes_sea_kaizoku.png',
+    price: 300,
+    type: 'clothes',
+    requiredLevel: 10,
+  ),
+  ShopItem(
     name: 'ウサギ',
     imagePath: 'assets/images/character_usagi.gif',
     price: 300,
@@ -593,6 +286,34 @@ final List<ShopItem> shopItems = [
     price: 450,
     type: 'character',
     requiredLevel: 5,
+  ),
+  ShopItem(
+    name: 'イルカ（海）',
+    imagePath: 'assets/images/character_sea_iruka.gif',
+    price: 600,
+    type: 'character',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'カメ（海）',
+    imagePath: 'assets/images/character_sea_kame.gif',
+    price: 600,
+    type: 'character',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'さかな（海）',
+    imagePath: 'assets/images/character_sea_sakana.gif',
+    price: 600,
+    type: 'character',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'シャチ（海）',
+    imagePath: 'assets/images/character_sea_syachi.gif',
+    price: 600,
+    type: 'character',
+    requiredLevel: 10,
   ),
   ShopItem(
     name: 'はな１',
@@ -714,6 +435,48 @@ final List<ShopItem> shopItems = [
     requiredLevel: 1,
   ),
   ShopItem(
+    name: 'ヒトデ（海）',
+    imagePath: 'assets/images/item_sea_hitode.png',
+    price: 100,
+    type: 'item',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'イカリ（海）',
+    imagePath: 'assets/images/item_sea_ikari.png',
+    price: 100,
+    type: 'item',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: '貝殻（海）',
+    imagePath: 'assets/images/item_sea_kaigara.png',
+    price: 100,
+    type: 'item',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: '貝殻２（海）',
+    imagePath: 'assets/images/item_sea_kaigara2.png',
+    price: 100,
+    type: 'item',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'サンゴ（海）',
+    imagePath: 'assets/images/item_sea_sango.png',
+    price: 100,
+    type: 'item',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: '灯台（海）',
+    imagePath: 'assets/images/item_sea_toudai.png',
+    price: 200,
+    type: 'item',
+    requiredLevel: 10,
+  ),
+  ShopItem(
     name: 'ベット',
     type: 'furniture',
     price: 150,
@@ -775,6 +538,48 @@ final List<ShopItem> shopItems = [
     price: 150,
     imagePath: 'assets/images/house_interior_furniture/tana.png',
     requiredLevel: 1,
+  ),
+  ShopItem(
+    name: 'ベンチ（海）',
+    type: 'furniture',
+    price: 200,
+    imagePath: 'assets/images/house_interior_furniture/sea_benchi.png',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'ベット（海）',
+    type: 'furniture',
+    price: 200,
+    imagePath: 'assets/images/house_interior_furniture/sea_bet.png',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'いす（海）',
+    type: 'furniture',
+    price: 200,
+    imagePath: 'assets/images/house_interior_furniture/sea_isu.png',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'いす2（海）',
+    type: 'furniture',
+    price: 200,
+    imagePath: 'assets/images/house_interior_furniture/sea_isu2.png',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'テーブル（海）',
+    type: 'furniture',
+    price: 200,
+    imagePath: 'assets/images/house_interior_furniture/sea_table.png',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'たな（海）',
+    type: 'furniture',
+    price: 200,
+    imagePath: 'assets/images/house_interior_furniture/sea_tana.png',
+    requiredLevel: 10,
   ),
   ShopItem(
     name: 'バナナ',
@@ -894,6 +699,34 @@ final List<ShopItem> shopItems = [
     price: 50,
     imagePath: 'assets/images/house_interior_items/tumiki.png',
     requiredLevel: 1,
+  ),
+  ShopItem(
+    name: 'かがみ（海）',
+    type: 'house_item',
+    price: 100,
+    imagePath: 'assets/images/house_interior_items/sea_kagami.png',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'クッション（海）',
+    type: 'house_item',
+    price: 100,
+    imagePath: 'assets/images/house_interior_items/sea_kussyon.png',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'タツノオトシゴ（海）',
+    type: 'house_item',
+    price: 100,
+    imagePath: 'assets/images/house_interior_items/sea_tatsunootoshigo.png',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'ヨット（海）',
+    type: 'house_item',
+    price: 100,
+    imagePath: 'assets/images/house_interior_items/sea_yotto.png',
+    requiredLevel: 10,
   ),
   ShopItem(
     name: 'いえ１',
@@ -1706,41 +1539,69 @@ final List<ShopItem> shopItems = [
     imagePath: 'assets/images/face/face_girl_red.png',
     type: 'face',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: '紫の瞳の女の子のかお',
     imagePath: 'assets/images/face/face_girl_murasaki.png',
     type: 'face',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: '黒い瞳の女の子のかお',
     imagePath: 'assets/images/face/face_girl_black.png',
     type: 'face',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: '赤い瞳の男の子のかお',
     imagePath: 'assets/images/face/face_boy_red.png',
     type: 'face',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: '紫の瞳の男の子のかお',
     imagePath: 'assets/images/face/face_boy_murasaki.png',
     type: 'face',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: '黒い瞳の男の子のかお',
     imagePath: 'assets/images/face/face_boy_black.png',
     type: 'face',
     price: 100,
+    requiredLevel: 5,
+  ),
+  ShopItem(
+    name: 'シーブルーの瞳のかお（海）',
+    imagePath: 'assets/images/face/face_sea_blue.png',
+    type: 'face',
+    price: 150,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: '灰色の瞳のかお（海）',
+    imagePath: 'assets/images/face/face_sea_haiiro.png',
+    type: 'face',
+    price: 150,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: '水色の瞳のかお（海）',
+    imagePath: 'assets/images/face/face_sea_mizuiro.png',
+    type: 'face',
+    price: 150,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: '赤い瞳のかお（海）',
+    imagePath: 'assets/images/face/face_sea_red.png',
+    type: 'face',
+    price: 150,
     requiredLevel: 10,
   ),
   ShopItem(
@@ -1804,48 +1665,76 @@ final List<ShopItem> shopItems = [
     imagePath: 'assets/images/hair/hair_bouzu.png',
     type: 'hair',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: 'シルバーザンバラのかみがた',
     imagePath: 'assets/images/hair/hair_siruba-_zanbara.png',
     type: 'hair',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: '刈り上げのかみがた',
     imagePath: 'assets/images/hair/hair_kariage.png',
     type: 'hair',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: 'おとこのレゲエのかみがた',
     imagePath: 'assets/images/hair/hair_boy_regee.png',
     type: 'hair',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: '緑の花のかみがた',
     imagePath: 'assets/images/hair/hair_green_hana.png',
     type: 'hair',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: '紫のロングヘア',
     imagePath: 'assets/images/hair/hair_murasaki_long.png',
     type: 'hair',
     price: 100,
-    requiredLevel: 10,
+    requiredLevel: 5,
   ),
   ShopItem(
     name: 'おんなのレゲエのかみがた',
     imagePath: 'assets/images/hair/hair_girl_regee.png',
     type: 'hair',
     price: 100,
+    requiredLevel: 5,
+  ),
+  ShopItem(
+    name: 'お団子ヘア（海）',
+    imagePath: 'assets/images/hair/hair_sea_dango.png',
+    type: 'hair',
+    price: 150,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'ポニーテールヘア（海）',
+    imagePath: 'assets/images/hair/hair_sea_poni-te-ru.png',
+    type: 'hair',
+    price: 150,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'ビーチクロップ（海）',
+    imagePath: 'assets/images/hair/hair_sea_bi-tikuroppu.png',
+    type: 'hair',
+    price: 150,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'ジェリサイト（海）',
+    imagePath: 'assets/images/hair/hair_sea_jerusaido.png',
+    type: 'hair',
+    price: 150,
     requiredLevel: 10,
   ),
   ShopItem(
@@ -1882,6 +1771,34 @@ final List<ShopItem> shopItems = [
     type: 'headgear',
     price: 50,
     requiredLevel: 5,
+  ),
+  ShopItem(
+    name: 'ヘッドバンド（海）',
+    imagePath: 'assets/images/headgear/headgear_sea_heaband.png',
+    type: 'headgear',
+    price: 100,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'ヘッドバンド2（海）',
+    imagePath: 'assets/images/headgear/headgear_sea_heaband2.png',
+    type: 'headgear',
+    price: 100,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: '海賊のハット（海）',
+    imagePath: 'assets/images/headgear/headgear_sea_kaizoku.png',
+    type: 'headgear',
+    price: 100,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'マリン帽（海）',
+    imagePath: 'assets/images/headgear/headgear_sea_mari-n.png',
+    type: 'headgear',
+    price: 100,
+    requiredLevel: 10,
   ),
   ShopItem(
     name: 'はなのバッジ',
@@ -1938,5 +1855,33 @@ final List<ShopItem> shopItems = [
     type: 'accessory',
     price: 70,
     requiredLevel: 5,
+  ),
+  ShopItem(
+    name: 'いかりのバッジ（海）',
+    imagePath: 'assets/images/accessory/accessory_sea_ikari.png',
+    type: 'accessory',
+    price: 100,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: '貝殻の指輪（海）',
+    imagePath: 'assets/images/accessory/accessory_sea_kaigaranoyubiwa.png',
+    type: 'accessory',
+    price: 100,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'サンゴの指輪（海）',
+    imagePath: 'assets/images/accessory/accessory_sea_sangonoyubiwa.png',
+    type: 'accessory',
+    price: 100,
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'タツノオトシゴのバッジ（海）',
+    imagePath: 'assets/images/accessory/accessory_sea_tatsunootoshigo.png',
+    type: 'accessory',
+    price: 100,
+    requiredLevel: 10,
   ),
 ];
