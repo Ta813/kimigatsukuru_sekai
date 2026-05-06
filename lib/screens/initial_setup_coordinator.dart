@@ -450,6 +450,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
 
     // 1. プレミアムプランへの誘導
     if (resumeStep <= paywallStep) {
+      await SharedPrefsHelper.recordFirstLaunchTime();
       await SharedPrefsHelper.saveSetupProgress(pattern, paywallStep);
       if (!context.mounted) return;
       if (!PurchaseManager.instance.isPremium.value) {

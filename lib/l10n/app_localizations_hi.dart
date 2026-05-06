@@ -1840,4 +1840,18 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get todaysPromise => 'आज का वादा';
+
+  @override
+  String get nextWorld => 'अगली दुनिया';
+
+  @override
+  String get underConstruction => 'जल्द आ रहा है';
+
+  @override
+  String get pageOpenError => 'पृष्ठ नहीं खोला जा सका';
+
+  @override
+  String paywallSaleCountdown(String time) {
+    return 'सीमित समय के लिए विशेष कीमत! \n$time में समाप्त';
+  }
 }

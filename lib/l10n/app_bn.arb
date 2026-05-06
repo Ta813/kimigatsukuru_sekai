@@ -800,5 +800,16 @@
   "setupReceivedButton": "পেয়েছি!",
   "initialSetupSettingsMessage": "প্রতিশ্রুতিগুলো সেট করুন।\nআপনি এগুলো পরে পরিবর্তন করতে পারেন, তাই আপনি যদি এখনও সিদ্ধান্ত না নিয়ে থাকেন, তবে শুধু 'সেটআপ সম্পন্ন' চাপুন!",
   "initialSetupCompleteButton": "সেটআপ সম্পন্ন",
-  "todaysPromise": "আজকের প্রতিশ্রুতি"
+  "todaysPromise": "আজকের প্রতিশ্রুতি",
+  "nextWorld": "পরবর্তী বিশ্ব",
+  "underConstruction": "শীঘ্রই আসছে",
+  "pageOpenError": "পৃষ্ঠাটি খোলা যায়নি",
+  "paywallSaleCountdown": "সীমিত সময়ের জন্য বিশেষ মূল্য! \n{time} এর মধ্যে শেষ হবে",
+  "@paywallSaleCountdown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

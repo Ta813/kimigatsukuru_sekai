@@ -754,5 +754,16 @@
   "setupReceivedButton": "मिल गया!",
   "initialSetupSettingsMessage": "वादे सेट करें।\nआप उन्हें बाद में बदल सकते हैं, इसलिए यदि आपने अभी तक निर्णय नहीं लिया है, तो बस 'सेटअप पूरा करें' दबाएं!",
   "initialSetupCompleteButton": "सेटअप पूरा करें",
-  "todaysPromise": "आज का वादा"
+  "todaysPromise": "आज का वादा",
+  "nextWorld": "अगली दुनिया",
+  "underConstruction": "जल्द आ रहा है",
+  "pageOpenError": "पृष्ठ नहीं खोला जा सका",
+  "paywallSaleCountdown": "सीमित समय के लिए विशेष कीमत! \n{time} में समाप्त",
+  "@paywallSaleCountdown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

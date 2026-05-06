@@ -1840,4 +1840,18 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get todaysPromise => 'آج کا وعدہ';
+
+  @override
+  String get nextWorld => 'اگلی دنیا';
+
+  @override
+  String get underConstruction => 'جلد آرہا ہے';
+
+  @override
+  String get pageOpenError => 'صفحہ نہیں کھولا جا سکا';
+
+  @override
+  String paywallSaleCountdown(String time) {
+    return 'محدود وقت کے لیے خصوصی قیمت! \n$time میں ختم ہو جائے گا';
+  }
 }

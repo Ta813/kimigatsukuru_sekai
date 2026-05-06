@@ -756,6 +756,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () async {
+                        // デバッグ用関数を呼び出して期限切れにする
+                        await SharedPrefsHelper.debugExpireSales();
+
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('🐛 デバッグ: セール期間を期限切れにしました'),
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent, // デバッグとわかりやすい色に
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('【デバッグ】セールを期限切れにする'),
+                    ),
+                    const SizedBox(height: 20),
                     const Divider(thickness: 2, color: Colors.red),
                   ],
                 ],

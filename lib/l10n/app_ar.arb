@@ -800,5 +800,16 @@
   "setupReceivedButton": "استلمت!",
   "initialSetupSettingsMessage": "قم بإعداد الوعود.\nيمكنك تغييرها لاحقاً، لذا إذا لم تقرر بعد، فقط اضغط على 'إكمال الإعداد'!",
   "initialSetupCompleteButton": "إكمال الإعداد",
-  "todaysPromise": "وعود اليوم"
+  "todaysPromise": "وعود اليوم",
+  "nextWorld": "العالم التالي",
+  "underConstruction": "قريباً",
+  "pageOpenError": "تعذر فتح الصفحة",
+  "paywallSaleCountdown": "سعر خاص لفترة محدودة! \nينتهي في {time}",
+  "@paywallSaleCountdown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

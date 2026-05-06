@@ -1840,4 +1840,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get todaysPromise => 'きょうのやくそく';
+
+  @override
+  String get nextWorld => '次の世界へ';
+
+  @override
+  String get underConstruction => '実装中';
+
+  @override
+  String get pageOpenError => 'ページを開けませんでした';
+
+  @override
+  String paywallSaleCountdown(String time) {
+    return '今だけこの価格で！ \nあと $time';
+  }
 }

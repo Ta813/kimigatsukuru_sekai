@@ -529,8 +529,8 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                     height: 150,
                     color: Colors.transparent,
                     child: Center(
-                      child: const AnimatedPlaceholderThumbnail(
-                        text: '次の世界へ',
+                      child: AnimatedPlaceholderThumbnail(
+                        text: AppLocalizations.of(context)!.nextWorld,
                         imagePath: 'assets/images/world_map_background2.png',
                         offsetY: 8,
                         duration: Duration(seconds: 2),

@@ -800,5 +800,16 @@
   "setupReceivedButton": "مل گیا!",
   "initialSetupSettingsMessage": "وعدے سیٹ کریں۔\nآپ انہیں بعد میں تبدیل کر سکتے ہیں، لہذا اگر آپ نے ابھی تک فیصلہ نہیں کیا ہے، تو بس 'سیٹ اپ مکمل' دبائیں!",
   "initialSetupCompleteButton": "سیٹ اپ مکمل",
-  "todaysPromise": "آج کا وعدہ"
+  "todaysPromise": "آج کا وعدہ",
+  "nextWorld": "اگلی دنیا",
+  "underConstruction": "جلد آرہا ہے",
+  "pageOpenError": "صفحہ نہیں کھولا جا سکا",
+  "paywallSaleCountdown": "محدود وقت کے لیے خصوصی قیمت! \n{time} میں ختم ہو جائے گا",
+  "@paywallSaleCountdown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

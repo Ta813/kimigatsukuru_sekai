@@ -1260,19 +1260,75 @@ class SharedPrefsHelper {
     }
   }
 
-  // 初回起動から24時間以内かどうか、および残り時間を取得
-  static Future<Duration?> getTimeUntil24hSaleEnds() async {
-    final prefs = await SharedPreferences.getInstance();
-    final timeStr = prefs.getString(_firstLaunchTimeKey);
-    if (timeStr == null) return null;
+  // --- lib/helpers/shared_prefs_helper.dart 内に追加 ---
+  static const String _levelUpSaleTimeKey = 'level_up_sale_time';
 
-    final firstLaunchTime = DateTime.parse(timeStr);
-    final endTime = firstLaunchTime.add(const Duration(hours: 24)); // 24時間後
+  // レベルアップセールの開始時間を記録
+  static Future<void> recordLevelUpSaleTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _levelUpSaleTimeKey,
+      DateTime.now().toIso8601String(),
+    );
+  }
+
+  // 「初回セール」または「レベルアップセール」のどちらかが有効か判定し、残り時間を返す
+  static Future<Duration?> getTimeUntilAnySaleEnds() async {
+    final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now();
 
-    if (now.isBefore(endTime)) {
-      return endTime.difference(now); // 残り時間を返す
+    // 1. 初回セールの判定
+    DateTime? firstLaunchEndTime;
+    final firstLaunchTimeStr = prefs.getString('first_launch_time');
+    if (firstLaunchTimeStr != null) {
+      firstLaunchEndTime = DateTime.parse(
+        firstLaunchTimeStr,
+      ).add(const Duration(hours: 24));
     }
-    return null; // 24時間過ぎていれば null を返す
+
+    // 2. レベルアップセールの判定
+    DateTime? levelUpEndTime;
+    final levelUpTimeStr = prefs.getString(_levelUpSaleTimeKey);
+    if (levelUpTimeStr != null) {
+      levelUpEndTime = DateTime.parse(
+        levelUpTimeStr,
+      ).add(const Duration(hours: 24));
+    }
+
+    // 両方のうち、未来にある方の終了時間を採用する
+    DateTime? targetEndTime;
+    if (firstLaunchEndTime != null && now.isBefore(firstLaunchEndTime)) {
+      targetEndTime = firstLaunchEndTime;
+    }
+    if (levelUpEndTime != null && now.isBefore(levelUpEndTime)) {
+      if (targetEndTime == null || levelUpEndTime.isAfter(targetEndTime)) {
+        targetEndTime = levelUpEndTime;
+      }
+    }
+
+    if (targetEndTime != null) {
+      return targetEndTime.difference(now);
+    }
+    return null;
+  }
+
+  // ==========================================
+  // 🐛 デバッグ用: セール期間を強制的に期限切れにする
+  // ==========================================
+  static Future<void> debugExpireSales() async {
+    final prefs = await SharedPreferences.getInstance();
+    // 確実に24時間以上経っている「48時間前」の時刻を生成
+    final pastTime = DateTime.now()
+        .subtract(const Duration(hours: 48))
+        .toIso8601String();
+
+    // 初回起動セールの時刻を過去に書き換え
+    if (prefs.containsKey('first_launch_time')) {
+      await prefs.setString('first_launch_time', pastTime);
+    }
+    // レベルアップセールの時刻を過去に書き換え
+    if (prefs.containsKey(_levelUpSaleTimeKey)) {
+      await prefs.setString(_levelUpSaleTimeKey, pastTime);
+    }
   }
 }

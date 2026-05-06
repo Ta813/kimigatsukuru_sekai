@@ -66,30 +66,30 @@ class _WorldMap2ScreenState extends State<WorldMap2Screen> {
           // 実装中のサムネイル (中央)
           Align(
             alignment: Alignment.center,
-            child: const AnimatedPlaceholderThumbnail(
-              text: '実装中',
+            child: AnimatedPlaceholderThumbnail(
+              text: AppLocalizations.of(context)!.underConstruction,
               offsetY: 8,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           ),
 
           // 実装中のサムネイル (左下)
           Align(
             alignment: const Alignment(-0.8, 0.8), // 左下
-            child: const AnimatedPlaceholderThumbnail(
-              text: '実装中',
+            child: AnimatedPlaceholderThumbnail(
+              text: AppLocalizations.of(context)!.underConstruction,
               offsetY: 8,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           ),
 
           // 実装中のサムネイル (右下)
           Align(
             alignment: const Alignment(0.8, 0.8), // 右下
-            child: const AnimatedPlaceholderThumbnail(
-              text: '実装中',
+            child: AnimatedPlaceholderThumbnail(
+              text: AppLocalizations.of(context)!.underConstruction,
               offsetY: 8,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           ),
         ],

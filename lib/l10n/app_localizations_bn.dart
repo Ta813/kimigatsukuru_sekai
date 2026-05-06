@@ -1840,4 +1840,18 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get todaysPromise => 'আজকের প্রতিশ্রুতি';
+
+  @override
+  String get nextWorld => 'পরবর্তী বিশ্ব';
+
+  @override
+  String get underConstruction => 'শীঘ্রই আসছে';
+
+  @override
+  String get pageOpenError => 'পৃষ্ঠাটি খোলা যায়নি';
+
+  @override
+  String paywallSaleCountdown(String time) {
+    return 'সীমিত সময়ের জন্য বিশেষ মূল্য! \n$time এর মধ্যে শেষ হবে';
+  }
 }

@@ -1,3 +1,4 @@
+import 'dart:async'; // 🌟 追加: タイマー用
 import 'dart:io';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -7,7 +8,8 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../managers/purchase_manager.dart';
 import '../../managers/sfx_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../l10n/app_localizations.dart'; // 🌟 追加: ローカライズのインポート
+import '../../l10n/app_localizations.dart';
+import '../../helpers/shared_prefs_helper.dart'; // 🌟 追加: 時間判定用
 
 class PremiumPaywallScreen extends StatefulWidget {
   const PremiumPaywallScreen({super.key});
@@ -25,34 +27,80 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
 
   final Color _primaryColor = const Color(0xFF8678F9);
 
+  // 🌟 追加: セールのカウントダウンと、通常価格を保持するための変数
+  Duration? _saleRemainingTime;
+  Timer? _countdownTimer;
+  Offering? _regularOffering;
+
   @override
   void initState() {
     super.initState();
+    _startCountdownIfEligible();
     _fetchOfferings();
   }
 
+  @override
+  void dispose() {
+    _countdownTimer?.cancel(); // タイマーの破棄
+    super.dispose();
+  }
+
+  // 🌟 追加: 24時間以内かチェックし、タイマーを動かす
+  Future<void> _startCountdownIfEligible() async {
+    final remaining = await SharedPrefsHelper.getTimeUntilAnySaleEnds();
+    if (remaining != null && mounted) {
+      setState(() {
+        _saleRemainingTime = remaining;
+      });
+      _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (!mounted) return;
+        setState(() {
+          final newRemaining = _saleRemainingTime! - const Duration(seconds: 1);
+          if (newRemaining.isNegative) {
+            _saleRemainingTime = null;
+            timer.cancel();
+            _fetchOfferings(); // セールが終わったら通常プランを再取得して画面を更新
+          } else {
+            _saleRemainingTime = newRemaining;
+          }
+        });
+      });
+    }
+  }
+
+  // 🌟 変更: セール中なら 'first_launch_sale' を取得し、通常価格も保持する
   Future<void> _fetchOfferings() async {
+    setState(() => _isLoading = true);
     try {
       final offerings = await Purchases.getOfferings();
-      if (offerings.current != null &&
-          offerings.current!.availablePackages.isNotEmpty) {
-        setState(() {
-          _packages = offerings.current!.availablePackages;
-          _selectedPackage = _packages.firstWhere(
-            (p) => p.packageType == PackageType.annual,
-            orElse: () => _packages.first,
-          );
-          _isLoading = false;
-        });
+
+      // デフォルト（通常価格）を保持しておく
+      _regularOffering = offerings.current;
+      Offering? targetOffering = offerings.current;
+
+      // 24時間セール中で、かつ RevenueCat 側に 'first_launch_sale' がある場合
+      if (_saleRemainingTime != null &&
+          offerings.all.containsKey('first_launch_sale')) {
+        targetOffering = offerings.all['first_launch_sale'];
+      }
+
+      if (targetOffering != null &&
+          targetOffering.availablePackages.isNotEmpty) {
+        if (mounted) {
+          setState(() {
+            _packages = targetOffering!.availablePackages;
+            _selectedPackage = _packages.firstWhere(
+              (p) => p.packageType == PackageType.annual,
+              orElse: () => _packages.first,
+            );
+            _isLoading = false;
+          });
+        }
       } else {
-        setState(() {
-          _isLoading = false;
-        });
+        if (mounted) setState(() => _isLoading = false);
       }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -60,7 +108,6 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     FirebaseAnalytics.instance.logEvent(name: 'premium_purchase');
     if (_selectedPackage == null) return;
 
-    // 🌟 処理開始時にローカライズオブジェクトを取得
     final l10n = AppLocalizations.of(context)!;
 
     try {
@@ -72,8 +119,6 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     });
 
     try {
-      // OnePlus等の端末で前の画面トランジションやダイアログの開閉が完了する前に
-      // Billing UI が起動されると PendingIntent が null になりクラッシュするケースへの対策。
       if (Platform.isAndroid) {
         debugPrint('Applying transition delay before purchasePackage...');
         await Future.delayed(const Duration(milliseconds: 500));
@@ -118,7 +163,6 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
   }
 
   Future<void> _restorePurchases() async {
-    // 🌟 処理開始時にローカライズオブジェクトを取得
     final l10n = AppLocalizations.of(context)!;
 
     setState(() {
@@ -156,6 +200,38 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     }
   }
 
+  Future<void> _launchURL(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.pageOpenError),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.pageOpenError)),
+        );
+      }
+    }
+  }
+
+  // 🌟 追加: カウントダウンを読みやすい文字列にするヘルパー
+  String _formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String hours = twoDigits(d.inHours);
+    String minutes = twoDigits(d.inMinutes.remainder(60));
+    String seconds = twoDigits(d.inSeconds.remainder(60));
+    return "$hours: $minutes: $seconds";
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -176,6 +252,32 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     );
   }
 
+  // 🌟 追加: セール中のカウントダウンバッジUI
+  Widget _buildCountdownBadge() {
+    if (_saleRemainingTime == null) return const SizedBox.shrink();
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.redAccent,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
+        ],
+      ),
+      child: Text(
+        AppLocalizations.of(
+          context,
+        )!.paywallSaleCountdown(_formatDuration(_saleRemainingTime!)),
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
+      ),
+    );
+  }
+
   Widget _buildLandscapeLayout(AppLocalizations l10n) {
     return Stack(
       children: [
@@ -183,7 +285,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 🌟 左側：説明テキストと表
+              // 左側：説明テキストと表
               Expanded(
                 flex: 5,
                 child: SingleChildScrollView(
@@ -196,6 +298,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      _buildCountdownBadge(), // 🌟 追加: カウントダウン
                       Text(
                         l10n.paywallTitle,
                         textAlign: TextAlign.center,
@@ -207,14 +310,29 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Text(
-                        l10n.paywallSubtitle,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                          height: 1.5,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/character_ouji.gif', // 💡 王子様の画像名に合わせてください
+                            height: 60,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            l10n.paywallSubtitle,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              height: 1.5,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Image.asset(
+                            'assets/images/character_hime.gif', // 💡 お姫様の画像名に合わせてください
+                            height: 60,
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
                       _buildComparisonTable(l10n),
@@ -223,7 +341,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                 ),
               ),
 
-              // 🌟 右側：プラン選択と購入ボタン
+              // 右側：プラン選択と購入ボタン
               Expanded(
                 flex: 4,
                 child: Container(
@@ -261,6 +379,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                   child: Column(
                     children: [
                       const SizedBox(height: 40),
+                      _buildCountdownBadge(), // 🌟 追加: カウントダウン
                       Text(
                         l10n.paywallTitle,
                         textAlign: TextAlign.center,
@@ -272,15 +391,32 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Text(
-                        l10n.paywallSubtitle,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                          height: 1.5,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/character_ouji.gif', // 💡 王子様の画像名に合わせてください
+                            height: 60,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            l10n.paywallSubtitle,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                              height: 1.5,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Image.asset(
+                            'assets/images/character_hime.gif', // 💡 お姫様の画像名に合わせてください
+                            height: 60,
+                          ),
+                        ],
                       ),
+                      const SizedBox(width: 12),
+
                       const SizedBox(height: 24),
                       _buildComparisonTable(l10n),
                     ],
@@ -410,7 +546,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: isHeader ? 15 : 10,
+          fontSize: isHeader ? 18 : 13,
           fontWeight: (isHeader || isHighlight)
               ? FontWeight.bold
               : FontWeight.normal,
@@ -493,8 +629,8 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                       } catch (e) {}
                       final isJapanese = l10n.localeName.startsWith('ja');
                       final url = isJapanese
-                          ? 'https://www.koto-app.com/home-ja/kimigatsukuru_sekai/terms' // 🇯🇵 日本語の利用規約URL
-                          : 'https://www.koto-app.com/home-en/kimigatsukuru_sekai/terms'; // 🇺🇸 その他の利用規約URL
+                          ? 'https://www.koto-app.com/home-ja/kimigatsukuru_sekai/terms'
+                          : 'https://www.koto-app.com/home-en/kimigatsukuru_sekai/terms';
                       _launchURL(url);
                     },
                     child: Text(
@@ -513,8 +649,8 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                       } catch (e) {}
                       final isJapanese = l10n.localeName.startsWith('ja');
                       final url = isJapanese
-                          ? 'https://www.koto-app.com/home-ja/kimigatsukuru_sekai/privacy' // 🇯🇵 日本語のプライバシーポリシーURL
-                          : 'https://www.koto-app.com/home-en/kimigatsukuru_sekai/privacy'; // 🇺🇸 その他のプライバシーポリシーURL
+                          ? 'https://www.koto-app.com/home-ja/kimigatsukuru_sekai/privacy'
+                          : 'https://www.koto-app.com/home-en/kimigatsukuru_sekai/privacy';
                       _launchURL(url);
                     },
                     child: Text(
@@ -540,39 +676,37 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     );
   }
 
-  Future<void> _launchURL(String urlString) async {
-    final Uri url = Uri.parse(urlString);
-    try {
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication); // 外部ブラウザで開く
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('ページを開けませんでした')));
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('ページを開けませんでした')));
-      }
-    }
-  }
-
   Widget _buildPackageCard(Package package, AppLocalizations l10n) {
     final isSelected = _selectedPackage?.identifier == package.identifier;
     String title = '';
     String? subText;
     String priceString = package.storeProduct.priceString;
+    String? originalPriceString; // 🌟 追加: 元の価格（取り消し線用）
+
+    // 🌟 セール中の場合、デフォルトのOfferingから同じタイプのパッケージを探して「元の価格」を取得
+    if (_saleRemainingTime != null && _regularOffering != null) {
+      try {
+        final regularPkg = _regularOffering!.availablePackages.firstWhere(
+          (p) => p.packageType == package.packageType,
+        );
+        originalPriceString = regularPkg.storeProduct.priceString;
+      } catch (e) {
+        // 見つからなければ無視
+      }
+    }
 
     if (package.packageType == PackageType.monthly) {
       title = l10n.paywallPlanMonthly;
       priceString = '$priceString${l10n.paywallPerMonth}';
+      if (originalPriceString != null) {
+        originalPriceString = '$originalPriceString${l10n.paywallPerMonth}';
+      }
     } else if (package.packageType == PackageType.annual) {
       title = l10n.paywallPlanAnnual;
       priceString = '$priceString${l10n.paywallPerYear}';
+      if (originalPriceString != null) {
+        originalPriceString = '$originalPriceString${l10n.paywallPerYear}';
+      }
 
       String currencySymbol = package.storeProduct.priceString
           .replaceAll(RegExp(r'[0-9.,]'), '')
@@ -641,13 +775,33 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                 ],
               ),
             ),
-            Text(
-              priceString,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+            // 🌟 変更: 価格表示部分（元の価格があれば赤字＆取り消し線で併記）
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (originalPriceString != null &&
+                    originalPriceString != priceString)
+                  Text(
+                    originalPriceString,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.redAccent,
+                      decoration: TextDecoration.lineThrough,
+                      decorationColor: Colors.redAccent,
+                      decorationThickness: 2,
+                    ),
+                  ),
+                Text(
+                  priceString,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

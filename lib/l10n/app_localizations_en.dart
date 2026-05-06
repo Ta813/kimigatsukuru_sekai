@@ -1840,4 +1840,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todaysPromise => 'Today\'s Promise';
+
+  @override
+  String get nextWorld => 'Next World';
+
+  @override
+  String get underConstruction => 'Coming Soon';
+
+  @override
+  String get pageOpenError => 'Could not open the page';
+
+  @override
+  String paywallSaleCountdown(String time) {
+    return 'Special price for a limited time! \nEnds in $time';
+  }
 }

@@ -3648,6 +3648,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today\'s Promise'**
   String get todaysPromise;
+
+  /// No description provided for @nextWorld.
+  ///
+  /// In en, this message translates to:
+  /// **'Next World'**
+  String get nextWorld;
+
+  /// No description provided for @underConstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming Soon'**
+  String get underConstruction;
+
+  /// No description provided for @pageOpenError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the page'**
+  String get pageOpenError;
+
+  /// No description provided for @paywallSaleCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Special price for a limited time! \nEnds in {time}'**
+  String paywallSaleCountdown(String time);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

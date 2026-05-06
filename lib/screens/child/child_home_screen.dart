@@ -1769,6 +1769,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
         // 🌟 3. レベルが5の倍数で、かつプレミアム未加入ならPaywallに誘導する
         if (newLevel % 5 == 0 && !PurchaseManager.instance.isPremium.value) {
+          SharedPrefsHelper.recordLevelUpSaleTime();
           if (mounted) {
             showDialog(
               context: context,

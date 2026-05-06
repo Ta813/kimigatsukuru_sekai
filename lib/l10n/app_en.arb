@@ -800,5 +800,16 @@
   "setupReceivedButton": "Received!",
   "initialSetupSettingsMessage": "Set up the promises.\nYou can change them later, so if you haven't decided yet, just press 'Complete'!",
   "initialSetupCompleteButton": "Complete",
-  "todaysPromise": "Today's Promise"
+  "todaysPromise": "Today's Promise",
+  "nextWorld": "Next World",
+  "underConstruction": "Coming Soon",
+  "pageOpenError": "Could not open the page",
+  "paywallSaleCountdown": "Special price for a limited time! \nEnds in {time}",
+  "@paywallSaleCountdown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

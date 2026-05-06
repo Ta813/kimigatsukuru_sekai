@@ -800,5 +800,16 @@
   "setupReceivedButton": "うけとった！",
   "initialSetupSettingsMessage": "やくそくの 設定を行います。\nあとで変更できるから、決まっていない場合は「設定完了」ボタンを押してね！",
   "initialSetupCompleteButton": "設定完了",
-  "todaysPromise": "きょうのやくそく"
+  "todaysPromise": "きょうのやくそく",
+  "nextWorld": "次の世界へ",
+  "underConstruction": "実装中",
+  "pageOpenError": "ページを開けませんでした",
+  "paywallSaleCountdown": "今だけこの価格で！ \nあと {time}",
+  "@paywallSaleCountdown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }
