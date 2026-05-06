@@ -546,7 +546,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: isHeader ? 18 : 13,
+          fontSize: isHeader ? 18 : 15,
           fontWeight: (isHeader || isHighlight)
               ? FontWeight.bold
               : FontWeight.normal,
