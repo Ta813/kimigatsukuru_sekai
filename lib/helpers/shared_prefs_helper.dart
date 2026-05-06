@@ -1239,9 +1239,40 @@ class SharedPrefsHelper {
 
   // --- パスサニタイズ（古いアセットパスの除去） ---
   static String? _sanitizePath(String? path) {
-    if (path == 'assets/images/avatar.png') {
+    if (path == 'assets/images/avatar.png' ||
+        path == 'assets/images/avatar_boy.png') {
       return null;
     }
     return path;
+  }
+
+  // --- 以下を追加 ---
+  static const String _firstLaunchTimeKey = 'first_launch_time';
+
+  // 初回起動時刻を記録（すでにあれば何もしない）
+  static Future<void> recordFirstLaunchTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey(_firstLaunchTimeKey)) {
+      await prefs.setString(
+        _firstLaunchTimeKey,
+        DateTime.now().toIso8601String(),
+      );
+    }
+  }
+
+  // 初回起動から24時間以内かどうか、および残り時間を取得
+  static Future<Duration?> getTimeUntil24hSaleEnds() async {
+    final prefs = await SharedPreferences.getInstance();
+    final timeStr = prefs.getString(_firstLaunchTimeKey);
+    if (timeStr == null) return null;
+
+    final firstLaunchTime = DateTime.parse(timeStr);
+    final endTime = firstLaunchTime.add(const Duration(hours: 24)); // 24時間後
+    final now = DateTime.now();
+
+    if (now.isBefore(endTime)) {
+      return endTime.difference(now); // 残り時間を返す
+    }
+    return null; // 24時間過ぎていれば null を返す
   }
 }

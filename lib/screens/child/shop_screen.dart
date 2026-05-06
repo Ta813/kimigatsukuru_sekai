@@ -442,18 +442,15 @@ class _ShopScreenState extends State<ShopScreen> {
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
+                    color: Colors.black.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.lock, color: Colors.white, size: 40),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 30),
                       Text(
-                        AppLocalizations.of(
-                          context,
-                        )!.unlockedAtLevel(item.requiredLevel),
+                        'Lv.${item.requiredLevel}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

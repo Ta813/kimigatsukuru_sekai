@@ -480,6 +480,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                     try {
                       SfxManager.instance.playTapSound();
                     } catch (e) {}
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'setup_child_1_start',
+                    );
                     setState(() {
                       _setupStep++;
                     });
@@ -585,7 +588,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                         final isSelected =
                             item.imagePath == currentEquippedPath;
                         final isLocked =
-                            item.requiredLevel >= 10 &&
+                            item.requiredLevel >= 5 &&
                             !PurchaseManager.instance.isPremium.value;
 
                         return Card(
@@ -635,19 +638,14 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                                   Positioned.fill(
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.6),
+                                        color: Colors.black.withOpacity(0.3),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          const Icon(
-                                            Icons.lock,
-                                            color: Colors.white,
-                                            size: 28,
-                                          ),
-                                          const SizedBox(height: 4),
+                                          const SizedBox(height: 30),
                                           Text(
                                             'Lv.${item.requiredLevel}',
                                             style: const TextStyle(
@@ -768,11 +766,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             }
 
             if (_setupStep < 4) {
-              if (_setupStep == 0) {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'setup_child_1_start',
-                );
-              } else if (_setupStep == 1) {
+              if (_setupStep == 1) {
                 FirebaseAnalytics.instance.logEvent(
                   name: 'setup_child_2_start',
                 );
@@ -783,10 +777,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               } else if (_setupStep == 3) {
                 FirebaseAnalytics.instance.logEvent(
                   name: 'setup_child_4_start',
-                );
-              } else if (_setupStep == 4) {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'setup_child_5_start',
                 );
               }
               setState(() {
@@ -1322,14 +1312,13 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
+                        color: Colors.black.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.lock, color: Colors.white, size: 28),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 30),
                           Text(
                             'Lv.${item.requiredLevel}',
                             style: const TextStyle(
@@ -1487,14 +1476,13 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
+                        color: Colors.black.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.lock, color: Colors.white, size: 28),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 30),
                           Text(
                             'Lv.${item.requiredLevel}',
                             style: const TextStyle(

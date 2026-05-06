@@ -279,13 +279,13 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
 
           final l10n = AppLocalizations.of(context)!;
           if (isAdult) {
-            FirebaseAnalytics.instance.logEvent(name: 'setup_age_18-');
+            FirebaseAnalytics.instance.logEvent(name: 'setup_age_18');
           } else if (label == l10n.setupAgeUnder7) {
-            FirebaseAnalytics.instance.logEvent(name: 'setup_age_-7');
+            FirebaseAnalytics.instance.logEvent(name: 'setup_age_7');
           } else if (label == l10n.setupAge8to12) {
-            FirebaseAnalytics.instance.logEvent(name: 'setup_age_8-12');
+            FirebaseAnalytics.instance.logEvent(name: 'setup_age_8_12');
           } else if (label == l10n.setupAge13to18) {
-            FirebaseAnalytics.instance.logEvent(name: 'setup_age_13-18');
+            FirebaseAnalytics.instance.logEvent(name: 'setup_age_13_17');
           }
           onTap();
         },

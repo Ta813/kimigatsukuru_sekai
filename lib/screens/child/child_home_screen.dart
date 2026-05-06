@@ -11,6 +11,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
+import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
@@ -1764,6 +1765,83 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         // 🌟 2. もし通知許可ダイアログが「出なかった」場合だけ、レビューダイアログを聞く
         if (!didRequestNotification) {
           await _requestReviewIfTargetLevel(newLevel);
+        }
+
+        // 🌟 3. レベルが5の倍数で、かつプレミアム未加入ならPaywallに誘導する
+        if (newLevel % 5 == 0 && !PurchaseManager.instance.isPremium.value) {
+          if (mounted) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(
+                  AppLocalizations.of(context)!.upgradeToPremium,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                content: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF3E0),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color(0xFFFF7043).withOpacity(0.5),
+                      width: 2,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.premiumFeaturesDesc,
+                        style: const TextStyle(fontSize: 16, height: 1.5),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                actionsAlignment: MainAxisAlignment.center,
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      AppLocalizations.of(context)!.cancel,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'premium_open_levelup',
+                      );
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PremiumPaywallScreen(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF7043),
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(
+                        color: Color(0xFFFFCA28),
+                        width: 2,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.seeDetails,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
         }
       });
     }

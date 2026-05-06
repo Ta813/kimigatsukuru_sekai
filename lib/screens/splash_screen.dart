@@ -30,6 +30,9 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
 
     if (isFirstLaunch) {
+      // 🌟 修正: アバターを選択させる画面へ遷移する前に、タイマーをセット
+      await SharedPrefsHelper.recordFirstLaunchTime();
+
       // 🌟 初回起動：初期設定画面（アバターウィザード）へ
       Navigator.pushReplacement(
         context,

@@ -436,14 +436,13 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
+                        color: Colors.black.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.lock, color: Colors.white, size: 28),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 30),
                           Text(
                             'Lv.${item.requiredLevel}',
                             style: const TextStyle(
