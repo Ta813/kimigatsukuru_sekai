@@ -7,6 +7,7 @@ import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
+import '../../managers/bgm_manager.dart'; // BGMマネージャー
 import '../../l10n/app_localizations.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/custom_back_button.dart';
@@ -47,8 +48,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   List<String> _equippedItems = [];
 
   bool _isTutorialStepCustomizeShown = true;
-  String? _tutorialPurchasedItemName;
-  String? _tutorialPurchasedItemType;
   bool _showTabBlinking = false;
   bool _showItemBlinking = false;
   bool _showBackButtonBlinking = false;
@@ -63,9 +62,27 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     _loadEquippedItems();
     if (!widget.isInitialSetup) {
       _checkTutorialStep();
+    } else {
+      // 初回設定モード（アプリ起動直後）の場合はBGMを再生する
+      _playSavedBgm();
     }
   }
 
+  // BGMを再生するメソッド（ホーム画面と同じ処理）
+  Future<void> _playSavedBgm() async {
+    final trackName = await SharedPrefsHelper.loadSelectedBgm();
+    final track = BgmTrack.values.firstWhere(
+      (e) => e.name == trackName,
+      orElse: () => BgmTrack.main, // デフォルトはmain
+    );
+    try {
+      BgmManager.instance.play(track);
+    } catch (e) {
+      print('再生エラー: $e');
+    }
+  }
+
+  // 🌟 変更: チュートリアル状態の確認を新仕様に合わせてシンプル化
   Future<void> _checkTutorialStep() async {
     final isCustomizeShown = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepCustomizeKey,
@@ -73,14 +90,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     bool isShown =
         await SharedPrefsHelper.getChildTutorial() ==
         SharedPrefsHelper.tutorialPhaseStart;
-    final purchasedItemName =
-        await SharedPrefsHelper.getTutorialPurchasedItem();
-    final purchasedItemType =
-        await SharedPrefsHelper.getTutorialPurchasedType();
+
     setState(() {
       _isTutorialStepCustomizeShown = !(isShown && !isCustomizeShown);
-      _tutorialPurchasedItemName = purchasedItemName;
-      _tutorialPurchasedItemType = purchasedItemType;
+      // チュートリアル中ならタブ（メニューボタン）とアイテムを点滅させる
       _showTabBlinking = isShown && !isCustomizeShown;
       _showItemBlinking = isShown && !isCustomizeShown;
     });
@@ -134,23 +147,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     });
   }
 
+  // 🌟 変更: 「きせかえ（avatar）」ボタンのみを無条件で点滅させる
   bool _shouldBlinkMenu(CustomizeView view) {
     if (!_showTabBlinking) return false;
-    if (view == CustomizeView.avatar) {
-      return [
-        'face_shape',
-        'hair',
-        'eyes',
-        'clothes',
-        'headgear',
-        'accessory',
-      ].contains(_tutorialPurchasedItemType);
-    } else if (view == CustomizeView.support) {
-      return _tutorialPurchasedItemType == 'character';
-    } else if (view == CustomizeView.world) {
-      return ['house', 'item'].contains(_tutorialPurchasedItemType);
-    }
-    return false;
+    return view == CustomizeView.avatar;
   }
 
   void _equipItem(ShopItem item) async {
@@ -186,6 +186,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       await SharedPrefsHelper.saveEquippedItem('house', item.imagePath);
     }
 
+    // 🌟 チュートリアル中なら、選択後に他の点滅を止めて「戻る」ボタンを点滅させる
     if (!_isTutorialStepCustomizeShown) {
       if (mounted) {
         setState(() {
@@ -280,7 +281,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   _currentPoints = newPoints;
                   _purchasedItemNames.add(item.name);
                 });
-                _equipItem(item);
+                _equipItem(item); // 装備＆チュートリアル進行処理へ
               }
             },
             style: ElevatedButton.styleFrom(
@@ -433,7 +434,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   // ==========================================
-  // 🌟 初回起動時のセットアップ（ウィザード）画面
+  // 初回起動時のセットアップ（ウィザード）画面
   // ==========================================
   Widget _buildInitialSetupScreen() {
     final localizations = AppLocalizations.of(context)!;
@@ -783,7 +784,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 _setupStep++;
               });
             } else {
-              // 🌟 変更: ここのダイアログ表示を削除し、すぐに呼び出し元（司令塔）に返します
               FirebaseAnalytics.instance.logEvent(name: 'setup_child_finish');
               if (!mounted) return;
               Navigator.pop(context, true); // trueを返して完了を知らせる
@@ -1210,17 +1210,14 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   Widget _buildTab(String title, IconData icon, String targetType) {
-    Widget tab = Tab(
+    // 🌟 変更: タブは点滅させず、シンプルに返す
+    return Tab(
       height: 40,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [Icon(icon, size: 18), const SizedBox(width: 8), Text(title)],
       ),
     );
-    if (_showTabBlinking && _tutorialPurchasedItemType == targetType) {
-      return BlinkingEffect(isBlinking: true, child: tab);
-    }
-    return tab;
   }
 
   Widget _buildItemGrid(List<ShopItem> items, String? equippedItemPath) {
@@ -1312,7 +1309,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
@@ -1336,7 +1333,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           ),
         );
 
-        if (_showItemBlinking && _tutorialPurchasedItemName == item.name) {
+        // 🌟 変更: チュートリアル中かつ、価格が100P以下のアイテムを全て点滅させる
+        if (_showItemBlinking && item.price <= 100) {
           return BlinkingEffect(isBlinking: true, child: card);
         }
         return card;
@@ -1476,7 +1474,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
@@ -1500,7 +1498,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           ),
         );
 
-        if (_showItemBlinking && _tutorialPurchasedItemName == item.name) {
+        // 🌟 変更: チュートリアル中かつ、価格が100P以下のアイテムを全て点滅させる
+        if (_showItemBlinking && item.price <= 100) {
           return BlinkingEffect(isBlinking: true, child: itemWidget);
         }
         return itemWidget;

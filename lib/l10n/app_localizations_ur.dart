@@ -45,10 +45,10 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tutorialShopDesc => 'آپ نے پوائنٹس جمع کر لیے ہیں!\nآئیے دائیں طرف موجود 🏠 بٹن سے \'دکان\' پر جا کر کچھ چیزیں خریدیں!';
 
   @override
-  String get tutorialCustomizeTitle => 'آپ کو ایک چیز ملی! 🎁';
+  String get tutorialCustomizeTitle => 'آپ کو 100 پوائنٹس ملے! ✨';
 
   @override
-  String get tutorialCustomizeDesc => 'آپ کو ایک چیز ملی!\nاب، دائیں طرف موجود ☺ بٹن کا استعمال کرتے ہوئے، آئیے \'اپنی پسند سے سجائیں\' میں جا کر آپ کا کمرہ سجاتے ہیں!';
+  String get tutorialCustomizeDesc => 'آپ کے پوائنٹس جمع ہو رہے ہیں!\nدائیں طرف ☺ بٹن دبائیں اور **\'اپنی پسند سے سجائیں\'** میں جا کر آئٹم خریدیں!';
 
   @override
   String get tutorialParentSetupTitle => 'سب تیار! 🎉';
@@ -682,7 +682,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String levelUpMessage(int newLevel) {
-    return 'آپ لیول $newLevel پر پہنچ گئے!🎉\nاگر آپ دکان پر جائیں تو ہو سکتا ہے وہاں کچھ اچھا ہو✨';
+    return 'تم لیول $newLevel تک پہنچ گئے! 🎉\nشاید نئی چیزیں مل سکیں✨';
   }
 
   @override

@@ -12,8 +12,8 @@
   "guideSettingsDesc": "This is where grown-ups can add or edit promises.\nLet's decide on some 'Promises' together with your child here first!",
   "tutorialShopTitle": "You got 100 points! ✨",
   "tutorialShopDesc": "You've saved up points!\nLet's go buy items at the 'Shop' using the 🏠 button on the right!",
-  "tutorialCustomizeTitle": "You got an item! 🎁",
-  "tutorialCustomizeDesc": "You got an item!\nNext, using the ☺ button on the right, let's decorate your room in 'Customize'!",
+  "tutorialCustomizeTitle": "You got 100 points! ✨",
+  "tutorialCustomizeDesc": "Your points are building up!\nTap the ☺ button on the right to go to **'Customize'** and buy an item!",
   "tutorialParentSetupTitle": "All ready! 🎉",
   "tutorialParentSetupDesc": "We're all set to make them happy!\nLet's set up the daily 'Promises' right away and get started!",
   "tutorialMoveTitle": "Let's Move Them! ✨",
@@ -302,7 +302,7 @@
     }
   },
   "levelUpTitle": "Level Up!",
-  "levelUpMessage": "You reached level {newLevel}!🎉\nThere might be something good if you go to the shop✨",
+  "levelUpMessage": "You reached level {newLevel}! 🎉\nYou might be able to exchange for new items✨",
   "@levelUpMessage": {
     "description": "Message shown when the user levels up",
     "placeholders": {

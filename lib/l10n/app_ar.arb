@@ -12,8 +12,8 @@
   "guideSettingsDesc": "هذا هو المكان الذي يمكن للكبار فيه إضافة أو تعديل الوعود.\nفلنقرر بعض 'الوعود' مع طفلك هنا أولًا!",
   "tutorialShopTitle": "لقد حصلت على ١٠٠ نقطة! ✨",
   "tutorialShopDesc": "لقد وفرت النقاط!\nلنذهب لشراء العناصر من 'المتجر' باستخدام زر 🏠 على اليمين!",
-  "tutorialCustomizeTitle": "لقد حصلت على عنصر! 🎁",
-  "tutorialCustomizeDesc": "لقد حصلت على عنصر!\nبعد ذلك، باستخدام زر ☺ على اليمين، لنقم بتزيين غرفتك في 'التخصيص'!",
+  "tutorialCustomizeTitle": "حصلت على 100 نقطة! ✨",
+  "tutorialCustomizeDesc": "نقاطك تتراكم!\nاضغط زر ☺ على اليمين للذهاب إلى **'التخصيص'** وشراء عنصر!",
   "tutorialParentSetupTitle": "كل شيء جاهز! 🎉",
   "tutorialParentSetupDesc": "نحن جاهزون تمامًا لجعلهم سعداء!\nلنقم بإعداد 'الوعود' اليومية على الفور ونبدأ!",
   "tutorialMoveTitle": "لنقم بتحريكها! ✨",
@@ -302,7 +302,7 @@
     }
   },
   "levelUpTitle": "ارتقاء في المستوى!",
-  "levelUpMessage": "لقد وصلت إلى المستوى {newLevel}! 🎉\nقد يكون هناك شيء جيد إذا ذهبت إلى المتجر ✨",
+  "levelUpMessage": "وصلت إلى المستوى {newLevel}! 🎉\nربما يمكنك الحصول على عناصر جديدة✨",
   "@levelUpMessage": {
     "description": "Message shown when the user levels up",
     "placeholders": {

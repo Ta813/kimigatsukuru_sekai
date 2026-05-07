@@ -178,13 +178,13 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialCustomizeTitle.
   ///
   /// In en, this message translates to:
-  /// **'You got an item! 🎁'**
+  /// **'You got 100 points! ✨'**
   String get tutorialCustomizeTitle;
 
   /// No description provided for @tutorialCustomizeDesc.
   ///
   /// In en, this message translates to:
-  /// **'You got an item!\nNext, using the ☺ button on the right, let\'s decorate your room in \'Customize\'!'**
+  /// **'Your points are building up!\nTap the ☺ button on the right to go to **\'Customize\'** and buy an item!'**
   String get tutorialCustomizeDesc;
 
   /// No description provided for @tutorialParentSetupTitle.
@@ -1402,7 +1402,7 @@ abstract class AppLocalizations {
   /// Message shown when the user levels up
   ///
   /// In en, this message translates to:
-  /// **'You reached level {newLevel}!🎉\nThere might be something good if you go to the shop✨'**
+  /// **'You reached level {newLevel}! 🎉\nYou might be able to exchange for new items✨'**
   String levelUpMessage(int newLevel);
 
   /// Label indicating a feature unlocks at a specific level

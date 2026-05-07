@@ -2,13 +2,13 @@
 
 import 'dart:async';
 import 'dart:math';
-import 'package:firebase_analytics/firebase_analytics.dart';
+//import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
 
-import '../../widgets/blinking_effect.dart';
+//import '../../widgets/blinking_effect.dart';
 import '../../managers/purchase_manager.dart';
 
 class RouletteDialog extends StatefulWidget {
@@ -35,36 +35,6 @@ class _RouletteDialogState extends State<RouletteDialog> {
     _loadDisplay();
   }
 
-  bool _hasPlayedInitialSound = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // ★サウンドがまだ再生されていなければ
-    if (!_hasPlayedInitialSound) {
-      final lang = AppLocalizations.of(context)!.localeName;
-      if (lang == 'ja') {
-        try {
-          SfxManager.instance.playRouletteMessageSound();
-        } catch (e) {
-          // エラーが発生した場合
-          print('再生エラー: $e');
-        }
-      } else {
-        final List<String> soundsToPlay = [];
-        final String voiceDir = SfxManager.instance.getVoiceDir(lang);
-        soundsToPlay.addAll(['se/$voiceDir/please_touch_the_button.mp3']);
-        try {
-          SfxManager.instance.playSequentialSounds(soundsToPlay);
-        } catch (e) {
-          // エラーが発生した場合
-          print('再生エラー: $e');
-        }
-      }
-      _hasPlayedInitialSound = true; // ★再生済みの旗を立てる
-    }
-  }
-
   bool _isSpinning = false;
   String? _resultText;
   double _pointMultiplier = 1;
@@ -82,16 +52,17 @@ class _RouletteDialogState extends State<RouletteDialog> {
         _winPointMultiplier = 2.0 + (_playerLevel - 1) * 0.1;
       }
     });
+    _spin();
   }
 
   void _spin() async {
-    // チュートリアルで「まわす！」ボタンを押したかチェック
-    final isTutorialStepShown = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepPromiseKey,
-    );
-    if (!isTutorialStepShown) {
-      FirebaseAnalytics.instance.logEvent(name: 'tutorial_tap_spin_button');
-    }
+    // // チュートリアルで「まわす！」ボタンを押したかチェック
+    // final isTutorialStepShown = await SharedPrefsHelper.isTutorialStepShown(
+    //   SharedPrefsHelper.tutorialStepPromiseKey,
+    // );
+    // if (!isTutorialStepShown) {
+    //   FirebaseAnalytics.instance.logEvent(name: 'tutorial_tap_spin_button');
+    // }
     SfxManager.instance.playRouletteSpinSound();
 
     setState(() {
@@ -178,36 +149,7 @@ class _RouletteDialogState extends State<RouletteDialog> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset('assets/images/slot_spinning.gif', height: 150),
-                    const SizedBox(height: 43),
-                  ],
-                )
-              : _resultText != null
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      _pointMultiplier > 1
-                          ? 'assets/images/slot_win.png'
-                          : 'assets/images/slot_lose.png',
-                      height: 150,
-                    ),
-                    Text(
-                      // 結果表示
-                      _resultText!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                )
-              : Column(
-                  // 最初の表示
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(AppLocalizations.of(context)!.rouletteQuestion),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Text.rich(
                       TextSpan(
                         style: TextStyle(color: Colors.grey[600]),
@@ -238,31 +180,91 @@ class _RouletteDialogState extends State<RouletteDialog> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 16),
-                    BlinkingEffect(
-                      isBlinking: widget.isTutorial,
-                      child: ElevatedButton(
-                        onPressed: _spin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF7043), // オレンジ
-                          foregroundColor: Colors.white,
-                          side: const BorderSide(
-                            color: Color(0xFFFFCA28),
-                            width: 2,
-                          ), // 黄色の輪郭
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          elevation: 4,
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context)!.rouletteSpin,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                  ],
+                )
+              : _resultText != null
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      _pointMultiplier > 1
+                          ? 'assets/images/slot_win.png'
+                          : 'assets/images/slot_lose.png',
+                      height: 150,
+                    ),
+                    Text(
+                      // 結果表示
+                      _resultText!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
-                ),
+                )
+              : null,
+          // : Column(
+          //     // 最初の表示
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       Text(AppLocalizations.of(context)!.rouletteQuestion),
+          //       const SizedBox(height: 20),
+          //       Text.rich(
+          //         TextSpan(
+          //           style: TextStyle(color: Colors.grey[600]),
+          //           children: [
+          //             TextSpan(
+          //               text: AppLocalizations.of(context)!.rouletteWin,
+          //             ),
+          //             TextSpan(
+          //               text:
+          //                   '${(widget.basePoints * _winPointMultiplier).floor().toString()} ${AppLocalizations.of(context)!.points}',
+          //               style: const TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 color: Colors.redAccent,
+          //               ),
+          //             ),
+          //             TextSpan(
+          //               text: AppLocalizations.of(context)!.rouletteLose,
+          //             ),
+          //             TextSpan(
+          //               text:
+          //                   '${widget.basePoints} ${AppLocalizations.of(context)!.points}',
+          //               style: const TextStyle(
+          //                 fontWeight: FontWeight.bold,
+          //                 color: Colors.black87,
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //         textAlign: TextAlign.center,
+          //       ),
+          //       const SizedBox(height: 16),
+          //       BlinkingEffect(
+          //         isBlinking: widget.isTutorial,
+          //         child: ElevatedButton(
+          //           onPressed: _spin,
+          //           style: ElevatedButton.styleFrom(
+          //             backgroundColor: const Color(0xFFFF7043), // オレンジ
+          //             foregroundColor: Colors.white,
+          //             side: const BorderSide(
+          //               color: Color(0xFFFFCA28),
+          //               width: 2,
+          //             ), // 黄色の輪郭
+          //             shape: RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(20),
+          //             ),
+          //             elevation: 4,
+          //           ),
+          //           child: Text(
+          //             AppLocalizations.of(context)!.rouletteSpin,
+          //             style: const TextStyle(fontWeight: FontWeight.bold),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
         ),
       ),
     );

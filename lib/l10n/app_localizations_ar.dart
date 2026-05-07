@@ -45,10 +45,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialShopDesc => 'لقد وفرت النقاط!\nلنذهب لشراء العناصر من \'المتجر\' باستخدام زر 🏠 على اليمين!';
 
   @override
-  String get tutorialCustomizeTitle => 'لقد حصلت على عنصر! 🎁';
+  String get tutorialCustomizeTitle => 'حصلت على 100 نقطة! ✨';
 
   @override
-  String get tutorialCustomizeDesc => 'لقد حصلت على عنصر!\nبعد ذلك، باستخدام زر ☺ على اليمين، لنقم بتزيين غرفتك في \'التخصيص\'!';
+  String get tutorialCustomizeDesc => 'نقاطك تتراكم!\nاضغط زر ☺ على اليمين للذهاب إلى **\'التخصيص\'** وشراء عنصر!';
 
   @override
   String get tutorialParentSetupTitle => 'كل شيء جاهز! 🎉';
@@ -682,7 +682,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String levelUpMessage(int newLevel) {
-    return 'لقد وصلت إلى المستوى $newLevel! 🎉\nقد يكون هناك شيء جيد إذا ذهبت إلى المتجر ✨';
+    return 'وصلت إلى المستوى $newLevel! 🎉\nربما يمكنك الحصول على عناصر جديدة✨';
   }
 
   @override

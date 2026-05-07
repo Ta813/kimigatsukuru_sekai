@@ -1,6 +1,7 @@
 // lib/bgm_manager.dart
 
 import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 
 enum BgmTrack {
@@ -20,15 +21,21 @@ enum BgmTrack {
   focus_none,
 }
 
-class BgmManager {
+class BgmManager with WidgetsBindingObserver {
   static final BgmManager instance = BgmManager._internal();
   AudioPlayer? _bgmPlayer;
+
+  // バックグラウンドに移行する前に再生中だったかどうかを記録
+  bool _wasPlayingBeforeBackground = false;
 
   factory BgmManager() {
     return instance;
   }
 
-  BgmManager._internal();
+  BgmManager._internal() {
+    // アプリ全体のライフサイクルをBgmManager自身で監視
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   // 🌟 複雑なCompleterを廃止し、シンプルで安全な遅延初期化に変更
   AudioPlayer get _player {
@@ -64,6 +71,28 @@ class BgmManager {
         return 'assets/audio/bgm_task_kokotiyoi.mp3';
       default:
         return null;
+    }
+  }
+
+  // 🌟 アプリのライフサイクル変化をBgmManager自身で受け取る
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      // バックグラウンド移行 or アプリ終了時: BGMを停止
+      final isPlaying = _bgmPlayer?.playing ?? false;
+      _wasPlayingBeforeBackground = isPlaying;
+      if (isPlaying) {
+        _bgmPlayer?.pause();
+        print('BgmManager: バックグラウンド移行 → BGM一時停止');
+      }
+    } else if (state == AppLifecycleState.resumed) {
+      // フォアグラウンド復帰時: バックグラウンド前に再生中だった場合のみ再開
+      if (_wasPlayingBeforeBackground) {
+        _bgmPlayer?.play();
+        print('BgmManager: フォアグラウンド復帰 → BGM再開');
+      }
+      _wasPlayingBeforeBackground = false;
     }
   }
 

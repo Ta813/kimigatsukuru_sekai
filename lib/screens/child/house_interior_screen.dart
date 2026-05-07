@@ -7,7 +7,6 @@ import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
-import 'shop_screen.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/round_menu_button.dart';
 
@@ -451,39 +450,6 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                         MaterialPageRoute(
                           builder: (context) => const FurnitureCustomizeScreen(
                             mode: CustomizeMode.house,
-                          ),
-                        ),
-                      ).then((_) {
-                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                        _loadItemsAndPositions();
-                      });
-                    },
-                  ),
-                  // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 0),
-
-                  // ショップボタン
-                  RoundMenuButton(
-                    icon: Icons.store,
-                    label: AppLocalizations.of(context)!.navShop,
-                    iconColor: const Color(0xFF5D4037),
-                    backgroundColor: const Color(0xFFFFE0B2), // ライトオレンジ
-                    onTap: () {
-                      FirebaseAnalytics.instance.logEvent(
-                        name: 'start_house_interior_shop',
-                      );
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {
-                        print('再生エラー: $e');
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ShopScreen(
-                            currentPoints: _points, // ユーザーの所持ポイント
-                            currentLevel: _level, // ユーザーレベルも渡す
-                            mode: ShopMode.forHouse, // ★家の中モードを指定
                           ),
                         ),
                       ).then((_) {

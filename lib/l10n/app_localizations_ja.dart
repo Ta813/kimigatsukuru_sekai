@@ -45,10 +45,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialShopDesc => 'ポイントがたまったよ！\nさっそく右の🏠ボタンから**「おみせ」**でアイテムをかってみよう！';
 
   @override
-  String get tutorialCustomizeTitle => 'アイテムをゲットしたね！🎁';
+  String get tutorialCustomizeTitle => '100ポイントゲットだね！✨';
 
   @override
-  String get tutorialCustomizeDesc => 'アイテムをてにいれたね！\n次は右の☺ボタンから**「きせかえ・もようがえ」**で、おへやにかざってみよう！';
+  String get tutorialCustomizeDesc => 'ポイントがたまったよ！\nさっそく右の☺ボタンから**「きせかえ・もようがえ」**でアイテムをかってみよう！';
 
   @override
   String get tutorialParentSetupTitle => 'じゅんび完了！🎉';
@@ -682,7 +682,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String levelUpMessage(int newLevel) {
-    return 'レベルが $newLevel にあがった！🎉\nおみせに いくと いいことがあるかも✨';
+    return 'レベルが $newLevel にあがった！🎉\nあたらしいアイテムとこうかんできるかも✨';
   }
 
   @override

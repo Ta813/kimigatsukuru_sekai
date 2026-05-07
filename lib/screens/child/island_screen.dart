@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../widgets/draggable_character.dart';
-import 'shop_screen.dart'; // ショップ画面
 import 'furniture_customize_screen.dart'; // 家具設定画面
 import '../../l10n/app_localizations.dart';
 import '../../managers/sfx_manager.dart';
@@ -44,7 +43,6 @@ class _IslandScreenState extends State<IslandScreen> {
 
   // ポイント数の状態を管理するための変数
   int _points = 0;
-  int _level = 1;
 
   List<String> _equippedCharacters = [];
   Map<String, Offset> _characterPositionsMap = {};
@@ -60,7 +58,6 @@ class _IslandScreenState extends State<IslandScreen> {
   Future<void> _loadPlacedItems() async {
     // --- 装備情報の読み込み ---
     final loadedPoints = await SharedPrefsHelper.loadPoints();
-    final loadedLevel = await SharedPrefsHelper.loadLevel();
     final face = await SharedPrefsHelper.loadEquippedFace();
     final hair = await SharedPrefsHelper.loadEquippedHairstyle();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
@@ -119,7 +116,6 @@ class _IslandScreenState extends State<IslandScreen> {
     if (mounted) {
       setState(() {
         _points = loadedPoints;
-        _level = loadedLevel;
         _equippedFace = face ?? 'assets/images/face/face_default.png';
         _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
         _equippedClothes =
@@ -374,39 +370,6 @@ class _IslandScreenState extends State<IslandScreen> {
                         MaterialPageRoute(
                           builder: (context) => const FurnitureCustomizeScreen(
                             mode: CustomizeMode.island,
-                          ),
-                        ),
-                      ).then((_) {
-                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                        _loadPlacedItems();
-                      });
-                    },
-                  ),
-                  // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 0),
-
-                  // ショップボタン
-                  RoundMenuButton(
-                    icon: Icons.store,
-                    label: AppLocalizations.of(context)!.navShop,
-                    iconColor: const Color(0xFF5D4037),
-                    backgroundColor: const Color(0xFFFFE0B2), // ライトオレンジ
-                    onTap: () {
-                      FirebaseAnalytics.instance.logEvent(
-                        name: 'start_island_shop',
-                      );
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {
-                        print('再生エラー: $e');
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ShopScreen(
-                            currentPoints: _points, // ユーザーの所持ポイント
-                            currentLevel: _level, // ユーザーレベルも渡す
-                            mode: ShopMode.forIsland, // ★家の中モードを指定
                           ),
                         ),
                       ).then((_) {

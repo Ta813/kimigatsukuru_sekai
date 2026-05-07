@@ -56,7 +56,7 @@ class _TimerScreenState extends State<TimerScreen>
   bool _isFinishedButtonPressed = false;
   bool _isCharacterSad = false;
   bool _isInteractionBusy = false;
-  bool _isCompleting = false; // 終了処理中フラグ
+  //bool _isCompleting = false; // 終了処理中フラグ
 
   final FlutterTts _flutterTts = FlutterTts();
   String? _childFullName; // 読み上げる名前（敬称付き）を保持
@@ -606,201 +606,184 @@ class _TimerScreenState extends State<TimerScreen>
     return '$minutes:$remainingSeconds';
   }
 
-  void _showApprovalDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: Text(
-            AppLocalizations.of(context)!.confirmation,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          content: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF3E0), // ピーチクリーム
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
-                width: 2,
-              ),
-            ),
-            child: Text(
-              AppLocalizations.of(
-                context,
-              )!.askIfFinished(widget.promise['title']),
-              style: const TextStyle(fontSize: 16, height: 1.5),
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: <Widget>[
-            TextButton(
-              onPressed: () async {
-                // チュートリアルで「まだだよ」ボタンを押したかチェック
-                final isTutorialStepShown =
-                    await SharedPrefsHelper.isTutorialStepShown(
-                      SharedPrefsHelper.tutorialStepPromiseKey,
-                    );
-                if (!isTutorialStepShown) {
-                  FirebaseAnalytics.instance.logEvent(
-                    name: 'tutorial_tap_not_yet_finish_button',
-                  );
-                }
-                try {
-                  SfxManager.instance.playTapSound();
-                } catch (e) {
-                  print('再生エラー: $e');
-                }
-                Navigator.of(dialogContext).pop();
-                _startTimer();
-                setState(() {
-                  _isFinishedButtonPressed = false;
-                });
-              },
-              child: Text(
-                AppLocalizations.of(context)!.notYet,
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-            ),
-            BlinkingEffect(
-              isBlinking: _isTutorial,
-              child: ElevatedButton(
-                onPressed: _isCompleting
-                    ? null
-                    : () async {
-                        if (!mounted) return;
-                        setState(() => _isCompleting = true);
-                        final localizations = AppLocalizations.of(context);
-                        final lang = localizations?.localeName ?? 'en';
-                        final voiceDir = SfxManager.instance.getVoiceDir(lang);
-                        // まず承認ダイアログを閉じる
-                        Navigator.of(dialogContext).pop();
+  void _showApprovalDialog() async {
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder: (BuildContext dialogContext) {
+    //     return AlertDialog(
+    //       title: Text(
+    //         AppLocalizations.of(context)!.confirmation,
+    //         textAlign: TextAlign.center,
+    //         style: const TextStyle(fontWeight: FontWeight.bold),
+    //       ),
+    //       content: Container(
+    //         padding: const EdgeInsets.all(16),
+    //         decoration: BoxDecoration(
+    //           color: const Color(0xFFFFF3E0), // ピーチクリーム
+    //           borderRadius: BorderRadius.circular(12),
+    //           border: Border.all(
+    //             color: const Color(0xFFFF7043).withOpacity(0.5), // オレンジの薄い線
+    //             width: 2,
+    //           ),
+    //         ),
+    //         child: Text(
+    //           AppLocalizations.of(
+    //             context,
+    //           )!.askIfFinished(widget.promise['title']),
+    //           style: const TextStyle(fontSize: 16, height: 1.5),
+    //         ),
+    //       ),
+    //       actionsAlignment: MainAxisAlignment.center,
+    //       actions: <Widget>[
+    //         TextButton(
+    //           onPressed: () async {
+    //             // チュートリアルで「まだだよ」ボタンを押したかチェック
+    //             final isTutorialStepShown =
+    //                 await SharedPrefsHelper.isTutorialStepShown(
+    //                   SharedPrefsHelper.tutorialStepPromiseKey,
+    //                 );
+    //             if (!isTutorialStepShown) {
+    //               FirebaseAnalytics.instance.logEvent(
+    //                 name: 'tutorial_tap_not_yet_finish_button',
+    //               );
+    //             }
+    //             try {
+    //               SfxManager.instance.playTapSound();
+    //             } catch (e) {
+    //               print('再生エラー: $e');
+    //             }
+    //             Navigator.of(dialogContext).pop();
+    //             _startTimer();
+    //             setState(() {
+    //               _isFinishedButtonPressed = false;
+    //             });
+    //           },
+    //           child: Text(
+    //             AppLocalizations.of(context)!.notYet,
+    //             style: TextStyle(color: Colors.grey[600]),
+    //           ),
+    //         ),
+    //         BlinkingEffect(
+    //           isBlinking: _isTutorial,
+    //           child: ElevatedButton(
+    //             onPressed: _isCompleting
+    //                 ? null
+    //                 : () async {
+    //                     if (!mounted) return;
+    //                     setState(() => _isCompleting = true);
+    final localizations = AppLocalizations.of(context);
+    final lang = localizations?.localeName ?? 'en';
+    final voiceDir = SfxManager.instance.getVoiceDir(lang);
+    // まず承認ダイアログを閉じる
+    // Navigator.of(dialogContext).pop();
 
-                        // チュートリアルで「おわった！」ボタンを押したかチェック
-                        final isTutorialStepShown =
-                            await SharedPrefsHelper.isTutorialStepShown(
-                              SharedPrefsHelper.tutorialStepPromiseKey,
-                            );
-                        if (!isTutorialStepShown) {
-                          FirebaseAnalytics.instance.logEvent(
-                            name: 'tutorial_tap_yes_finished_button',
-                          );
-                        }
-                        // 次に、時間切れかどうかで処理を分岐
-                        if (!_isTimeUp) {
-                          _confettiController.play();
-                          try {
-                            SfxManager.instance.playTimerWinSound();
-                          } catch (e) {
-                            print('再生エラー: $e');
-                          }
-                          await Future.delayed(const Duration(seconds: 2));
-
-                          // ◯◯がんばったね。
-                          if (_childFullName != null &&
-                              _childFullName!.isNotEmpty) {
-                            await _speak('$_childFullName');
-                            await Future.delayed(
-                              Duration(milliseconds: 1300 * _namesListCount),
-                            );
-                          }
-
-                          if (lang == 'ja') {
-                            try {
-                              SfxManager.instance.playTimerLoseSound();
-                            } catch (e) {
-                              print('再生エラー: $e');
-                            }
-                          } else {
-                            final List<String> soundsToPlay = [];
-                            soundsToPlay.addAll([
-                              'se/$voiceDir/you_did_your_best.mp3',
-                            ]);
-                            try {
-                              SfxManager.instance.playSequentialSounds(
-                                soundsToPlay,
-                              );
-                            } catch (e) {
-                              print('再生エラー: $e');
-                            }
-                          }
-                          await Future.delayed(const Duration(seconds: 1));
-
-                          try {
-                            SfxManager.instance.playTimerWinSound2();
-                          } catch (e) {
-                            print('再生エラー: $e');
-                          }
-                          await Future.delayed(const Duration(seconds: 4));
-                          // 時間内なら -> ルーレットへ
-                          if (mounted) {
-                            _showRouletteAndFinish();
-                          }
-                        } else {
-                          if (_childFullName != null &&
-                              _childFullName!.isNotEmpty) {
-                            await _speak('$_childFullName');
-                            await Future.delayed(
-                              Duration(milliseconds: 1300 * _namesListCount),
-                            );
-                          }
-
-                          if (lang == 'ja') {
-                            try {
-                              SfxManager.instance.playTimerLoseSound();
-                            } catch (e) {
-                              print('再生エラー: $e');
-                            }
-                          } else {
-                            final String lang = AppLocalizations.of(
-                              context,
-                            )!.localeName;
-                            final String voiceDir = SfxManager.instance
-                                .getVoiceDir(lang);
-                            final List<String> soundsToPlay = [];
-                            soundsToPlay.addAll([
-                              'se/$voiceDir/you_did_your_best.mp3',
-                            ]);
-                            try {
-                              SfxManager.instance.playSequentialSounds(
-                                soundsToPlay,
-                              );
-                            } catch (e) {
-                              print('再生エラー: $e');
-                            }
-                          }
-                          await Future.delayed(const Duration(seconds: 2));
-
-                          // 時間切れなら -> ポイント半分で終了
-                          if (mounted) {
-                            _finishPromise(pointMultiplier: 0.5, exp: 1);
-                          }
-                        }
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF7043), // オレンジ
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(
-                    color: Color(0xFFFFCA28),
-                    width: 2,
-                  ), // 黄色の輪郭
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  elevation: 4,
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.yesFinished,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+    // チュートリアルで「おわった！」ボタンを押したかチェック
+    final isTutorialStepShown = await SharedPrefsHelper.isTutorialStepShown(
+      SharedPrefsHelper.tutorialStepPromiseKey,
     );
+    if (!isTutorialStepShown) {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'tutorial_tap_yes_finished_button',
+      );
+    }
+
+    // 次に、時間切れかどうかで処理を分岐
+    if (!_isTimeUp) {
+      _confettiController.play();
+      try {
+        SfxManager.instance.playTimerWinSound();
+      } catch (e) {
+        print('再生エラー: $e');
+      }
+      await Future.delayed(const Duration(seconds: 2));
+
+      // ◯◯がんばったね。
+      if (_childFullName != null && _childFullName!.isNotEmpty) {
+        await _speak('$_childFullName');
+        await Future.delayed(Duration(milliseconds: 1300 * _namesListCount));
+      }
+
+      if (lang == 'ja') {
+        try {
+          SfxManager.instance.playTimerLoseSound();
+        } catch (e) {
+          print('再生エラー: $e');
+        }
+      } else {
+        final List<String> soundsToPlay = [];
+        soundsToPlay.addAll(['se/$voiceDir/you_did_your_best.mp3']);
+        try {
+          SfxManager.instance.playSequentialSounds(soundsToPlay);
+        } catch (e) {
+          print('再生エラー: $e');
+        }
+      }
+      await Future.delayed(const Duration(seconds: 1));
+
+      try {
+        SfxManager.instance.playTimerWinSound2();
+      } catch (e) {
+        print('再生エラー: $e');
+      }
+      await Future.delayed(const Duration(seconds: 4));
+      // 時間内なら -> ルーレットへ
+      if (mounted) {
+        _showRouletteAndFinish();
+      }
+    } else {
+      if (_childFullName != null && _childFullName!.isNotEmpty) {
+        await _speak('$_childFullName');
+        await Future.delayed(Duration(milliseconds: 1300 * _namesListCount));
+      }
+
+      if (lang == 'ja') {
+        try {
+          SfxManager.instance.playTimerLoseSound();
+        } catch (e) {
+          print('再生エラー: $e');
+        }
+      } else {
+        final String lang = AppLocalizations.of(context)!.localeName;
+        final String voiceDir = SfxManager.instance.getVoiceDir(lang);
+        final List<String> soundsToPlay = [];
+        soundsToPlay.addAll(['se/$voiceDir/you_did_your_best.mp3']);
+        try {
+          SfxManager.instance.playSequentialSounds(soundsToPlay);
+        } catch (e) {
+          print('再生エラー: $e');
+        }
+      }
+      await Future.delayed(const Duration(seconds: 2));
+
+      // 時間切れなら -> ポイント半分で終了
+      if (mounted) {
+        _finishPromise(pointMultiplier: 0.5, exp: 1);
+      }
+    }
+    //               },
+    //         style: ElevatedButton.styleFrom(
+    //           backgroundColor: const Color(0xFFFF7043), // オレンジ
+    //           foregroundColor: Colors.white,
+    //           side: const BorderSide(
+    //             color: Color(0xFFFFCA28),
+    //             width: 2,
+    //           ), // 黄色の輪郭
+    //           shape: RoundedRectangleBorder(
+    //             borderRadius: BorderRadius.circular(20),
+    //           ),
+    //           elevation: 4,
+    //         ),
+    //         child: Text(
+    //           AppLocalizations.of(context)!.yesFinished,
+    //           style: const TextStyle(fontWeight: FontWeight.bold),
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // );
+    // },
+    // );
   }
 
   // ★ルーレットを表示して、その結果で終了処理を呼ぶメソッド

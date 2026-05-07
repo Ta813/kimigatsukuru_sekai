@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart'; // 本物の画面
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart'; // 🌟 プレミアム画面をインポート
+import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
+import 'package:kimigatsukuru_sekai/widgets/draggable_character.dart';
 import '../helpers/shared_prefs_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../managers/sfx_manager.dart';
@@ -71,26 +73,10 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     if (state == AppLifecycleState.resumed) {
       // ★ 自分が現在表示されている画面の場合のみ、BGM再生を行う
       if (ModalRoute.of(context)?.isCurrent ?? false) {
-        // アプリが前面に戻ってきたら、日付のチェックとBGM再生を行う
         _handleAppResumed();
       }
-    } else if (state == AppLifecycleState.paused) {
-      // アプリが完全にバックグラウンドへ移行した時のみBGMを停止
-      // ※ inactive（ネイティブオーバーレイ表示中など）では止めない
-      try {
-        BgmManager.instance.stopBgm();
-      } catch (e) {
-        // エラーが発生した場合
-        print('再生エラー: $e');
-      }
-    } else if (state == AppLifecycleState.detached) {
-      // 🌟 【ここを追加！】アプリが完全にキルされた瞬間の処理
-      try {
-        BgmManager.instance.stopBgm();
-      } catch (e) {
-        print('再生エラー: $e');
-      }
     }
+    // BGMの停止・再開はBgmManager自身が担当するため、ここでは行わない
   }
 
   // アプリが前面に戻ってきた時の処理
@@ -304,6 +290,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     BuildContext context, {
     int resumeStep = 0,
   }) async {
+    // 1. おとな（親）向け設定
     if (resumeStep <= 1) {
       await SharedPrefsHelper.saveSetupProgress('A', 1);
       if (!context.mounted) return;
@@ -315,9 +302,9 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
         ),
       );
     }
-
     if (!context.mounted) return;
 
+    // 2. スマホを子供に渡す画面
     if (resumeStep <= 2) {
       await SharedPrefsHelper.saveSetupProgress('A', 2);
       if (!context.mounted) return;
@@ -329,9 +316,9 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
         ),
       );
     }
-
     if (!context.mounted) return;
 
+    // 3. 子供向け設定（アバターなど）
     if (resumeStep <= 3) {
       await SharedPrefsHelper.saveSetupProgress('A', 3);
       if (!context.mounted) return;
@@ -342,7 +329,17 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
         ),
       );
     }
+    if (!context.mounted) return;
 
+    // 🌟 4. ドラッグ操作の説明画面（新規追加）
+    if (resumeStep <= 4) {
+      await SharedPrefsHelper.saveSetupProgress('A', 4);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const DraggableInstructionScreen()),
+      );
+    }
     if (!context.mounted) return;
 
     await _finishSetup(context, pattern: 'A', resumeStep: resumeStep);
@@ -355,6 +352,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     BuildContext context, {
     int resumeStep = 0,
   }) async {
+    // 1. 子供向け設定
     if (resumeStep <= 1) {
       await SharedPrefsHelper.saveSetupProgress('B', 1);
       if (!context.mounted) return;
@@ -365,11 +363,22 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
         ),
       );
     }
-
     if (!context.mounted) return;
 
+    // 🌟 2. ドラッグ操作の説明画面（新規追加）
     if (resumeStep <= 2) {
       await SharedPrefsHelper.saveSetupProgress('B', 2);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const DraggableInstructionScreen()),
+      );
+    }
+    if (!context.mounted) return;
+
+    // 3. スマホを親に渡す画面
+    if (resumeStep <= 3) {
+      await SharedPrefsHelper.saveSetupProgress('B', 3);
       if (!context.mounted) return;
       await Navigator.push(
         context,
@@ -379,11 +388,11 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
         ),
       );
     }
-
     if (!context.mounted) return;
 
-    if (resumeStep <= 3) {
-      await SharedPrefsHelper.saveSetupProgress('B', 3);
+    // 4. おとな（親）向け設定
+    if (resumeStep <= 4) {
+      await SharedPrefsHelper.saveSetupProgress('B', 4);
       if (!context.mounted) return;
       await Navigator.push(
         context,
@@ -393,7 +402,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
         ),
       );
     }
-
     if (!context.mounted) return;
 
     await _finishSetup(context, pattern: 'B', resumeStep: resumeStep);
@@ -406,6 +414,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     BuildContext context, {
     int resumeStep = 0,
   }) async {
+    // 1. 子供向け設定
     if (resumeStep <= 1) {
       await SharedPrefsHelper.saveSetupProgress('C', 1);
       if (!context.mounted) return;
@@ -416,11 +425,22 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
         ),
       );
     }
-
     if (!context.mounted) return;
 
+    // 🌟 2. ドラッグ操作の説明画面（新規追加）
     if (resumeStep <= 2) {
       await SharedPrefsHelper.saveSetupProgress('C', 2);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const DraggableInstructionScreen()),
+      );
+    }
+    if (!context.mounted) return;
+
+    // 3. おとな（親）向け設定（そのまま連続して表示）
+    if (resumeStep <= 3) {
+      await SharedPrefsHelper.saveSetupProgress('C', 3);
       if (!context.mounted) return;
       await Navigator.push(
         context,
@@ -430,7 +450,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
         ),
       );
     }
-
     if (!context.mounted) return;
 
     await _finishSetup(context, pattern: 'C', resumeStep: resumeStep);
@@ -444,9 +463,9 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     required String pattern,
     int resumeStep = 0,
   }) async {
-    // 各パターンの最終ステップ番号を特定
-    int paywallStep = (pattern == 'C') ? 3 : 4;
-    int completeStep = (pattern == 'C') ? 4 : 5;
+    // 🌟 間に画面が増えたのでステップ番号を調整
+    int paywallStep = (pattern == 'C') ? 4 : 5;
+    int completeStep = (pattern == 'C') ? 5 : 6;
 
     // 1. プレミアムプランへの誘導
     if (resumeStep <= paywallStep) {
@@ -486,6 +505,294 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const ChildHomeScreen()),
+    );
+  }
+}
+
+// ==============================================================
+// 🌟 ドラッグ操作の説明画面（実際に触って遊べるインタラクティブ版）
+// ==============================================================
+class DraggableInstructionScreen extends StatefulWidget {
+  const DraggableInstructionScreen({super.key});
+
+  @override
+  State<DraggableInstructionScreen> createState() =>
+      _DraggableInstructionScreenState();
+}
+
+class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _fingerController;
+  late Animation<Offset> _fingerAnimation;
+  late Animation<double> _fadeAnimation;
+
+  // 画面内で動かせるキャラクターの初期位置（画面サイズ確定後に設定）
+  Offset? _avatarPos;
+  Offset? _itemPos;
+  Offset? _itemPos2;
+  List<String> _equippedCharacters = [];
+  Map<String, Offset> _characterPositionsMap = {};
+
+  bool _positionsInitialized = false;
+
+  String _equippedFace = 'assets/images/face/face_default.png';
+  String _equippedHair = 'assets/images/hair/hair_default.png';
+  String _equippedClothes = 'assets/images/clothes/clothes_default.png';
+  String? _equippedHeadgear;
+  String? _equippedAccessory;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 指を動かすアニメーション（2.5秒かけて繰り返す）
+    _fingerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2500),
+    )..repeat();
+
+    // 指がスッと現れて、ドラッグし終わったらスッと消えるアニメーション
+    _fadeAnimation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 10),
+      TweenSequenceItem(tween: ConstantTween(1.0), weight: 60),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0), weight: 20),
+      TweenSequenceItem(tween: ConstantTween(0.0), weight: 10),
+    ]).animate(_fingerController);
+
+    _loadItems();
+  }
+
+  Future<void> _loadItems() async {
+    final face = await SharedPrefsHelper.loadEquippedFace();
+    final hair = await SharedPrefsHelper.loadEquippedHairstyle();
+    final clothes = await SharedPrefsHelper.loadEquippedClothes();
+    final headgear = await SharedPrefsHelper.loadEquippedHeadgear();
+    final accessory = await SharedPrefsHelper.loadEquippedAccessory();
+    final characters = await SharedPrefsHelper.loadEquippedCharacters();
+
+    late double screenWidth;
+    late double screenHeight;
+
+    // 画面サイズを取得
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+
+    final loadedPositions = {};
+    final charactersToLoad = characters.isEmpty
+        ? ['assets/images/character_usagi.gif']
+        : characters;
+
+    for (var charPath in charactersToLoad) {
+      final loadedPos = await SharedPrefsHelper.loadCharacterPosition(
+        'setup_$charPath',
+      );
+      loadedPositions[charPath] =
+          loadedPos ?? Offset(screenWidth * 0.65, screenHeight * 0.45);
+    }
+
+    setState(() {
+      _equippedFace = face ?? 'assets/images/face/face_default.png';
+      _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
+      _equippedClothes = clothes ?? 'assets/images/clothes/clothes_default.png';
+      _equippedHeadgear = headgear;
+      _equippedAccessory = accessory;
+      _equippedCharacters = characters;
+
+      _characterPositionsMap = {}; // 一旦クリア
+      for (var charPath in _equippedCharacters) {
+        _characterPositionsMap[charPath] =
+            loadedPositions[charPath] ??
+            Offset(screenWidth * 0.65, screenHeight * 0.45); // 読み込んだ位置を保存
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_positionsInitialized) {
+      final size = MediaQuery.of(context).size;
+      final w = size.width;
+      final h = size.height;
+
+      // キャラクターを画面中央付近に配置
+      _avatarPos = Offset(w * 0.25, h * 0.45);
+      _itemPos = Offset(w * 0.75, h * 0.55);
+      _itemPos2 = Offset(w * 0.05, h * 0.5);
+
+      // 指アニメーションを画面サイズに合わせて動的に設定
+      _fingerAnimation =
+          Tween<Offset>(
+            begin: Offset(w * 0.25, h * 0.50),
+            end: Offset(w * 0.55, h * 0.38),
+          ).animate(
+            CurvedAnimation(
+              parent: _fingerController,
+              curve: const Interval(0.2, 0.8, curve: Curves.easeInOut),
+            ),
+          );
+
+      _positionsInitialized = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    _fingerController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // 背景のテキストと完了ボタン
+            SizedBox.expand(
+              child: Column(
+                children: [
+                  const SizedBox(height: 60),
+                  const Text(
+                    'アバターと キャラクターは\nゆびで 自由に うごかせるよ！',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'ためしに さわって うごかしてみてね！',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  ElevatedButton(
+                    onPressed: () {
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {}
+                      Navigator.pop(context); // 画面を閉じて次へ進む
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF7043),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 48,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: const Text(
+                      'わかった！',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 60),
+                ],
+              ),
+            ),
+
+            // 🌟 実際に動かせるキャラクター（うさぎ）
+            if (_avatarPos != null)
+              DraggableCharacter(
+                id: 'avatar_on_setup',
+                customWidget: AvatarDisplay(
+                  face: _equippedFace,
+                  clothes: _equippedClothes,
+                  hair: _equippedHair,
+                  headgear: _equippedHeadgear,
+                  accessory: _equippedAccessory,
+                  size: 90,
+                ),
+                position: _avatarPos!,
+                size: 90,
+                onPositionChanged: (delta) {
+                  setState(() => _avatarPos = _avatarPos! + delta);
+                },
+              ),
+
+            // ★応援キャラクターの表示と操作
+            ..._equippedCharacters.map((charPath) {
+              return DraggableCharacter(
+                id: 'setup_$charPath', // IDとして画像パスを使う
+                imagePath: charPath,
+                position: _characterPositionsMap[charPath]!,
+                size: 90,
+                onPositionChanged: (delta) {
+                  setState(() {
+                    // ★位置の更新
+                    _characterPositionsMap[charPath] =
+                        _characterPositionsMap[charPath]! + delta;
+                  });
+                },
+              );
+            }).toList(),
+
+            if (_itemPos != null)
+              DraggableCharacter(
+                id: 'item_on_setup', // IDとして画像パスを使う
+                imagePath: 'assets/images/item_hana1.png',
+                position: _itemPos!,
+                size: 50,
+                onPositionChanged: (delta) {
+                  setState(() {
+                    // ★位置の更新
+                    _itemPos = _itemPos! + delta;
+                  });
+                },
+              ),
+
+            if (_itemPos2 != null)
+              DraggableCharacter(
+                id: 'item_on_setup2', // IDとして画像パスを使う
+                imagePath: 'assets/images/item_kuruma.png',
+                position: _itemPos2!,
+                size: 70,
+                onPositionChanged: (delta) {
+                  setState(() {
+                    // ★位置の更新
+                    _itemPos2 = _itemPos2! + delta;
+                  });
+                },
+              ),
+
+            // 🌟 「こうやって動かすんだよ」と教える動く指のアニメーション
+            if (_positionsInitialized)
+              AnimatedBuilder(
+                animation: _fingerController,
+                builder: (context, child) {
+                  return Positioned(
+                    left: _fingerAnimation.value.dx,
+                    top: _fingerAnimation.value.dy,
+                    child: Opacity(
+                      opacity: _fadeAnimation.value,
+                      child: const Icon(
+                        Icons.touch_app,
+                        size: 70,
+                        color: Colors.orangeAccent,
+                      ),
+                    ),
+                  );
+                },
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

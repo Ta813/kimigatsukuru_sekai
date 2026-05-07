@@ -117,7 +117,7 @@ class _MissionScreenState extends State<MissionScreen>
       SharedPrefsHelper.tutorialStepParentSetupShownKey,
     );
     final isChildSetupDone = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepMoveKey,
+      SharedPrefsHelper.tutorialStepCustomizeKey,
     );
     final hasChangedBgm = await SharedPrefsHelper.getHasChangedBgm();
     final hasOpenedWorldMap = await SharedPrefsHelper.getHasOpenedWorldMap();
@@ -142,18 +142,6 @@ class _MissionScreenState extends State<MissionScreen>
     // --- チュートリアル系ミッション ---
     loadedMissions.add(
       MissionItem(
-        id: 'mission_parent_setup',
-        title: l10n.missionTitleParentSetup,
-        rewardPoints: 200,
-        isCompleted: isParentSetupDone,
-        isClaimed: claimedIds.contains('mission_parent_setup'),
-        category: MissionCategory.tutorial,
-        isHighlight: !claimedIds.contains('mission_parent_setup'), // 未完了なら目立たせる
-      ),
-    );
-
-    loadedMissions.add(
-      MissionItem(
         id: 'mission_first_promise',
         title: l10n.missionTitleFirstPromise,
         rewardPoints: 200,
@@ -161,6 +149,19 @@ class _MissionScreenState extends State<MissionScreen>
         isClaimed: claimedIds.contains('mission_first_promise'),
         category: MissionCategory.tutorial,
         isHighlight: !claimedIds.contains('mission_first_promise'),
+      ),
+    );
+
+    // --- チュートリアル系ミッション ---
+    loadedMissions.add(
+      MissionItem(
+        id: 'mission_parent_setup',
+        title: l10n.missionTitleParentSetup,
+        rewardPoints: 200,
+        isCompleted: isParentSetupDone,
+        isClaimed: claimedIds.contains('mission_parent_setup'),
+        category: MissionCategory.tutorial,
+        isHighlight: !claimedIds.contains('mission_parent_setup'), // 未完了なら目立たせる
       ),
     );
 

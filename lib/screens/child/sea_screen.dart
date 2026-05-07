@@ -4,7 +4,6 @@ import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
-import 'shop_screen.dart';
 import '../../managers/sfx_manager.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import '../../widgets/round_menu_button.dart';
@@ -44,7 +43,6 @@ class _SeaScreenState extends State<SeaScreen> {
 
   // ポイント数の状態を管理するための変数
   int _points = 0;
-  int _level = 1;
 
   List<String> _equippedCharacters = [];
   Map<String, Offset> _characterPositionsMap = {};
@@ -60,7 +58,6 @@ class _SeaScreenState extends State<SeaScreen> {
   Future<void> _loadPlacedItems() async {
     // --- 装備情報の読み込み ---
     final loadedPoints = await SharedPrefsHelper.loadPoints();
-    final loadedLevel = await SharedPrefsHelper.loadLevel();
     final face = await SharedPrefsHelper.loadEquippedFace();
     final hair = await SharedPrefsHelper.loadEquippedHairstyle();
     final clothes = await SharedPrefsHelper.loadEquippedClothes();
@@ -119,7 +116,6 @@ class _SeaScreenState extends State<SeaScreen> {
     if (mounted) {
       setState(() {
         _points = loadedPoints;
-        _level = loadedLevel;
         _equippedFace = face ?? 'assets/images/face/face_default.png';
         _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
         _equippedClothes =
@@ -368,39 +364,6 @@ class _SeaScreenState extends State<SeaScreen> {
                         MaterialPageRoute(
                           builder: (context) => const FurnitureCustomizeScreen(
                             mode: CustomizeMode.sea,
-                          ),
-                        ),
-                      ).then((_) {
-                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                        _loadPlacedItems();
-                      });
-                    },
-                  ),
-                  // ボタンの間に少し隙間を空けます
-                  const SizedBox(height: 0),
-
-                  // ショップボタン
-                  RoundMenuButton(
-                    icon: Icons.store,
-                    label: AppLocalizations.of(context)!.navShop,
-                    iconColor: const Color(0xFF5D4037),
-                    backgroundColor: const Color(0xFFFFE0B2), // ライトオレンジ
-                    onTap: () {
-                      FirebaseAnalytics.instance.logEvent(
-                        name: 'start_sea_shop',
-                      );
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {
-                        print('再生エラー: $e');
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ShopScreen(
-                            currentPoints: _points, // ユーザーの所持ポイント
-                            currentLevel: _level, // ユーザーレベルも渡す
-                            mode: ShopMode.forSea, // ★家の中モードを指定
                           ),
                         ),
                       ).then((_) {

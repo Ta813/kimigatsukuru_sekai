@@ -12,8 +12,8 @@
   "guideSettingsDesc": "এখানে বড়রা প্রতিশ্রুতি যোগ বা সম্পাদনা করতে পারেন।\nআসুন প্রথমে আপনার শিশুর সাথে একসাথে কিছু 'প্রতিশ্রুতি' নির্ধারণ করি!",
   "tutorialShopTitle": "আপনি ১০০ পয়েন্ট পেয়েছেন! ✨",
   "tutorialShopDesc": "আপনি পয়েন্ট জমিয়েছেন!\nআসুন ডানদিকের 🏠 বোতামটি ব্যবহার করে 'দোকান' থেকে জিনিসপত্র কিনি!",
-  "tutorialCustomizeTitle": "আপনি একটি জিনিস পেয়েছেন! 🎁",
-  "tutorialCustomizeDesc": "আপনি একটি জিনিস পেয়েছেন!\nএরপর, ডানদিকের ☺ বোতামটি ব্যবহার করে 'কাস্টমাইজ' এ আপনার ঘর সাজান!",
+  "tutorialCustomizeTitle": "১০০ পয়েন্ট পেলে! ✨",
+  "tutorialCustomizeDesc": "তোমার পয়েন্ট জমা হচ্ছে!\nডানদিকের ☺ বোতাম চাপো এবং **'কাস্টমাইজ'** এ গিয়ে আইটেম কিনো!",
   "tutorialParentSetupTitle": "সব প্রস্তুত! 🎉",
   "tutorialParentSetupDesc": "আমরা তাদের খুশি করার জন্য তৈরি!\nআসুন এখনই প্রতিদিনের 'প্রতিশ্রুতি' সেট করি এবং শুরু করি!",
   "tutorialMoveTitle": "এগুলো সরিয়ে দেখুন! ✨",
@@ -302,7 +302,7 @@
     }
   },
   "levelUpTitle": "লেভেল আপ!",
-  "levelUpMessage": "আপনি লেভেল {newLevel} এ পৌঁছেছেন!🎉\nদোকানে গেলে ভালো কিছু থাকতে পারে✨",
+  "levelUpMessage": "তুমি লেভেল {newLevel} এ পৌঁছে গেছ! 🎉\nহয়তো নতুন আইটেম পাওয়া যাবে✨",
   "@levelUpMessage": {
     "description": "Message shown when the user levels up",
     "placeholders": {

@@ -12,8 +12,8 @@
   "guideSettingsDesc": "یہ بٹن بڑوں کے لیے ہے تاکہ وہ وعدے شامل کرنے یا بدلنے جیسی ترتیبات کر سکیں۔\nآئیے پہلے یہاں اپنے بچے کے ساتھ مل کر کچھ 'وعدے' طے کرتے ہیں!",
   "tutorialShopTitle": "آپ کو 100 پوائنٹس ملے! ✨",
   "tutorialShopDesc": "آپ نے پوائنٹس جمع کر لیے ہیں!\nآئیے دائیں طرف موجود 🏠 بٹن سے 'دکان' پر جا کر کچھ چیزیں خریدیں!",
-  "tutorialCustomizeTitle": "آپ کو ایک چیز ملی! 🎁",
-  "tutorialCustomizeDesc": "آپ کو ایک چیز ملی!\nاب، دائیں طرف موجود ☺ بٹن کا استعمال کرتے ہوئے، آئیے 'اپنی پسند سے سجائیں' میں جا کر آپ کا کمرہ سجاتے ہیں!",
+  "tutorialCustomizeTitle": "آپ کو 100 پوائنٹس ملے! ✨",
+  "tutorialCustomizeDesc": "آپ کے پوائنٹس جمع ہو رہے ہیں!\nدائیں طرف ☺ بٹن دبائیں اور **'اپنی پسند سے سجائیں'** میں جا کر آئٹم خریدیں!",
   "tutorialParentSetupTitle": "سب تیار! 🎉",
   "tutorialParentSetupDesc": "ہم انہیں خوش کرنے کے لیے بالکل تیار ہیں!\nآئیے فوراً روزانہ کے 'وعدے' طے کریں اور شروع کریں!",
   "tutorialMoveTitle": "آئیے انہیں حرکت دیں! ✨",
@@ -302,7 +302,7 @@
     }
   },
   "levelUpTitle": "لیول بڑھ گیا!",
-  "levelUpMessage": "آپ لیول {newLevel} پر پہنچ گئے!🎉\nاگر آپ دکان پر جائیں تو ہو سکتا ہے وہاں کچھ اچھا ہو✨",
+  "levelUpMessage": "تم لیول {newLevel} تک پہنچ گئے! 🎉\nشاید نئی چیزیں مل سکیں✨",
   "@levelUpMessage": {
     "description": "Message shown when the user levels up",
     "placeholders": {

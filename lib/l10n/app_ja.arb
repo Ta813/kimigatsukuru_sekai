@@ -12,8 +12,8 @@
   "guideSettingsDesc": "やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！",
   "tutorialShopTitle": "100ポイントゲットだね！✨",
   "tutorialShopDesc": "ポイントがたまったよ！\nさっそく右の🏠ボタンから**「おみせ」**でアイテムをかってみよう！",
-  "tutorialCustomizeTitle": "アイテムをゲットしたね！🎁",
-  "tutorialCustomizeDesc": "アイテムをてにいれたね！\n次は右の☺ボタンから**「きせかえ・もようがえ」**で、おへやにかざってみよう！",
+  "tutorialCustomizeTitle": "100ポイントゲットだね！✨",
+  "tutorialCustomizeDesc": "ポイントがたまったよ！\nさっそく右の☺ボタンから**「きせかえ・もようがえ」**でアイテムをかってみよう！",
   "tutorialParentSetupTitle": "じゅんび完了！🎉",
   "tutorialParentSetupDesc": "こどもによろこんでもらう準備ができたよ！\nさっそく、毎日の**『やくそく』**を設定してはじめよう！",
   "tutorialMoveTitle": "うごかしてみよう！✨",
@@ -302,7 +302,7 @@
     }
   },
   "levelUpTitle": "レベルアップ！",
-  "levelUpMessage": "レベルが {newLevel} にあがった！🎉\nおみせに いくと いいことがあるかも✨",
+  "levelUpMessage": "レベルが {newLevel} にあがった！🎉\nあたらしいアイテムとこうかんできるかも✨",
   "@levelUpMessage": {
     "description": "ユーザーがレベルアップした時に表示するメッセージ",
     "placeholders": {

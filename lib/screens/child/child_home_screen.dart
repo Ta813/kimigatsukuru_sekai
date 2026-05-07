@@ -19,7 +19,6 @@ import 'mission_screen.dart';
 import 'passcode_lock_dialog.dart';
 import 'promise_board_screen.dart';
 import 'timer_screen.dart';
-import 'shop_screen.dart';
 import '../parent/parent_top_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'character_customize_screen.dart';
@@ -86,13 +85,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   // 「はじめる」ボタンを点滅させるフラグ
   bool _showStartBlinking = false;
   bool _hasEnteredHouse = false; // 家に入ったことがあるかのローカルな旗
-  bool _isTutorialMoveCompleted = false; // 移動チュートリアルが完了したかどうか
   bool _showParentSettingsBlinking = false; // おやの設定ボタンを点滅させるフラグ
   bool _isTutorialParentSettingsFocus = false; // チュートリアルでおやの設定へ誘導中か
-  bool _showShopBlinking = false; // おみせボタンを点滅させるフラグ（チュートリアル）
   bool _showCustomizeBlinking = false; // きせかえボタンを点滅させるフラグ（チュートリアル）
   bool _showDraggableBlinking = false; // キャラ・アイテムを点滅させるフラグ（チュートリアル）
-  bool _isWaitingForMove = false; // チュートリアルで移動を待っているかのフラグ
   late AnimationController _hintAnimationController; // 吹き出しアニメーション用
   // 🌟 追加: 達成済みで未受け取りのミッションがあるかどうかのフラグ
   bool _hasUnclaimedMissions = true; // テスト用に最初はtrueにしておきます
@@ -203,7 +199,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   double _experienceFraction = 0.0;
 
   Timer? _midnightTimer;
-  Timer? _tutorialMoveTimer; // ★ チュートリアル移動判定用タイマー
 
   @override
   void initState() {
@@ -317,7 +312,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   void dispose() {
     _allCompletedAnimationController.dispose();
     _midnightTimer?.cancel();
-    _tutorialMoveTimer?.cancel();
     _hintAnimationController.dispose();
     _animationController.dispose();
     _pointsAddedAnimationController.dispose();
@@ -331,28 +325,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      // ★ 自分が現在表示されている画面の場合のみ、BGM再生を行う
+      // ★ 自分が現在表示されている画面の場合のみ、日付チェックなどを行う
       if (ModalRoute.of(context)?.isCurrent ?? false) {
-        // アプリが前面に戻ってきたら、日付のチェックとBGM再生を行う
         _handleAppResumed();
       }
-    } else if (state == AppLifecycleState.paused) {
-      // アプリが完全にバックグラウンドへ移行した時のみBGMを停止
-      // ※ inactive（ネイティブオーバーレイ表示中など）では止めない
-      try {
-        BgmManager.instance.stopBgm();
-      } catch (e) {
-        // エラーが発生した場合
-        print('再生エラー: $e');
-      }
-    } else if (state == AppLifecycleState.detached) {
-      // 🌟 【ここを追加！】アプリが完全にキルされた瞬間の処理
-      try {
-        BgmManager.instance.stopBgm();
-      } catch (e) {
-        print('再生エラー: $e');
-      }
     }
+    // BGMの停止・再開はBgmManager自身が担当するため、ここでは行わない
   }
 
   // 広告の初期化・トラッキングフロー
@@ -581,22 +559,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           });
         }
         break;
-      case 'shop':
-        // ショップのガイド
-        if (!await _showGuideDialog(
-          title: AppLocalizations.of(context)!.guideShopTitle,
-          content: AppLocalizations.of(context)!.guideShopDesc,
-        )) {
-          return;
-        }
-
-        // チュートリアルと同様に「おみせ」ボタンを点滅させ、他を触れないようにする
-        if (mounted) {
-          setState(() {
-            _showShopBlinking = true;
-          });
-        }
-        break;
       case 'dressup':
         // キャラクター選択（きせかえ）のガイド
         if (!await _showGuideDialog(
@@ -776,25 +738,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       return;
     }
 
-    // チュートリアル: 最初の100ポイントゲット後にお店へ誘導
-    bool wasShopStepShown = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepShopKey,
-    );
-    if (!wasShopStepShown && mounted) {
-      setState(() {
-        _showShopBlinking = true; // おみせボタンを点滅させる
-      });
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await _showTutorialDialog(
-          title: AppLocalizations.of(context)!.tutorialShopTitle,
-          content: AppLocalizations.of(context)!.tutorialShopDesc,
-          buttonText: AppLocalizations.of(context)!.tutorialBtnShop,
-        );
-      });
-      FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_home_to_shop');
-      return;
-    }
-
     bool wasCustomizeStepShown = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepCustomizeKey,
     );
@@ -815,31 +758,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       });
       return;
     }
-
-    // チュートリアル: アイテム移動へ誘導
-    bool wasMoveShown = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepMoveKey,
-    );
-    if (!wasMoveShown && mounted) {
-      FirebaseAnalytics.instance.logEvent(
-        name: 'start_tutorial_home_to_move_interaction',
-      );
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await _showTutorialDialog(
-          title: AppLocalizations.of(context)!.tutorialMoveTitle,
-          content: AppLocalizations.of(context)!.tutorialMoveDesc,
-          buttonText: AppLocalizations.of(context)!.tutorialBtnMove,
-        );
-        // ★ 移動を促す状態にする（紫点滅開始）
-        if (!_isWaitingForMove) {
-          setState(() {
-            _isWaitingForMove = true;
-            _showDraggableBlinking = true;
-          });
-        }
-      });
-      return;
-    }
   }
 
   void _showParentTutorial() async {
@@ -855,36 +773,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       });
       return;
     }
-  }
-
-  // ★ チュートリアルで移動が行われた時に呼ばれる
-  void _onTutorialMove() {
-    if (!_isWaitingForMove) return;
-
-    // 既存のタイマーがあればキャンセルして、新しく1秒のタイマーを開始
-    _tutorialMoveTimer?.cancel();
-    _tutorialMoveTimer = Timer(const Duration(seconds: 1), () async {
-      if (!mounted) return;
-      await _showTutorialDialog(
-        title: AppLocalizations.of(context)!.tutorialFirstPromiseCompleteTitle,
-        content: AppLocalizations.of(context)!.tutorialFirstPromiseCompleteDesc,
-        buttonText: AppLocalizations.of(context)!.gotIt,
-      );
-
-      // 終了フラグを立てる
-      await SharedPrefsHelper.setTutorialStepShown(
-        SharedPrefsHelper.tutorialStepMoveKey,
-      );
-      await SharedPrefsHelper.setChildTutorial(
-        SharedPrefsHelper.tutorialPhaseFinish,
-      );
-
-      setState(() {
-        _isWaitingForMove = false;
-        _showDraggableBlinking = false;
-        _isTutorialMoveCompleted = true;
-      });
-    });
   }
 
   Widget _buildRichText(
@@ -1394,13 +1282,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final house = await SharedPrefsHelper.loadEquippedHouse();
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
     final items = await SharedPrefsHelper.loadEquippedItems();
-    final moveCompleted = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepMoveKey,
-    );
-    bool isShown =
-        await SharedPrefsHelper.getChildTutorial() ==
-        SharedPrefsHelper.tutorialPhaseStart;
-
     final mediaQuery = MediaQuery.maybeOf(context);
     final orientation = mediaQuery?.orientation ?? Orientation.landscape;
 
@@ -1451,7 +1332,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     // 最後に、画面の状態を更新
     setState(() {
       _hasEnteredHouse = entered;
-      _isTutorialMoveCompleted = moveCompleted || isShown;
       _points = loadedPoints;
       _displayPromise = nextPromise;
       _isDisplayPromiseEmergency = isEmergency;
@@ -1627,24 +1507,24 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       _loadAndDetermineDisplayPromise();
 
       // チュートリアル: 最初の100ポイントゲット後にお店へ誘導
-      bool wasShopStepShown = await SharedPrefsHelper.isTutorialStepShown(
-        SharedPrefsHelper.tutorialStepShopKey,
+      bool wasCustomizeStepShown = await SharedPrefsHelper.isTutorialStepShown(
+        SharedPrefsHelper.tutorialStepCustomizeKey,
       );
       bool isShown =
           await SharedPrefsHelper.getChildTutorial() ==
           SharedPrefsHelper.tutorialPhaseStart;
-      if (!wasShopStepShown && isShown && mounted) {
+      if (!wasCustomizeStepShown && isShown && mounted) {
         setState(() {
-          _showShopBlinking = true; // おみせボタンを点滅させる
+          _showCustomizeBlinking = true; // きせかえボタンを点滅させる
         });
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           await _showTutorialDialog(
-            title: AppLocalizations.of(context)!.tutorialShopTitle,
-            content: AppLocalizations.of(context)!.tutorialShopDesc,
-            buttonText: AppLocalizations.of(context)!.tutorialBtnShop,
+            title: AppLocalizations.of(context)!.tutorialCustomizeTitle,
+            content: AppLocalizations.of(context)!.tutorialCustomizeDesc,
+            buttonText: AppLocalizations.of(context)!.tutorialBtnCustomize,
           );
         });
-        FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_shop');
+        FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_dress_up');
       }
     } else {
       // タイマー画面からそのまま戻ってきた場合などで、チュートリアル中なら点滅を再開
@@ -2174,14 +2054,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     // ★ チュートリアル中（いずれかのボタンが点滅中）かどうか
     final bool isAnyTutorialBlinking =
-        _showShopBlinking ||
         _showCustomizeBlinking ||
         _showDraggableBlinking ||
         _showParentSettingsBlinking;
 
     // 「はじめる」も含めたいずれかのチュートリアルがアクティブかどうか
     final bool isAnyTutorialActive =
-        _showShopBlinking ||
         _showCustomizeBlinking ||
         _showParentSettingsBlinking ||
         _showStartBlinking;
@@ -2269,7 +2147,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           ),
 
           // ★ まだ家に入ったことがなく、かつ移動チュートリアルが完了している場合のみ表示
-          if (!_hasEnteredHouse && _isTutorialMoveCompleted)
+          if (!_hasEnteredHouse)
             Positioned(
               // ★ 家の画像の上あたりに位置を調整
               top: MediaQuery.of(context).size.height * 0.45,
@@ -2444,6 +2322,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   child: GestureDetector(
                                     onTap: () {
                                       if (_displayPromise != null) {
+                                        FirebaseAnalytics.instance.logEvent(
+                                          name:
+                                              'start_child_home_today_promise',
+                                        );
                                         _startPromise();
                                       }
                                     },
@@ -2654,33 +2536,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           clipBehavior: Clip.none,
                           alignment: Alignment.topRight,
                           children: [
-                            // 🌟 初回限定のミッション案内吹き出し
-                            if (_showMissionHint && !isAnyTutorialActive)
-                              Positioned(
-                                bottom: 60, // ボタンのすぐ上に表示
-                                right: 0, // 吹き出しのしっぽをボタンの上に合わせる
-                                child: IgnorePointer(
-                                  child: ScaleTransition(
-                                    scale: Tween<double>(begin: 1.0, end: 1.1)
-                                        .animate(
-                                          CurvedAnimation(
-                                            parent: _hintAnimationController,
-                                            curve: Curves.easeInOut,
-                                          ),
-                                        ),
-                                    child: SpeechBubble(
-                                      text: _isTutorialMissionIncomplete
-                                          ? AppLocalizations.of(
-                                              context,
-                                            )!.missionTutorialBonusChance
-                                          : AppLocalizations.of(
-                                              context,
-                                            )!.missionHintBubble,
-                                      tailDirection: TailDirection.bottomRight,
-                                    ),
-                                  ),
-                                ),
-                              ),
                             BlinkingEffect(
                               isBlinking: _isTutorialMissionIncomplete,
                               child: Material(
@@ -2694,7 +2549,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                     } catch (e) {}
                                     // ★ミッション画面へ遷移
                                     FirebaseAnalytics.instance.logEvent(
-                                      name: 'mission_button_tapped',
+                                      name: 'start_child_home_mission',
                                     );
 
                                     if (_showMissionHint) {
@@ -2820,6 +2675,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 // エラーが発生した場合
                                 print('再生エラー: $e');
                               }
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_child_home_bgm',
+                              );
 
                               Navigator.push(
                                 context,
@@ -2853,6 +2711,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 // エラーが発生した場合
                                 print('再生エラー: $e');
                               }
+                              FirebaseAnalytics.instance.logEvent(
+                                name: 'start_child_home_world_map',
+                              );
 
                               Navigator.push(
                                 context,
@@ -2921,7 +2782,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                     borderRadius: BorderRadius.circular(8),
                                     onTap: () async {
                                       FirebaseAnalytics.instance.logEvent(
-                                        name: 'promise_board',
+                                        name: 'start_child_home_promise_board',
                                       );
                                       try {
                                         SfxManager.instance.playTapSound();
@@ -3034,10 +2895,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             name:
                                                 'tutorial_tap_customize_button',
                                           );
+                                        } else {
+                                          FirebaseAnalytics.instance.logEvent(
+                                            name: 'start_child_home_dress_up',
+                                          );
                                         }
-                                        FirebaseAnalytics.instance.logEvent(
-                                          name: 'start_child_home_dress_up',
-                                        );
+
                                         try {
                                           SfxManager.instance.playTapSound();
                                         } catch (e) {
@@ -3065,55 +2928,29 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                               name:
                                                   'tutorial_tap_customize_back',
                                             );
-                                          }
-                                          // ★設定画面から戻ってきたら、表示を更新するために再読み込み
-                                          await _loadAndDetermineDisplayPromise();
-
-                                          // チュートリアル: アイテム移動へ誘導
-                                          bool wasMoveShown =
-                                              await SharedPrefsHelper.isTutorialStepShown(
-                                                SharedPrefsHelper
-                                                    .tutorialStepMoveKey,
-                                              );
-                                          if (!wasMoveShown &&
-                                              isShown &&
-                                              mounted) {
-                                            // 終了フラグを立てる
+                                            await SharedPrefsHelper.setChildTutorial(
+                                              SharedPrefsHelper
+                                                  .tutorialPhaseFinish,
+                                            );
                                             await SharedPrefsHelper.setTutorialStepShown(
                                               SharedPrefsHelper
                                                   .tutorialStepCustomizeKey,
                                             );
-                                            FirebaseAnalytics.instance.logEvent(
-                                              name:
-                                                  'start_tutorial_move_interaction',
+                                            if (!mounted) return;
+                                            await _showTutorialDialog(
+                                              title: AppLocalizations.of(
+                                                context,
+                                              )!.tutorialFirstPromiseCompleteTitle,
+                                              content: AppLocalizations.of(
+                                                context,
+                                              )!.tutorialFirstPromiseCompleteDesc,
+                                              buttonText: AppLocalizations.of(
+                                                context,
+                                              )!.gotIt,
                                             );
-                                            WidgetsBinding.instance
-                                                .addPostFrameCallback((
-                                                  _,
-                                                ) async {
-                                                  await _showTutorialDialog(
-                                                    title: AppLocalizations.of(
-                                                      context,
-                                                    )!.tutorialMoveTitle,
-                                                    content:
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!.tutorialMoveDesc,
-                                                    buttonText:
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!.tutorialBtnMove,
-                                                  );
-                                                  // ★ 移動を促す状態にする（紫点滅開始）
-                                                  if (!_isWaitingForMove) {
-                                                    setState(() {
-                                                      _isWaitingForMove = true;
-                                                      _showDraggableBlinking =
-                                                          true;
-                                                    });
-                                                  }
-                                                });
                                           }
+                                          // ★設定画面から戻ってきたら、表示を更新するために再読み込み
+                                          await _loadAndDetermineDisplayPromise();
                                         });
                                       },
                                       child: _buildRoundMenuButton(
@@ -3178,174 +3015,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 ),
                               ),
                           ],
-                        ),
-                        // BlinkingEffect Customize
-                        const SizedBox(height: 0), // ボタンの間に少し隙間をあける
-                        Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.centerLeft,
-                          children: [
-                            IgnorePointer(
-                              ignoring:
-                                  isAnyTutorialBlinking && !_showShopBlinking,
-                              child: Opacity(
-                                opacity:
-                                    (isAnyTutorialBlinking &&
-                                        !_showShopBlinking)
-                                    ? 0.6
-                                    : 1.0,
-                                child: BlinkingEffect(
-                                  isBlinking: _showShopBlinking,
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(8),
-                                      onTap: () async {
-                                        // チュートリアルで「おみせ」ボタンを押したかチェック
-                                        bool isShown =
-                                            await SharedPrefsHelper.getChildTutorial() ==
-                                            SharedPrefsHelper
-                                                .tutorialPhaseStart;
-                                        if (isShown) {
-                                          FirebaseAnalytics.instance.logEvent(
-                                            name: 'tutorial_tap_shop_button',
-                                          );
-                                        }
-                                        FirebaseAnalytics.instance.logEvent(
-                                          name: 'start_child_home_shop',
-                                        );
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            // ★現在のポイント数を渡してショップ画面を開く
-                                            builder: (context) => ShopScreen(
-                                              currentPoints: _points,
-                                              currentLevel: _level,
-                                              mode: ShopMode.forGeneral,
-                                            ),
-                                          ),
-                                        ).then((_) async {
-                                          setState(() {
-                                            _showShopBlinking = false;
-                                          });
-                                          // チュートリアルで「戻る」ボタンを押したかチェック
-                                          bool isShown =
-                                              await SharedPrefsHelper.getChildTutorial() ==
-                                              SharedPrefsHelper
-                                                  .tutorialPhaseStart;
-                                          if (isShown) {
-                                            FirebaseAnalytics.instance.logEvent(
-                                              name: 'tutorial_tap_shop_back',
-                                            );
-                                          }
-                                          // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                                          await _loadAndDetermineDisplayPromise();
-
-                                          bool wasCustomizeStepShown =
-                                              await SharedPrefsHelper.isTutorialStepShown(
-                                                SharedPrefsHelper
-                                                    .tutorialStepCustomizeKey,
-                                              );
-                                          if (!wasCustomizeStepShown &&
-                                              isShown &&
-                                              mounted) {
-                                            // 終了フラグを立てる
-                                            await SharedPrefsHelper.setTutorialStepShown(
-                                              SharedPrefsHelper
-                                                  .tutorialStepShopKey,
-                                            );
-                                            FirebaseAnalytics.instance.logEvent(
-                                              name: 'start_tutorial_dress_up',
-                                            );
-                                            // チュートリアル: アイテム購入後にきせかえへ誘導
-                                            setState(() {
-                                              _showCustomizeBlinking = true;
-                                            });
-                                            WidgetsBinding.instance
-                                                .addPostFrameCallback((
-                                                  _,
-                                                ) async {
-                                                  await _showTutorialDialog(
-                                                    title: AppLocalizations.of(
-                                                      context,
-                                                    )!.tutorialCustomizeTitle,
-                                                    content: AppLocalizations.of(
-                                                      context,
-                                                    )!.tutorialCustomizeDesc,
-                                                    buttonText:
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!.tutorialBtnCustomize,
-                                                  );
-                                                });
-                                          }
-                                        });
-                                      },
-                                      child: _buildRoundMenuButton(
-                                        icon: Icons.store,
-                                        label: AppLocalizations.of(
-                                          context,
-                                        )!.navShop,
-                                        iconColor: const Color(0xFF5D4037),
-                                        backgroundColor: const Color(
-                                          0xFFFFE0B2,
-                                        ), // ライトオレンジ
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (_showShopBlinking)
-                              Positioned(
-                                top: -60, // ボタンの上に配置
-                                left: -30, // 中央寄せのための調整
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            blurRadius: 4,
-                                            offset: Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Text(
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.tutorialShopBubble,
-                                        style: const TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                    ClipPath(
-                                      clipper: SpeechBubbleTailDownClipper(),
-                                      child: Container(
-                                        width: 16,
-                                        height: 8,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                        // BlinkingEffect Shop
+                        ), // BlinkingEffect Shop
                       ],
                     ),
                   ),
@@ -3772,7 +3442,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               setState(() {
                 _avatarPosition += delta;
               });
-              _onTutorialMove();
             },
           ),
 
@@ -3794,7 +3463,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           Offset(safeAreaWidth - 240, 190)) +
                       delta;
                 });
-                _onTutorialMove();
               },
             );
           }).toList(),
@@ -3814,7 +3482,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       (_itemPositionsMap[itemPath] ?? const Offset(100, 190)) +
                       delta;
                 });
-                _onTutorialMove();
               },
             );
           }).toList(),

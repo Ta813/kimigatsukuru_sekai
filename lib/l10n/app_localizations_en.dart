@@ -45,10 +45,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialShopDesc => 'You\'ve saved up points!\nLet\'s go buy items at the \'Shop\' using the 🏠 button on the right!';
 
   @override
-  String get tutorialCustomizeTitle => 'You got an item! 🎁';
+  String get tutorialCustomizeTitle => 'You got 100 points! ✨';
 
   @override
-  String get tutorialCustomizeDesc => 'You got an item!\nNext, using the ☺ button on the right, let\'s decorate your room in \'Customize\'!';
+  String get tutorialCustomizeDesc => 'Your points are building up!\nTap the ☺ button on the right to go to **\'Customize\'** and buy an item!';
 
   @override
   String get tutorialParentSetupTitle => 'All ready! 🎉';
@@ -682,7 +682,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String levelUpMessage(int newLevel) {
-    return 'You reached level $newLevel!🎉\nThere might be something good if you go to the shop✨';
+    return 'You reached level $newLevel! 🎉\nYou might be able to exchange for new items✨';
   }
 
   @override
