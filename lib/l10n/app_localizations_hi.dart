@@ -48,7 +48,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tutorialCustomizeTitle => '100 पॉइंट मिले! ✨';
 
   @override
-  String get tutorialCustomizeDesc => 'तुम्हारे पॉइंट जमा हो रहे हैं!\nदाईं ओर ☺ बटन दबाओ और **\'कस्टमाइज़\'** में जाकर आइटम खरीदो!';
+  String get tutorialCustomizeDesc => 'आपने पॉइंट जमा कर लिए हैं!\nदाईं ओर ड्रेस-अप आइकन दबाएं और **\'अनुकूलित करें\'** में जाकर आइटम खरीदें!';
 
   @override
   String get tutorialParentSetupTitle => 'सब तैयार! 🎉';
@@ -90,40 +90,40 @@ class AppLocalizationsHi extends AppLocalizations {
   String get guideNextPromiseDesc => 'चुनौती के लिए अगला \'वादा\' यहाँ दिखेगा।\n\'शुरू करें\' दबाएं और चुनौतियां पूरी करते रहें!';
 
   @override
-  String get guidePromiseBoardTitle => 'वादा बोर्ड (दायां 📄 आइकन)';
+  String get guidePromiseBoardTitle => 'वादा बोर्ड (ऊपरी बोर्ड)';
 
   @override
-  String get guidePromiseBoardDesc => 'आप यहाँ आज के वादों की सूची देख सकते हैं।\nआपका लक्ष्य \'हो गया!\' के निशान इकट्ठा करना है!';
+  String get guidePromiseBoardDesc => 'आप यहाँ आज के वादों की सूची देख सकते हैं।\nआपका लक्ष्य \'हो गया!\' के निशान जमा करना है!';
 
   @override
-  String get guidePointsTitle => 'अंक (ऊपर-दाएं ★)';
+  String get guidePointsTitle => 'अंक (ऊपर-दाईं ओर ★)';
 
   @override
-  String get guidePointsDesc => 'जब आप एक वादा पूरा करते हैं, तो आपको यहाँ अंक मिलते हैं!\nबहुत सारे इकट्ठा करें और उन्हें पुरस्कारों के लिए बदलें।';
+  String get guidePointsDesc => 'जब आप कोई वादा पूरा करते हैं, तो आपको यहाँ अंक मिलते हैं!\nढेर सारे जमा करें और उन्हें पुरस्कारों के लिए बदलें।';
 
   @override
-  String get guideShopTitle => 'पुरस्कार दुकान (दायां 🏠 आइकन)';
+  String get guideShopTitle => 'इनाम की दुकान (दाईं ओर 🏠 आइकन)';
 
   @override
-  String get guideShopDesc => 'यह वह जगह है जहाँ आप अपने द्वारा बचाए गए अंकों को नए कपड़ों और घरों के लिए बदल सकते हैं!';
+  String get guideShopDesc => 'यह वह जगह है जहाँ आप अपने जमा किए गए अंकों को नए कपड़ों और घरों के लिए बदल सकते हैं!';
 
   @override
-  String get guideCustomizeTitle => 'अनुकूलित करें (दायां ☺ आइकन)';
+  String get guideCustomizeTitle => 'अनुकूलित करें (दाईं ओर ड्रेस-अप आइकन)';
 
   @override
-  String get guideCustomizeDesc => 'आप अपने द्वारा खरीदी गई वस्तुओं के साथ अपने अवतार के कपड़े और घर बदल सकते हैं।\nअपनी खुद की दुनिया बनाएं!';
+  String get guideCustomizeDesc => 'आप अपने द्वारा खरीदी गई वस्तुओं से अपने अवतार के कपड़े और घर बदल सकते हैं।\nअपनी खुद की एक अलग दुनिया बनाएं!';
 
   @override
-  String get guideBgmButtonTitle => 'BGM (दाईं ओर ♪ आइकन)';
+  String get guideBgmButtonTitle => 'BGM (ऊपरी बोर्ड)';
 
   @override
-  String get guideBgmButtonDesc => 'अपना पसंदीदा संगीत चुनने के लिए यहाँ दबाएं। एक मजेदार गाने के साथ मूड बदलें!';
+  String get guideBgmButtonDesc => 'अपना पसंदीदा संगीत चुनने के लिए यहाँ दबाएं। एक मज़ेदार गाने के साथ मूड बदलें!';
 
   @override
-  String get guideWorldMapButtonTitle => 'बाहरी दुनिया (दाईं ओर 🌎 आइकन)';
+  String get guideWorldMapButtonTitle => 'बाहरी दुनिया (ऊपरी बोर्ड)';
 
   @override
-  String get guideWorldMapButtonDesc => 'पूरी दुनिया का नक्शा देखने के लिए यह बटन दबाएं। जैसे-जैसे आप लेवल बढ़ाते हैं, आप जाने के लिए नई जगहों को अनलॉक कर सकते हैं!';
+  String get guideWorldMapButtonDesc => 'पूरी दुनिया का नक्शा देखने के लिए यह बटन दबाएं। जैसे-जैसे आपका लेवल बढ़ेगा, आपके लिए नई जगहें खुल सकती हैं!';
 
   @override
   String get emergency => 'आपातकालीन!';
@@ -1833,7 +1833,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get setupReceivedButton => 'मिल गया!';
 
   @override
-  String get initialSetupSettingsMessage => 'वादे सेट करें।\nआप उन्हें बाद में बदल सकते हैं, इसलिए यदि आपने अभी तक निर्णय नहीं लिया है, तो बस \'सेटअप पूरा करें\' दबाएं!';
+  String get initialSetupSettingsMessage => 'वादे सेट करें。\nआप उन्हें बाद में बदल सकते हैं, इसलिए यदि आपने अभी तक निर्णय नहीं लिया है, तो बस \'सेटअप पूरा करें\' दबाएं!';
 
   @override
   String get initialSetupCompleteButton => 'सेटअप पूरा करें';
@@ -1854,4 +1854,26 @@ class AppLocalizationsHi extends AppLocalizations {
   String paywallSaleCountdown(String time) {
     return 'सीमित समय के लिए विशेष कीमत! \n$time में समाप्त';
   }
+
+  @override
+  String get regularPromiseLimitTitle => 'बहुत अधिक वादे';
+
+  @override
+  String regularPromiseLimitDesc(int limit) {
+    return 'मुफ़्त योजना में, आप केवल $limit \"नियमित वादे\" पंजीकृत कर सकते हैं।\nअसीमित पंजीकरण के लिए प्रीमियम में अपग्रेड करें!';
+  }
+
+  @override
+  String get emergencyLimitTitle => 'दैनिक पंजीकरण सीमा';
+
+  @override
+  String emergencyLimitDesc(int limit) {
+    return 'मुफ़्त योजना में, आप प्रति दिन केवल $limit \"आपातकालीन वादे\" पंजीकृत कर सकते हैं।\nअसीमित पंजीकरण के लिए प्रीमियम में अपग्रेड करें!';
+  }
+
+  @override
+  String get paywallPromiseLimitBefore => 'वादों की सीमित संख्या';
+
+  @override
+  String get paywallPromiseLimitAfter => 'असीमित वादे!\nहर दिन आपका समर्थन कर रहे हैं।';
 }

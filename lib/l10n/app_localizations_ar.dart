@@ -48,7 +48,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialCustomizeTitle => 'حصلت على 100 نقطة! ✨';
 
   @override
-  String get tutorialCustomizeDesc => 'نقاطك تتراكم!\nاضغط زر ☺ على اليمين للذهاب إلى **\'التخصيص\'** وشراء عنصر!';
+  String get tutorialCustomizeDesc => 'لقد جمعت نقاطًا!\nاضغط على أيقونة الملابس على اليمين للذهاب إلى **\'التخصيص\'** وشراء عنصر!';
 
   @override
   String get tutorialParentSetupTitle => 'كل شيء جاهز! 🎉';
@@ -90,7 +90,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get guideNextPromiseDesc => 'سيظهر \'الوعد\' القادم للتحدي هنا.\nاضغط على \'ابدأ\' واستمر في تحديهم!';
 
   @override
-  String get guidePromiseBoardTitle => 'لوحة الوعود (أيقونة 📄 على اليمين)';
+  String get guidePromiseBoardTitle => 'لوحة الوعود (اللوحة العلوية)';
 
   @override
   String get guidePromiseBoardDesc => 'يمكنك رؤية قائمة وعود اليوم هنا.\nهدفك هو جمع علامات التحقق \'تم!\'!';
@@ -108,19 +108,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get guideShopDesc => 'هذا هو المكان الذي يمكنك فيه استبدال النقاط التي وفرتها بملابس ومنازل جديدة!';
 
   @override
-  String get guideCustomizeTitle => 'تخصيص (أيقونة ☺ على اليمين)';
+  String get guideCustomizeTitle => 'تخصيص (أيقونة التخصيص على اليمين)';
 
   @override
   String get guideCustomizeDesc => 'يمكنك تغيير ملابس ومنزل الصورة الرمزية الخاصة بك بالعناصر التي اشتريتها.\nأنشئ عالمك الخاص تمامًا!';
 
   @override
-  String get guideBgmButtonTitle => 'الموسيقى الخلفية (أيقونة ♪ على اليمين)';
+  String get guideBgmButtonTitle => 'الموسيقى التصويرية (اللوحة العلوية)';
 
   @override
   String get guideBgmButtonDesc => 'اضغط هنا لاختيار الموسيقى المفضلة لديك. غير الحالة المزاجية بأغنية ممتعة!';
 
   @override
-  String get guideWorldMapButtonTitle => 'العالم الخارجي (أيقونة 🌎 على اليمين)';
+  String get guideWorldMapButtonTitle => 'العالم الخارجي (اللوحة العلوية)';
 
   @override
   String get guideWorldMapButtonDesc => 'اضغط على هذا الزر لرؤية خريطة العالم بالكامل. مع ارتفاع مستواك، قد تفتح أماكن جديدة للذهاب إليها!';
@@ -1854,4 +1854,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String paywallSaleCountdown(String time) {
     return 'سعر خاص لفترة محدودة! \nينتهي في $time';
   }
+
+  @override
+  String get regularPromiseLimitTitle => 'وعود كثيرة جداً';
+
+  @override
+  String regularPromiseLimitDesc(int limit) {
+    return 'في الخطة المجانية، يمكنك تسجيل ما يصل إلى $limit \'وعود منتظمة\' فقط.\nقم بالترقية إلى بريميوم للتسجيل غير المحدود!';
+  }
+
+  @override
+  String get emergencyLimitTitle => 'حد التسجيل اليومي';
+
+  @override
+  String emergencyLimitDesc(int limit) {
+    return 'في الخطة المجانية، يمكنك تسجيل ما يصل إلى $limit \'وعود طوارئ\' يومياً فقط.\nقم بالترقية إلى بريميوم للتسجيل غير المحدود!';
+  }
+
+  @override
+  String get paywallPromiseLimitBefore => 'عدد محدود من الوعود';
+
+  @override
+  String get paywallPromiseLimitAfter => 'وعود غير محدودة!\nندعمك في كل يوم.';
 }

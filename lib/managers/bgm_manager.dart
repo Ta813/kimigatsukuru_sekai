@@ -78,6 +78,7 @@ class BgmManager with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
       // バックグラウンド移行 or アプリ終了時: BGMを停止
       final isPlaying = _bgmPlayer?.playing ?? false;

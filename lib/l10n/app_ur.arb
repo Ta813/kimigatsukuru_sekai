@@ -13,7 +13,7 @@
   "tutorialShopTitle": "آپ کو 100 پوائنٹس ملے! ✨",
   "tutorialShopDesc": "آپ نے پوائنٹس جمع کر لیے ہیں!\nآئیے دائیں طرف موجود 🏠 بٹن سے 'دکان' پر جا کر کچھ چیزیں خریدیں!",
   "tutorialCustomizeTitle": "آپ کو 100 پوائنٹس ملے! ✨",
-  "tutorialCustomizeDesc": "آپ کے پوائنٹس جمع ہو رہے ہیں!\nدائیں طرف ☺ بٹن دبائیں اور **'اپنی پسند سے سجائیں'** میں جا کر آئٹم خریدیں!",
+  "tutorialCustomizeDesc": "آپ نے پوائنٹس حاصل کر لیے ہیں!\nآئیے دائیں طرف ڈریس اپ آئیکن سے **\"اپنی پسند سے سجائیں\"** میں اشیاء خریدیں!",
   "tutorialParentSetupTitle": "سب تیار! 🎉",
   "tutorialParentSetupDesc": "ہم انہیں خوش کرنے کے لیے بالکل تیار ہیں!\nآئیے فوراً روزانہ کے 'وعدے' طے کریں اور شروع کریں!",
   "tutorialMoveTitle": "آئیے انہیں حرکت دیں! ✨",
@@ -27,17 +27,17 @@
   "guideTrialPromiseDesc": "خود تجربہ کریں کہ 'وعدے' کیسے کام کرتے ہیں!\nمیں نے نیچے دی گئی بار میں ایک 'آزمائشی وعدہ' رکھا ہے۔\nفوراً 'شروع کریں' دبائیں اور ایک بچے کی طرح کھیلنے کی کوشش کریں!",
   "guideNextPromiseTitle": "اگلا وعدہ (نیچے کا بورڈ)",
   "guideNextPromiseDesc": "چیلنج کے لیے اگلا 'وعدہ' یہاں دکھایا جائے گا۔\n'شروع کریں' دبائیں اور چیلنجز پورے کرتے رہیں!",
-  "guidePromiseBoardTitle": "وعدہ بورڈ (دائیں 📄 آئیکن)",
+  "guidePromiseBoardTitle": "وعدہ بورڈ (اوپری بورڈ)",
   "guidePromiseBoardDesc": "آپ یہاں آج کے وعدوں کی فہرست دیکھ سکتے ہیں۔\nآپ کا مقصد 'مکمل!' کے نشانات جمع کرنا ہے!",
   "guidePointsTitle": "پوائنٹس (اوپر دائیں ★)",
   "guidePointsDesc": "جب آپ کوئی وعدہ پورا کرتے ہیں، تو آپ کو یہاں پوائنٹس ملتے ہیں!\nبہت سارے جمع کریں اور انہیں انعامات کے بدلے استعمال کریں۔",
   "guideShopTitle": "انعامی دکان (دائیں 🏠 آئیکن)",
   "guideShopDesc": "یہ وہ جگہ ہے جہاں آپ اپنے جمع کردہ پوائنٹس کے بدلے نئے کپڑے اور گھر حاصل کر سکتے ہیں!",
-  "guideCustomizeTitle": "اپنی پسند سے سجائیں (دائیں ☺ آئیکن)",
+  "guideCustomizeTitle": "اپنی پسند سے سجائیں (دائیں طرف لباس کا آئیکن)",
   "guideCustomizeDesc": "آپ اپنی خریدی ہوئی چیزوں سے اپنے اوتار کے کپڑے اور گھر بدل سکتے ہیں۔\nاپنی ایک الگ دنیا بنائیں!",
-  "guideBgmButtonTitle": "پس منظر کی موسیقی (دائیں طرف ♪ آئیکن)",
+  "guideBgmButtonTitle": "پس منظر کی موسیقی (اوپری بورڈ)",
   "guideBgmButtonDesc": "اپنی پسندیدہ موسیقی چننے کے لیے یہاں دبائیں۔ کسی اچھے گانے کے ساتھ موڈ بدلیں!",
-  "guideWorldMapButtonTitle": "بیرونی دنیا (دائیں طرف 🌎 آئیکن)",
+  "guideWorldMapButtonTitle": "بیرونی دنیا (اوپری بورڈ)",
   "guideWorldMapButtonDesc": "پوری دنیا کا نقشہ دیکھنے کے لیے یہ بٹن دبائیں۔ جیسے جیسے آپ کا لیول بڑھے گا، ہو سکتا ہے آپ کے لیے نئی جگہیں کھل جائیں!",
   "emergency": "ہنگامی حال!",
   "nextPromise": "اگلا وعدہ",
@@ -803,13 +803,33 @@
   "todaysPromise": "آج کا وعدہ",
   "nextWorld": "اگلی دنیا",
   "underConstruction": "جلد آرہا ہے",
-  "pageOpenError": "صفحہ نہیں کھولا جا سکا",
-  "paywallSaleCountdown": "محدود وقت کے لیے خصوصی قیمت! \n{time} میں ختم ہو جائے گا",
+  "pageOpenError": "صفحہ نہیں کھل سکا",
+  "paywallSaleCountdown": "محدود وقت کے لیے خصوصی قیمت! \nختم ہونے میں {time}",
   "@paywallSaleCountdown": {
     "placeholders": {
       "time": {
         "type": "String"
       }
     }
-  }
+  },
+  "regularPromiseLimitTitle": "بہت سارے وعدے",
+  "regularPromiseLimitDesc": "مفت پلان میں، آپ صرف {limit} \"باقاعدہ وعدے\" رجسٹر کر سکتے ہیں۔\nلامحدود رجسٹریشن کے لیے پریمیم میں اپ گریڈ کریں!",
+  "@regularPromiseLimitDesc": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "emergencyLimitTitle": "روزانہ رجسٹریشن کی حد",
+  "emergencyLimitDesc": "مفت پلان میں، آپ روزانہ صرف {limit} \"ہنگامی وعدے\" رجسٹر کر سکتے ہیں۔\nلامحدود رجسٹریشن کے لیے پریمیم میں اپ گریڈ کریں!",
+  "@emergencyLimitDesc": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallPromiseLimitBefore": "وعدوں کی محدود تعداد",
+  "paywallPromiseLimitAfter": "لامحدود وعدے!\nہر دن آپ کی مدد کر رہے ہیں۔"
 }

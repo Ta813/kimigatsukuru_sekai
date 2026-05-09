@@ -32,6 +32,7 @@ class HelpMenuDialog extends StatelessWidget {
             // 選択肢1・2（1段目）
             Row(
               children: [
+                const SizedBox(width: 12),
                 Expanded(
                   child: _buildMenuButton(
                     context: context,

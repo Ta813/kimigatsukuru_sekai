@@ -13,7 +13,7 @@
   "tutorialShopTitle": "لقد حصلت على ١٠٠ نقطة! ✨",
   "tutorialShopDesc": "لقد وفرت النقاط!\nلنذهب لشراء العناصر من 'المتجر' باستخدام زر 🏠 على اليمين!",
   "tutorialCustomizeTitle": "حصلت على 100 نقطة! ✨",
-  "tutorialCustomizeDesc": "نقاطك تتراكم!\nاضغط زر ☺ على اليمين للذهاب إلى **'التخصيص'** وشراء عنصر!",
+  "tutorialCustomizeDesc": "لقد جمعت نقاطًا!\nاضغط على أيقونة الملابس على اليمين للذهاب إلى **'التخصيص'** وشراء عنصر!",
   "tutorialParentSetupTitle": "كل شيء جاهز! 🎉",
   "tutorialParentSetupDesc": "نحن جاهزون تمامًا لجعلهم سعداء!\nلنقم بإعداد 'الوعود' اليومية على الفور ونبدأ!",
   "tutorialMoveTitle": "لنقم بتحريكها! ✨",
@@ -27,17 +27,17 @@
   "guideTrialPromiseDesc": "جرب بنفسك كيف تعمل 'الوعود'!\nلقد أعددت 'وعدًا تجريبيًا' في الشريط السفلي.\nاضغط على 'ابدأ' على الفور وحاول اللعب كطفل!",
   "guideNextPromiseTitle": "الوعد القادم (لوحة سفلية)",
   "guideNextPromiseDesc": "سيظهر 'الوعد' القادم للتحدي هنا.\nاضغط على 'ابدأ' واستمر في تحديهم!",
-  "guidePromiseBoardTitle": "لوحة الوعود (أيقونة 📄 على اليمين)",
+  "guidePromiseBoardTitle": "لوحة الوعود (اللوحة العلوية)",
   "guidePromiseBoardDesc": "يمكنك رؤية قائمة وعود اليوم هنا.\nهدفك هو جمع علامات التحقق 'تم!'!",
   "guidePointsTitle": "نقاط (أيقونة ★ في الأعلى واليمين)",
   "guidePointsDesc": "عند إكمال الوعد، تحصل على نقاط هنا!\nاجمع الكثير منها واستبدلها بمكافآت.",
   "guideShopTitle": "متجر المكافآت (أيقونة 🏠 على اليمين)",
   "guideShopDesc": "هذا هو المكان الذي يمكنك فيه استبدال النقاط التي وفرتها بملابس ومنازل جديدة!",
-  "guideCustomizeTitle": "تخصيص (أيقونة ☺ على اليمين)",
+  "guideCustomizeTitle": "تخصيص (أيقونة التخصيص على اليمين)",
   "guideCustomizeDesc": "يمكنك تغيير ملابس ومنزل الصورة الرمزية الخاصة بك بالعناصر التي اشتريتها.\nأنشئ عالمك الخاص تمامًا!",
-  "guideBgmButtonTitle": "الموسيقى الخلفية (أيقونة ♪ على اليمين)",
+  "guideBgmButtonTitle": "الموسيقى التصويرية (اللوحة العلوية)",
   "guideBgmButtonDesc": "اضغط هنا لاختيار الموسيقى المفضلة لديك. غير الحالة المزاجية بأغنية ممتعة!",
-  "guideWorldMapButtonTitle": "العالم الخارجي (أيقونة 🌎 على اليمين)",
+  "guideWorldMapButtonTitle": "العالم الخارجي (اللوحة العلوية)",
   "guideWorldMapButtonDesc": "اضغط على هذا الزر لرؤية خريطة العالم بالكامل. مع ارتفاع مستواك، قد تفتح أماكن جديدة للذهاب إليها!",
   "emergency": "حالة طوارئ!",
   "nextPromise": "الوعد القادم",
@@ -811,5 +811,26 @@
         "type": "String"
       }
     }
-  }
+  },
+  "regularPromiseLimitTitle": "وعود كثيرة جداً",
+  "regularPromiseLimitDesc": "في الخطة المجانية، يمكنك تسجيل ما يصل إلى {limit} 'وعود منتظمة' فقط.\nقم بالترقية إلى بريميوم للتسجيل غير المحدود!",
+  "@regularPromiseLimitDesc": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "emergencyLimitTitle": "حد التسجيل اليومي",
+  "emergencyLimitDesc": "في الخطة المجانية، يمكنك تسجيل ما يصل إلى {limit} 'وعود طوارئ' يومياً فقط.\nقم بالترقية إلى بريميوم للتسجيل غير المحدود!",
+  "@emergencyLimitDesc": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "upgradeToPremium": "الترقية إلى بريميوم",
+  "paywallPromiseLimitBefore": "عدد محدود من الوعود",
+  "paywallPromiseLimitAfter": "وعود غير محدودة!\nندعمك في كل يوم."
 }

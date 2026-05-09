@@ -13,7 +13,7 @@
   "tutorialShopTitle": "You got 100 points! ✨",
   "tutorialShopDesc": "You've saved up points!\nLet's go buy items at the 'Shop' using the 🏠 button on the right!",
   "tutorialCustomizeTitle": "You got 100 points! ✨",
-  "tutorialCustomizeDesc": "Your points are building up!\nTap the ☺ button on the right to go to **'Customize'** and buy an item!",
+  "tutorialCustomizeDesc": "You've saved up points!\nTap the dress-up icon on the right to go to **'Customize'** and buy an item!",
   "tutorialParentSetupTitle": "All ready! 🎉",
   "tutorialParentSetupDesc": "We're all set to make them happy!\nLet's set up the daily 'Promises' right away and get started!",
   "tutorialMoveTitle": "Let's Move Them! ✨",
@@ -27,17 +27,17 @@
   "guideTrialPromiseDesc": "Experience for yourself how 'Promises' work!\nI've prepared a 'Trial Promise' on the bottom bar.\nPress 'Start' right away and try playing like a child!",
   "guideNextPromiseTitle": "Next Promise (Bottom board)",
   "guideNextPromiseDesc": "The next 'Promise' to challenge will be shown here.\nPress 'Start' and keep challenging them!",
-  "guidePromiseBoardTitle": "Promise Board (Right 📄 icon)",
+  "guidePromiseBoardTitle": "Promise Board (Top Board)",
   "guidePromiseBoardDesc": "You can see a list of today's promises here.\nYour goal is to collect the 'Done!' check marks!",
   "guidePointsTitle": "Points (Top-right ★)",
   "guidePointsDesc": "When you complete a promise, you get points here!\nCollect a lot and exchange them for rewards.",
   "guideShopTitle": "Reward Shop (Right 🏠 icon)",
   "guideShopDesc": "This is where you can exchange the points you've saved for new clothes and houses!",
-  "guideCustomizeTitle": "Customize (Right ☺ icon)",
+  "guideCustomizeTitle": "Customize (Dress-up icon on the right)",
   "guideCustomizeDesc": "You can change your avatar's clothes and house with the items you've bought.\nCreate your very own world!",
-  "guideBgmButtonTitle": "BGM (♪ Icon on the Right)",
+  "guideBgmButtonTitle": "BGM (Top Board)",
   "guideBgmButtonDesc": "Press here to choose your favorite music. Change the mood with a fun song!",
-  "guideWorldMapButtonTitle": "Outer World (🌎 Icon on the Right)",
+  "guideWorldMapButtonTitle": "Outer World (Top Board)",
   "guideWorldMapButtonDesc": "Press this button to see the whole world map. As you level up, you might unlock new places to go!",
   "emergency": "EMERGENCY!",
   "nextPromise": "Next Promise",
@@ -811,5 +811,26 @@
         "type": "String"
       }
     }
-  }
+  },
+  "regularPromiseLimitTitle": "Too many promises",
+  "regularPromiseLimitDesc": "In the free plan, you can only register up to {limit} \"Regular Promises\".\nUpgrade to Premium for unlimited registration!",
+  "@regularPromiseLimitDesc": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "emergencyLimitTitle": "Daily registration limit",
+  "emergencyLimitDesc": "In the free plan, you can only register up to {limit} \"Emergency Promises\" per day.\nUpgrade to Premium for unlimited registration!",
+  "@emergencyLimitDesc": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "upgradeToPremium": "Upgrade to Premium",
+  "paywallPromiseLimitBefore": "Limited number of promises",
+  "paywallPromiseLimitAfter": "Unlimited promises!\nSupporting you every single day."
 }

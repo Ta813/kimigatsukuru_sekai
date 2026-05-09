@@ -7,7 +7,9 @@ import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
+import '../../managers/purchase_manager.dart';
 import '../../l10n/app_localizations.dart';
+import '../premium_paywall_screen.dart';
 
 class EmergencyPromiseScreen extends StatefulWidget {
   const EmergencyPromiseScreen({super.key});
@@ -28,9 +30,9 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
     (index) => (index + 1).toString(),
   ); // 1〜120分
   final List<String> _pointOptions = List.generate(
-    50,
+    30,
     (index) => (index + 1).toString(),
-  ); // 1〜50ポイント
+  ); // 1〜30ポイント
 
   // 選択中の値を保持する変数（初期値は10）
   String _selectedDuration = '10';
@@ -103,6 +105,45 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
       // エラーが発生した場合
       print('再生エラー: $e');
     }
+
+    // 非プレミアムユーザーは1日3回まで
+    if (!PurchaseManager.instance.isPremium.value) {
+      final count = await SharedPrefsHelper.loadTodayEmergencyPromiseCount();
+      const int limit = 3;
+      if (count >= limit) {
+        if (!mounted) return;
+        final l10n = AppLocalizations.of(context)!;
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(l10n.emergencyLimitTitle),
+            content: Text(l10n.emergencyLimitDesc(limit)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'emegency_limit_reached_open_paywall',
+                  );
+                  Navigator.pop(ctx);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PremiumPaywallScreen(),
+                    ),
+                  );
+                },
+                child: Text(l10n.upgradeToPremium),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+    }
     if (_formKey.currentState!.validate()) {
       final emergencyPromise = {
         'title': _titleController.text,
@@ -112,6 +153,8 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
       };
       // SharedPreferencesに保存
       await SharedPrefsHelper.saveEmergencyPromise(emergencyPromise);
+      // 登録回数をインクリメント（非プレミアムの制限チェックに使用）
+      await SharedPrefsHelper.incrementTodayEmergencyPromiseCount();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -48,7 +48,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tutorialCustomizeTitle => 'آپ کو 100 پوائنٹس ملے! ✨';
 
   @override
-  String get tutorialCustomizeDesc => 'آپ کے پوائنٹس جمع ہو رہے ہیں!\nدائیں طرف ☺ بٹن دبائیں اور **\'اپنی پسند سے سجائیں\'** میں جا کر آئٹم خریدیں!';
+  String get tutorialCustomizeDesc => 'آپ نے پوائنٹس حاصل کر لیے ہیں!\nآئیے دائیں طرف ڈریس اپ آئیکن سے **\"اپنی پسند سے سجائیں\"** میں اشیاء خریدیں!';
 
   @override
   String get tutorialParentSetupTitle => 'سب تیار! 🎉';
@@ -90,7 +90,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get guideNextPromiseDesc => 'چیلنج کے لیے اگلا \'وعدہ\' یہاں دکھایا جائے گا۔\n\'شروع کریں\' دبائیں اور چیلنجز پورے کرتے رہیں!';
 
   @override
-  String get guidePromiseBoardTitle => 'وعدہ بورڈ (دائیں 📄 آئیکن)';
+  String get guidePromiseBoardTitle => 'وعدہ بورڈ (اوپری بورڈ)';
 
   @override
   String get guidePromiseBoardDesc => 'آپ یہاں آج کے وعدوں کی فہرست دیکھ سکتے ہیں۔\nآپ کا مقصد \'مکمل!\' کے نشانات جمع کرنا ہے!';
@@ -108,19 +108,19 @@ class AppLocalizationsUr extends AppLocalizations {
   String get guideShopDesc => 'یہ وہ جگہ ہے جہاں آپ اپنے جمع کردہ پوائنٹس کے بدلے نئے کپڑے اور گھر حاصل کر سکتے ہیں!';
 
   @override
-  String get guideCustomizeTitle => 'اپنی پسند سے سجائیں (دائیں ☺ آئیکن)';
+  String get guideCustomizeTitle => 'اپنی پسند سے سجائیں (دائیں طرف لباس کا آئیکن)';
 
   @override
   String get guideCustomizeDesc => 'آپ اپنی خریدی ہوئی چیزوں سے اپنے اوتار کے کپڑے اور گھر بدل سکتے ہیں۔\nاپنی ایک الگ دنیا بنائیں!';
 
   @override
-  String get guideBgmButtonTitle => 'پس منظر کی موسیقی (دائیں طرف ♪ آئیکن)';
+  String get guideBgmButtonTitle => 'پس منظر کی موسیقی (اوپری بورڈ)';
 
   @override
   String get guideBgmButtonDesc => 'اپنی پسندیدہ موسیقی چننے کے لیے یہاں دبائیں۔ کسی اچھے گانے کے ساتھ موڈ بدلیں!';
 
   @override
-  String get guideWorldMapButtonTitle => 'بیرونی دنیا (دائیں طرف 🌎 آئیکن)';
+  String get guideWorldMapButtonTitle => 'بیرونی دنیا (اوپری بورڈ)';
 
   @override
   String get guideWorldMapButtonDesc => 'پوری دنیا کا نقشہ دیکھنے کے لیے یہ بٹن دبائیں۔ جیسے جیسے آپ کا لیول بڑھے گا، ہو سکتا ہے آپ کے لیے نئی جگہیں کھل جائیں!';
@@ -1848,10 +1848,32 @@ class AppLocalizationsUr extends AppLocalizations {
   String get underConstruction => 'جلد آرہا ہے';
 
   @override
-  String get pageOpenError => 'صفحہ نہیں کھولا جا سکا';
+  String get pageOpenError => 'صفحہ نہیں کھل سکا';
 
   @override
   String paywallSaleCountdown(String time) {
-    return 'محدود وقت کے لیے خصوصی قیمت! \n$time میں ختم ہو جائے گا';
+    return 'محدود وقت کے لیے خصوصی قیمت! \nختم ہونے میں $time';
   }
+
+  @override
+  String get regularPromiseLimitTitle => 'بہت سارے وعدے';
+
+  @override
+  String regularPromiseLimitDesc(int limit) {
+    return 'مفت پلان میں، آپ صرف $limit \"باقاعدہ وعدے\" رجسٹر کر سکتے ہیں۔\nلامحدود رجسٹریشن کے لیے پریمیم میں اپ گریڈ کریں!';
+  }
+
+  @override
+  String get emergencyLimitTitle => 'روزانہ رجسٹریشن کی حد';
+
+  @override
+  String emergencyLimitDesc(int limit) {
+    return 'مفت پلان میں، آپ روزانہ صرف $limit \"ہنگامی وعدے\" رجسٹر کر سکتے ہیں۔\nلامحدود رجسٹریشن کے لیے پریمیم میں اپ گریڈ کریں!';
+  }
+
+  @override
+  String get paywallPromiseLimitBefore => 'وعدوں کی محدود تعداد';
+
+  @override
+  String get paywallPromiseLimitAfter => 'لامحدود وعدے!\nہر دن آپ کی مدد کر رہے ہیں۔';
 }

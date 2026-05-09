@@ -48,7 +48,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialCustomizeTitle => 'You got 100 points! ✨';
 
   @override
-  String get tutorialCustomizeDesc => 'Your points are building up!\nTap the ☺ button on the right to go to **\'Customize\'** and buy an item!';
+  String get tutorialCustomizeDesc => 'You\'ve saved up points!\nTap the dress-up icon on the right to go to **\'Customize\'** and buy an item!';
 
   @override
   String get tutorialParentSetupTitle => 'All ready! 🎉';
@@ -90,7 +90,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guideNextPromiseDesc => 'The next \'Promise\' to challenge will be shown here.\nPress \'Start\' and keep challenging them!';
 
   @override
-  String get guidePromiseBoardTitle => 'Promise Board (Right 📄 icon)';
+  String get guidePromiseBoardTitle => 'Promise Board (Top Board)';
 
   @override
   String get guidePromiseBoardDesc => 'You can see a list of today\'s promises here.\nYour goal is to collect the \'Done!\' check marks!';
@@ -108,19 +108,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guideShopDesc => 'This is where you can exchange the points you\'ve saved for new clothes and houses!';
 
   @override
-  String get guideCustomizeTitle => 'Customize (Right ☺ icon)';
+  String get guideCustomizeTitle => 'Customize (Dress-up icon on the right)';
 
   @override
   String get guideCustomizeDesc => 'You can change your avatar\'s clothes and house with the items you\'ve bought.\nCreate your very own world!';
 
   @override
-  String get guideBgmButtonTitle => 'BGM (♪ Icon on the Right)';
+  String get guideBgmButtonTitle => 'BGM (Top Board)';
 
   @override
   String get guideBgmButtonDesc => 'Press here to choose your favorite music. Change the mood with a fun song!';
 
   @override
-  String get guideWorldMapButtonTitle => 'Outer World (🌎 Icon on the Right)';
+  String get guideWorldMapButtonTitle => 'Outer World (Top Board)';
 
   @override
   String get guideWorldMapButtonDesc => 'Press this button to see the whole world map. As you level up, you might unlock new places to go!';
@@ -1854,4 +1854,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String paywallSaleCountdown(String time) {
     return 'Special price for a limited time! \nEnds in $time';
   }
+
+  @override
+  String get regularPromiseLimitTitle => 'Too many promises';
+
+  @override
+  String regularPromiseLimitDesc(int limit) {
+    return 'In the free plan, you can only register up to $limit \"Regular Promises\".\nUpgrade to Premium for unlimited registration!';
+  }
+
+  @override
+  String get emergencyLimitTitle => 'Daily registration limit';
+
+  @override
+  String emergencyLimitDesc(int limit) {
+    return 'In the free plan, you can only register up to $limit \"Emergency Promises\" per day.\nUpgrade to Premium for unlimited registration!';
+  }
+
+  @override
+  String get paywallPromiseLimitBefore => 'Limited number of promises';
+
+  @override
+  String get paywallPromiseLimitAfter => 'Unlimited promises!\nSupporting you every single day.';
 }

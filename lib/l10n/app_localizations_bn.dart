@@ -48,7 +48,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tutorialCustomizeTitle => '১০০ পয়েন্ট পেলে! ✨';
 
   @override
-  String get tutorialCustomizeDesc => 'তোমার পয়েন্ট জমা হচ্ছে!\nডানদিকের ☺ বোতাম চাপো এবং **\'কাস্টমাইজ\'** এ গিয়ে আইটেম কিনো!';
+  String get tutorialCustomizeDesc => 'আপনি পয়েন্ট সংগ্রহ করেছেন!\nডানদিকের পোশাক আইকন টিপুন এবং **\'কাস্টমাইজ করুন\'** এ গিয়ে আইটেম কিনুন!';
 
   @override
   String get tutorialParentSetupTitle => 'সব প্রস্তুত! 🎉';
@@ -90,7 +90,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get guideNextPromiseDesc => 'চ্যালেঞ্জ করার জন্য পরবর্তী \'প্রতিশ্রুতি\' এখানে দেখানো হবে।\n\'শুরু করুন\' টিপুন এবং চ্যালেঞ্জ নিতে থাকুন!';
 
   @override
-  String get guidePromiseBoardTitle => 'প্রতিশ্রুতি বোর্ড (ডানদিকের 📄 আইকন)';
+  String get guidePromiseBoardTitle => 'প্রতিশ্রুতি বোর্ড (উপরের বোর্ড)';
 
   @override
   String get guidePromiseBoardDesc => 'আপনি এখানে আজকের প্রতিশ্রুতির তালিকা দেখতে পারেন।\nআপনার লক্ষ্য হলো \'সম্পন্ন!\' চিহ্ন সংগ্রহ করা!';
@@ -108,19 +108,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get guideShopDesc => 'এখানে আপনি আপনার জমানো পয়েন্ট নতুন পোশাক এবং ঘরের বিনিময়ে ব্যবহার করতে পারেন!';
 
   @override
-  String get guideCustomizeTitle => 'কাস্টমাইজ (ডানদিকের ☺ আইকন)';
+  String get guideCustomizeTitle => 'কাস্টমাইজ করুন (ডানদিকে পোশাক আইকন)';
 
   @override
   String get guideCustomizeDesc => 'আপনি আপনার কেনা জিনিসপত্র দিয়ে আপনার অবতারের পোশাক এবং ঘর পরিবর্তন করতে পারেন।\nআপনার একদম নিজস্ব পৃথিবী তৈরি করুন!';
 
   @override
-  String get guideBgmButtonTitle => 'BGM (ডানদিকের ♪ আইকন)';
+  String get guideBgmButtonTitle => 'BGM (উপরের বোর্ড)';
 
   @override
   String get guideBgmButtonDesc => 'আপনার পছন্দের সঙ্গীত চয়ন করতে এখানে টিপুন। একটি মজার গানের সাথে মুড পরিবর্তন করুন!';
 
   @override
-  String get guideWorldMapButtonTitle => 'বাইরের পৃথিবী (ডানদিকের 🌎 আইকন)';
+  String get guideWorldMapButtonTitle => 'বাইরের পৃথিবী (উপরের বোর্ড)';
 
   @override
   String get guideWorldMapButtonDesc => 'পুরো পৃথিবীর মানচিত্র দেখতে এই বোতামটি টিপুন। আপনার লেভেল বাড়ার সাথে সাথে আপনি যাওয়ার জন্য নতুন জায়গা আনলক করতে পারেন!';
@@ -1852,6 +1852,28 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String paywallSaleCountdown(String time) {
-    return 'সীমিত সময়ের জন্য বিশেষ মূল্য! \n$time এর মধ্যে শেষ হবে';
+    return 'সীমিত সময়ের জন্য বিশেষ মূল্য! \nশেষ হবে $time এ';
   }
+
+  @override
+  String get regularPromiseLimitTitle => 'অনেক প্রতিশ্রুতি';
+
+  @override
+  String regularPromiseLimitDesc(int limit) {
+    return 'বিনামূল্যে প্ল্যানে, আপনি মাত্র $limit টি \"নিয়মিত প্রতিশ্রুতি\" নিবন্ধন করতে পারেন।\nআনলিমিটেড নিবন্ধনের জন্য প্রিমিয়ামে আপগ্রেড করুন!';
+  }
+
+  @override
+  String get emergencyLimitTitle => 'দৈনিক নিবন্ধনের সীমা';
+
+  @override
+  String emergencyLimitDesc(int limit) {
+    return 'বিনামূল্যে প্ল্যানে, আপনি প্রতিদিন মাত্র $limit টি \"জরুরি প্রতিশ্রুতি\" নিবন্ধন করতে পারেন।\nআনলিমিটেড নিবন্ধনের জন্য প্রিমিয়ামে আপগ্রেড করুন!';
+  }
+
+  @override
+  String get paywallPromiseLimitBefore => 'প্রতিশ্রুতির সীমিত সংখ্যা';
+
+  @override
+  String get paywallPromiseLimitAfter => 'আনলিমিটেড প্রতিশ্রুতি!\nপ্রতিদিন আপনাকে সমর্থন করা হচ্ছে।';
 }

@@ -9,8 +9,10 @@ import '../../widgets/custom_back_button.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
+import '../../managers/purchase_manager.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/speech_bubble.dart';
+import '../premium_paywall_screen.dart';
 
 /// チュートリアルのフェーズ
 enum _TutorialPhase { add, delete, finish, done }
@@ -307,7 +309,7 @@ class _RegularPromiseSettingsScreenState
       (i) => (i + 1).toString(),
     );
     final List<String> pointOptions = List.generate(
-      50,
+      30,
       (i) => (i + 1).toString(),
     );
 
@@ -634,6 +636,45 @@ class _RegularPromiseSettingsScreenState
 
   void _navigateToAddScreen() async {
     _playTapSound();
+
+    // 非プレミアムユーザーは8個まで
+    if (!PurchaseManager.instance.isPremium.value) {
+      const int limit = 8;
+      if (_regularPromises.length >= limit) {
+        if (!mounted) return;
+        final l10n = AppLocalizations.of(context)!;
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(l10n.regularPromiseLimitTitle),
+            content: Text(l10n.regularPromiseLimitDesc(limit)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'regular_limit_reached_open_paywall',
+                  );
+                  Navigator.pop(ctx);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PremiumPaywallScreen(),
+                    ),
+                  );
+                },
+                child: Text(l10n.upgradeToPremium),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+    }
+
     final newPromise = await _showAddEditPromiseDialog();
 
     if (newPromise != null) {
@@ -691,7 +732,48 @@ class _RegularPromiseSettingsScreenState
     }
   }
 
-  void _addRecommendedPromise(Map<String, dynamic> template) {
+  void _addRecommendedPromise(
+    Map<String, dynamic> template,
+    bool isTutorial,
+  ) async {
+    // 非プレミアムユーザーは8個まで
+    if (!PurchaseManager.instance.isPremium.value) {
+      const int limit = 8;
+      if (!isTutorial && _regularPromises.length >= limit) {
+        if (!mounted) return;
+        final l10n = AppLocalizations.of(context)!;
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text(l10n.regularPromiseLimitTitle),
+            content: Text(l10n.regularPromiseLimitDesc(limit)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(l10n.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'regular_limit_reached_open_paywall',
+                  );
+                  Navigator.pop(ctx);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PremiumPaywallScreen(),
+                    ),
+                  );
+                },
+                child: Text(l10n.upgradeToPremium),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+    }
+
     bool exists = _regularPromises.any((p) => p['title'] == template['title']);
     if (exists) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -1098,7 +1180,7 @@ class _RegularPromiseSettingsScreenState
                           name: 'start_promise_add_tutorial',
                         );
                       _playTapSound();
-                      _addRecommendedPromise(template);
+                      _addRecommendedPromise(template, true);
                     },
                   ),
                 ),
@@ -1114,7 +1196,7 @@ class _RegularPromiseSettingsScreenState
                     ),
                     onPressed: () {
                       _playTapSound();
-                      _addRecommendedPromise(template);
+                      _addRecommendedPromise(template, false);
                     },
                   ),
                 ),
@@ -1383,7 +1465,7 @@ class _RegularPromiseSettingsScreenState
                         child: DragTarget<Map<String, dynamic>>(
                           onWillAcceptWithDetails: (details) => true,
                           onAcceptWithDetails: (details) =>
-                              _addRecommendedPromise(details.data),
+                              _addRecommendedPromise(details.data, false),
                           builder: (context, candidateData, rejectedData) {
                             final isHovered = candidateData.isNotEmpty;
                             return Container(

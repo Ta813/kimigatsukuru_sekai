@@ -530,6 +530,12 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
               _buildTableCell(l10n.paywallBonusAfter, isHighlight: true),
             ],
           ),
+          TableRow(
+            children: [
+              _buildTableCell(l10n.paywallPromiseLimitBefore),
+              _buildTableCell(l10n.paywallPromiseLimitAfter, isHighlight: true),
+            ],
+          ),
         ],
       ),
     );

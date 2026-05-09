@@ -184,7 +184,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialCustomizeDesc.
   ///
   /// In en, this message translates to:
-  /// **'Your points are building up!\nTap the ☺ button on the right to go to **\'Customize\'** and buy an item!'**
+  /// **'You\'ve saved up points!\nTap the dress-up icon on the right to go to **\'Customize\'** and buy an item!'**
   String get tutorialCustomizeDesc;
 
   /// No description provided for @tutorialParentSetupTitle.
@@ -268,7 +268,7 @@ abstract class AppLocalizations {
   /// No description provided for @guidePromiseBoardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Promise Board (Right 📄 icon)'**
+  /// **'Promise Board (Top Board)'**
   String get guidePromiseBoardTitle;
 
   /// No description provided for @guidePromiseBoardDesc.
@@ -304,7 +304,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideCustomizeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Customize (Right ☺ icon)'**
+  /// **'Customize (Dress-up icon on the right)'**
   String get guideCustomizeTitle;
 
   /// No description provided for @guideCustomizeDesc.
@@ -316,7 +316,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideBgmButtonTitle.
   ///
   /// In en, this message translates to:
-  /// **'BGM (♪ Icon on the Right)'**
+  /// **'BGM (Top Board)'**
   String get guideBgmButtonTitle;
 
   /// No description provided for @guideBgmButtonDesc.
@@ -328,7 +328,7 @@ abstract class AppLocalizations {
   /// No description provided for @guideWorldMapButtonTitle.
   ///
   /// In en, this message translates to:
-  /// **'Outer World (🌎 Icon on the Right)'**
+  /// **'Outer World (Top Board)'**
   String get guideWorldMapButtonTitle;
 
   /// No description provided for @guideWorldMapButtonDesc.
@@ -3672,6 +3672,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Special price for a limited time! \nEnds in {time}'**
   String paywallSaleCountdown(String time);
+
+  /// No description provided for @regularPromiseLimitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many promises'**
+  String get regularPromiseLimitTitle;
+
+  /// No description provided for @regularPromiseLimitDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'In the free plan, you can only register up to {limit} \"Regular Promises\".\nUpgrade to Premium for unlimited registration!'**
+  String regularPromiseLimitDesc(int limit);
+
+  /// No description provided for @emergencyLimitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily registration limit'**
+  String get emergencyLimitTitle;
+
+  /// No description provided for @emergencyLimitDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'In the free plan, you can only register up to {limit} \"Emergency Promises\" per day.\nUpgrade to Premium for unlimited registration!'**
+  String emergencyLimitDesc(int limit);
+
+  /// No description provided for @paywallPromiseLimitBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Limited number of promises'**
+  String get paywallPromiseLimitBefore;
+
+  /// No description provided for @paywallPromiseLimitAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited promises!\nSupporting you every single day.'**
+  String get paywallPromiseLimitAfter;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

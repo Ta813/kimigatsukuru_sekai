@@ -250,19 +250,6 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(width: 16),
-                              Text(
-                                // ★ 次のレベルまでの必要経験値を計算して表示
-                                // _requiredExpForNextLevelは次のレベルに必要な「累計」経験値
-                                AppLocalizations.of(context)!.expToNextLevel(
-                                  widget.requiredExpForNextLevel -
-                                      widget.experience,
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black54,
-                                ),
-                              ),
                             ],
                           ),
 

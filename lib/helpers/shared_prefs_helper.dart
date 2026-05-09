@@ -157,6 +157,33 @@ class SharedPrefsHelper {
     return json.decode(promiseString) as Map<String, dynamic>;
   }
 
+  // 今日の緊急やくそく登録回数を取得する（日付が変わればリセット）
+  static const String _emergencyPromiseDateKey = 'emergency_promise_date';
+  static const String _emergencyPromiseCountKey = 'emergency_promise_count';
+
+  static Future<int> loadTodayEmergencyPromiseCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = DateTime.now();
+    final todayStr = '${today.year}-${today.month}-${today.day}';
+    final savedDate = prefs.getString(_emergencyPromiseDateKey);
+    if (savedDate != todayStr) {
+      // 日付が変わっていたらリセット
+      await prefs.setString(_emergencyPromiseDateKey, todayStr);
+      await prefs.setInt(_emergencyPromiseCountKey, 0);
+      return 0;
+    }
+    return prefs.getInt(_emergencyPromiseCountKey) ?? 0;
+  }
+
+  static Future<void> incrementTodayEmergencyPromiseCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = DateTime.now();
+    final todayStr = '${today.year}-${today.month}-${today.day}';
+    await prefs.setString(_emergencyPromiseDateKey, todayStr);
+    final current = prefs.getInt(_emergencyPromiseCountKey) ?? 0;
+    await prefs.setInt(_emergencyPromiseCountKey, current + 1);
+  }
+
   // --- ここからポイント関連を追加 ---
   static const String _pointsKey = 'user_points';
 
@@ -938,6 +965,12 @@ class SharedPrefsHelper {
     50,
     75,
     100,
+    125,
+    150,
+    175,
+    200,
+    225,
+    250,
   ];
 
   // --- 累計系ミッション（レベル） ---
@@ -954,6 +987,10 @@ class SharedPrefsHelper {
     30,
     40,
     50,
+    60,
+    70,
+    80,
+    90,
   ];
 
   // --- 累計系ミッション（ポイント） ---
@@ -974,6 +1011,24 @@ class SharedPrefsHelper {
     7000,
     8500,
     10000,
+    11000,
+    13000,
+    15000,
+    17000,
+    20000,
+    22500,
+    25000,
+    27500,
+    30000,
+    35000,
+    40000,
+    45000,
+    50000,
+    60000,
+    70000,
+    80000,
+    90000,
+    100000,
   ];
 
   // --- 買い物回数の管理 ---

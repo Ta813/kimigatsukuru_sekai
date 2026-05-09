@@ -48,7 +48,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialCustomizeTitle => '100ポイントゲットだね！✨';
 
   @override
-  String get tutorialCustomizeDesc => 'ポイントがたまったよ！\nさっそく右の☺ボタンから**「きせかえ・もようがえ」**でアイテムをかってみよう！';
+  String get tutorialCustomizeDesc => 'ポイントがたまったよ！\nさっそく右のきせかえアイコンから**「きせかえ・もようがえ」**でアイテムをかってみよう！';
 
   @override
   String get tutorialParentSetupTitle => 'じゅんび完了！🎉';
@@ -90,7 +90,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideNextPromiseDesc => 'つぎに挑戦する「やくそく」が表示されるよ。\n「はじめる」を押してどんどんチャレンジしてね！';
 
   @override
-  String get guidePromiseBoardTitle => 'やくそくボード「右の📄マーク」';
+  String get guidePromiseBoardTitle => 'やくそくボード「上のボード」';
 
   @override
   String get guidePromiseBoardDesc => '今日のやくそくの一覧が見れるよ。\n「できた！」マークを集めるのが目標だ！';
@@ -108,19 +108,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get guideShopDesc => '貯めたポイントで、新しい服やおうちと交換できる場所だよ！';
 
   @override
-  String get guideCustomizeTitle => 'きせかえ・もようがえ「右の☺マーク」';
+  String get guideCustomizeTitle => 'きせかえ・もようがえ「右のきせかえマーク」';
 
   @override
   String get guideCustomizeDesc => '買ったアイテムで、アバターの服やおうちを変えられるよ！\n自分だけの世界をつくろう。';
 
   @override
-  String get guideBgmButtonTitle => 'BGM「右の♪マーク」';
+  String get guideBgmButtonTitle => 'BGM「上のボード」';
 
   @override
   String get guideBgmButtonDesc => 'ここを押すと、好きな音楽を選べるよ。楽しい音楽で気分を変えてみよう！';
 
   @override
-  String get guideWorldMapButtonTitle => '外の世界「右の🌎マーク」';
+  String get guideWorldMapButtonTitle => '外の世界「上のボード」';
 
   @override
   String get guideWorldMapButtonDesc => 'このボタンを押すと、世界の全体図が見られるよ。レベルが上がると行ける場所が増えるかも！';
@@ -1854,4 +1854,26 @@ class AppLocalizationsJa extends AppLocalizations {
   String paywallSaleCountdown(String time) {
     return '今だけこの価格で！ \nあと $time';
   }
+
+  @override
+  String get regularPromiseLimitTitle => 'やくそくがいっぱいです';
+
+  @override
+  String regularPromiseLimitDesc(int limit) {
+    return '無料プランでは「定例のやくそく」を$limit個までしか登録できません。\nプレミアムプランなら無制限に登録できます！';
+  }
+
+  @override
+  String get emergencyLimitTitle => '本日の登録回数制限';
+
+  @override
+  String emergencyLimitDesc(int limit) {
+    return '無料プランでは「緊急のやくそく」を1日$limit回までしか登録できません。\nプレミアムプランなら無制限に登録できます！';
+  }
+
+  @override
+  String get paywallPromiseLimitBefore => 'やくそくの登録数に制限がある';
+
+  @override
+  String get paywallPromiseLimitAfter => 'やくそく登録も無制限！\nどんなに忙しい毎日でも、しっかりサポート。';
 }
