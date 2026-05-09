@@ -527,6 +527,7 @@
   "helpMenuShop": "おかいもの",
   "helpMenuCustomize": "きせかえ",
   "helpMenuOthers": "その他(せってい等)",
+  "helpMenuRules": "アプリの あそびかた",
   "helpMenuClose": "とじる",
   "tutorialParentRegularBubble": "ここからやくそくを\n設定してください",
   "tutorialParentAddBubble": "このボタンで\nやくそくに追加できます",
@@ -832,5 +833,13 @@
   },
   "upgradeToPremium": "プレミアムにアップグレード",
   "paywallPromiseLimitBefore": "やくそくの登録数に制限がある",
-  "paywallPromiseLimitAfter": "やくそく登録も無制限！\nどんなに忙しい毎日でも、しっかりサポート。"
+  "paywallPromiseLimitAfter": "やくそく登録も無制限！\nどんなに忙しい毎日でも、しっかりサポート。",
+  "setupDraggableTitle": "アバターと キャラクターは\nゆびで 自由に うごかせるよ！",
+  "setupDraggableDesc": "ためしに さわって うごかしてみてね！",
+  "setupRulesTitle": "アプリの あそびかた",
+  "setupRulesStep1": "「やくそく」の じかんになったら\n「はじめる」ボタンを おそう！",
+  "setupRulesStep2": "「やくそく」が おわったら\n「おわった！」ボタンを おしてポイントゲット！",
+  "setupRulesStep3": "ポイントで アイテムを こうかんして\n「きせかえ」や「もようがえ」を たのしもう！",
+  "setupRulesStep4": "「やくそく」を なんども たっせいすると\nレベルが あがって べつのせかいに いけるよ！",
+  "setupOkButton": "わかった！"
 }

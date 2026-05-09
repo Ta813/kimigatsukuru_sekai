@@ -1274,6 +1274,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get helpMenuOthers => 'その他(せってい等)';
 
   @override
+  String get helpMenuRules => 'アプリの あそびかた';
+
+  @override
   String get helpMenuClose => 'とじる';
 
   @override
@@ -1876,4 +1879,28 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get paywallPromiseLimitAfter => 'やくそく登録も無制限！\nどんなに忙しい毎日でも、しっかりサポート。';
+
+  @override
+  String get setupDraggableTitle => 'アバターと キャラクターは\nゆびで 自由に うごかせるよ！';
+
+  @override
+  String get setupDraggableDesc => 'ためしに さわって うごかしてみてね！';
+
+  @override
+  String get setupRulesTitle => 'アプリの あそびかた';
+
+  @override
+  String get setupRulesStep1 => '「やくそく」の じかんになったら\n「はじめる」ボタンを おそう！';
+
+  @override
+  String get setupRulesStep2 => '「やくそく」が おわったら\n「おわった！」ボタンを おしてポイントゲット！';
+
+  @override
+  String get setupRulesStep3 => 'ポイントで アイテムを こうかんして\n「きせかえ」や「もようがえ」を たのしもう！';
+
+  @override
+  String get setupRulesStep4 => '「やくそく」を なんども たっせいすると\nレベルが あがって べつのせかいに いけるよ！';
+
+  @override
+  String get setupOkButton => 'わかった！';
 }

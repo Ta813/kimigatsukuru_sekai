@@ -1274,6 +1274,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get helpMenuOthers => 'অন্যান্য (সেটিংস ইত্যাদি)';
 
   @override
+  String get helpMenuRules => 'কীভাবে খেলতে হয়';
+
+  @override
   String get helpMenuClose => 'বন্ধ করুন';
 
   @override
@@ -1875,5 +1878,29 @@ class AppLocalizationsBn extends AppLocalizations {
   String get paywallPromiseLimitBefore => 'প্রতিশ্রুতির সীমিত সংখ্যা';
 
   @override
-  String get paywallPromiseLimitAfter => 'আনলিমিটেড প্রতিশ্রুতি!\nপ্রতিদিন আপনাকে সমর্থন করা হচ্ছে।';
+  String get paywallPromiseLimitAfter => 'অসীমিত প্রতিশ্রুতি নিবন্ধন!\nআপনার দৈনন্দিন জীবন যতই ব্যস্ত হোক না কেন দৃঢ় সমর্থন।';
+
+  @override
+  String get setupDraggableTitle => 'অ্যাভাটার এবং চরিত্রগুলো আপনার আঙুল দিয়ে অবাধে সরানো যেতে পারে!';
+
+  @override
+  String get setupDraggableDesc => 'সেগুলোকে স্পর্শ করার এবং সরানোর চেষ্টা করুন!';
+
+  @override
+  String get setupRulesTitle => 'কীভাবে খেলতে হয়';
+
+  @override
+  String get setupRulesStep1 => 'যখন \'প্রতিশ্রুতি\' এর সময় হবে,\n\'শুরু করুন\' বোতামটি টিপুন!';
+
+  @override
+  String get setupRulesStep2 => 'যখন আপনি \'প্রতিশ্রুতি\' শেষ করবেন,\nপয়েন্ট পেতে \'সম্পন্ন!\' বোতামটি টিপুন!';
+
+  @override
+  String get setupRulesStep3 => 'আইটেমের জন্য পয়েন্ট বিনিময় করুন এবং\n\'পোশাক\' এবং \'সাজসজ্জা\' উপভোগ করুন!';
+
+  @override
+  String get setupRulesStep4 => 'অনেকবার \'প্রতিশ্রুতি\' পূরণ করার মাধ্যমে,\nআপনার লেভেল বাড়বে এবং আপনি অন্য বিশ্বে যেতে পারবেন!';
+
+  @override
+  String get setupOkButton => 'বুঝেছি!';
 }

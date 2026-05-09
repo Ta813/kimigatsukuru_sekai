@@ -3,7 +3,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
-import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart'; // 本物の画面
+import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart'; // 🌟 プレミアム画面をインポート
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import 'package:kimigatsukuru_sekai/widgets/draggable_character.dart';
@@ -331,13 +331,24 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     }
     if (!context.mounted) return;
 
-    // 🌟 4. ドラッグ操作の説明画面（新規追加）
+    // 4. ドラッグ操作の説明画面
     if (resumeStep <= 4) {
       await SharedPrefsHelper.saveSetupProgress('A', 4);
       if (!context.mounted) return;
       await Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const DraggableInstructionScreen()),
+      );
+    }
+    if (!context.mounted) return;
+
+    // 🌟 5. アプリの遊び方（ルール）画面（新規追加）
+    if (resumeStep <= 5) {
+      await SharedPrefsHelper.saveSetupProgress('A', 5);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AppRulesInstructionScreen()),
       );
     }
     if (!context.mounted) return;
@@ -365,7 +376,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     }
     if (!context.mounted) return;
 
-    // 🌟 2. ドラッグ操作の説明画面（新規追加）
+    // 2. ドラッグ操作の説明画面
     if (resumeStep <= 2) {
       await SharedPrefsHelper.saveSetupProgress('B', 2);
       if (!context.mounted) return;
@@ -376,9 +387,20 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     }
     if (!context.mounted) return;
 
-    // 3. スマホを親に渡す画面
+    // 🌟 3. アプリの遊び方（ルール）画面（新規追加）
     if (resumeStep <= 3) {
       await SharedPrefsHelper.saveSetupProgress('B', 3);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AppRulesInstructionScreen()),
+      );
+    }
+    if (!context.mounted) return;
+
+    // 4. スマホを親に渡す画面
+    if (resumeStep <= 4) {
+      await SharedPrefsHelper.saveSetupProgress('B', 4);
       if (!context.mounted) return;
       await Navigator.push(
         context,
@@ -390,9 +412,9 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     }
     if (!context.mounted) return;
 
-    // 4. おとな（親）向け設定
-    if (resumeStep <= 4) {
-      await SharedPrefsHelper.saveSetupProgress('B', 4);
+    // 5. おとな（親）向け設定
+    if (resumeStep <= 5) {
+      await SharedPrefsHelper.saveSetupProgress('B', 5);
       if (!context.mounted) return;
       await Navigator.push(
         context,
@@ -427,7 +449,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     }
     if (!context.mounted) return;
 
-    // 🌟 2. ドラッグ操作の説明画面（新規追加）
+    // 2. ドラッグ操作の説明画面
     if (resumeStep <= 2) {
       await SharedPrefsHelper.saveSetupProgress('C', 2);
       if (!context.mounted) return;
@@ -438,9 +460,20 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     }
     if (!context.mounted) return;
 
-    // 3. おとな（親）向け設定（そのまま連続して表示）
+    // 🌟 3. アプリの遊び方（ルール）画面（新規追加）
     if (resumeStep <= 3) {
       await SharedPrefsHelper.saveSetupProgress('C', 3);
+      if (!context.mounted) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AppRulesInstructionScreen()),
+      );
+    }
+    if (!context.mounted) return;
+
+    // 4. おとな（親）向け設定（そのまま連続して表示）
+    if (resumeStep <= 4) {
+      await SharedPrefsHelper.saveSetupProgress('C', 4);
       if (!context.mounted) return;
       await Navigator.push(
         context,
@@ -463,9 +496,9 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     required String pattern,
     int resumeStep = 0,
   }) async {
-    // 🌟 間に画面が増えたのでステップ番号を調整
-    int paywallStep = (pattern == 'C') ? 4 : 5;
-    int completeStep = (pattern == 'C') ? 5 : 6;
+    // 🌟 間に画面が増えたのでステップ番号をさらに調整
+    int paywallStep = (pattern == 'C') ? 5 : 6;
+    int completeStep = (pattern == 'C') ? 6 : 7;
 
     // 1. プレミアムプランへの誘導
     if (resumeStep <= paywallStep) {
@@ -510,7 +543,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
 }
 
 // ==============================================================
-// 🌟 ドラッグ操作の説明画面（実際に触って遊べるインタラクティブ版）
+// 🌟 ドラッグ操作の説明画面
 // ==============================================================
 class DraggableInstructionScreen extends StatefulWidget {
   const DraggableInstructionScreen({super.key});
@@ -644,6 +677,7 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       body: SafeArea(
@@ -654,10 +688,10 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
               child: Column(
                 children: [
                   const SizedBox(height: 60),
-                  const Text(
-                    'アバターと キャラクターは\nゆびで 自由に うごかせるよ！',
+                  Text(
+                    l10n.setupDraggableTitle,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
@@ -665,10 +699,10 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'ためしに さわって うごかしてみてね！',
+                  Text(
+                    l10n.setupDraggableDesc,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black54,
                       fontWeight: FontWeight.bold,
@@ -694,9 +728,9 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                       ),
                       elevation: 4,
                     ),
-                    child: const Text(
-                      'わかった！',
-                      style: TextStyle(
+                    child: Text(
+                      l10n.setupOkButton,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -707,7 +741,7 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
               ),
             ),
 
-            // 🌟 実際に動かせるキャラクター（うさぎ）
+            // 実際に動かせるキャラクター（うさぎ等）
             if (_avatarPos != null)
               DraggableCharacter(
                 id: 'avatar_on_setup',
@@ -726,16 +760,15 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                 },
               ),
 
-            // ★応援キャラクターの表示と操作
+            // 応援キャラクターの表示と操作
             ..._equippedCharacters.map((charPath) {
               return DraggableCharacter(
-                id: 'setup_$charPath', // IDとして画像パスを使う
+                id: 'setup_$charPath',
                 imagePath: charPath,
                 position: _characterPositionsMap[charPath]!,
                 size: 90,
                 onPositionChanged: (delta) {
                   setState(() {
-                    // ★位置の更新
                     _characterPositionsMap[charPath] =
                         _characterPositionsMap[charPath]! + delta;
                   });
@@ -745,13 +778,12 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
 
             if (_itemPos != null)
               DraggableCharacter(
-                id: 'item_on_setup', // IDとして画像パスを使う
+                id: 'item_on_setup',
                 imagePath: 'assets/images/item_hana1.png',
                 position: _itemPos!,
                 size: 50,
                 onPositionChanged: (delta) {
                   setState(() {
-                    // ★位置の更新
                     _itemPos = _itemPos! + delta;
                   });
                 },
@@ -759,19 +791,18 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
 
             if (_itemPos2 != null)
               DraggableCharacter(
-                id: 'item_on_setup2', // IDとして画像パスを使う
+                id: 'item_on_setup2',
                 imagePath: 'assets/images/item_kuruma.png',
                 position: _itemPos2!,
                 size: 70,
                 onPositionChanged: (delta) {
                   setState(() {
-                    // ★位置の更新
                     _itemPos2 = _itemPos2! + delta;
                   });
                 },
               ),
 
-            // 🌟 「こうやって動かすんだよ」と教える動く指のアニメーション
+            // 「こうやって動かすんだよ」と教える動く指のアニメーション
             if (_positionsInitialized)
               AnimatedBuilder(
                 animation: _fingerController,
@@ -792,6 +823,164 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ==============================================================
+// 🌟 アプリの遊び方（ルール）画面（新規追加）
+// ==============================================================
+class AppRulesInstructionScreen extends StatelessWidget {
+  const AppRulesInstructionScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 8.0,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  l10n.setupRulesTitle,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // ルール1
+                _buildRuleItem(
+                  icon: Icons.play_circle_fill,
+                  iconColor: Colors.blueAccent,
+                  number: '1',
+                  text: l10n.setupRulesStep1,
+                ),
+                const SizedBox(height: 12),
+
+                // ルール2
+                _buildRuleItem(
+                  icon: Icons.check_circle,
+                  iconColor: Colors.green,
+                  number: '2',
+                  text: l10n.setupRulesStep2,
+                ),
+                const SizedBox(height: 12),
+
+                // ルール3
+                _buildRuleItem(
+                  icon: Icons.store,
+                  iconColor: Colors.pinkAccent,
+                  number: '3',
+                  text: l10n.setupRulesStep3,
+                ),
+                const SizedBox(height: 12),
+
+                // ルール4
+                _buildRuleItem(
+                  icon: Icons.public,
+                  iconColor: Colors.teal,
+                  number: '4',
+                  text: l10n.setupRulesStep4,
+                ),
+
+                const SizedBox(height: 14),
+                ElevatedButton(
+                  onPressed: () {
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (_) {}
+                    Navigator.pop(context); // 画面を閉じて次へ進む
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF7043),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 4,
+                  ),
+                  child: Text(
+                    l10n.setupOkButton,
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ルールを綺麗に表示するウィジェット
+  Widget _buildRuleItem({
+    required IconData icon,
+    required Color iconColor,
+    required String number,
+    required String text,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+        ],
+      ),
+      child: Row(
+        children: [
+          // 数字のバッジ
+          Container(
+            width: 28,
+            height: 28,
+            decoration: const BoxDecoration(
+              color: Color(0xFFFF7043),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                number,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          // アイコン
+          Icon(icon, size: 32, color: iconColor),
+          const SizedBox(width: 16),
+          // テキスト
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

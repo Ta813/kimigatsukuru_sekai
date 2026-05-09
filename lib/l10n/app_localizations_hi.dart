@@ -1274,6 +1274,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get helpMenuOthers => 'अन्य (सेटिंग्स आदि)';
 
   @override
+  String get helpMenuRules => 'कैसे खेलें';
+
+  @override
   String get helpMenuClose => 'बंद करें';
 
   @override
@@ -1875,5 +1878,29 @@ class AppLocalizationsHi extends AppLocalizations {
   String get paywallPromiseLimitBefore => 'वादों की सीमित संख्या';
 
   @override
-  String get paywallPromiseLimitAfter => 'असीमित वादे!\nहर दिन आपका समर्थन कर रहे हैं।';
+  String get paywallPromiseLimitAfter => 'असीमित वादा पंजीकरण!\nआपका दैनिक जीवन कितना भी व्यस्त क्यों न हो, ठोस समर्थन।';
+
+  @override
+  String get setupDraggableTitle => 'अवतार और पात्रों को आपकी उंगली से स्वतंत्र रूप से घुमाया जा सकता है!';
+
+  @override
+  String get setupDraggableDesc => 'उन्हें छूने और घुमाने की कोशिश करें!';
+
+  @override
+  String get setupRulesTitle => 'कैसे खेलें';
+
+  @override
+  String get setupRulesStep1 => 'जब \'वादा\' का समय हो,\n\'शुरू करें\' बटन दबाएं!';
+
+  @override
+  String get setupRulesStep2 => 'जब आप \'वादा\' पूरा कर लें,\nपॉइंट पाने के लिए \'हो गया!\' बटन दबाएं!';
+
+  @override
+  String get setupRulesStep3 => 'आइटम के लिए पॉइंट बदलें और\n\'ड्रेस-अप\' और \'सजावट\' का आनंद लें!';
+
+  @override
+  String get setupRulesStep4 => 'कई बार \'वादे\' पूरे करने से,\nआपका लेवल बढ़ जाएगा और आप दूसरी दुनिया में जा सकेंगे!';
+
+  @override
+  String get setupOkButton => 'समझ गया!';
 }

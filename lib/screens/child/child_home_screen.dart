@@ -11,6 +11,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
+import 'package:kimigatsukuru_sekai/screens/initial_setup_coordinator.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
@@ -434,6 +435,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (selectedMenu == null) return;
 
     switch (selectedMenu) {
+      case 'rules':
+        // 「あそびかた」画面へ遷移
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AppRulesInstructionScreen(),
+          ),
+        );
+        break;
       case 'yakusoku':
         if (!await _showGuideDialog(
           title: AppLocalizations.of(context)!.guideNextPromiseTitle,

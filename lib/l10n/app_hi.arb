@@ -481,6 +481,7 @@
   "helpMenuShop": "खरीदारी",
   "helpMenuCustomize": "वेषभूषा",
   "helpMenuOthers": "अन्य (सेटिंग्स आदि)",
+  "helpMenuRules": "कैसे खेलें",
   "helpMenuClose": "बंद करें",
   "tutorialParentRegularBubble": "यहाँ से\nवादे सेट करें!",
   "tutorialParentAddBubble": "यह बटन दबाएँ\nवादा जोड़ने के लिए!",
@@ -786,5 +787,13 @@
   },
   "upgradeToPremium": "प्रीमियम में अपग्रेड करें",
   "paywallPromiseLimitBefore": "वादों की सीमित संख्या",
-  "paywallPromiseLimitAfter": "असीमित वादे!\nहर दिन आपका समर्थन कर रहे हैं।"
+  "paywallPromiseLimitAfter": "असीमित वादा पंजीकरण!\nआपका दैनिक जीवन कितना भी व्यस्त क्यों न हो, ठोस समर्थन।",
+  "setupDraggableTitle": "अवतार और पात्रों को आपकी उंगली से स्वतंत्र रूप से घुमाया जा सकता है!",
+  "setupDraggableDesc": "उन्हें छूने और घुमाने की कोशिश करें!",
+  "setupRulesTitle": "कैसे खेलें",
+  "setupRulesStep1": "जब 'वादा' का समय हो,\n'शुरू करें' बटन दबाएं!",
+  "setupRulesStep2": "जब आप 'वादा' पूरा कर लें,\nपॉइंट पाने के लिए 'हो गया!' बटन दबाएं!",
+  "setupRulesStep3": "आइटम के लिए पॉइंट बदलें और\n'ड्रेस-अप' और 'सजावट' का आनंद लें!",
+  "setupRulesStep4": "कई बार 'वादे' पूरे करने से,\nआपका लेवल बढ़ जाएगा और आप दूसरी दुनिया में जा सकेंगे!",
+  "setupOkButton": "समझ गया!"
 }

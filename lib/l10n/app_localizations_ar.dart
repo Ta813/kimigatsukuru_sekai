@@ -1274,6 +1274,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get helpMenuOthers => 'أخرى (إعدادات، إلخ)';
 
   @override
+  String get helpMenuRules => 'كيفية اللعب';
+
+  @override
   String get helpMenuClose => 'إغلاق';
 
   @override
@@ -1875,5 +1878,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get paywallPromiseLimitBefore => 'عدد محدود من الوعود';
 
   @override
-  String get paywallPromiseLimitAfter => 'وعود غير محدودة!\nندعمك في كل يوم.';
+  String get paywallPromiseLimitAfter => 'تسجيل وعود غير محدود!\nدعم قوي مهما كانت حياتك اليومية مزدحمة.';
+
+  @override
+  String get setupDraggableTitle => 'يمكن تحريك الصور الرمزية والشخصيات بحرية بإصبعك!';
+
+  @override
+  String get setupDraggableDesc => 'حاول لمسها وتحريكها!';
+
+  @override
+  String get setupRulesTitle => 'كيفية اللعب';
+
+  @override
+  String get setupRulesStep1 => 'عندما يحين وقت \'الوعد\'،\nاضغط على زر \'ابدأ\'!';
+
+  @override
+  String get setupRulesStep2 => 'عندما تنتهي من \'الوعد\'،\nاضغط على زر \'تم!\' للحصول على نقاط!';
+
+  @override
+  String get setupRulesStep3 => 'استبدل النقاط بالعناصر و\nاستمتع بـ \'التلبيس\' و \'الديكور\'!';
+
+  @override
+  String get setupRulesStep4 => 'من خلال إكمال \'الوعود\' عدة مرات،\nسيرتفع مستواك ويمكنك الذهاب إلى عوالم أخرى!';
+
+  @override
+  String get setupOkButton => 'فهمت!';
 }

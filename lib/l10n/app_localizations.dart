@@ -2569,6 +2569,12 @@ abstract class AppLocalizations {
   /// **'Others (Settings, etc.)'**
   String get helpMenuOthers;
 
+  /// No description provided for @helpMenuRules.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Play'**
+  String get helpMenuRules;
+
   /// No description provided for @helpMenuClose.
   ///
   /// In en, this message translates to:
@@ -3706,8 +3712,56 @@ abstract class AppLocalizations {
   /// No description provided for @paywallPromiseLimitAfter.
   ///
   /// In en, this message translates to:
-  /// **'Unlimited promises!\nSupporting you every single day.'**
+  /// **'Unlimited promise registration!\nSolid support no matter how busy your daily life is.'**
   String get paywallPromiseLimitAfter;
+
+  /// No description provided for @setupDraggableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Avatars and characters can be moved freely with your finger!'**
+  String get setupDraggableTitle;
+
+  /// No description provided for @setupDraggableDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Try touching and moving them!'**
+  String get setupDraggableDesc;
+
+  /// No description provided for @setupRulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Play'**
+  String get setupRulesTitle;
+
+  /// No description provided for @setupRulesStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'When it\'s time for a \'Promise\',\ntap the \'Start\' button!'**
+  String get setupRulesStep1;
+
+  /// No description provided for @setupRulesStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'When you finish the \'Promise\',\ntap the \'Done!\' button to get points!'**
+  String get setupRulesStep2;
+
+  /// No description provided for @setupRulesStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Exchange points for items and\nenjoy \'Dress-up\' and \'Decorating\'!'**
+  String get setupRulesStep3;
+
+  /// No description provided for @setupRulesStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'By completing \'Promises\' many times,\nyour level will go up and you can go to other worlds!'**
+  String get setupRulesStep4;
+
+  /// No description provided for @setupOkButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it!'**
+  String get setupOkButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

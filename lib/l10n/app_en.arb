@@ -527,6 +527,7 @@
   "helpMenuShop": "Shop",
   "helpMenuCustomize": "Dress-up",
   "helpMenuOthers": "Others (Settings, etc.)",
+  "helpMenuRules": "How to Play",
   "helpMenuClose": "Close",
   "tutorialParentRegularBubble": "Set promises\nfrom here!",
   "tutorialParentAddBubble": "Tap this button\nto add a promise!",
@@ -832,5 +833,13 @@
   },
   "upgradeToPremium": "Upgrade to Premium",
   "paywallPromiseLimitBefore": "Limited number of promises",
-  "paywallPromiseLimitAfter": "Unlimited promises!\nSupporting you every single day."
+  "paywallPromiseLimitAfter": "Unlimited promise registration!\nSolid support no matter how busy your daily life is.",
+  "setupDraggableTitle": "Avatars and characters can be moved freely with your finger!",
+  "setupDraggableDesc": "Try touching and moving them!",
+  "setupRulesTitle": "How to Play",
+  "setupRulesStep1": "When it's time for a 'Promise',\ntap the 'Start' button!",
+  "setupRulesStep2": "When you finish the 'Promise',\ntap the 'Done!' button to get points!",
+  "setupRulesStep3": "Exchange points for items and\nenjoy 'Dress-up' and 'Decorating'!",
+  "setupRulesStep4": "By completing 'Promises' many times,\nyour level will go up and you can go to other worlds!",
+  "setupOkButton": "Got it!"
 }

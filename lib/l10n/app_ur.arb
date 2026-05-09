@@ -527,6 +527,7 @@
   "helpMenuShop": "خریداری",
   "helpMenuCustomize": "کپڑے بدلنا",
   "helpMenuOthers": "دیگر (ترتیبات وغیرہ)",
+  "helpMenuRules": "کھیلنے کا طریقہ",
   "helpMenuClose": "بند کریں",
   "tutorialParentRegularBubble": "یہاں سے\nوعدے ترتیب دیں!",
   "tutorialParentAddBubble": "یہ بٹن دبائیں\nوعدہ شامل کرنے کے لیے!",
@@ -831,5 +832,13 @@
     }
   },
   "paywallPromiseLimitBefore": "وعدوں کی محدود تعداد",
-  "paywallPromiseLimitAfter": "لامحدود وعدے!\nہر دن آپ کی مدد کر رہے ہیں۔"
+  "paywallPromiseLimitAfter": "وعدوں کی لامحدود رجسٹریشن!\nآپ کی روزمرہ کی زندگی کتنی ہی مصروف کیوں نہ ہو، ٹھوس تعاون۔",
+  "setupDraggableTitle": "اوتار اور کرداروں کو آپ کی انگلی سے آزادانہ طور طور پر منتقل کیا جا سکتا ہے!",
+  "setupDraggableDesc": "انہیں چھونے اور منتقل کرنے کی کوشش کریں!",
+  "setupRulesTitle": "کھیلنے کا طریقہ",
+  "setupRulesStep1": "جب 'وعدہ' کا وقت ہو،\n'شروع کریں' بٹن دبائیں!",
+  "setupRulesStep2": "جب آپ 'وعدہ' مکمل کر لیں،\nپوائنٹس حاصل کرنے کے لیے 'مکمل!' بٹن دبائیں!",
+  "setupRulesStep3": "اشیاء کے لیے پوائنٹس کا تبادلہ کریں اور\n'لباس' اور 'سجاوٹ' سے لطف اندوز ہوں!",
+  "setupRulesStep4": "کئی بار 'وعدے' مکمل کرنے سے،\nآپ کا لیول بڑھ جائے گا اور آپ دوسری دنیاؤں میں جا سکیں گے!",
+  "setupOkButton": "سمجھ گیا!"
 }

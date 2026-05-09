@@ -1,3 +1,5 @@
+// lib/screens/help_menu_dialog.dart
+
 import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -14,7 +16,7 @@ class HelpMenuDialog extends StatelessWidget {
       ),
       backgroundColor: const Color(0xFFFFF4E6), // 背景は温かみのある薄いベージュ
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -27,12 +29,24 @@ class HelpMenuDialog extends StatelessWidget {
                 color: Color(0xFF8D6E63), // ブラウン系の優しい文字色
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 14),
 
-            // 選択肢1・2（1段目）
+            // 🌟 追加：「あそびかた」ボタン（一番上に横長で配置）
+            SizedBox(
+              width: double.infinity,
+              child: _buildMenuButton(
+                context: context,
+                title: l10n.helpMenuRules,
+                icon: Icons.menu_book,
+                color: const Color(0xFF4DD0E1), // 爽やかなシアン系
+                resultKey: 'rules',
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // 選択肢1・2（2段目）
             Row(
               children: [
-                const SizedBox(width: 12),
                 Expanded(
                   child: _buildMenuButton(
                     context: context,
@@ -54,12 +68,11 @@ class HelpMenuDialog extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 12),
 
-            // 選択肢3・4（2段目）
+            // 選択肢3・4（3段目）
             Row(
               children: [
-                const SizedBox(width: 12),
                 Expanded(
                   child: _buildMenuButton(
                     context: context,
@@ -116,7 +129,7 @@ class HelpMenuDialog extends StatelessWidget {
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        minimumSize: const Size(0, 35), // 縦に少し高さを出す
+        minimumSize: const Size(0, 45), // 少し高さを確保
       ),
       onPressed: () {
         Navigator.of(context).pop(resultKey);
@@ -124,15 +137,17 @@ class HelpMenuDialog extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 28),
+          Icon(icon, size: 24), // アイコンサイズを少し調整
           const SizedBox(width: 8),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              height: 1.2,
+          Flexible(
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                height: 1.2,
+              ),
             ),
           ),
         ],

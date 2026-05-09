@@ -1274,6 +1274,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpMenuOthers => 'Others (Settings, etc.)';
 
   @override
+  String get helpMenuRules => 'How to Play';
+
+  @override
   String get helpMenuClose => 'Close';
 
   @override
@@ -1875,5 +1878,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paywallPromiseLimitBefore => 'Limited number of promises';
 
   @override
-  String get paywallPromiseLimitAfter => 'Unlimited promises!\nSupporting you every single day.';
+  String get paywallPromiseLimitAfter => 'Unlimited promise registration!\nSolid support no matter how busy your daily life is.';
+
+  @override
+  String get setupDraggableTitle => 'Avatars and characters can be moved freely with your finger!';
+
+  @override
+  String get setupDraggableDesc => 'Try touching and moving them!';
+
+  @override
+  String get setupRulesTitle => 'How to Play';
+
+  @override
+  String get setupRulesStep1 => 'When it\'s time for a \'Promise\',\ntap the \'Start\' button!';
+
+  @override
+  String get setupRulesStep2 => 'When you finish the \'Promise\',\ntap the \'Done!\' button to get points!';
+
+  @override
+  String get setupRulesStep3 => 'Exchange points for items and\nenjoy \'Dress-up\' and \'Decorating\'!';
+
+  @override
+  String get setupRulesStep4 => 'By completing \'Promises\' many times,\nyour level will go up and you can go to other worlds!';
+
+  @override
+  String get setupOkButton => 'Got it!';
 }

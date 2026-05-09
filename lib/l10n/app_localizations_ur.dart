@@ -1274,6 +1274,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get helpMenuOthers => 'دیگر (ترتیبات وغیرہ)';
 
   @override
+  String get helpMenuRules => 'کھیلنے کا طریقہ';
+
+  @override
   String get helpMenuClose => 'بند کریں';
 
   @override
@@ -1875,5 +1878,29 @@ class AppLocalizationsUr extends AppLocalizations {
   String get paywallPromiseLimitBefore => 'وعدوں کی محدود تعداد';
 
   @override
-  String get paywallPromiseLimitAfter => 'لامحدود وعدے!\nہر دن آپ کی مدد کر رہے ہیں۔';
+  String get paywallPromiseLimitAfter => 'وعدوں کی لامحدود رجسٹریشن!\nآپ کی روزمرہ کی زندگی کتنی ہی مصروف کیوں نہ ہو، ٹھوس تعاون۔';
+
+  @override
+  String get setupDraggableTitle => 'اوتار اور کرداروں کو آپ کی انگلی سے آزادانہ طور طور پر منتقل کیا جا سکتا ہے!';
+
+  @override
+  String get setupDraggableDesc => 'انہیں چھونے اور منتقل کرنے کی کوشش کریں!';
+
+  @override
+  String get setupRulesTitle => 'کھیلنے کا طریقہ';
+
+  @override
+  String get setupRulesStep1 => 'جب \'وعدہ\' کا وقت ہو،\n\'شروع کریں\' بٹن دبائیں!';
+
+  @override
+  String get setupRulesStep2 => 'جب آپ \'وعدہ\' مکمل کر لیں،\nپوائنٹس حاصل کرنے کے لیے \'مکمل!\' بٹن دبائیں!';
+
+  @override
+  String get setupRulesStep3 => 'اشیاء کے لیے پوائنٹس کا تبادلہ کریں اور\n\'لباس\' اور \'سجاوٹ\' سے لطف اندوز ہوں!';
+
+  @override
+  String get setupRulesStep4 => 'کئی بار \'وعدے\' مکمل کرنے سے،\nآپ کا لیول بڑھ جائے گا اور آپ دوسری دنیاؤں میں جا سکیں گے!';
+
+  @override
+  String get setupOkButton => 'سمجھ گیا!';
 }

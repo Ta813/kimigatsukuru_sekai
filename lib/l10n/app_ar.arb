@@ -527,6 +527,7 @@
   "helpMenuShop": "متجر",
   "helpMenuCustomize": "تغيير الملابس",
   "helpMenuOthers": "أخرى (إعدادات، إلخ)",
+  "helpMenuRules": "كيفية اللعب",
   "helpMenuClose": "إغلاق",
   "tutorialParentRegularBubble": "اضبط الوعود\nمن هنا!",
   "tutorialParentAddBubble": "اضغط هذا الزر\nلإضافة وعد!",
@@ -832,5 +833,13 @@
   },
   "upgradeToPremium": "الترقية إلى بريميوم",
   "paywallPromiseLimitBefore": "عدد محدود من الوعود",
-  "paywallPromiseLimitAfter": "وعود غير محدودة!\nندعمك في كل يوم."
+  "paywallPromiseLimitAfter": "تسجيل وعود غير محدود!\nدعم قوي مهما كانت حياتك اليومية مزدحمة.",
+  "setupDraggableTitle": "يمكن تحريك الصور الرمزية والشخصيات بحرية بإصبعك!",
+  "setupDraggableDesc": "حاول لمسها وتحريكها!",
+  "setupRulesTitle": "كيفية اللعب",
+  "setupRulesStep1": "عندما يحين وقت 'الوعد'،\nاضغط على زر 'ابدأ'!",
+  "setupRulesStep2": "عندما تنتهي من 'الوعد'،\nاضغط على زر 'تم!' للحصول على نقاط!",
+  "setupRulesStep3": "استبدل النقاط بالعناصر و\nاستمتع بـ 'التلبيس' و 'الديكور'!",
+  "setupRulesStep4": "من خلال إكمال 'الوعود' عدة مرات،\nسيرتفع مستواك ويمكنك الذهاب إلى عوالم أخرى!",
+  "setupOkButton": "فهمت!"
 }
