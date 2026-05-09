@@ -87,7 +87,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   bool _showParentSettingsBlinking = false;
   bool _isTutorialParentSettingsFocus = false;
   bool _showCustomizeBlinking = false;
-  bool _showDraggableBlinking = false;
   late AnimationController _hintAnimationController;
   bool _hasUnclaimedMissions = true;
   bool _isTutorialMissionIncomplete = false;
@@ -1263,6 +1262,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         await SharedPrefsHelper.getChildTutorial() ==
             SharedPrefsHelper.tutorialPhaseStart;
     if (isInTutorial) {
+      await SharedPrefsHelper.setTutorialStepShown(
+        SharedPrefsHelper.tutorialStepPromiseKey,
+      );
       FirebaseAnalytics.instance.logEvent(name: 'tutorial_tap_start_button');
     }
 
@@ -1282,9 +1284,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     _playSavedBgm();
 
     if (pointsAwarded != null && pointsAwarded > 0) {
-      await SharedPrefsHelper.setTutorialStepShown(
-        SharedPrefsHelper.tutorialStepPromiseKey,
-      );
       if (!_isDisplayPromiseEmergency) {
         await SharedPrefsHelper.addCompletionRecord(_displayPromise!['title']);
       }
@@ -1782,9 +1781,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final double safeAreaWidth = screenWidth - rightPadding;
 
     final bool isAnyTutorialBlinking =
-        _showCustomizeBlinking ||
-        _showDraggableBlinking ||
-        _showParentSettingsBlinking;
+        _showCustomizeBlinking || _showParentSettingsBlinking;
 
     final bool isAnyTutorialActive =
         _showCustomizeBlinking ||
@@ -1853,7 +1850,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
           ),
 
-          if (!_hasEnteredHouse)
+          if (!_hasEnteredHouse &&
+              !_showCustomizeBlinking &&
+              !_showParentSettingsBlinking &&
+              !_showStartBlinking)
             Positioned(
               top: MediaQuery.of(context).size.height * 0.45,
               left: 0,
@@ -3020,7 +3020,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
             position: _avatarPosition,
             size: 80,
-            isBlinking: _showDraggableBlinking,
             isInteractive: !isAnyTutorialActive,
             onPositionChanged: (delta) {
               setState(() {
@@ -3038,7 +3037,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   _characterPositionsMap[charPath] ??
                   Offset(safeAreaWidth - 240, 190),
               size: 80,
-              isBlinking: _showDraggableBlinking,
               isInteractive: !isAnyTutorialActive,
               onPositionChanged: (delta) {
                 setState(() {
@@ -3058,7 +3056,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               imagePath: itemPath,
               position: _itemPositionsMap[itemPath] ?? const Offset(100, 190),
               size: _getItemSize(itemPath),
-              isBlinking: _showDraggableBlinking,
               isInteractive: !isAnyTutorialActive,
               onPositionChanged: (delta) {
                 setState(() {
@@ -3072,15 +3069,19 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           if (_showCustomizeBlinking)
             Positioned(
               bottom: 130, // サイズが大きくなったので位置を調整
-              right: 90,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SpeechBubble(
-                    text: AppLocalizations.of(context)!.tutorialCustomizeBubble,
-                    tailDirection: TailDirection.right,
-                  ),
-                ],
+              right: 70,
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SpeechBubble(
+                      text: AppLocalizations.of(
+                        context,
+                      )!.tutorialCustomizeBubble,
+                      tailDirection: TailDirection.right,
+                    ),
+                  ],
+                ),
               ),
             ),
         ],
