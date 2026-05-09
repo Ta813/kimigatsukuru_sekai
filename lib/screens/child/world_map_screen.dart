@@ -339,10 +339,12 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                     color: Colors.transparent,
                     child: Align(
                       // ★ サムネイル画像に変更
-                      child: const _AnimatedMapThumbnail(
+                      child: _AnimatedMapThumbnail(
                         imagePath: 'assets/images/sea_background.png',
                         offsetY: 8,
-                        duration: Duration(seconds: 2),
+                        duration: const Duration(seconds: 2),
+                        isLocked: widget.currentLevel < 10 && !isPremium,
+                        requiredLevel: 10,
                       ),
                     ),
                   ),
@@ -390,10 +392,12 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                     color: Colors.transparent,
                     child: Center(
                       // ★ サムネイル画像に変更
-                      child: const _AnimatedMapThumbnail(
+                      child: _AnimatedMapThumbnail(
                         imagePath: 'assets/images/sky_background.png',
                         offsetY: 8,
-                        duration: Duration(seconds: 2),
+                        duration: const Duration(seconds: 2),
+                        isLocked: widget.currentLevel < 15 && !isPremium,
+                        requiredLevel: 15,
                       ),
                     ),
                   ),
@@ -438,10 +442,12 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                     height: 150,
                     color: Colors.transparent,
                     child: Center(
-                      child: const _AnimatedMapThumbnail(
+                      child: _AnimatedMapThumbnail(
                         imagePath: 'assets/images/space_background.png',
                         offsetY: 8,
-                        duration: Duration(seconds: 2),
+                        duration: const Duration(seconds: 2),
+                        isLocked: widget.currentLevel < 20 && !isPremium,
+                        requiredLevel: 20,
                       ),
                     ),
                   ),
@@ -487,10 +493,12 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                     color: Colors.transparent, // 透明なので見えない
                     child: Center(
                       // ★ サムネイル画像に変更
-                      child: const _AnimatedMapThumbnail(
+                      child: _AnimatedMapThumbnail(
                         imagePath: 'assets/images/island.png',
                         offsetY: 8,
-                        duration: Duration(seconds: 2),
+                        duration: const Duration(seconds: 2),
+                        isLocked: widget.currentLevel < 5 && !isPremium,
+                        requiredLevel: 5,
                       ),
                     ),
                   ),
@@ -554,6 +562,8 @@ class _AnimatedMapThumbnail extends StatefulWidget {
   final double height;
   final double offsetY;
   final Duration duration;
+  final bool isLocked;
+  final int requiredLevel;
 
   const _AnimatedMapThumbnail({
     required this.imagePath,
@@ -563,6 +573,8 @@ class _AnimatedMapThumbnail extends StatefulWidget {
     this.height = 80,
     this.offsetY = 5,
     this.duration = const Duration(seconds: 2),
+    this.isLocked = false,
+    this.requiredLevel = 0,
   });
 
   @override
@@ -599,24 +611,56 @@ class _AnimatedMapThumbnailState extends State<_AnimatedMapThumbnail>
       builder: (context, child) {
         return Transform.translate(
           offset: Offset(0, _animation.value),
-          child: Container(
-            width: widget.width,
-            height: widget.height,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.white, width: 4),
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 6,
-                  offset: const Offset(0, 3),
+          child: Stack(
+            children: [
+              Opacity(
+                opacity: widget.isLocked ? 0.8 : 1.0,
+                child: Container(
+                  width: widget.width,
+                  height: widget.height,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 4),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                    image: DecorationImage(
+                      image: AssetImage(widget.imagePath),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ],
-              image: DecorationImage(
-                image: AssetImage(widget.imagePath),
-                fit: BoxFit.cover,
               ),
-            ),
+              if (widget.isLocked)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 4),
+                          Text(
+                            'Lv.${widget.requiredLevel}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         );
       },

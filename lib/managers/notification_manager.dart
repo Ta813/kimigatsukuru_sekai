@@ -158,10 +158,10 @@ class NotificationManager {
               channelDescription: l10n.notificationChannelPromiseDesc,
               importance: Importance.high,
               priority: Priority.high,
-              color: Color(0xFFFF7043),
-              // icon: 'ic_notification', // 削除: AndroidInitializationSettings のデフォルトを使用する
+              color: const Color(0xFFFF7043),
+              icon: 'ic_notification', // 🌟 明示的に指定して NullPointerException を防止
             ),
-            iOS: DarwinNotificationDetails(),
+            iOS: const DarwinNotificationDetails(),
           ),
           androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
           matchDateTimeComponents: DateTimeComponents.time, // 毎日その時間に鳴らす
@@ -225,10 +225,10 @@ class NotificationManager {
             l10n.notificationChannelWeeklyName,
             importance: Importance.high,
             priority: Priority.high,
-            color: Color(0xFFFF7043),
-            // icon: 'ic_notification', // 削除: AndroidInitializationSettings のデフォルトを使用する
+            color: const Color(0xFFFF7043),
+            icon: 'ic_notification', // 🌟 明示的に指定して NullPointerException を防止
           ),
-          iOS: DarwinNotificationDetails(),
+          iOS: const DarwinNotificationDetails(),
         ),
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       );

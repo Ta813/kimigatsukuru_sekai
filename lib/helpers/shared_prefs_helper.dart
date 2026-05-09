@@ -1295,7 +1295,8 @@ class SharedPrefsHelper {
   // --- パスサニタイズ（古いアセットパスの除去） ---
   static String? _sanitizePath(String? path) {
     if (path == 'assets/images/avatar.png' ||
-        path == 'assets/images/avatar_boy.png') {
+        path == 'assets/images/avatar_boy.png' ||
+        path == 'assets/images/clothes_green.gif') {
       return null;
     }
     return path;

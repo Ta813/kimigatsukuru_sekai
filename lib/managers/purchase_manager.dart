@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
@@ -7,7 +8,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'bgm_manager.dart';
 
-class PurchaseManager {
+class PurchaseManager with WidgetsBindingObserver {
   PurchaseManager._internal();
   static final PurchaseManager instance = PurchaseManager._internal();
 
@@ -18,6 +19,7 @@ class PurchaseManager {
 
   final ValueNotifier<bool> isPremium = ValueNotifier<bool>(false);
   Offerings? offerings;
+  bool _isInitialized = false;
 
   Future<void> _logDeviceInfo() async {
     try {
@@ -50,6 +52,7 @@ class PurchaseManager {
   }
 
   Future<void> init() async {
+    if (_isInitialized) return;
     try {
       // デバイス情報のログ出力
       await _logDeviceInfo();
@@ -75,8 +78,24 @@ class PurchaseManager {
 
       // 商品（Offerings）情報の取得
       offerings = await Purchases.getOfferings();
+
+      // 🌟 アプリのライフサイクル（バックグラウンド・フォアグラウンド）を監視開始
+      WidgetsBinding.instance.addObserver(this);
+      _isInitialized = true;
     } catch (e) {
       debugPrint('RevenueCat初期化エラー: $e');
+    }
+  }
+
+  /// アプリの状態が変わった時の処理
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // 🌟 アプリがバックグラウンドから復帰（フォアグラウンドに戻った）した際に
+    // 購入情報を同期する。OnePlus等でプロセスが半死状態になった場合や、
+    // Billing UIがクラッシュした後の復旧に有効。
+    if (state == AppLifecycleState.resumed) {
+      debugPrint('App resumed: Refreshing customer info...');
+      refreshCustomerInfo();
     }
   }
 
@@ -84,11 +103,14 @@ class PurchaseManager {
   Future<void> refreshCustomerInfo() async {
     try {
       debugPrint('購入情報の同期を開始...');
+      // Androidの場合、BillingClientの再接続を促すために少し待機する場合があるが、
+      // RevenueCatのSDK側で適切にハンドルされるため直接呼び出す。
       final CustomerInfo customerInfo = await Purchases.getCustomerInfo();
       _updatePremiumStatus(customerInfo);
       debugPrint('購入情報の同期完了');
     } catch (e) {
       debugPrint('購入情報の同期エラー: $e');
+      // 通信エラーなどの場合は再試行を検討
     }
   }
 
@@ -149,6 +171,7 @@ class PurchaseManager {
       debugPrint('Offerings status: ${offerings?.all.keys.toList()}');
 
       // 🌟 Androidでの接続確認を兼ねて最新情報を取得
+      // これにより BillingClient が確実に Ready であることを確認する
       final customerInfo = await Purchases.getCustomerInfo();
       debugPrint(
         'CustomerInfo at showPaywall: ${customerInfo.entitlements.active.keys.toList()}',
@@ -156,10 +179,10 @@ class PurchaseManager {
 
       // OnePlus等の端末で前の画面トランジションが完了する前に
       // Billing UI が起動されると PendingIntent が null になるケースへの対策。
-      // Androidでは画面遷移後に少し長めの遅延を挟む（300ms -> 500msに強化）。
+      // Androidでは画面遷移後に少し長めの遅延を挟む（300ms -> 500ms -> 800msに強化）。
       if (Platform.isAndroid) {
         debugPrint('Applying transition delay for Android billing flow...');
-        await Future.delayed(const Duration(milliseconds: 500));
+        await Future.delayed(const Duration(milliseconds: 800));
       }
 
       debugPrint('Calling RevenueCatUI.presentPaywall()...');
@@ -167,7 +190,7 @@ class PurchaseManager {
       await RevenueCatUI.presentPaywall();
       debugPrint('RevenueCatUI.presentPaywall() returned.');
 
-      // BGMの再開を試みる（ネイティブUIや回転で止まる場合があるため）
+      // BGMの再開を試める（ネイティブUIや回転で止まる場合があるため）
       try {
         await BgmManager.instance.resume();
       } catch (e) {
@@ -206,6 +229,11 @@ class PurchaseManager {
         'CustomerInfo at showCustomerCenter: ${customerInfo.entitlements.active.keys.toList()}',
       );
 
+      // Androidでは画面遷移の競合を避けるために少し待つ
+      if (Platform.isAndroid) {
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+
       await RevenueCatUI.presentCustomerCenter();
 
       // BGMの再開を試みる
@@ -237,5 +265,11 @@ class PurchaseManager {
       debugPrint('リストアエラー: $e');
       return false;
     }
+  }
+
+  /// 終了時にオブザーバーを解除する（通常のシングルトンでは不要だが、
+  /// テストや特定のライフサイクル管理下では必要になる可能性がある）
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
   }
 }
