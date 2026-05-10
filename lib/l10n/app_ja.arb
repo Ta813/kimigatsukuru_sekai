@@ -736,6 +736,7 @@
   "tabAccessory": "アクセサリー",
   "tabHouse": "おうち",
   "tabItem": "アイテム",
+  "tabWorld": "せかい",
   "labelEquipped": "そうび中",
   "labelPlaced": "おいている",
   "splashLoadingMessage": "せかい を つくっています...",

@@ -64,6 +64,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   List<String> _equippedCharacters = [
     'assets/images/character_usagi.gif',
   ]; // デフォルト画像
+  String _equippedWorldPath = 'assets/images/world.png';
 
   List<String> _equippedItems = [];
   Map<String, Offset> _itemPositionsMap = {};
@@ -1112,6 +1113,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     }
 
     final house = await SharedPrefsHelper.loadEquippedHouse();
+    final world = await SharedPrefsHelper.loadEquippedWorld();
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
     final items = await SharedPrefsHelper.loadEquippedItems();
     final mediaQuery = MediaQuery.maybeOf(context);
@@ -1197,6 +1199,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       _equippedAccessory = accessory;
 
       _equippedHousePath = house ?? 'assets/images/house.png';
+      _equippedWorldPath = world ?? 'assets/images/world.png';
       _equippedCharacters = characters.isEmpty
           ? ['assets/images/character_usagi.gif']
           : characters;
@@ -1803,9 +1806,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         children: [
           // 背景
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/world.png'),
+                image: AssetImage(_equippedWorldPath),
                 fit: BoxFit.cover,
               ),
             ),

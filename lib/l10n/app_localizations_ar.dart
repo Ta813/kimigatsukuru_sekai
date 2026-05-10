@@ -1692,6 +1692,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tabItem => 'عنصر';
 
   @override
+  String get tabWorld => 'عالم';
+
+  @override
   String get labelEquipped => 'مجهز';
 
   @override

@@ -1692,6 +1692,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tabItem => 'आइटम';
 
   @override
+  String get tabWorld => 'दुनिया';
+
+  @override
   String get labelEquipped => 'सुसज्जित';
 
   @override

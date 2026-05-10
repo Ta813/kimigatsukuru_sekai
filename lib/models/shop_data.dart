@@ -49,6 +49,13 @@ final List<ShopItem> shopItems = [
     requiredLevel: 1,
   ),
   ShopItem(
+    name: 'さいしょのおうち',
+    imagePath: 'assets/images/house.png',
+    price: 0,
+    type: 'house',
+    requiredLevel: 1,
+  ),
+  ShopItem(
     name: 'ふつうのおうち',
     imagePath: 'assets/images/house_normal.png',
     price: 500,
@@ -61,6 +68,34 @@ final List<ShopItem> shopItems = [
     price: 1500,
     type: 'house',
     requiredLevel: 1,
+  ),
+  ShopItem(
+    name: 'うみのおうち（かいがら）',
+    imagePath: 'assets/images/house_sea_kaigara.png',
+    price: 700,
+    type: 'house',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'うみのおうち（くらげ）',
+    imagePath: 'assets/images/house_sea_kurage.png',
+    price: 700,
+    type: 'house',
+    requiredLevel: 10,
+  ),
+  ShopItem(
+    name: 'いつものせかい',
+    imagePath: 'assets/images/world.png',
+    type: 'world',
+    price: 0,
+    requiredLevel: 1,
+  ),
+  ShopItem(
+    name: 'うみのせかい',
+    imagePath: 'assets/images/world_sea.png',
+    type: 'world',
+    price: 800,
+    requiredLevel: 10,
   ),
   // 必要であれば、ここにデフォルトの服と家も追加しておくと便利です
   ShopItem(
@@ -75,13 +110,6 @@ final List<ShopItem> shopItems = [
     imagePath: 'assets/images/clothes/clothes_boy_default.png',
     price: 0,
     type: 'clothes',
-    requiredLevel: 1,
-  ),
-  ShopItem(
-    name: 'さいしょのおうち',
-    imagePath: 'assets/images/house.png',
-    price: 0,
-    type: 'house',
     requiredLevel: 1,
   ),
   ShopItem(

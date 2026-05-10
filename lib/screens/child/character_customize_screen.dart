@@ -7,7 +7,7 @@ import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
-import '../../managers/bgm_manager.dart'; // BGMマネージャー
+import '../../managers/bgm_manager.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/custom_back_button.dart';
@@ -44,6 +44,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   String? _equippedAccessory;
 
   String? _equippedHouse;
+  String _equippedWorld = 'assets/images/world.png'; // 🌟 追加: 背景（せかい）
   List<String> _equippedCharacters = [];
   List<String> _equippedItems = [];
 
@@ -63,17 +64,15 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     if (!widget.isInitialSetup) {
       _checkTutorialStep();
     } else {
-      // 初回設定モード（アプリ起動直後）の場合はBGMを再生する
       _playSavedBgm();
     }
   }
 
-  // BGMを再生するメソッド（ホーム画面と同じ処理）
   Future<void> _playSavedBgm() async {
     final trackName = await SharedPrefsHelper.loadSelectedBgm();
     final track = BgmTrack.values.firstWhere(
       (e) => e.name == trackName,
-      orElse: () => BgmTrack.main, // デフォルトはmain
+      orElse: () => BgmTrack.main,
     );
     try {
       BgmManager.instance.play(track);
@@ -82,7 +81,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     }
   }
 
-  // 🌟 変更: チュートリアル状態の確認を新仕様に合わせてシンプル化
   Future<void> _checkTutorialStep() async {
     final isCustomizeShown = await SharedPrefsHelper.isTutorialStepShown(
       SharedPrefsHelper.tutorialStepCustomizeKey,
@@ -93,7 +91,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
 
     setState(() {
       _isTutorialStepCustomizeShown = !(isShown && !isCustomizeShown);
-      // チュートリアル中ならタブ（メニューボタン）とアイテムを点滅させる
       _showTabBlinking = isShown && !isCustomizeShown;
       _showItemBlinking = isShown && !isCustomizeShown;
     });
@@ -113,6 +110,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     final house = await SharedPrefsHelper.loadEquippedHouse();
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
     final items = await SharedPrefsHelper.loadEquippedItems();
+    final world = await SharedPrefsHelper.loadEquippedWorld(); // 🌟 追加
 
     if (!purchased.contains('いつものかお')) purchased.add('いつものかお');
     if (!purchased.contains('頑張るかお')) purchased.add('頑張るかお');
@@ -125,6 +123,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     if (!purchased.contains('いつものふく')) purchased.add('いつものふく');
     if (!purchased.contains('おとこのこ')) purchased.add('おとこのこ');
     if (!purchased.contains('さいしょのおうち')) purchased.add('さいしょのおうち');
+    if (!purchased.contains('いつものせかい')) purchased.add('いつものせかい'); // 🌟 追加
 
     setState(() {
       _purchasedItemNames = purchased;
@@ -138,6 +137,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       _equippedAccessory = accessory;
 
       _equippedHouse = house ?? 'assets/images/house.png';
+      _equippedWorld = world ?? 'assets/images/world.png'; // 🌟 追加
       _equippedCharacters = characters;
       _equippedItems = items;
 
@@ -147,7 +147,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     });
   }
 
-  // 🌟 変更: 「きせかえ（avatar）」ボタンのみを無条件で点滅させる
   bool _shouldBlinkMenu(CustomizeView view) {
     if (!_showTabBlinking) return false;
     return view == CustomizeView.avatar;
@@ -184,9 +183,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       }
     } else if (item.type == 'house') {
       await SharedPrefsHelper.saveEquippedItem('house', item.imagePath);
+    } else if (item.type == 'world') {
+      // 🌟 追加
+      await SharedPrefsHelper.saveEquippedWorld(item.imagePath);
     }
 
-    // 🌟 チュートリアル中なら、選択後に他の点滅を止めて「戻る」ボタンを点滅させる
     if (!_isTutorialStepCustomizeShown) {
       if (mounted) {
         setState(() {
@@ -281,7 +282,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   _currentPoints = newPoints;
                   _purchasedItemNames.add(item.name);
                 });
-                _equipItem(item); // 装備＆チュートリアル進行処理へ
+                _equipItem(item);
               }
             },
             style: ElevatedButton.styleFrom(
@@ -433,9 +434,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     ];
   }
 
-  // ==========================================
-  // 初回起動時のセットアップ（ウィザード）画面
-  // ==========================================
+  // 初回起動時のセットアップ
   Widget _buildInitialSetupScreen() {
     final localizations = AppLocalizations.of(context)!;
 
@@ -786,7 +785,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             } else {
               FirebaseAnalytics.instance.logEvent(name: 'setup_child_finish');
               if (!mounted) return;
-              Navigator.pop(context, true); // trueを返して完了を知らせる
+              Navigator.pop(context, true);
             }
           },
           style: ElevatedButton.styleFrom(
@@ -876,12 +875,18 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           ),
         ),
       );
+    } else if (item.type == 'world') {
+      // 🌟 追加: 背景画像のサムネイル表示
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: Image.asset(item.imagePath, fit: BoxFit.cover),
+      );
     }
     return Image.asset(item.imagePath);
   }
 
   // ==========================================
-  // 通常のカスタマイズ画面（以下、既存のまま）
+  // 通常のカスタマイズ画面
   // ==========================================
 
   Widget _buildMenuScreen() {
@@ -1174,9 +1179,12 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     final localizations = AppLocalizations.of(context)!;
     final allHouses = shopItems.where((item) => item.type == 'house').toList();
     final allItems = shopItems.where((item) => item.type == 'item').toList();
+    final allWorlds = shopItems
+        .where((item) => item.type == 'world')
+        .toList(); // 🌟 追加
 
     return DefaultTabController(
-      length: 2,
+      length: 3, // 🌟 変更: 2 -> 3
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 40,
@@ -1192,6 +1200,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               tabs: [
                 _buildTab(localizations.tabHouse, Icons.house, 'house'),
                 _buildTab(localizations.tabItem, Icons.star, 'item'),
+                _buildTab(
+                  localizations.tabWorld,
+                  Icons.landscape,
+                  'world',
+                ), // 🌟 追加: 「せかい」タブ
               ],
             ),
           ),
@@ -1201,6 +1214,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             children: [
               _buildItemGrid(allHouses, _equippedHouse),
               _buildMultiSelectionGrid(allItems, _equippedItems, 'item'),
+              _buildItemGrid(allWorlds, _equippedWorld), // 🌟 追加: 背景のグリッド
             ],
           ),
         ),
@@ -1210,7 +1224,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   }
 
   Widget _buildTab(String title, IconData icon, String targetType) {
-    // 🌟 変更: タブは点滅させず、シンプルに返す
     return Tab(
       height: 40,
       child: Row(
@@ -1333,7 +1346,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           ),
         );
 
-        // 🌟 変更: チュートリアル中かつ、価格が100P以下のアイテムを全て点滅させる
         if (_showItemBlinking && item.price <= 100) {
           return BlinkingEffect(isBlinking: true, child: card);
         }
@@ -1498,7 +1510,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           ),
         );
 
-        // 🌟 変更: チュートリアル中かつ、価格が100P以下のアイテムを全て点滅させる
         if (_showItemBlinking && item.price <= 100) {
           return BlinkingEffect(isBlinking: true, child: itemWidget);
         }

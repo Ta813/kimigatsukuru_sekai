@@ -1692,6 +1692,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tabItem => 'آئٹم';
 
   @override
+  String get tabWorld => 'دنیا';
+
+  @override
   String get labelEquipped => 'لیس ہے';
 
   @override

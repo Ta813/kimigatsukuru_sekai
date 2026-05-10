@@ -1387,4 +1387,19 @@ class SharedPrefsHelper {
       await prefs.setString(_levelUpSaleTimeKey, pastTime);
     }
   }
+
+  // 🌟 背景（せかい）用のキー
+  static const String _equippedWorldKey = 'equipped_world';
+
+  // 🌟 背景を保存する
+  static Future<void> saveEquippedWorld(String imagePath) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_equippedWorldKey, imagePath);
+  }
+
+  // 🌟 保存された背景を読み込む（デフォルトは world.png）
+  static Future<String?> loadEquippedWorld() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_equippedWorldKey);
+  }
 }

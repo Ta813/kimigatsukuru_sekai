@@ -3361,6 +3361,12 @@ abstract class AppLocalizations {
   /// **'Item'**
   String get tabItem;
 
+  /// No description provided for @tabWorld.
+  ///
+  /// In en, this message translates to:
+  /// **'World'**
+  String get tabWorld;
+
   /// No description provided for @labelEquipped.
   ///
   /// In en, this message translates to:

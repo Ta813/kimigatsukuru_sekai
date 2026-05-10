@@ -1692,6 +1692,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tabItem => 'アイテム';
 
   @override
+  String get tabWorld => 'せかい';
+
+  @override
   String get labelEquipped => 'そうび中';
 
   @override

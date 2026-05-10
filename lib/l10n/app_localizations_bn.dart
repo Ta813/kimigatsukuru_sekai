@@ -1692,6 +1692,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tabItem => 'আইটেম';
 
   @override
+  String get tabWorld => 'পৃথিবী';
+
+  @override
   String get labelEquipped => 'সজ্জিত';
 
   @override

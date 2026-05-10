@@ -736,6 +736,7 @@
   "tabAccessory": "Accessory",
   "tabHouse": "House",
   "tabItem": "Item",
+  "tabWorld": "World",
   "labelEquipped": "Equipped",
   "labelPlaced": "Placed",
   "splashLoadingMessage": "Building your world...",

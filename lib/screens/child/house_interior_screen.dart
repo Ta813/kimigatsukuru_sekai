@@ -58,6 +58,10 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
         return 'assets/images/house_interior/normal_interior.png';
       case 'assets/images/house_rich.png': // りっぱなおうち
         return 'assets/images/house_interior/rich_interior.png';
+      case 'assets/images/house_sea_kaigara.png': // うみのおうち（かいがら）
+        return 'assets/images/house_interior/sea_interior.png';
+      case 'assets/images/house_sea_kurage.png': // うみのおうち（くらげ）
+        return 'assets/images/house_interior/sea_interior.png';
       default:
         return 'assets/images/house_interior/default_interior.png';
     }
