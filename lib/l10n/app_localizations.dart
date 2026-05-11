@@ -3768,6 +3768,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Got it!'**
   String get setupOkButton;
+
+  /// No description provided for @tutorialMissionBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'First, let\'s master\nhow to play!'**
+  String get tutorialMissionBubble;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

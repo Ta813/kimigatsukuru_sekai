@@ -1165,26 +1165,24 @@ class _TimerScreenState extends State<TimerScreen>
                               _showApprovalDialog();
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange, // 「はじめる」ボタンと同じ青色
+                        backgroundColor: const Color(0xFFFF7043),
                         foregroundColor: Colors.white,
-                        side: BorderSide(
-                          color: Colors.orange.shade100, // 薄い青色の輪郭
-                          width: 3,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 48,
+                          vertical: 16,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        elevation: 8,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 20,
-                        ),
-                        textStyle: const TextStyle(
+                        elevation: 4,
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.finished,
+                        style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      child: Text(AppLocalizations.of(context)!.finished),
                     ),
                   ),
                 ],

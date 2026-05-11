@@ -475,37 +475,48 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    try {
-                      SfxManager.instance.playTapSound();
-                    } catch (e) {}
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'setup_child_1_start',
-                    );
-                    setState(() {
-                      _setupStep++;
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF7043),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 48,
-                      vertical: 16,
+                Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {}
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'setup_child_1_start',
+                        );
+                        setState(() {
+                          _setupStep++;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF7043),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 48,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 4,
+                      ),
+                      child: Text(
+                        localizations.chooseButton,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    const Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: AnimatedTapFinger(),
                     ),
-                    elevation: 4,
-                  ),
-                  child: Text(
-                    localizations.chooseButton,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -1515,6 +1526,57 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         }
         return itemWidget;
       },
+    );
+  }
+}
+
+// ==============================================================
+// 🌟 追加: タップを促すポワンポワン動く指のアニメーションウィジェット
+// ==============================================================
+class AnimatedTapFinger extends StatefulWidget {
+  const AnimatedTapFinger({super.key});
+
+  @override
+  State<AnimatedTapFinger> createState() => _AnimatedTapFingerState();
+}
+
+class _AnimatedTapFingerState extends State<AnimatedTapFinger>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _animation,
+      child: const Icon(
+        Icons.touch_app,
+        size: 50,
+        color: Colors.orangeAccent,
+        shadows: [
+          Shadow(color: Colors.black38, blurRadius: 4, offset: Offset(0, 2)),
+        ],
+      ),
     );
   }
 }

@@ -199,35 +199,48 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 ),
               ),
               const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  try {
-                    FirebaseAnalytics.instance.logEvent(name: 'setup_start');
-                    SfxManager.instance.playTapSound();
-                  } catch (e) {}
-                  setState(() {
-                    _showIntro = false;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF7043),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 48,
-                    vertical: 16,
+              Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      try {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'setup_start',
+                        );
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {}
+                      setState(() {
+                        _showIntro = false;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF7043),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 48,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: Text(
+                      l10n.setupIntroNext,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                  const Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: AnimatedTapFinger(),
                   ),
-                  elevation: 4,
-                ),
-                child: Text(
-                  l10n.setupIntroNext,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                ],
               ),
             ],
           ),
@@ -710,32 +723,43 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                     ),
                   ),
                   const Spacer(),
-                  ElevatedButton(
-                    onPressed: () {
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {}
-                      Navigator.pop(context); // 画面を閉じて次へ進む
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF7043),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 48,
-                        vertical: 16,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          try {
+                            SfxManager.instance.playTapSound();
+                          } catch (e) {}
+                          Navigator.pop(context); // 画面を閉じて次へ進む
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF7043),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 48,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 4,
+                        ),
+                        child: Text(
+                          l10n.setupOkButton,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                      const Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: AnimatedTapFinger(),
                       ),
-                      elevation: 4,
-                    ),
-                    child: Text(
-                      l10n.setupOkButton,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    ],
                   ),
                   const SizedBox(height: 60),
                 ],
@@ -830,7 +854,7 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
 }
 
 // ==============================================================
-// 🌟 アプリの遊び方（ルール）画面（新規追加）
+// 🌟 アプリの遊び方（ルール）画面
 // ==============================================================
 class AppRulesInstructionScreen extends StatefulWidget {
   const AppRulesInstructionScreen({super.key});
@@ -908,32 +932,43 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                 ),
 
                 const SizedBox(height: 14),
-                ElevatedButton(
-                  onPressed: () {
-                    try {
-                      SfxManager.instance.playTapSound();
-                    } catch (_) {}
-                    Navigator.pop(context); // 画面を閉じて次へ進む
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF7043),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 48,
-                      vertical: 16,
+                Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (_) {}
+                        Navigator.pop(context); // 画面を閉じて次へ進む
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF7043),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 48,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 4,
+                      ),
+                      child: Text(
+                        l10n.setupOkButton,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    const Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: AnimatedTapFinger(),
                     ),
-                    elevation: 4,
-                  ),
-                  child: Text(
-                    l10n.setupOkButton,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -943,7 +978,6 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
     );
   }
 
-  // ルールを綺麗に表示するウィジェット
   Widget _buildRuleItem({
     required IconData icon,
     required Color iconColor,
@@ -1068,32 +1102,43 @@ class SetupCompleteScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                try {
-                  SfxManager.instance.playTapSound();
-                } catch (_) {}
-                Navigator.pop(context); // 画面を閉じて、呼び出し元(_finishSetup)へ返す
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF7043),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 48,
-                  vertical: 16,
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (_) {}
+                    Navigator.pop(context); // 画面を閉じて、呼び出し元(_finishSetup)へ返す
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF7043),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 4,
+                  ),
+                  child: Text(
+                    l10n.setupFinishButton,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                const Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: AnimatedTapFinger(),
                 ),
-                elevation: 4,
-              ),
-              child: Text(
-                l10n.setupFinishButton,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              ],
             ),
           ],
         ),
@@ -1145,7 +1190,7 @@ class PassDeviceScreen extends StatelessWidget {
                       value: progress,
                       backgroundColor: Colors.white54,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        isToChild ? Colors.orangeAccent : Colors.blueAccent,
+                        isToChild ? Color(0xFFFF7043) : Colors.blueAccent,
                       ),
                       minHeight: 12,
                     ),
@@ -1158,7 +1203,7 @@ class PassDeviceScreen extends StatelessWidget {
             Icon(
               isToChild ? Icons.child_care : Icons.face_retouching_natural,
               size: 100,
-              color: isToChild ? Colors.orangeAccent : Colors.blueAccent,
+              color: isToChild ? Color(0xFFFF7043) : Colors.blueAccent,
             ),
             const SizedBox(height: 16),
             Text(
@@ -1167,36 +1212,98 @@ class PassDeviceScreen extends StatelessWidget {
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                try {
-                  SfxManager.instance.playTapSound();
-                } catch (e) {}
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isToChild
-                    ? Colors.orangeAccent
-                    : Colors.blueAccent,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 48,
-                  vertical: 16,
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (e) {}
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isToChild
+                        ? Color(0xFFFF7043)
+                        : Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 48,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: Text(
+                    l10n.setupReceivedButton,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                const Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: AnimatedTapFinger(),
                 ),
-              ),
-              child: Text(
-                l10n.setupReceivedButton,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              ],
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ==============================================================
+// 🌟 追加: タップを促すポワンポワン動く指のアニメーションウィジェット
+// ==============================================================
+class AnimatedTapFinger extends StatefulWidget {
+  const AnimatedTapFinger({super.key});
+
+  @override
+  State<AnimatedTapFinger> createState() => _AnimatedTapFingerState();
+}
+
+class _AnimatedTapFingerState extends State<AnimatedTapFinger>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _animation,
+      child: const Icon(
+        Icons.touch_app,
+        size: 50,
+        color: Colors.orangeAccent,
+        shadows: [
+          Shadow(color: Colors.black38, blurRadius: 4, offset: Offset(0, 2)),
+        ],
       ),
     );
   }

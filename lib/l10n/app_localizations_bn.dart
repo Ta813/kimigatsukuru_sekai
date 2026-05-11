@@ -1906,4 +1906,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get setupOkButton => 'বুঝেছি!';
+
+  @override
+  String get tutorialMissionBubble => 'প্রথমে, কীভাবে খেলতে হয়\nতা আয়ত্ত করি!';
 }

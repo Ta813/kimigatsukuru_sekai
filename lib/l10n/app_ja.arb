@@ -842,5 +842,6 @@
   "setupRulesStep2": "「やくそく」が おわったら\n「おわった！」ボタンを おしてポイントゲット！",
   "setupRulesStep3": "ポイントで アイテムを こうかんして\n「きせかえ」や「もようがえ」を たのしもう！",
   "setupRulesStep4": "「やくそく」を なんども たっせいすると\nレベルが あがって べつのせかいに いけるよ！",
-  "setupOkButton": "わかった！"
+  "setupOkButton": "わかった！",
+  "tutorialMissionBubble": "まずは、あそびかたを\nマスターしよう！"
 }

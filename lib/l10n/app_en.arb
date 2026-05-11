@@ -842,5 +842,6 @@
   "setupRulesStep2": "When you finish the 'Promise',\ntap the 'Done!' button to get points!",
   "setupRulesStep3": "Exchange points for items and\nenjoy 'Dress-up' and 'Decorating'!",
   "setupRulesStep4": "By completing 'Promises' many times,\nyour level will go up and you can go to other worlds!",
-  "setupOkButton": "Got it!"
+  "setupOkButton": "Got it!",
+  "tutorialMissionBubble": "First, let's master\nhow to play!"
 }

@@ -91,12 +91,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   bool _showCustomizeBlinking = false;
   late AnimationController _hintAnimationController;
   bool _hasUnclaimedMissions = true;
-  bool _isTutorialMissionIncomplete = false;
+  bool _isMissionTutorialRemaining = true;
 
   // 今日のやくそくの達成状況
   int _totalPromisesCount = 0;
   List<bool> _isPromiseCompletedList = [];
-  int? _currentPromiseIndex;
   late AnimationController _allCompletedAnimationController;
 
   final List<int> requiredExpForLevelUp = [
@@ -1171,17 +1170,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           .map((p) => todaysCompletedTitles.contains(p["title"]))
           .toList();
 
-      _currentPromiseIndex = null;
-      if (nextPromise != null && !isEmergency) {
-        final nextTitle = nextPromise["title"];
-        for (int i = 0; i < regular.length; i++) {
-          if (regular[i]["title"] == nextTitle) {
-            _currentPromiseIndex = i;
-            break;
-          }
-        }
-      }
-
       final areAllCompleted =
           _totalPromisesCount > 0 &&
           _isPromiseCompletedList.every((completed) => completed);
@@ -1669,13 +1657,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         await SharedPrefsHelper.loadCumulativeLoginDays();
 
     bool hasUnclaimed = false;
+    bool isMissionTutorialRemaining = false;
 
-    if (!claimedIds.contains('mission_parent_setup')) hasUnclaimed = true;
-    if (!claimedIds.contains('mission_first_promise')) hasUnclaimed = true;
-
-    final bool isTutorialUnclaimed =
-        !claimedIds.contains('mission_parent_setup') ||
-        !claimedIds.contains('mission_first_promise');
+    if (!claimedIds.contains('mission_parent_setup')) {
+      hasUnclaimed = true;
+      isMissionTutorialRemaining = true;
+    }
+    if (!claimedIds.contains('mission_first_promise')) {
+      hasUnclaimed = true;
+      isMissionTutorialRemaining = true;
+    }
 
     if (!claimedIds.contains('mission_enter_house')) hasUnclaimed = true;
     if (!claimedIds.contains('mission_promise_board')) hasUnclaimed = true;
@@ -1715,7 +1706,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (mounted) {
       setState(() {
         _hasUnclaimedMissions = hasUnclaimed;
-        _isTutorialMissionIncomplete = isTutorialUnclaimed;
+        _isMissionTutorialRemaining = isMissionTutorialRemaining;
       });
     }
   }
@@ -2050,10 +2041,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                     ? _isPromiseCompletedList[index]
                                                     : false;
 
-                                                final isCurrent =
-                                                    index ==
-                                                    _currentPromiseIndex;
-
                                                 final starIcon = Icon(
                                                   Icons.star,
                                                   size: 18,
@@ -2061,15 +2048,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                       ? Colors.amber
                                                       : Colors.grey[300],
                                                 );
-
-                                                if (isCurrent && !isCompleted) {
-                                                  return BlinkingEffect(
-                                                    isBlinking: true,
-                                                    color: Colors.amber,
-                                                    borderRadius: 10,
-                                                    child: starIcon,
-                                                  );
-                                                }
 
                                                 if (isCompleted) {
                                                   return AnimatedBuilder(
@@ -2572,59 +2550,123 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               ignoring: isAnyTutorialBlinking,
                               child: Opacity(
                                 opacity: (isAnyTutorialBlinking) ? 0.6 : 1.0,
-                                child: BlinkingEffect(
-                                  isBlinking: _isTutorialMissionIncomplete,
-                                  child: _buildRoundMenuButton(
-                                    icon: Icons.assignment_turned_in,
-                                    label: AppLocalizations.of(
+                                child: _buildRoundMenuButton(
+                                  icon: Icons.assignment_turned_in,
+                                  label: AppLocalizations.of(
+                                    context,
+                                  )!.missionScreenTitle,
+                                  iconColor: Colors.black,
+                                  backgroundColor: Colors.purple.shade100,
+                                  isMain: true, // 🌟 メイン機能なので大きく！
+                                  onTap: () async {
+                                    try {
+                                      SfxManager.instance.playTapSound();
+                                    } catch (e) {}
+                                    FirebaseAnalytics.instance.logEvent(
+                                      name: 'start_child_home_mission',
+                                    );
+
+                                    if (!mounted) return;
+                                    Navigator.push(
                                       context,
-                                    )!.missionScreenTitle,
-                                    iconColor: Colors.black,
-                                    backgroundColor: Colors.purple.shade100,
-                                    isMain: true, // 🌟 メイン機能なので大きく！
-                                    onTap: () async {
-                                      try {
-                                        SfxManager.instance.playTapSound();
-                                      } catch (e) {}
-                                      FirebaseAnalytics.instance.logEvent(
-                                        name: 'start_child_home_mission',
-                                      );
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MissionScreen(),
+                                      ),
+                                    ).then((result) {
+                                      _loadAndDetermineDisplayPromise();
+                                      _checkUnclaimedMissions();
 
-                                      if (!mounted) return;
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const MissionScreen(),
-                                        ),
-                                      ).then((result) {
-                                        _loadAndDetermineDisplayPromise();
-                                        _checkUnclaimedMissions();
-
-                                        if (result != null &&
-                                            result is String) {
-                                          if (result ==
-                                              'mission_parent_setup') {
-                                            SharedPrefsHelper.setParentTutorial(
-                                              SharedPrefsHelper
-                                                  .tutorialPhaseStart,
-                                            );
-                                            _showParentTutorial();
-                                          } else if (result ==
-                                              'mission_first_promise') {
-                                            SharedPrefsHelper.setChildTutorial(
-                                              SharedPrefsHelper
-                                                  .tutorialPhaseStart,
-                                            );
-                                            _showChildTutorial();
-                                          }
+                                      if (result != null && result is String) {
+                                        if (result == 'mission_parent_setup') {
+                                          SharedPrefsHelper.setParentTutorial(
+                                            SharedPrefsHelper
+                                                .tutorialPhaseStart,
+                                          );
+                                          _showParentTutorial();
+                                        } else if (result ==
+                                            'mission_first_promise') {
+                                          SharedPrefsHelper.setChildTutorial(
+                                            SharedPrefsHelper
+                                                .tutorialPhaseStart,
+                                          );
+                                          _showChildTutorial();
                                         }
-                                      });
-                                    },
-                                  ),
+                                      }
+                                    });
+                                  },
                                 ),
                               ),
                             ),
+                            // ミッションチュートリアルが残っている場合の吹き出し
+                            if (_isMissionTutorialRemaining &&
+                                !isAnyTutorialBlinking)
+                              Positioned(
+                                top: 10,
+                                right: 80, // ボタンの左側に配置
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFFFF9C4),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: Colors.orange,
+                                        width: 2,
+                                      ),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          blurRadius: 4,
+                                          color: Colors.black26,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.tutorialMissionBubble,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            // ミッションチュートリアルが残っている場合のタップアニメーション
+                            if (_isMissionTutorialRemaining &&
+                                !isAnyTutorialBlinking)
+                              Positioned(
+                                bottom: 30,
+                                right: 20,
+                                child: IgnorePointer(
+                                  child: ScaleTransition(
+                                    scale: Tween<double>(begin: 1.0, end: 1.3)
+                                        .animate(
+                                          CurvedAnimation(
+                                            parent: _hintAnimationController,
+                                            curve: Curves.easeInOut,
+                                          ),
+                                        ),
+                                    child: const Icon(
+                                      Icons.touch_app,
+                                      color: Colors.orange,
+                                      size: 40,
+                                      shadows: [
+                                        Shadow(
+                                          blurRadius: 4,
+                                          color: Colors.black26,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             // 「！」バッジの表示
                             if (_hasUnclaimedMissions)
                               Positioned(
