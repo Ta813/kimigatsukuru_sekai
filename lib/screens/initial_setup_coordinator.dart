@@ -577,6 +577,7 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
   @override
   void initState() {
     super.initState();
+    FirebaseAnalytics.instance.logEvent(name: 'setup_drag_instruction_show');
 
     // 指を動かすアニメーション（2.5秒かけて繰り返す）
     _fingerController = AnimationController(
@@ -831,8 +832,20 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
 // ==============================================================
 // 🌟 アプリの遊び方（ルール）画面（新規追加）
 // ==============================================================
-class AppRulesInstructionScreen extends StatelessWidget {
+class AppRulesInstructionScreen extends StatefulWidget {
   const AppRulesInstructionScreen({super.key});
+
+  @override
+  State<AppRulesInstructionScreen> createState() =>
+      _AppRulesInstructionScreenState();
+}
+
+class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAnalytics.instance.logEvent(name: 'setup_rule_instruction_show');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -916,7 +929,10 @@ class AppRulesInstructionScreen extends StatelessWidget {
                   ),
                   child: Text(
                     l10n.setupOkButton,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
