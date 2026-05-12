@@ -1567,15 +1567,17 @@ class _AnimatedTapFingerState extends State<AnimatedTapFinger>
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _animation,
-      child: const Icon(
-        Icons.touch_app,
-        size: 50,
-        color: Colors.orangeAccent,
-        shadows: [
-          Shadow(color: Colors.black38, blurRadius: 4, offset: Offset(0, 2)),
-        ],
+    return IgnorePointer(
+      child: ScaleTransition(
+        scale: _animation,
+        child: const Icon(
+          Icons.touch_app,
+          size: 50,
+          color: Colors.orangeAccent,
+          shadows: [
+            Shadow(color: Colors.black38, blurRadius: 4, offset: Offset(0, 2)),
+          ],
+        ),
       ),
     );
   }

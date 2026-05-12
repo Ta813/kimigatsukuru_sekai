@@ -23,6 +23,7 @@ import 'timer_screen.dart';
 import '../parent/parent_top_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'character_customize_screen.dart';
+import '../../managers/permission_manager.dart';
 import '../../managers/bgm_manager.dart';
 import '../../managers/sfx_manager.dart';
 import 'math_lock_dialog.dart';
@@ -327,7 +328,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         if (status == PermissionStatus.denied ||
             status == PermissionStatus.provisional) {
           await Future.delayed(const Duration(milliseconds: 800));
-          await Permission.appTrackingTransparency.request();
+          await PermissionManager.instance.request(
+            Permission.appTrackingTransparency,
+          );
         }
       } catch (e) {}
     }
