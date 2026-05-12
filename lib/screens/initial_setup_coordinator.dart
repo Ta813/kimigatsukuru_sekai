@@ -4,13 +4,11 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart';
-import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart'; // 🌟 プレミアム画面をインポート
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import 'package:kimigatsukuru_sekai/widgets/draggable_character.dart';
 import '../helpers/shared_prefs_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../managers/sfx_manager.dart';
-import '../managers/purchase_manager.dart';
 import 'child/child_home_screen.dart';
 import 'child/character_customize_screen.dart';
 
@@ -510,22 +508,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     int resumeStep = 0,
   }) async {
     // 🌟 間に画面が増えたのでステップ番号をさらに調整
-    int paywallStep = (pattern == 'C') ? 5 : 6;
-    int completeStep = (pattern == 'C') ? 6 : 7;
-
-    // 1. プレミアムプランへの誘導
-    if (resumeStep <= paywallStep) {
-      await SharedPrefsHelper.recordFirstLaunchTime();
-      await SharedPrefsHelper.saveSetupProgress(pattern, paywallStep);
-      if (!context.mounted) return;
-      if (!PurchaseManager.instance.isPremium.value) {
-        FirebaseAnalytics.instance.logEvent(name: 'setup_paywall_screen_show');
-        await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const PremiumPaywallScreen()),
-        );
-      }
-    }
+    int completeStep = (pattern == 'C') ? 5 : 6;
 
     if (!context.mounted) return;
 
@@ -550,7 +533,9 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const ChildHomeScreen()),
+      MaterialPageRoute(
+        builder: (_) => const ChildHomeScreen(isInitialSetup: true),
+      ),
     );
   }
 }

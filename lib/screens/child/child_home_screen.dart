@@ -40,7 +40,8 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../widgets/avatar_display.dart';
 
 class ChildHomeScreen extends StatefulWidget {
-  const ChildHomeScreen({super.key});
+  final bool isInitialSetup;
+  const ChildHomeScreen({super.key, this.isInitialSetup = false});
 
   @override
   State<ChildHomeScreen> createState() => _ChildHomeScreenState();
@@ -261,7 +262,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _initializeConsent();
       if (mounted) {
-        final earnedPoints = await LoginBonusManager().checkLoginBonus(context);
+        int earnedPoints = 0;
+        if (!widget.isInitialSetup) {
+          earnedPoints = await LoginBonusManager().checkLoginBonus(context);
+        }
+
         await _loadAndDetermineDisplayPromise();
         await SharedPrefsHelper.recordLoginDay();
 
