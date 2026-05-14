@@ -1402,4 +1402,19 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_equippedWorldKey);
   }
+
+  // 🌟 追加: スキップしたアップデートバージョンを保存するキー
+  static const String _ignoredUpdateVersionKey = 'ignored_update_version';
+
+  // ユーザーが「しない」を押したバージョンを保存
+  static Future<void> saveIgnoredUpdateVersion(String version) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_ignoredUpdateVersionKey, version);
+  }
+
+  // スキップしたバージョンを読み込む
+  static Future<String?> loadIgnoredUpdateVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_ignoredUpdateVersionKey);
+  }
 }

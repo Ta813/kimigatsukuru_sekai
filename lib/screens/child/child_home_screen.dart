@@ -9,6 +9,7 @@ import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/initial_setup_coordinator.dart';
@@ -263,6 +264,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _initializeConsent();
       if (mounted) {
+        await AppUpdateManager.instance.checkUpdateAndShowDialog(context);
+
         int earnedPoints = 0;
         if (!widget.isInitialSetup) {
           earnedPoints = await LoginBonusManager().checkLoginBonus(context);
@@ -2638,7 +2641,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                         context,
                                       )!.tutorialMissionBubble,
                                       style: const TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black87,
                                       ),

@@ -842,5 +842,20 @@
   "setupRulesStep3": "আইটেমের জন্য পয়েন্ট বিনিময় করুন এবং\n'পোশাক' এবং 'সাজসজ্জা' উপভোগ করুন!",
   "setupRulesStep4": "অনেকবার 'প্রতিশ্রুতি' পূরণ করার মাধ্যমে,\nআপনার লেভেল বাড়বে এবং আপনি অন্য বিশ্বে যেতে পারবেন!",
   "setupOkButton": "বুঝেছি!",
-  "tutorialMissionBubble": "প্রথমে, কীভাবে খেলতে হয়\nতা আয়ত্ত করি!"
+  "tutorialMissionBubble": "প্রথমে, কীভাবে খেলতে হয়\nতা আয়ত্ত করি!",
+  "setupStepProgress": "ধাপ {currentStep} / {totalSteps}",
+  "@setupStepProgress": {
+    "placeholders": {
+      "currentStep": {
+        "type": "int"
+      },
+      "totalSteps": {
+        "type": "int"
+      }
+    }
+  },
+  "updateDialogTitle": "আপডেট নোটিশ",
+  "updateDialogMessage": "একটি নতুন সংস্করণ উপলব্ধ!\nখেলতে অনুগ্রহ করে আপডেট করুন!",
+  "updateDialogSkip": "এখন না",
+  "updateDialogUpdate": "আপডেট!"
 }

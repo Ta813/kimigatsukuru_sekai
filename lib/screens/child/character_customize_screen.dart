@@ -18,8 +18,15 @@ enum CustomizeView { menu, avatar, support, world, initialSetup }
 
 class CharacterCustomizeScreen extends StatefulWidget {
   final bool isInitialSetup;
+  final int? currentStep;
+  final int? totalSteps;
 
-  const CharacterCustomizeScreen({super.key, this.isInitialSetup = false});
+  const CharacterCustomizeScreen({
+    super.key,
+    this.isInitialSetup = false,
+    this.currentStep = 0,
+    this.totalSteps = 0,
+  });
 
   @override
   State<CharacterCustomizeScreen> createState() =>
@@ -35,6 +42,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   int _currentPoints = 0;
 
   int _setupStep = 0;
+  late PageController _setupPageController;
   String? _setupSelectedCharacter;
 
   String? _equippedFace;
@@ -56,6 +64,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   @override
   void initState() {
     super.initState();
+    _setupPageController = PageController(initialPage: 0);
     _currentView = widget.isInitialSetup
         ? CustomizeView.initialSetup
         : CustomizeView.menu;
@@ -66,6 +75,12 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     } else {
       _playSavedBgm();
     }
+  }
+
+  @override
+  void dispose() {
+    _setupPageController.dispose();
+    super.dispose();
   }
 
   Future<void> _playSavedBgm() async {
@@ -439,7 +454,64 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     final localizations = AppLocalizations.of(context)!;
 
     if (_setupStep == 0) {
+      final progress = widget.currentStep! / widget.totalSteps!;
       return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          toolbarHeight: 48,
+          leading: BackButton(
+            color: Colors.black54,
+            onPressed: () =>
+                Navigator.pop(context, false), // 戻る時は false(null扱い) を返す
+          ),
+          titleSpacing: 0,
+          title: Padding(
+            padding: const EdgeInsets.only(right: 24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.setupStepProgress(
+                        widget.currentStep!,
+                        widget.totalSteps!,
+                      ),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                        fontSize: 12,
+                      ),
+                    ),
+                    Text(
+                      "${(progress * 100).toInt()}%",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFFF7043),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(2),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: const Color(0xFFFF7043).withOpacity(0.2),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Color(0xFFFF7043),
+                    ),
+                    minHeight: 4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         backgroundColor: const Color(0xFFFFF3E0),
         body: SafeArea(
           child: Center(
@@ -525,38 +597,84 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       );
     }
 
-    List<ShopItem> currentItems = [];
     String title = '';
-    String? currentEquippedPath;
 
     if (_setupStep == 1) {
       title = localizations.setupHairTitle;
-      currentItems = shopItems.where((i) => i.type == 'hair').toList();
-      currentEquippedPath = _equippedHair;
     } else if (_setupStep == 2) {
       title = localizations.setupFaceTitle;
-      currentItems = shopItems.where((i) => i.type == 'face').toList();
-      currentEquippedPath = _equippedFace;
     } else if (_setupStep == 3) {
       title = localizations.setupClothesTitle;
-      currentItems = shopItems.where((i) => i.type == 'clothes').toList();
-      currentEquippedPath = _equippedClothes;
     } else if (_setupStep == 4) {
       title = localizations.setupCompanionTitle;
-      currentItems = shopItems.where((i) => i.type == 'character').toList();
-      currentEquippedPath = _setupSelectedCharacter;
     }
 
+    final progress = widget.currentStep! / widget.totalSteps!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       appBar: AppBar(
-        toolbarHeight: 50,
-        automaticallyImplyLeading: false,
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        toolbarHeight: 48,
+        leading: BackButton(
+          color: Colors.black54,
+          onPressed: () =>
+              Navigator.pop(context, false), // 戻る時は false(null扱い) を返す
         ),
-        centerTitle: true,
+        titleSpacing: 0,
+        title: Padding(
+          padding: const EdgeInsets.only(right: 24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.setupStepProgress(
+                      widget.currentStep!,
+                      widget.totalSteps!,
+                    ),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Text(
+                    "${(progress * 100).toInt()}%",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFFF7043),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(2),
+                child: LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: const Color(0xFFFF7043).withOpacity(0.2),
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    Color(0xFFFF7043),
+                  ),
+                  minHeight: 4,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       body: SafeArea(
         child: Row(
@@ -584,94 +702,135 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                     ),
                   ),
                   Expanded(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 7,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8,
-                            childAspectRatio: 0.8,
-                          ),
-                      itemCount: currentItems.length,
-                      itemBuilder: (context, index) {
-                        final item = currentItems[index];
-                        final isSelected =
-                            item.imagePath == currentEquippedPath;
-                        final isLocked =
-                            item.requiredLevel >= 5 &&
-                            !PurchaseManager.instance.isPremium.value;
+                    child: PageView.builder(
+                      controller: _setupPageController,
+                      onPageChanged: (index) {
+                        setState(() {
+                          _setupStep = index + 1;
+                        });
+                      },
+                      itemCount: 4,
+                      itemBuilder: (context, pageIndex) {
+                        final step = pageIndex + 1;
+                        List<ShopItem> pageItems = [];
+                        String? pageEquippedPath;
 
-                        return Card(
-                          elevation: isSelected ? 6 : 2,
-                          color: isSelected
-                              ? const Color(0xFFFFF9C4)
-                              : Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
+                        if (step == 1) {
+                          pageItems = shopItems
+                              .where((i) => i.type == 'hair')
+                              .toList();
+                          pageEquippedPath = _equippedHair;
+                        } else if (step == 2) {
+                          pageItems = shopItems
+                              .where((i) => i.type == 'face')
+                              .toList();
+                          pageEquippedPath = _equippedFace;
+                        } else if (step == 3) {
+                          pageItems = shopItems
+                              .where((i) => i.type == 'clothes')
+                              .toList();
+                          pageEquippedPath = _equippedClothes;
+                        } else if (step == 4) {
+                          pageItems = shopItems
+                              .where((i) => i.type == 'character')
+                              .toList();
+                          pageEquippedPath = _setupSelectedCharacter;
+                        }
+
+                        return GridView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 7,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                                childAspectRatio: 0.8,
+                              ),
+                          itemCount: pageItems.length,
+                          itemBuilder: (context, index) {
+                            final item = pageItems[index];
+                            final isSelected =
+                                item.imagePath == pageEquippedPath;
+                            final isLocked =
+                                item.requiredLevel >= 5 &&
+                                !PurchaseManager.instance.isPremium.value;
+
+                            return Card(
+                              elevation: isSelected ? 6 : 2,
                               color: isSelected
-                                  ? Colors.amber
-                                  : Colors.transparent,
-                              width: 4,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              if (isLocked) {
-                                _showPremiumUpgradeDialog(item);
-                                return;
-                              }
-                              try {
-                                SfxManager.instance.playTapSound();
-                              } catch (e) {}
-                              setState(() {
-                                if (_setupStep == 1)
-                                  _equippedHair = item.imagePath;
-                                else if (_setupStep == 2)
-                                  _equippedFace = item.imagePath;
-                                else if (_setupStep == 3)
-                                  _equippedClothes = item.imagePath;
-                                else if (_setupStep == 4)
-                                  _setupSelectedCharacter = item.imagePath;
-                              });
-                            },
-                            child: Stack(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Opacity(
-                                    opacity: isLocked ? 0.5 : 1.0,
-                                    child: _buildItemPreviewImage(item),
-                                  ),
+                                  ? const Color(0xFFFFF9C4)
+                                  : Colors.white,
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  color: isSelected
+                                      ? Colors.amber
+                                      : Colors.transparent,
+                                  width: 4,
                                 ),
-                                if (isLocked)
-                                  Positioned.fill(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.3),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const SizedBox(height: 30),
-                                          Text(
-                                            'Lv.${item.requiredLevel}',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  if (isLocked) {
+                                    _showPremiumUpgradeDialog(item);
+                                    return;
+                                  }
+                                  try {
+                                    SfxManager.instance.playTapSound();
+                                  } catch (e) {}
+                                  setState(() {
+                                    if (step == 1)
+                                      _equippedHair = item.imagePath;
+                                    else if (step == 2)
+                                      _equippedFace = item.imagePath;
+                                    else if (step == 3)
+                                      _equippedClothes = item.imagePath;
+                                    else if (step == 4)
+                                      _setupSelectedCharacter = item.imagePath;
+                                  });
+                                },
+                                child: Stack(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Opacity(
+                                        opacity: isLocked ? 0.5 : 1.0,
+                                        child: _buildItemPreviewImage(item),
                                       ),
                                     ),
-                                  ),
-                              ],
-                            ),
-                          ),
+                                    if (isLocked)
+                                      Positioned.fill(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(
+                                              0.3,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const SizedBox(height: 30),
+                                              Text(
+                                                'Lv.${item.requiredLevel}',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
@@ -744,38 +903,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               SfxManager.instance.playTapSound();
             } catch (e) {}
 
-            ShopItem? selectedItem;
-            if (_setupStep == 1 && _equippedHair != null) {
-              selectedItem = shopItems.firstWhere(
-                (i) => i.imagePath == _equippedHair,
-              );
-              await SharedPrefsHelper.saveEquippedHairstyle(_equippedHair!);
-            }
-            if (_setupStep == 2 && _equippedFace != null) {
-              selectedItem = shopItems.firstWhere(
-                (i) => i.imagePath == _equippedFace,
-              );
-              await SharedPrefsHelper.saveEquippedFace(_equippedFace!);
-            } else if (_setupStep == 3 && _equippedClothes != null) {
-              selectedItem = shopItems.firstWhere(
-                (i) => i.imagePath == _equippedClothes,
-              );
-              await SharedPrefsHelper.saveEquippedClothes(_equippedClothes!);
-            } else if (_setupStep == 4 && _setupSelectedCharacter != null) {
-              selectedItem = shopItems.firstWhere(
-                (i) => i.imagePath == _setupSelectedCharacter,
-              );
-              await SharedPrefsHelper.saveEquippedCharacters([
-                _setupSelectedCharacter!,
-              ]);
-            }
-
-            if (selectedItem != null &&
-                !_purchasedItemNames.contains(selectedItem.name)) {
-              await SharedPrefsHelper.addPurchasedItem(selectedItem.name);
-              _purchasedItemNames.add(selectedItem.name);
-            }
-
             if (_setupStep < 4) {
               if (_setupStep == 1) {
                 FirebaseAnalytics.instance.logEvent(
@@ -790,11 +917,45 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   name: 'setup_child_4_start',
                 );
               }
-              setState(() {
-                _setupStep++;
-              });
+              _setupPageController.nextPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
             } else {
               FirebaseAnalytics.instance.logEvent(name: 'setup_child_finish');
+
+              Future<void> saveItem(
+                String? path,
+                Future<void> Function(String) saveFunc,
+              ) async {
+                if (path != null) {
+                  try {
+                    final item = shopItems.firstWhere(
+                      (i) => i.imagePath == path,
+                    );
+                    await saveFunc(path);
+                    if (!_purchasedItemNames.contains(item.name)) {
+                      await SharedPrefsHelper.addPurchasedItem(item.name);
+                      _purchasedItemNames.add(item.name);
+                    }
+                  } catch (e) {}
+                }
+              }
+
+              await saveItem(
+                _equippedHair,
+                SharedPrefsHelper.saveEquippedHairstyle,
+              );
+              await saveItem(_equippedFace, SharedPrefsHelper.saveEquippedFace);
+              await saveItem(
+                _equippedClothes,
+                SharedPrefsHelper.saveEquippedClothes,
+              );
+              await saveItem(
+                _setupSelectedCharacter,
+                (p) => SharedPrefsHelper.saveEquippedCharacters([p]),
+              );
+
               if (!mounted) return;
               Navigator.pop(context, true);
             }

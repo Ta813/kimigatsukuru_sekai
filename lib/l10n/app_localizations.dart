@@ -3774,6 +3774,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'First, let\'s master\nhow to play!'**
   String get tutorialMissionBubble;
+
+  /// No description provided for @setupStepProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {currentStep} / {totalSteps}'**
+  String setupStepProgress(int currentStep, int totalSteps);
+
+  /// No description provided for @updateDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Notice'**
+  String get updateDialogTitle;
+
+  /// No description provided for @updateDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version is available!\nPlease update to play!'**
+  String get updateDialogMessage;
+
+  /// No description provided for @updateDialogSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Now'**
+  String get updateDialogSkip;
+
+  /// No description provided for @updateDialogUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update!'**
+  String get updateDialogUpdate;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

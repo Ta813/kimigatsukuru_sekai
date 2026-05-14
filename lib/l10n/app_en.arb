@@ -843,5 +843,20 @@
   "setupRulesStep3": "Exchange points for items and\nenjoy 'Dress-up' and 'Decorating'!",
   "setupRulesStep4": "By completing 'Promises' many times,\nyour level will go up and you can go to other worlds!",
   "setupOkButton": "Got it!",
-  "tutorialMissionBubble": "First, let's master\nhow to play!"
+  "tutorialMissionBubble": "First, let's master\nhow to play!",
+  "setupStepProgress": "Step {currentStep} / {totalSteps}",
+  "@setupStepProgress": {
+    "placeholders": {
+      "currentStep": {
+        "type": "int"
+      },
+      "totalSteps": {
+        "type": "int"
+      }
+    }
+  },
+  "updateDialogTitle": "Update Notice",
+  "updateDialogMessage": "A new version is available!\nPlease update to play!",
+  "updateDialogSkip": "Not Now",
+  "updateDialogUpdate": "Update!"
 }

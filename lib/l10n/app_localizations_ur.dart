@@ -1909,4 +1909,21 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get tutorialMissionBubble => 'پہلے، آئیے کھیلنا\nسیکھتے ہیں!';
+
+  @override
+  String setupStepProgress(int currentStep, int totalSteps) {
+    return 'مرحلہ $currentStep / $totalSteps';
+  }
+
+  @override
+  String get updateDialogTitle => 'اپ ڈیٹ نوٹس';
+
+  @override
+  String get updateDialogMessage => 'ایک نیا ورژن دستیاب ہے!\nکھیلنے کے لیے براہ کرم اپ ڈیٹ کریں!';
+
+  @override
+  String get updateDialogSkip => 'ابھی نہیں';
+
+  @override
+  String get updateDialogUpdate => 'اپ ڈیٹ کریں!';
 }

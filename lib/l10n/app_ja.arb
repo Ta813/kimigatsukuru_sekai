@@ -843,5 +843,20 @@
   "setupRulesStep3": "ポイントで アイテムを こうかんして\n「きせかえ」や「もようがえ」を たのしもう！",
   "setupRulesStep4": "「やくそく」を なんども たっせいすると\nレベルが あがって べつのせかいに いけるよ！",
   "setupOkButton": "わかった！",
-  "tutorialMissionBubble": "まずは、あそびかたを\nマスターしよう！"
+  "tutorialMissionBubble": "まずは、あそびかたを\nマスターしよう！",
+  "setupStepProgress": "ステップ {currentStep} / {totalSteps}",
+  "@setupStepProgress": {
+    "placeholders": {
+      "currentStep": {
+        "type": "int"
+      },
+      "totalSteps": {
+        "type": "int"
+      }
+    }
+  },
+  "updateDialogTitle": "アップデートのおしらせ",
+  "updateDialogMessage": "あたらしい バージョンが あるよ！\nアップデートして あそんでね！",
+  "updateDialogSkip": "しない",
+  "updateDialogUpdate": "アップデート！"
 }

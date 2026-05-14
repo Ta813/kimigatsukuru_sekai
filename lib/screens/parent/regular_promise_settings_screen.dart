@@ -20,11 +20,15 @@ enum _TutorialPhase { add, delete, finish, done }
 class RegularPromiseSettingsScreen extends StatefulWidget {
   final bool isTutorial;
   final bool isInitialSetup; // 🌟 追加: 初回起動セットアップかどうか
+  final int? currentStep;
+  final int? totalSteps;
 
   const RegularPromiseSettingsScreen({
     super.key,
     this.isTutorial = false,
     this.isInitialSetup = false, // デフォルトはfalse
+    this.currentStep,
+    this.totalSteps,
   });
 
   @override
@@ -368,8 +372,8 @@ class _RegularPromiseSettingsScreenState
                 borderRadius: BorderRadius.circular(16),
               ),
               insetPadding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 24,
+                horizontal: 6,
+                vertical: 6,
               ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -377,7 +381,7 @@ class _RegularPromiseSettingsScreenState
                 ),
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+                    padding: const EdgeInsets.fromLTRB(5, 5, 5, 12),
                     child: Form(
                       key: formKey,
                       child: Column(
@@ -398,7 +402,7 @@ class _RegularPromiseSettingsScreenState
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 6),
                           TextFormField(
                             controller: titleController,
                             scrollPadding: EdgeInsets.only(
@@ -420,7 +424,7 @@ class _RegularPromiseSettingsScreenState
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 6),
                           InputDecorator(
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(
@@ -480,7 +484,7 @@ class _RegularPromiseSettingsScreenState
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 6),
                           Row(
                             children: [
                               Expanded(
@@ -492,8 +496,8 @@ class _RegularPromiseSettingsScreenState
                                     )!.durationLabel,
                                     border: const OutlineInputBorder(),
                                     contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 8,
+                                      horizontal: 5,
+                                      vertical: 4,
                                     ),
                                   ),
                                   items: durationOptions
@@ -509,7 +513,7 @@ class _RegularPromiseSettingsScreenState
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 6),
                               Expanded(
                                 child: DropdownButtonFormField<String>(
                                   value: selectedPoints,
@@ -537,10 +541,10 @@ class _RegularPromiseSettingsScreenState
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 6),
                           Wrap(
-                            spacing: 6.0,
-                            runSpacing: 6.0,
+                            spacing: 4.0,
+                            runSpacing: 4.0,
                             alignment: WrapAlignment.center,
                             children: emojiList.map((emoji) {
                               final isSelected = selectedIconKey == emoji;
@@ -570,13 +574,13 @@ class _RegularPromiseSettingsScreenState
                                   ),
                                   child: Text(
                                     emoji,
-                                    style: const TextStyle(fontSize: 24),
+                                    style: const TextStyle(fontSize: 20),
                                   ),
                                 ),
                               );
                             }).toList(),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -842,7 +846,7 @@ class _RegularPromiseSettingsScreenState
     if (!mounted) return;
 
     // ダイアログが終わったら、画面を閉じてCoordinatorに処理を返す
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
   // 🌟 追加: 通知の許可を求める処理（ChildHomeScreenから移植）
@@ -1150,19 +1154,22 @@ class _RegularPromiseSettingsScreenState
         template['title'] != _getTrialTemplate(context)['title'];
 
     final card = Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
       elevation: isDragging ? 8 : 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-        leading: Text(template['icon'], style: const TextStyle(fontSize: 26)),
+        dense: true,
+        visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+        minVerticalPadding: 0,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        leading: Text(template['icon'], style: const TextStyle(fontSize: 24)),
         title: Text(
           template['title'],
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
         ),
         subtitle: Text(
           '${template['time']} / ${AppLocalizations.of(context)!.durationAndPoints(template['duration'].toString(), template['points'].toString())}',
-          style: const TextStyle(fontSize: 9),
+          style: const TextStyle(fontSize: 13),
         ),
         trailing: isTutorialTrialCard
             ? CompositedTransformTarget(
@@ -1255,9 +1262,12 @@ class _RegularPromiseSettingsScreenState
     }
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
       child: ListTile(
         dense: true,
+        visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+        minVerticalPadding: 0,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         onTap: () {
           final bool disabled =
               widget.isTutorial &&
@@ -1272,11 +1282,11 @@ class _RegularPromiseSettingsScreenState
         leading: Text(iconEmoji, style: const TextStyle(fontSize: 24)),
         title: Text(
           promise['title'],
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
         ),
         subtitle: Text(
           '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
-          style: const TextStyle(fontSize: 14),
+          style: const TextStyle(fontSize: 13),
         ),
         trailing: deleteButton,
       ),
@@ -1312,12 +1322,82 @@ class _RegularPromiseSettingsScreenState
         (_tutorialPhase == _TutorialPhase.add ||
             _tutorialPhase == _TutorialPhase.delete);
 
+    double progress = 0;
+    if (widget.isInitialSetup) {
+      progress = widget.currentStep! / widget.totalSteps!;
+    }
+
     return Stack(
       children: [
         Scaffold(
           // 🌟 変更: 初期設定モードの場合はAppBarを非表示にする
           appBar: widget.isInitialSetup
-              ? null
+              ? AppBar(
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  toolbarHeight: 48,
+                  leading: BackButton(
+                    color: Colors.black54,
+                    onPressed: () =>
+                        Navigator.pop(context, false), // 戻る時は false(null扱い) を返す
+                  ),
+                  titleSpacing: 0,
+                  title: Padding(
+                    padding: const EdgeInsets.only(right: 24.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.setupStepProgress(
+                                widget.currentStep!,
+                                widget.totalSteps!,
+                              ),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              l10n.regularPromiseSettingsTitle,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                fontSize: 20,
+                              ),
+                            ),
+                            Text(
+                              "${(progress * 100).toInt()}%",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFFF7043),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(2),
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            backgroundColor: const Color(
+                              0xFFFF7043,
+                            ).withOpacity(0.2),
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              Color(0xFFFF7043),
+                            ),
+                            minHeight: 4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               : AppBar(
                   leading: isFinishPhase
                       ? BlinkingEffect(
@@ -1347,49 +1427,49 @@ class _RegularPromiseSettingsScreenState
                 // ==========================================================
                 // 🌟 変更: 初期設定モード時のメッセージエリア (ボタンは下へ移動)
                 // ==========================================================
-                if (widget.isInitialSetup)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE3F2FD),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.blue.shade200,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: Colors.blueAccent,
-                          size: 28,
-                        ),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            l10n.initialSetupSettingsMessage,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                // if (widget.isInitialSetup)
+                //   Container(
+                //     padding: const EdgeInsets.symmetric(
+                //       horizontal: 16,
+                //       vertical: 12,
+                //     ),
+                //     decoration: BoxDecoration(
+                //       color: const Color(0xFFE3F2FD),
+                //       border: Border(
+                //         bottom: BorderSide(
+                //           color: Colors.blue.shade200,
+                //           width: 2,
+                //         ),
+                //       ),
+                //     ),
+                //     child: Row(
+                //       children: [
+                //         Icon(
+                //           Icons.info_outline,
+                //           color: Colors.blueAccent,
+                //           size: 28,
+                //         ),
+                //         SizedBox(width: 12),
+                //         Expanded(
+                //           child: Text(
+                //             l10n.initialSetupSettingsMessage,
+                //             style: const TextStyle(
+                //               fontSize: 16,
+                //               fontWeight: FontWeight.bold,
+                //               color: Colors.black87,
+                //             ),
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
 
                 // ----------------------------------------------------------
                 Expanded(
                   child: Row(
                     children: [
                       Expanded(
-                        flex: 4,
+                        flex: 5,
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.5),
@@ -1405,7 +1485,7 @@ class _RegularPromiseSettingsScreenState
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0,
+                                  vertical: 0.0,
                                 ),
                                 child: Text(
                                   '💡 ${l10n.recommendedTitle}',
@@ -1478,10 +1558,10 @@ class _RegularPromiseSettingsScreenState
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
-                                      8,
-                                      8,
-                                      4,
-                                      8,
+                                      0,
+                                      0,
+                                      0,
+                                      0,
                                     ),
                                     child: Row(
                                       children: [

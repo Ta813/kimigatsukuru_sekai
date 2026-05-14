@@ -61,14 +61,23 @@ class _SplashScreenState extends State<SplashScreen> {
             // Image.asset('assets/images/app_icon.png', width: 150),
             // const SizedBox(height: 24),
             const CircularProgressIndicator(color: Color(0xFFFF7043)),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             // 🌟 修正: ローカライズ対応
-            Text(
-              AppLocalizations.of(context)!.splashLoadingMessage,
-              style: const TextStyle(
-                color: Colors.black54,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/character_hime.gif', height: 100),
+                const SizedBox(width: 20),
+                Text(
+                  AppLocalizations.of(context)!.splashLoadingMessage,
+                  style: const TextStyle(
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Image.asset('assets/images/character_kuma.gif', height: 100),
+              ],
             ),
           ],
         ),

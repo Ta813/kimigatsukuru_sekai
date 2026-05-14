@@ -842,5 +842,20 @@
   "setupRulesStep3": "اشیاء کے لیے پوائنٹس کا تبادلہ کریں اور\n'لباس' اور 'سجاوٹ' سے لطف اندوز ہوں!",
   "setupRulesStep4": "کئی بار 'وعدے' مکمل کرنے سے،\nآپ کا لیول بڑھ جائے گا اور آپ دوسری دنیاؤں میں جا سکیں گے!",
   "setupOkButton": "سمجھ گیا!",
-  "tutorialMissionBubble": "پہلے، آئیے کھیلنا\nسیکھتے ہیں!"
+  "tutorialMissionBubble": "پہلے، آئیے کھیلنا\nسیکھتے ہیں!",
+  "setupStepProgress": "مرحلہ {currentStep} / {totalSteps}",
+  "@setupStepProgress": {
+    "placeholders": {
+      "currentStep": {
+        "type": "int"
+      },
+      "totalSteps": {
+        "type": "int"
+      }
+    }
+  },
+  "updateDialogTitle": "اپ ڈیٹ نوٹس",
+  "updateDialogMessage": "ایک نیا ورژن دستیاب ہے!\nکھیلنے کے لیے براہ کرم اپ ڈیٹ کریں!",
+  "updateDialogSkip": "ابھی نہیں",
+  "updateDialogUpdate": "اپ ڈیٹ کریں!"
 }

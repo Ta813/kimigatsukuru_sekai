@@ -797,5 +797,20 @@
   "setupRulesStep3": "आइटम के लिए पॉइंट बदलें और\n'ड्रेस-अप' और 'सजावट' का आनंद लें!",
   "setupRulesStep4": "कई बार 'वादे' पूरे करने से,\nआपका लेवल बढ़ जाएगा और आप दूसरी दुनिया में जा सकेंगे!",
   "setupOkButton": "समझ गया!",
-  "tutorialMissionBubble": "सबसे पहले, आइए खेलना\nसीखें!"
+  "tutorialMissionBubble": "सबसे पहले, आइए खेलना\nसीखें!",
+  "setupStepProgress": "चरण {currentStep} / {totalSteps}",
+  "@setupStepProgress": {
+    "placeholders": {
+      "currentStep": {
+        "type": "int"
+      },
+      "totalSteps": {
+        "type": "int"
+      }
+    }
+  },
+  "updateDialogTitle": "अपडेट सूचना",
+  "updateDialogMessage": "एक नया संस्करण उपलब्ध है!\nखेलने के लिए कृपया अपडेट करें!",
+  "updateDialogSkip": "अभी नहीं",
+  "updateDialogUpdate": "अपडेट करें!"
 }

@@ -2,6 +2,7 @@
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
@@ -29,6 +30,11 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (mounted) {
+        await AppUpdateManager.instance.checkUpdateAndShowDialog(context);
+      }
+    });
     _playSavedBgm();
     _checkResumeStatus();
   }
@@ -47,9 +53,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
       // 画面構築後に自動で再開
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        if (pattern == 'A') _startPatternA(context, resumeStep: step);
-        if (pattern == 'B') _startPatternB(context, resumeStep: step);
-        if (pattern == 'C') _startPatternC(context, resumeStep: step);
+        _runSetupLoop(pattern, step);
       });
     } else {
       if (!mounted) return;
@@ -134,21 +138,21 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 context,
                 label: l10n.setupAgeUnder7,
                 onTap: () {
-                  _startPatternB(context); // パターンB: こども ➔ おとな
+                  _runSetupLoop('B', 1);
                 },
               ),
               _buildAgeButton(
                 context,
                 label: l10n.setupAge8to12,
                 onTap: () {
-                  _startPatternC(context); // パターンC: こども ➔ おとな（バトンなし）
+                  _runSetupLoop('C', 1);
                 },
               ),
               _buildAgeButton(
                 context,
                 label: l10n.setupAge13to18,
                 onTap: () {
-                  _startPatternC(context); // パターンC: こども ➔ おとな（バトンなし）
+                  _runSetupLoop('C', 1);
                 },
               ),
               _buildAgeButton(
@@ -156,7 +160,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 label: l10n.setupAgeAdult,
                 isAdult: true,
                 onTap: () {
-                  _startPatternA(context); // パターンA: おとな ➔ こども
+                  _runSetupLoop('A', 1);
                 },
               ),
             ],
@@ -284,6 +288,9 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
           } else if (label == l10n.setupAge13to18) {
             FirebaseAnalytics.instance.logEvent(name: 'setup_age_13_17');
           }
+          setState(() {
+            _showIntro = false;
+          });
           onTap();
         },
         child: Text(
@@ -295,256 +302,273 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
   }
 
   // ==============================================================
-  // 🌟 パターンA: おとな ➔ 子供（バトンタッチあり）
+  // 🌟 自由な「戻る/進む」を可能にする、新しいセットアップの管理ループ
   // ==============================================================
-  Future<void> _startPatternA(
-    BuildContext context, {
-    int resumeStep = 0,
+  Future<void> _runSetupLoop(
+    String pattern,
+    int step, {
+    bool isBack = false,
   }) async {
-    // 1. おとな（親）向け設定
-    if (resumeStep <= 1) {
-      await SharedPrefsHelper.saveSetupProgress('A', 1);
-      if (!context.mounted) return;
-      await Navigator.push(
+    // パターンごとに全ステップ数を決定（Paywallを除外した数）
+    int totalSteps = (pattern == 'C') ? 5 : 6;
+
+    // 全ステップ完了した場合、ホーム画面へ遷移
+    if (step > totalSteps) {
+      FirebaseAnalytics.instance.logEvent(name: 'setup_finish');
+      await SharedPrefsHelper.setFirstLaunchCompleted();
+      await SharedPrefsHelper.clearSetupProgress();
+      if (!mounted) return;
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) =>
-              const RegularPromiseSettingsScreen(isInitialSetup: true),
+          builder: (_) => const ChildHomeScreen(isInitialSetup: true),
         ),
       );
-    }
-    if (!context.mounted) return;
-
-    // 2. スマホを子供に渡す画面
-    if (resumeStep <= 2) {
-      await SharedPrefsHelper.saveSetupProgress('A', 2);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) =>
-              const PassDeviceScreen(isToChild: true, progress: 0.5),
-        ),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 3. 子供向け設定（アバターなど）
-    if (resumeStep <= 3) {
-      await SharedPrefsHelper.saveSetupProgress('A', 3);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const CharacterCustomizeScreen(isInitialSetup: true),
-        ),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 4. ドラッグ操作の説明画面
-    if (resumeStep <= 4) {
-      await SharedPrefsHelper.saveSetupProgress('A', 4);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const DraggableInstructionScreen()),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 🌟 5. アプリの遊び方（ルール）画面（新規追加）
-    if (resumeStep <= 5) {
-      await SharedPrefsHelper.saveSetupProgress('A', 5);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const AppRulesInstructionScreen()),
-      );
-    }
-    if (!context.mounted) return;
-
-    await _finishSetup(context, pattern: 'A', resumeStep: resumeStep);
-  }
-
-  // ==============================================================
-  // 🌟 パターンB: 子供 ➔ おとな（バトンタッチあり）
-  // ==============================================================
-  Future<void> _startPatternB(
-    BuildContext context, {
-    int resumeStep = 0,
-  }) async {
-    // 1. 子供向け設定
-    if (resumeStep <= 1) {
-      await SharedPrefsHelper.saveSetupProgress('B', 1);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const CharacterCustomizeScreen(isInitialSetup: true),
-        ),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 2. ドラッグ操作の説明画面
-    if (resumeStep <= 2) {
-      await SharedPrefsHelper.saveSetupProgress('B', 2);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const DraggableInstructionScreen()),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 🌟 3. アプリの遊び方（ルール）画面（新規追加）
-    if (resumeStep <= 3) {
-      await SharedPrefsHelper.saveSetupProgress('B', 3);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const AppRulesInstructionScreen()),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 4. スマホを親に渡す画面
-    if (resumeStep <= 4) {
-      await SharedPrefsHelper.saveSetupProgress('B', 4);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) =>
-              const PassDeviceScreen(isToChild: false, progress: 0.5),
-        ),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 5. おとな（親）向け設定
-    if (resumeStep <= 5) {
-      await SharedPrefsHelper.saveSetupProgress('B', 5);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) =>
-              const RegularPromiseSettingsScreen(isInitialSetup: true),
-        ),
-      );
-    }
-    if (!context.mounted) return;
-
-    await _finishSetup(context, pattern: 'B', resumeStep: resumeStep);
-  }
-
-  // ==============================================================
-  // 🌟 パターンC: 子供 ➔ おとな（バトンタッチなし）
-  // ==============================================================
-  Future<void> _startPatternC(
-    BuildContext context, {
-    int resumeStep = 0,
-  }) async {
-    // 1. 子供向け設定
-    if (resumeStep <= 1) {
-      await SharedPrefsHelper.saveSetupProgress('C', 1);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const CharacterCustomizeScreen(isInitialSetup: true),
-        ),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 2. ドラッグ操作の説明画面
-    if (resumeStep <= 2) {
-      await SharedPrefsHelper.saveSetupProgress('C', 2);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const DraggableInstructionScreen()),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 🌟 3. アプリの遊び方（ルール）画面（新規追加）
-    if (resumeStep <= 3) {
-      await SharedPrefsHelper.saveSetupProgress('C', 3);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const AppRulesInstructionScreen()),
-      );
-    }
-    if (!context.mounted) return;
-
-    // 4. おとな（親）向け設定（そのまま連続して表示）
-    if (resumeStep <= 4) {
-      await SharedPrefsHelper.saveSetupProgress('C', 4);
-      if (!context.mounted) return;
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) =>
-              const RegularPromiseSettingsScreen(isInitialSetup: true),
-        ),
-      );
-    }
-    if (!context.mounted) return;
-
-    await _finishSetup(context, pattern: 'C', resumeStep: resumeStep);
-  }
-
-  // ==============================================================
-  // 🌟 すべての設定が終わったあとの処理（Paywall ➔ 100%完了画面 ➔ ホーム）
-  // ==============================================================
-  Future<void> _finishSetup(
-    BuildContext context, {
-    required String pattern,
-    int resumeStep = 0,
-  }) async {
-    // 🌟 間に画面が増えたのでステップ番号をさらに調整
-    int completeStep = (pattern == 'C') ? 5 : 6;
-
-    if (!context.mounted) return;
-
-    // 2. ダイアログではなく、「100%完了画面（全画面）」へ遷移
-    if (resumeStep <= completeStep) {
-      await SharedPrefsHelper.saveSetupProgress(pattern, completeStep);
-      if (!context.mounted) return;
-      FirebaseAnalytics.instance.logEvent(name: 'setup_complete_screen_show');
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const SetupCompleteScreen()),
-      );
+      return;
     }
 
-    if (!context.mounted) return;
+    // 進行状況を保存
+    await SharedPrefsHelper.saveSetupProgress(pattern, step);
+    Widget? screen;
 
-    // 3. 全て完了したのでフラグを保存してホームへ
-    FirebaseAnalytics.instance.logEvent(name: 'setup_finish');
-    await SharedPrefsHelper.setFirstLaunchCompleted();
-    await SharedPrefsHelper.clearSetupProgress(); // 進行状況をクリア
-    if (!context.mounted) return;
+    // ステップ番号に応じた画面を取得
+    if (pattern == 'A') {
+      switch (step) {
+        case 1:
+          screen = RegularPromiseSettingsScreen(
+            isInitialSetup: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 2:
+          screen = PassDeviceScreen(
+            isToChild: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 3:
+          screen = CharacterCustomizeScreen(
+            isInitialSetup: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 4:
+          screen = DraggableInstructionScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 5:
+          screen = AppRulesInstructionScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 6:
+          screen = SetupCompleteScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+      }
+    } else if (pattern == 'B') {
+      switch (step) {
+        case 1:
+          screen = CharacterCustomizeScreen(
+            isInitialSetup: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 2:
+          screen = DraggableInstructionScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 3:
+          screen = AppRulesInstructionScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 4:
+          screen = PassDeviceScreen(
+            isToChild: false,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 5:
+          screen = RegularPromiseSettingsScreen(
+            isInitialSetup: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 6:
+          screen = SetupCompleteScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+      }
+    } else if (pattern == 'C') {
+      switch (step) {
+        case 1:
+          screen = CharacterCustomizeScreen(
+            isInitialSetup: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 2:
+          screen = DraggableInstructionScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 3:
+          screen = AppRulesInstructionScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 4:
+          screen = RegularPromiseSettingsScreen(
+            isInitialSetup: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 5:
+          screen = SetupCompleteScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+      }
+    }
 
-    Navigator.pushReplacement(
+    if (screen == null) return;
+
+    bool? proceed;
+
+    // 通常の画面遷移（戻るか進むかのアニメーションを適用）
+    proceed = await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (_) => const ChildHomeScreen(isInitialSetup: true),
+      PageRouteBuilder(
+        pageBuilder: (c, a, sa) => screen!,
+        transitionsBuilder: (c, a, sa, child) {
+          final offset = isBack
+              ? const Offset(-1.0, 0.0)
+              : const Offset(1.0, 0.0);
+          return SlideTransition(
+            position: Tween<Offset>(begin: offset, end: Offset.zero).animate(a),
+            child: child,
+          );
+        },
       ),
     );
+
+    if (!mounted) return;
+
+    // 画面から返ってきた結果（戻るボタン=null、次へ=true）によって処理を分岐
+    if (proceed == true) {
+      _runSetupLoop(pattern, step + 1, isBack: false); // 次のステップへ
+    } else {
+      // 戻るボタンが押された場合
+      if (step == 1) {
+        // ステップ1で戻った場合は、年齢選択画面（Intro）に戻る
+        await SharedPrefsHelper.clearSetupProgress();
+        setState(() => _showIntro = true);
+      } else {
+        _runSetupLoop(pattern, step - 1, isBack: true); // 前のステップへ
+      }
+    }
   }
+}
+
+// ==============================================================
+// 🌟 共通のプログレスヘッダー構築メソッド
+// ==============================================================
+PreferredSizeWidget buildSetupAppBar(
+  BuildContext context,
+  int? currentStep,
+  int? totalSteps,
+) {
+  final progress = currentStep! / totalSteps!;
+  return AppBar(
+    backgroundColor: Colors.white,
+    elevation: 0,
+    toolbarHeight: 48,
+    leading: BackButton(
+      color: Colors.black54,
+      onPressed: () => Navigator.pop(context, false), // 戻る時は false(null扱い) を返す
+    ),
+    titleSpacing: 0,
+    title: Padding(
+      padding: const EdgeInsets.only(right: 24.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                AppLocalizations.of(
+                  context,
+                )!.setupStepProgress(currentStep, totalSteps),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                  fontSize: 12,
+                ),
+              ),
+              Text(
+                "${(progress * 100).toInt()}%",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFF7043),
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(2),
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: const Color(0xFFFF7043).withOpacity(0.2),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFFFF7043),
+              ),
+              minHeight: 4,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 // ==============================================================
 // 🌟 ドラッグ操作の説明画面
 // ==============================================================
 class DraggableInstructionScreen extends StatefulWidget {
-  const DraggableInstructionScreen({super.key});
+  final int currentStep;
+  final int totalSteps;
+
+  const DraggableInstructionScreen({
+    super.key,
+    required this.currentStep,
+    required this.totalSteps,
+  });
 
   @override
   State<DraggableInstructionScreen> createState() =>
@@ -679,6 +703,11 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
+      appBar: buildSetupAppBar(
+        context,
+        widget.currentStep,
+        widget.totalSteps,
+      ), // 🌟 追加
       body: SafeArea(
         child: Stack(
           children: [
@@ -686,7 +715,7 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
             SizedBox.expand(
               child: Column(
                 children: [
-                  const SizedBox(height: 60),
+                  const SizedBox(height: 40), // アプリバーが追加されたので余白を少し調整
                   Text(
                     l10n.setupDraggableTitle,
                     textAlign: TextAlign.center,
@@ -717,7 +746,7 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                           try {
                             SfxManager.instance.playTapSound();
                           } catch (e) {}
-                          Navigator.pop(context); // 画面を閉じて次へ進む
+                          Navigator.pop(context, true); // 🌟 true を返すことで「次へ」進む
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFFF7043),
@@ -820,12 +849,14 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                   return Positioned(
                     left: _fingerAnimation.value.dx,
                     top: _fingerAnimation.value.dy,
-                    child: Opacity(
-                      opacity: _fadeAnimation.value,
-                      child: const Icon(
-                        Icons.touch_app,
-                        size: 70,
-                        color: Colors.orangeAccent,
+                    child: IgnorePointer(
+                      child: Opacity(
+                        opacity: _fadeAnimation.value,
+                        child: const Icon(
+                          Icons.touch_app,
+                          size: 70,
+                          color: Colors.orangeAccent,
+                        ),
                       ),
                     ),
                   );
@@ -842,7 +873,14 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
 // 🌟 アプリの遊び方（ルール）画面
 // ==============================================================
 class AppRulesInstructionScreen extends StatefulWidget {
-  const AppRulesInstructionScreen({super.key});
+  final int? currentStep;
+  final int? totalSteps;
+
+  const AppRulesInstructionScreen({
+    super.key,
+    this.currentStep = null,
+    this.totalSteps = null,
+  });
 
   @override
   State<AppRulesInstructionScreen> createState() =>
@@ -861,6 +899,9 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
+      appBar: widget.currentStep != null && widget.totalSteps != null
+          ? buildSetupAppBar(context, widget.currentStep, widget.totalSteps)
+          : null, // 🌟 追加
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -879,7 +920,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 6),
 
                 // ルール1
                 _buildRuleItem(
@@ -888,7 +929,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                   number: '1',
                   text: l10n.setupRulesStep1,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 6),
 
                 // ルール2
                 _buildRuleItem(
@@ -897,7 +938,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                   number: '2',
                   text: l10n.setupRulesStep2,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 6),
 
                 // ルール3
                 _buildRuleItem(
@@ -906,7 +947,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                   number: '3',
                   text: l10n.setupRulesStep3,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 6),
 
                 // ルール4
                 _buildRuleItem(
@@ -916,7 +957,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                   text: l10n.setupRulesStep4,
                 ),
 
-                const SizedBox(height: 14),
+                const SizedBox(height: 6),
                 Stack(
                   clipBehavior: Clip.none,
                   alignment: Alignment.center,
@@ -926,7 +967,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (_) {}
-                        Navigator.pop(context); // 画面を閉じて次へ進む
+                        Navigator.pop(context, true); // 🌟 true を返すことで「次へ」進む
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFF7043),
@@ -1008,7 +1049,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
             child: Text(
               text,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
                 height: 1.4,
@@ -1025,47 +1066,26 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
 // 🌟 最終のセットアップ100%完了画面 (全画面)
 // ==============================================================
 class SetupCompleteScreen extends StatelessWidget {
-  const SetupCompleteScreen({super.key});
+  final int currentStep;
+  final int totalSteps;
+
+  const SetupCompleteScreen({
+    super.key,
+    required this.currentStep,
+    required this.totalSteps,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
+      appBar: buildSetupAppBar(context, currentStep, totalSteps), // 🌟 追加
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 🌟 100%の進捗バー
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 48),
-              child: Column(
-                children: [
-                  Text(
-                    l10n.setupFinishTitle100,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: const LinearProgressIndicator(
-                      value: 1.0, // 100%完了
-                      backgroundColor: Colors.white54,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.orangeAccent,
-                      ),
-                      minHeight: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30),
-
+            // ※既存のプログレスバーはAppBarに移動したため削除しました
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -1096,7 +1116,7 @@ class SetupCompleteScreen extends StatelessWidget {
                     try {
                       SfxManager.instance.playTapSound();
                     } catch (_) {}
-                    Navigator.pop(context); // 画面を閉じて、呼び出し元(_finishSetup)へ返す
+                    Navigator.pop(context, true); // 🌟 true を返すことで「完了」へ進む
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFF7043),
@@ -1137,12 +1157,14 @@ class SetupCompleteScreen extends StatelessWidget {
 // ==============================================================
 class PassDeviceScreen extends StatelessWidget {
   final bool isToChild;
-  final double progress;
+  final int? currentStep;
+  final int? totalSteps;
 
   const PassDeviceScreen({
     super.key,
     required this.isToChild,
-    this.progress = 0.5,
+    this.currentStep = null,
+    this.totalSteps = null,
   });
 
   @override
@@ -1152,43 +1174,18 @@ class PassDeviceScreen extends StatelessWidget {
       backgroundColor: isToChild
           ? const Color(0xFFFFF3E0)
           : const Color(0xFFE3F2FD),
+      appBar: currentStep == null
+          ? null
+          : buildSetupAppBar(context, currentStep, totalSteps), // 🌟 追加
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 48),
-              child: Column(
-                children: [
-                  Text(
-                    l10n.setupProgressComplete((progress * 100).toInt()),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      backgroundColor: Colors.white54,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        isToChild ? Color(0xFFFF7043) : Colors.blueAccent,
-                      ),
-                      minHeight: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30),
-
+            // ※既存のプログレスバーはAppBarに移動したため削除しました
             Icon(
               isToChild ? Icons.child_care : Icons.face_retouching_natural,
               size: 100,
-              color: isToChild ? Color(0xFFFF7043) : Colors.blueAccent,
+              color: isToChild ? const Color(0xFFFF7043) : Colors.blueAccent,
             ),
             const SizedBox(height: 16),
             Text(
@@ -1206,11 +1203,11 @@ class PassDeviceScreen extends StatelessWidget {
                     try {
                       SfxManager.instance.playTapSound();
                     } catch (e) {}
-                    Navigator.pop(context);
+                    Navigator.pop(context, true); // 🌟 true を返すことで「次へ」進む
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isToChild
-                        ? Color(0xFFFF7043)
+                        ? const Color(0xFFFF7043)
                         : Colors.blueAccent,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(

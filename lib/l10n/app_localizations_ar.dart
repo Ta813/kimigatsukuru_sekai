@@ -1909,4 +1909,21 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialMissionBubble => 'أولاً، دعنا نتقن\nكيفية اللعب!';
+
+  @override
+  String setupStepProgress(int currentStep, int totalSteps) {
+    return 'الخطوة $currentStep / $totalSteps';
+  }
+
+  @override
+  String get updateDialogTitle => 'إشعار التحديث';
+
+  @override
+  String get updateDialogMessage => 'يتوفر إصدار جديد!\nيرجى التحديث للعب!';
+
+  @override
+  String get updateDialogSkip => 'ليس الآن';
+
+  @override
+  String get updateDialogUpdate => 'تحديث!';
 }
