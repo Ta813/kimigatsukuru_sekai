@@ -1159,7 +1159,8 @@ class _TimerScreenState extends State<TimerScreen>
                                   //チュートリアルで「おわった！」ボタンを押したか
                                   final isTutorialStepShown =
                                       await SharedPrefsHelper.isTutorialStepShown(
-                                        SharedPrefsHelper.tutorialStepPromiseKey,
+                                        SharedPrefsHelper
+                                            .tutorialStepPromiseKey,
                                       );
                                   if (isTutorialStepShown) {
                                     FirebaseAnalytics.instance.logEvent(

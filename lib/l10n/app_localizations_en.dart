@@ -1253,6 +1253,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialStartBubble => 'Starting your\n\'Promise\' here!';
 
   @override
+  String get tutorialEmergencyStartBubble => 'Starting your emergency\n\'Promise\' here!';
+
+  @override
   String get tutorialShopBubble => 'Let\'s go\nshopping!';
 
   @override
@@ -1260,6 +1263,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialParentSettingsBubble => 'Create your promises from here!';
+
+  @override
+  String get tutorialEmergencyPromiseBubble => 'If you have a quick promise, create it here!';
 
   @override
   String get helpMenuTitle => 'How to Play';
@@ -1929,4 +1935,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateDialogUpdate => 'Update!';
+
+  @override
+  String initialSetupTimeTitle(String title) {
+    return 'Time for $title';
+  }
+
+  @override
+  String initialSetupTimeLabel(String time) {
+    return 'Time: $time';
+  }
+
+  @override
+  String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
 }

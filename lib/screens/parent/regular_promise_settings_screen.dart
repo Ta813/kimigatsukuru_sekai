@@ -205,7 +205,38 @@ class _RegularPromiseSettingsScreenState
   }
 
   Future<void> _loadPromises() async {
-    final loadedPromises = await SharedPrefsHelper.loadRegularPromises(context);
+    var loadedPromises = await SharedPrefsHelper.loadRegularPromises(context);
+
+    // 🌟 セットアップモードで、もしリストが完全に空だったら基本の3つのやくそくを初期配置する
+    if (widget.isInitialSetup && loadedPromises.isEmpty) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      loadedPromises = [
+        {
+          'title': l10n.promiseDefault1Title,
+          'icon': '🍳',
+          'time': '07:00',
+          'duration': 30,
+          'points': 20,
+        },
+        {
+          'title': l10n.promiseDefault4Title,
+          'icon': '🛀',
+          'time': '18:00',
+          'duration': 30,
+          'points': 20,
+        },
+        {
+          'title': l10n.promiseDefault5Title,
+          'icon': '🍛',
+          'time': '19:00',
+          'duration': 30,
+          'points': 20,
+        },
+      ];
+      await SharedPrefsHelper.saveRegularPromises(loadedPromises);
+    }
+
     loadedPromises.sort((a, b) {
       final timeA = a['time'] ?? '00:00';
       final timeB = b['time'] ?? '00:00';
@@ -290,7 +321,7 @@ class _RegularPromiseSettingsScreenState
   }
 
   // =========================================================================
-  // 🌟 追加・編集を同じダイアログで行うメソッド
+  // 🌟 変更: セットアップ時は「時間」だけをかんたんに変更できる専用ダイアログへ
   // =========================================================================
   Future<Map<String, dynamic>?> _showAddEditPromiseDialog({
     Map<String, dynamic>? initialPromise,
@@ -353,10 +384,12 @@ class _RegularPromiseSettingsScreenState
       if (!emojiList.contains(selectedIconKey)) emojiList.add(selectedIconKey);
       if (!hours.contains(selectedHour)) hours.add(selectedHour);
       if (!minutes.contains(selectedMinute)) minutes.add(selectedMinute);
-      if (!durationOptions.contains(selectedDuration))
+      if (!durationOptions.contains(selectedDuration)) {
         durationOptions.add(selectedDuration);
-      if (!pointOptions.contains(selectedPoints))
+      }
+      if (!pointOptions.contains(selectedPoints)) {
         pointOptions.add(selectedPoints);
+      }
     }
 
     return showDialog<Map<String, dynamic>>(
@@ -371,17 +404,18 @@ class _RegularPromiseSettingsScreenState
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              insetPadding: const EdgeInsets.symmetric(
-                horizontal: 6,
-                vertical: 6,
-              ),
+              insetPadding: widget.isInitialSetup
+                  ? const EdgeInsets.symmetric(horizontal: 150, vertical: 6)
+                  : const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: screenHeight - keyboardHeight - 48,
                 ),
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 5, 5, 12),
+                    padding: widget.isInitialSetup
+                        ? const EdgeInsets.fromLTRB(40, 5, 40, 12)
+                        : const EdgeInsets.fromLTRB(5, 5, 5, 12),
                     child: Form(
                       key: formKey,
                       child: Column(
@@ -389,13 +423,19 @@ class _RegularPromiseSettingsScreenState
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            initialPromise == null
+                            widget.isInitialSetup
                                 ? AppLocalizations.of(
                                     context,
-                                  )!.addRegularPromiseTitle
-                                : AppLocalizations.of(
-                                    context,
-                                  )!.editRegularPromiseTitle,
+                                  )!.initialSetupTimeTitle(
+                                    initialPromise?['title'] ?? '',
+                                  )
+                                : (initialPromise == null
+                                      ? AppLocalizations.of(
+                                          context,
+                                        )!.addRegularPromiseTitle
+                                      : AppLocalizations.of(
+                                          context,
+                                        )!.editRegularPromiseTitle),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -403,28 +443,33 @@ class _RegularPromiseSettingsScreenState
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 6),
-                          TextFormField(
-                            controller: titleController,
-                            scrollPadding: EdgeInsets.only(
-                              bottom: keyboardHeight + 24,
-                            ),
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(
-                                context,
-                              )!.promiseNameLabel,
-                              border: const OutlineInputBorder(),
-                              isDense: true,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(
+
+                          // 🌟 セットアップ時は名前の入力を隠す
+                          if (!widget.isInitialSetup) ...[
+                            TextFormField(
+                              controller: titleController,
+                              scrollPadding: EdgeInsets.only(
+                                bottom: keyboardHeight + 24,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: AppLocalizations.of(
                                   context,
-                                )!.promiseNameHint;
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 6),
+                                )!.promiseNameLabel,
+                                border: const OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return AppLocalizations.of(
+                                    context,
+                                  )!.promiseNameHint;
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 6),
+                          ],
+
                           InputDecorator(
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(
@@ -484,102 +529,112 @@ class _RegularPromiseSettingsScreenState
                               ),
                             ),
                           ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: DropdownButtonFormField<String>(
-                                  value: selectedDuration,
-                                  decoration: InputDecoration(
-                                    labelText: AppLocalizations.of(
-                                      context,
-                                    )!.durationLabel,
-                                    border: const OutlineInputBorder(),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 5,
-                                      vertical: 4,
+
+                          // 🌟 セットアップ時は時間（分）やポイント、絵文字の変更を隠す
+                          if (!widget.isInitialSetup) ...[
+                            const SizedBox(height: 16),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedDuration,
+                                    decoration: InputDecoration(
+                                      labelText: AppLocalizations.of(
+                                        context,
+                                      )!.durationLabel,
+                                      border: const OutlineInputBorder(),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 5,
+                                            vertical: 4,
+                                          ),
+                                    ),
+                                    items: durationOptions
+                                        .map(
+                                          (d) => DropdownMenuItem(
+                                            value: d,
+                                            child: Text(d),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (v) => setStateDialog(
+                                      () => selectedDuration = v!,
                                     ),
                                   ),
-                                  items: durationOptions
-                                      .map(
-                                        (d) => DropdownMenuItem(
-                                          value: d,
-                                          child: Text(d),
-                                        ),
-                                      )
-                                      .toList(),
-                                  onChanged: (v) => setStateDialog(
-                                    () => selectedDuration = v!,
-                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 6),
-                              Expanded(
-                                child: DropdownButtonFormField<String>(
-                                  value: selectedPoints,
-                                  decoration: InputDecoration(
-                                    labelText: AppLocalizations.of(
-                                      context,
-                                    )!.points,
-                                    border: const OutlineInputBorder(),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 8,
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedPoints,
+                                    decoration: InputDecoration(
+                                      labelText: AppLocalizations.of(
+                                        context,
+                                      )!.points,
+                                      border: const OutlineInputBorder(),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 8,
+                                          ),
+                                    ),
+                                    items: pointOptions
+                                        .map(
+                                          (p) => DropdownMenuItem(
+                                            value: p,
+                                            child: Text(p),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (v) => setStateDialog(
+                                      () => selectedPoints = v!,
                                     ),
                                   ),
-                                  items: pointOptions
-                                      .map(
-                                        (p) => DropdownMenuItem(
-                                          value: p,
-                                          child: Text(p),
-                                        ),
-                                      )
-                                      .toList(),
-                                  onChanged: (v) =>
-                                      setStateDialog(() => selectedPoints = v!),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          Wrap(
-                            spacing: 4.0,
-                            runSpacing: 4.0,
-                            alignment: WrapAlignment.center,
-                            children: emojiList.map((emoji) {
-                              final isSelected = selectedIconKey == emoji;
-                              return GestureDetector(
-                                onTap: () {
-                                  try {
-                                    SfxManager.instance.playTapSound();
-                                  } catch (_) {}
-                                  setStateDialog(() => selectedIconKey = emoji);
-                                },
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? Theme.of(
-                                            context,
-                                          ).primaryColor.withOpacity(0.15)
-                                        : Colors.transparent,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Wrap(
+                              spacing: 4.0,
+                              runSpacing: 4.0,
+                              alignment: WrapAlignment.center,
+                              children: emojiList.map((emoji) {
+                                final isSelected = selectedIconKey == emoji;
+                                return GestureDetector(
+                                  onTap: () {
+                                    try {
+                                      SfxManager.instance.playTapSound();
+                                    } catch (_) {}
+                                    setStateDialog(
+                                      () => selectedIconKey = emoji,
+                                    );
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 200),
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
                                       color: isSelected
-                                          ? Theme.of(context).primaryColor
-                                          : Colors.grey.shade300,
-                                      width: isSelected ? 2 : 1,
+                                          ? Theme.of(
+                                              context,
+                                            ).primaryColor.withOpacity(0.15)
+                                          : Colors.transparent,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: isSelected
+                                            ? Theme.of(context).primaryColor
+                                            : Colors.grey.shade300,
+                                        width: isSelected ? 2 : 1,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      emoji,
+                                      style: const TextStyle(fontSize: 20),
                                     ),
                                   ),
-                                  child: Text(
-                                    emoji,
-                                    style: const TextStyle(fontSize: 20),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+
                           const SizedBox(height: 6),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -599,13 +654,17 @@ class _RegularPromiseSettingsScreenState
                                   _playTapSound();
                                   if (formKey.currentState!.validate()) {
                                     final newPromise = {
-                                      'title': titleController.text,
+                                      'title': widget.isInitialSetup
+                                          ? (initialPromise?['title'] ?? '')
+                                          : titleController.text,
                                       'time': '$selectedHour:$selectedMinute',
                                       'duration':
-                                          int.tryParse(selectedDuration) ?? 0,
+                                          int.tryParse(selectedDuration) ?? 10,
                                       'points':
-                                          int.tryParse(selectedPoints) ?? 0,
-                                      'icon': selectedIconKey,
+                                          int.tryParse(selectedPoints) ?? 10,
+                                      'icon': widget.isInitialSetup
+                                          ? (initialPromise?['icon'] ?? '⭐')
+                                          : selectedIconKey,
                                     };
                                     Navigator.pop(dialogContext, newPromise);
                                   }
@@ -1153,7 +1212,7 @@ class _RegularPromiseSettingsScreenState
             _tutorialPhase == _TutorialPhase.delete) &&
         template['title'] != _getTrialTemplate(context)['title'];
 
-    final card = Card(
+    return Card(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
       elevation: isDragging ? 8 : 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -1182,10 +1241,11 @@ class _RegularPromiseSettingsScreenState
                       color: Theme.of(context).primaryColor,
                     ),
                     onPressed: () {
-                      if (widget.isTutorial)
+                      if (widget.isTutorial) {
                         FirebaseAnalytics.instance.logEvent(
                           name: 'start_promise_add_tutorial',
                         );
+                      }
                       _playTapSound();
                       _addRecommendedPromise(template, true);
                     },
@@ -1210,7 +1270,6 @@ class _RegularPromiseSettingsScreenState
               ),
       ),
     );
-    return card;
   }
 
   Widget _buildCurrentPromiseCard(Map<String, dynamic> promise, int index) {
@@ -1221,44 +1280,48 @@ class _RegularPromiseSettingsScreenState
         _tutorialPhase == _TutorialPhase.delete &&
         promise['title'] == _getTrialTemplate(context)['title'];
 
-    Widget deleteButton;
-    if (isTutorialTrialCard) {
-      deleteButton = CompositedTransformTarget(
-        link: _deleteIconLink,
-        child: BlinkingEffect(
-          isBlinking: true,
-          child: IconButton(
-            icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
-            onPressed: () {
-              _playTapSound();
-              _deletePromise(index);
-            },
+    Widget? deleteButton;
+    // 🌟 セットアップ時はゴミ箱ボタンを表示しない
+    if (!widget.isInitialSetup) {
+      if (isTutorialTrialCard) {
+        deleteButton = CompositedTransformTarget(
+          link: _deleteIconLink,
+          child: BlinkingEffect(
+            isBlinking: true,
+            child: IconButton(
+              icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
+              onPressed: () {
+                _playTapSound();
+                _deletePromise(index);
+              },
+            ),
           ),
-        ),
-      );
-    } else {
-      final bool disabled =
-          widget.isTutorial &&
-          !widget.isInitialSetup &&
-          (_tutorialPhase == _TutorialPhase.add ||
-              _tutorialPhase == _TutorialPhase.delete);
-      deleteButton = IgnorePointer(
-        ignoring: disabled,
-        child: Opacity(
-          opacity: disabled ? 0.4 : 1.0,
-          child: IconButton(
-            icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
-            onPressed: () {
-              if (widget.isTutorial)
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'start_promise_delete_tutorial',
-                );
-              _playTapSound();
-              _deletePromise(index);
-            },
+        );
+      } else {
+        final bool disabled =
+            widget.isTutorial &&
+            !widget.isInitialSetup &&
+            (_tutorialPhase == _TutorialPhase.add ||
+                _tutorialPhase == _TutorialPhase.delete);
+        deleteButton = IgnorePointer(
+          ignoring: disabled,
+          child: Opacity(
+            opacity: disabled ? 0.4 : 1.0,
+            child: IconButton(
+              icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
+              onPressed: () {
+                if (widget.isTutorial) {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_promise_delete_tutorial',
+                  );
+                }
+                _playTapSound();
+                _deletePromise(index);
+              },
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Card(
@@ -1284,11 +1347,28 @@ class _RegularPromiseSettingsScreenState
           promise['title'],
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
         ),
-        subtitle: Text(
-          '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
-          style: const TextStyle(fontSize: 13),
-        ),
-        trailing: deleteButton,
+        // 🌟 セットアップ時は時間だけを綺麗に見せる
+        subtitle: widget.isInitialSetup
+            ? Text(
+                AppLocalizations.of(
+                  context,
+                )!.initialSetupTimeLabel(promise['time'] ?? ''),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            : Text(
+                '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
+                style: const TextStyle(fontSize: 13),
+              ),
+        trailing: widget.isInitialSetup
+            ? const Icon(
+                Icons.access_time,
+                color: Colors.orangeAccent,
+              ) // 🌟 時計マークにしてタップを促す
+            : deleteButton,
       ),
     );
   }
@@ -1338,60 +1418,39 @@ class _RegularPromiseSettingsScreenState
                   toolbarHeight: 48,
                   leading: BackButton(
                     color: Colors.black54,
-                    onPressed: () =>
-                        Navigator.pop(context, false), // 戻る時は false(null扱い) を返す
+                    onPressed: () => Navigator.pop(context, false),
                   ),
                   titleSpacing: 0,
                   title: Padding(
                     padding: const EdgeInsets.only(right: 24.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.setupStepProgress(
-                                widget.currentStep!,
-                                widget.totalSteps!,
-                              ),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              l10n.regularPromiseSettingsTitle,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                fontSize: 20,
-                              ),
-                            ),
-                            Text(
-                              "${(progress * 100).toInt()}%",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFFF7043),
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          AppLocalizations.of(context)!.setupStepProgress(
+                            widget.currentStep!,
+                            widget.totalSteps!,
+                          ),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                            fontSize: 12,
+                          ),
                         ),
-                        const SizedBox(height: 4),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(2),
-                          child: LinearProgressIndicator(
-                            value: progress,
-                            backgroundColor: const Color(
-                              0xFFFF7043,
-                            ).withOpacity(0.2),
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              Color(0xFFFF7043),
-                            ),
-                            minHeight: 4,
+                        Text(
+                          l10n.regularPromiseSettingsTitle,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Text(
+                          "${(progress * 100).toInt()}%",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFFF7043),
+                            fontSize: 12,
                           ),
                         ),
                       ],
@@ -1405,13 +1464,15 @@ class _RegularPromiseSettingsScreenState
                           borderRadius: 8,
                           child: BackButton(
                             onPressed: () {
-                              if (widget.isTutorial)
+                              if (widget.isTutorial) {
                                 FirebaseAnalytics.instance.logEvent(
                                   name:
                                       'finish_regular_promise_settings_tutorial',
                                 );
-                              if (Navigator.of(context).canPop())
+                              }
+                              if (Navigator.of(context).canPop()) {
                                 Navigator.of(context).pop();
+                              }
                             },
                           ),
                         )
@@ -1424,261 +1485,306 @@ class _RegularPromiseSettingsScreenState
           body: SafeArea(
             child: Column(
               children: [
-                // ==========================================================
-                // 🌟 変更: 初期設定モード時のメッセージエリア (ボタンは下へ移動)
-                // ==========================================================
-                // if (widget.isInitialSetup)
-                //   Container(
-                //     padding: const EdgeInsets.symmetric(
-                //       horizontal: 16,
-                //       vertical: 12,
-                //     ),
-                //     decoration: BoxDecoration(
-                //       color: const Color(0xFFE3F2FD),
-                //       border: Border(
-                //         bottom: BorderSide(
-                //           color: Colors.blue.shade200,
-                //           width: 2,
-                //         ),
-                //       ),
-                //     ),
-                //     child: Row(
-                //       children: [
-                //         Icon(
-                //           Icons.info_outline,
-                //           color: Colors.blueAccent,
-                //           size: 28,
-                //         ),
-                //         SizedBox(width: 12),
-                //         Expanded(
-                //           child: Text(
-                //             l10n.initialSetupSettingsMessage,
-                //             style: const TextStyle(
-                //               fontSize: 16,
-                //               fontWeight: FontWeight.bold,
-                //               color: Colors.black87,
-                //             ),
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-
-                // ----------------------------------------------------------
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.5),
-                            border: Border(
-                              right: BorderSide(
-                                color: Theme.of(
-                                  context,
-                                ).primaryColor.withOpacity(0.2),
-                              ),
+                // 🌟 初期設定用の進捗インジケーター（AppBar直下）
+                if (widget.isInitialSetup) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(0),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: const Color(0xFFFF7043).withOpacity(0.2),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Color(0xFFFF7043),
+                      ),
+                      minHeight: 4,
+                    ),
+                  ),
+                  // 🌟 ご家庭にあわせた案内メッセージ
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.fromLTRB(50, 4, 50, 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF3E0), // ピーチクリーム
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFFFFB74D),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: Colors.orange,
+                          size: 32,
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            l10n.initialSetupGuidance,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                              height: 1.4,
                             ),
                           ),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 0.0,
-                                ),
-                                child: Text(
-                                  '💡 ${l10n.recommendedTitle}',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).primaryColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                Expanded(
+                  child: widget.isInitialSetup
+                      ? ListView.builder(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 0,
+                            horizontal: 200,
+                          ),
+                          itemCount: _regularPromises.length,
+                          itemBuilder: (context, index) {
+                            return _buildCurrentPromiseCard(
+                              _regularPromises[index],
+                              index,
+                            );
+                          },
+                        )
+                      : Row(
+                          children: [
+                            Expanded(
+                              flex: 5,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.5),
+                                  border: Border(
+                                    right: BorderSide(
+                                      color: Theme.of(
+                                        context,
+                                      ).primaryColor.withOpacity(0.2),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: ListView.builder(
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  itemCount: availableTemplates.length,
-                                  itemBuilder: (context, index) {
-                                    final template = availableTemplates[index];
-                                    final bool disableLeft =
-                                        widget.isTutorial &&
-                                        !widget.isInitialSetup &&
-                                        _tutorialPhase != _TutorialPhase.add &&
-                                        _tutorialPhase != _TutorialPhase.finish;
-                                    return IgnorePointer(
-                                      ignoring: disableLeft,
-                                      child:
-                                          LongPressDraggable<
-                                            Map<String, dynamic>
-                                          >(
-                                            data: template,
-                                            feedback: Material(
-                                              color: Colors.transparent,
-                                              child: _buildRecommendedCard(
-                                                template,
-                                                isDragging: true,
-                                              ),
-                                            ),
-                                            childWhenDragging: Opacity(
-                                              opacity: 0.5,
-                                              child: _buildRecommendedCard(
-                                                template,
-                                              ),
-                                            ),
-                                            child: _buildRecommendedCard(
-                                              template,
-                                            ),
-                                          ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 6,
-                        child: DragTarget<Map<String, dynamic>>(
-                          onWillAcceptWithDetails: (details) => true,
-                          onAcceptWithDetails: (details) =>
-                              _addRecommendedPromise(details.data, false),
-                          builder: (context, candidateData, rejectedData) {
-                            final isHovered = candidateData.isNotEmpty;
-                            return Container(
-                              color: isHovered
-                                  ? Theme.of(
-                                      context,
-                                    ).primaryColor.withOpacity(0.1)
-                                  : Colors.transparent,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                      0,
-                                      0,
-                                      0,
-                                      0,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Spacer(),
-                                        Text(
-                                          '📝 ${l10n.currentPromiseTitle}',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Theme.of(
-                                              context,
-                                            ).primaryColor,
-                                          ),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0,
+                                      ),
+                                      child: Text(
+                                        '💡 ${l10n.recommendedTitle}',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).primaryColor,
                                         ),
-                                        const Spacer(),
-                                        // カスタム追加ボタン
-                                        IgnorePointer(
-                                          ignoring:
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        physics:
+                                            const AlwaysScrollableScrollPhysics(),
+                                        itemCount: availableTemplates.length,
+                                        itemBuilder: (context, index) {
+                                          final template =
+                                              availableTemplates[index];
+                                          final bool disableLeft =
                                               widget.isTutorial &&
                                               !widget.isInitialSetup &&
                                               _tutorialPhase !=
-                                                  _TutorialPhase.done &&
+                                                  _TutorialPhase.add &&
                                               _tutorialPhase !=
-                                                  _TutorialPhase.finish,
-                                          child: Opacity(
-                                            opacity:
-                                                widget.isTutorial &&
+                                                  _TutorialPhase.finish;
+                                          return IgnorePointer(
+                                            ignoring: disableLeft,
+                                            child:
+                                                LongPressDraggable<
+                                                  Map<String, dynamic>
+                                                >(
+                                                  data: template,
+                                                  feedback: Material(
+                                                    color: Colors.transparent,
+                                                    child:
+                                                        _buildRecommendedCard(
+                                                          template,
+                                                          isDragging: true,
+                                                        ),
+                                                  ),
+                                                  childWhenDragging: Opacity(
+                                                    opacity: 0.5,
+                                                    child:
+                                                        _buildRecommendedCard(
+                                                          template,
+                                                        ),
+                                                  ),
+                                                  child: _buildRecommendedCard(
+                                                    template,
+                                                  ),
+                                                ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 6,
+                              child: DragTarget<Map<String, dynamic>>(
+                                onWillAcceptWithDetails: (details) => true,
+                                onAcceptWithDetails: (details) =>
+                                    _addRecommendedPromise(details.data, false),
+                                builder: (context, candidateData, rejectedData) {
+                                  final isHovered = candidateData.isNotEmpty;
+                                  return Container(
+                                    color: isHovered
+                                        ? Theme.of(
+                                            context,
+                                          ).primaryColor.withOpacity(0.1)
+                                        : Colors.transparent,
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Spacer(),
+                                              Text(
+                                                '📝 ${l10n.currentPromiseTitle}',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Theme.of(
+                                                    context,
+                                                  ).primaryColor,
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              // カスタム追加ボタン
+                                              IgnorePointer(
+                                                ignoring:
+                                                    widget.isTutorial &&
                                                     !widget.isInitialSetup &&
                                                     _tutorialPhase !=
                                                         _TutorialPhase.done &&
                                                     _tutorialPhase !=
-                                                        _TutorialPhase.finish
-                                                ? 0.4
-                                                : 1.0,
-                                            child: InkWell(
-                                              onTap: () {
-                                                FirebaseAnalytics.instance.logEvent(
-                                                  name:
-                                                      'start_regular_promise_settings_add',
-                                                );
-                                                _navigateToAddScreen();
-                                              },
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 8.0,
-                                                      vertical: 4.0,
-                                                    ),
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    const Icon(
-                                                      Icons.add,
-                                                      size: 20,
-                                                    ),
-                                                    Text(
-                                                      l10n.customAdd,
-                                                      style: const TextStyle(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        _TutorialPhase.finish,
+                                                child: Opacity(
+                                                  opacity:
+                                                      widget.isTutorial &&
+                                                          !widget
+                                                              .isInitialSetup &&
+                                                          _tutorialPhase !=
+                                                              _TutorialPhase
+                                                                  .done &&
+                                                          _tutorialPhase !=
+                                                              _TutorialPhase
+                                                                  .finish
+                                                      ? 0.4
+                                                      : 1.0,
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      FirebaseAnalytics.instance
+                                                          .logEvent(
+                                                            name:
+                                                                'start_regular_promise_settings_add',
+                                                          );
+                                                      _navigateToAddScreen();
+                                                    },
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 8.0,
+                                                            vertical: 4.0,
+                                                          ),
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          const Icon(
+                                                            Icons.add,
+                                                            size: 20,
+                                                          ),
+                                                          Text(
+                                                            l10n.customAdd,
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 10,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
+                                            ],
                                           ),
+                                        ),
+                                        Expanded(
+                                          child: _regularPromises.isEmpty
+                                              ? Center(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.arrow_back,
+                                                        size: 48,
+                                                        color: Colors.grey[400],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 16,
+                                                      ),
+                                                      Text(
+                                                        l10n.dragToAddInstruction,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          color:
+                                                              Colors.grey[600],
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : ListView.builder(
+                                                  itemCount:
+                                                      _regularPromises.length,
+                                                  itemBuilder: (context, index) {
+                                                    return _buildCurrentPromiseCard(
+                                                      _regularPromises[index],
+                                                      index,
+                                                    );
+                                                  },
+                                                ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: _regularPromises.isEmpty
-                                        ? Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.arrow_back,
-                                                  size: 48,
-                                                  color: Colors.grey[400],
-                                                ),
-                                                const SizedBox(height: 16),
-                                                Text(
-                                                  l10n.dragToAddInstruction,
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Colors.grey[600],
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : ListView.builder(
-                                            itemCount: _regularPromises.length,
-                                            itemBuilder: (context, index) {
-                                              return _buildCurrentPromiseCard(
-                                                _regularPromises[index],
-                                                index,
-                                              );
-                                            },
-                                          ),
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
-                            );
-                          },
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),
@@ -1689,7 +1795,7 @@ class _RegularPromiseSettingsScreenState
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
-                      vertical: 16,
+                      vertical: 8,
                     ),
                     decoration: const BoxDecoration(
                       color: Colors.white,
@@ -1706,7 +1812,7 @@ class _RegularPromiseSettingsScreenState
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFF7043),
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),

@@ -1253,6 +1253,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tutorialStartBubble => 'यहाँ आपके \'वादे\' की\nशुरुआत हो रही है!';
 
   @override
+  String get tutorialEmergencyStartBubble => 'यहाँ आपके आपातकालीन \'वादे\' की\nशुरुआत हो रही है!';
+
+  @override
   String get tutorialShopBubble => 'चलो\nखरीदारी करें!';
 
   @override
@@ -1260,6 +1263,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tutorialParentSettingsBubble => 'यहाँ से अपने वादे बनाएँ!';
+
+  @override
+  String get tutorialEmergencyPromiseBubble => 'यदि आपका कोई आपातकालीन वादा है, तो उसे यहाँ से बनाएँ!';
 
   @override
   String get helpMenuTitle => 'कैसे खेलें';
@@ -1929,4 +1935,17 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get updateDialogUpdate => 'अपडेट करें!';
+
+  @override
+  String initialSetupTimeTitle(String title) {
+    return 'Time for $title';
+  }
+
+  @override
+  String initialSetupTimeLabel(String time) {
+    return 'Time: $time';
+  }
+
+  @override
+  String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
 }

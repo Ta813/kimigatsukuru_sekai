@@ -520,9 +520,11 @@
   "resetPromisesConfirm": "هل أنت متأكد من رغبتك في إعادة ضبط جميع الوعود المنتظمة إلى قيمها الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.",
   "resetPromisesSuccess": "تم إعادة ضبط الوعود المنتظمة.",
   "tutorialStartBubble": "بدء 'الوعد' الخاص بك\nمن هنا!",
+  "tutorialEmergencyStartBubble": "بدء 'وعد الطوارئ'\nالخاص بك من هنا!",
   "tutorialShopBubble": "لنذهب\nللتسوق!",
   "tutorialCustomizeBubble": "يمكنك تغيير\nالملابس هنا!",
   "tutorialParentSettingsBubble": "أنشئ وعودك من هنا!",
+  "tutorialEmergencyPromiseBubble": "إذا كان لديك وعد طارئ، فأنشئه من هنا!",
   "helpMenuTitle": "كيفية اللعب",
   "helpMenuYakusoku": "وعد",
   "helpMenuShop": "متجر",
@@ -859,5 +861,18 @@
   "updateDialogTitle": "إشعار التحديث",
   "updateDialogMessage": "يتوفر إصدار جديد!\nيرجى التحديث للعب!",
   "updateDialogSkip": "ليس الآن",
-  "updateDialogUpdate": "تحديث!"
+  "updateDialogUpdate": "تحديث!",
+  "initialSetupTimeTitle": "Time for {title}",
+  "@initialSetupTimeTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "initialSetupTimeLabel": "Time: {time}",
+  "@initialSetupTimeLabel": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!"
 }

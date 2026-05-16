@@ -520,9 +520,11 @@
   "resetPromisesConfirm": "すべての「通常のやくそく」を初期値に戻しますか？この操作は取り消せません。",
   "resetPromisesSuccess": "やくそくを初期値に戻しました。",
   "tutorialStartBubble": "ここから\n「やくそく」をはじめるよ！",
+  "tutorialEmergencyStartBubble": "ここから急ぎの\nやくそくをはじめるよ！",
   "tutorialShopBubble": "おみせで\nおかいものしよう！",
   "tutorialCustomizeBubble": "ここで\nきせかえができるよ！",
   "tutorialParentSettingsBubble": "ここから やくそくをつくってね！",
+  "tutorialEmergencyPromiseBubble": "急なやくそくができた場合は、ここからつくってね！",
   "helpMenuTitle": "あそびかた",
   "helpMenuYakusoku": "やくそく",
   "helpMenuShop": "おかいもの",
@@ -859,5 +861,18 @@
   "updateDialogTitle": "アップデートのおしらせ",
   "updateDialogMessage": "あたらしい バージョンが あるよ！\nアップデートして あそんでね！",
   "updateDialogSkip": "しない",
-  "updateDialogUpdate": "アップデート！"
+  "updateDialogUpdate": "アップデート！",
+  "initialSetupTimeTitle": "{title} の じかん",
+  "@initialSetupTimeTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "initialSetupTimeLabel": "じかん: {time}",
+  "@initialSetupTimeLabel": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "initialSetupGuidance": "ご家庭の せいかつリズムに あわせて\n毎日おこなう 「やくそく」の じかんを 設定してね！"
 }

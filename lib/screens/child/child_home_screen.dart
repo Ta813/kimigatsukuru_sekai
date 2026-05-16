@@ -89,6 +89,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   // 各種点滅フラグ
   bool _showStartBlinking = false;
+  bool _showEmergencyStartBlinking = false;
   bool _hasEnteredHouse = false;
   bool _showParentSettingsBlinking = false;
   bool _isTutorialParentSettingsFocus = false;
@@ -657,10 +658,20 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       SharedPrefsHelper.tutorialStepParentSetupShownKey,
     );
     if (!wasParentSetupShown && mounted) {
-      setState(() {
-        _showParentSettingsBlinking = true;
-        _isTutorialParentSettingsFocus = true;
-      });
+      final emergency = await SharedPrefsHelper.loadEmergencyPromise();
+      if (emergency != null && emergency['isTrial'] == true) {
+        setState(() {
+          _showParentSettingsBlinking = false;
+          _isTutorialParentSettingsFocus = false;
+          _showEmergencyStartBlinking = true;
+          _showStartBlinking = true;
+        });
+      } else {
+        setState(() {
+          _showParentSettingsBlinking = true;
+          _isTutorialParentSettingsFocus = true;
+        });
+      }
       return;
     }
   }
@@ -923,7 +934,18 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         ),
       );
       if (mounted) {
-        await _onParentTutorialCompleted();
+        await _loadAndDetermineDisplayPromise();
+        final emergency = await SharedPrefsHelper.loadEmergencyPromise();
+        if (emergency != null && emergency['isTrial'] == true) {
+          setState(() {
+            _showParentSettingsBlinking = false;
+            _isTutorialParentSettingsFocus = false;
+            _showEmergencyStartBlinking = true;
+            _showStartBlinking = true;
+          });
+        } else {
+          await _onParentTutorialCompleted();
+        }
       }
       return;
     }
@@ -1262,9 +1284,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   void _startPromise() async {
     if (_displayPromise == null) return;
 
+    final bool isEmergencyTutorial = _showEmergencyStartBlinking;
+
     if (_showStartBlinking) {
       setState(() {
         _showStartBlinking = false;
+        if (isEmergencyTutorial) {
+          _showEmergencyStartBlinking = false;
+        }
       });
     }
 
@@ -1296,6 +1323,17 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final exp = result != null ? result['exp'] as int? : null;
 
     _playSavedBgm();
+
+    if (isEmergencyTutorial) {
+      if (pointsAwarded != null && mounted) {
+        await _onParentTutorialCompleted();
+      } else {
+        setState(() {
+          _showEmergencyStartBlinking = true;
+          _showStartBlinking = true;
+        });
+      }
+    }
 
     if (pointsAwarded != null && pointsAwarded > 0) {
       if (!_isDisplayPromiseEmergency) {
@@ -1798,12 +1836,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final double safeAreaWidth = screenWidth - rightPadding;
 
     final bool isAnyTutorialBlinking =
-        _showCustomizeBlinking || _showParentSettingsBlinking;
+        _showCustomizeBlinking ||
+        _showParentSettingsBlinking ||
+        _showEmergencyStartBlinking;
 
     final bool isAnyTutorialActive =
         _showCustomizeBlinking ||
         _showParentSettingsBlinking ||
-        _showStartBlinking;
+        _showStartBlinking ||
+        _showEmergencyStartBlinking;
 
     return Scaffold(
       body: Stack(
@@ -3035,9 +3076,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                           ],
                                         ),
                                         child: Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.tutorialStartBubble,
+                                          _showEmergencyStartBlinking
+                                              ? AppLocalizations.of(
+                                                  context,
+                                                )!.tutorialEmergencyStartBubble
+                                              : AppLocalizations.of(
+                                                  context,
+                                                )!.tutorialStartBubble,
                                           style: const TextStyle(
                                             color: Colors.black87,
                                             fontWeight: FontWeight.bold,

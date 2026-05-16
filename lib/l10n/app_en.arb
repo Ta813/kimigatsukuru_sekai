@@ -520,9 +520,11 @@
   "resetPromisesConfirm": "Are you sure you want to reset all regular promises to their default values? This cannot be undone.",
   "resetPromisesSuccess": "Regular promises have been reset.",
   "tutorialStartBubble": "Starting your\n'Promise' here!",
+  "tutorialEmergencyStartBubble": "Starting your emergency\n'Promise' here!",
   "tutorialShopBubble": "Let's go\nshopping!",
   "tutorialCustomizeBubble": "You can change\nclothes here!",
   "tutorialParentSettingsBubble": "Create your promises from here!",
+  "tutorialEmergencyPromiseBubble": "If you have a quick promise, create it here!",
   "helpMenuTitle": "How to Play",
   "helpMenuYakusoku": "Promise",
   "helpMenuShop": "Shop",
@@ -859,5 +861,18 @@
   "updateDialogTitle": "Update Notice",
   "updateDialogMessage": "A new version is available!\nPlease update to play!",
   "updateDialogSkip": "Not Now",
-  "updateDialogUpdate": "Update!"
+  "updateDialogUpdate": "Update!",
+  "initialSetupTimeTitle": "Time for {title}",
+  "@initialSetupTimeTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "initialSetupTimeLabel": "Time: {time}",
+  "@initialSetupTimeLabel": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!"
 }

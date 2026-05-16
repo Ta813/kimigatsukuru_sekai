@@ -1253,6 +1253,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialStartBubble => 'ここから\n「やくそく」をはじめるよ！';
 
   @override
+  String get tutorialEmergencyStartBubble => 'ここから急ぎの\nやくそくをはじめるよ！';
+
+  @override
   String get tutorialShopBubble => 'おみせで\nおかいものしよう！';
 
   @override
@@ -1260,6 +1263,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialParentSettingsBubble => 'ここから やくそくをつくってね！';
+
+  @override
+  String get tutorialEmergencyPromiseBubble => '急なやくそくができた場合は、ここからつくってね！';
 
   @override
   String get helpMenuTitle => 'あそびかた';
@@ -1929,4 +1935,17 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get updateDialogUpdate => 'アップデート！';
+
+  @override
+  String initialSetupTimeTitle(String title) {
+    return '$title の じかん';
+  }
+
+  @override
+  String initialSetupTimeLabel(String time) {
+    return 'じかん: $time';
+  }
+
+  @override
+  String get initialSetupGuidance => 'ご家庭の せいかつリズムに あわせて\n毎日おこなう 「やくそく」の じかんを 設定してね！';
 }

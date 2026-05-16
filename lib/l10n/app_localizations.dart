@@ -2527,6 +2527,12 @@ abstract class AppLocalizations {
   /// **'Starting your\n\'Promise\' here!'**
   String get tutorialStartBubble;
 
+  /// No description provided for @tutorialEmergencyStartBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting your emergency\n\'Promise\' here!'**
+  String get tutorialEmergencyStartBubble;
+
   /// No description provided for @tutorialShopBubble.
   ///
   /// In en, this message translates to:
@@ -2544,6 +2550,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create your promises from here!'**
   String get tutorialParentSettingsBubble;
+
+  /// No description provided for @tutorialEmergencyPromiseBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'If you have a quick promise, create it here!'**
+  String get tutorialEmergencyPromiseBubble;
 
   /// No description provided for @helpMenuTitle.
   ///
@@ -3810,6 +3822,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update!'**
   String get updateDialogUpdate;
+
+  /// No description provided for @initialSetupTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time for {title}'**
+  String initialSetupTimeTitle(String title);
+
+  /// No description provided for @initialSetupTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Time: {time}'**
+  String initialSetupTimeLabel(String time);
+
+  /// No description provided for @initialSetupGuidance.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!'**
+  String get initialSetupGuidance;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

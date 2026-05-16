@@ -1253,6 +1253,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tutorialStartBubble => 'আপনার \'প্রতিশ্রুতি\' এখানে\nশুরু হচ্ছে!';
 
   @override
+  String get tutorialEmergencyStartBubble => 'জরুরি \'প্রতিশ্রুতি\' এখানে\nশুরু হচ্ছে!';
+
+  @override
   String get tutorialShopBubble => 'আসুন\nকেনাকাটা করি!';
 
   @override
@@ -1260,6 +1263,9 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get tutorialParentSettingsBubble => 'এখান থেকে আপনার প্রতিশ্রুতি তৈরি করুন!';
+
+  @override
+  String get tutorialEmergencyPromiseBubble => 'আপনার যদি জরুরি প্রতিশ্রুতি থাকে, তবে এখান থেকে তৈরি করুন!';
 
   @override
   String get helpMenuTitle => 'কীভাবে খেলবেন';
@@ -1929,4 +1935,17 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get updateDialogUpdate => 'আপডেট!';
+
+  @override
+  String initialSetupTimeTitle(String title) {
+    return 'Time for $title';
+  }
+
+  @override
+  String initialSetupTimeLabel(String time) {
+    return 'Time: $time';
+  }
+
+  @override
+  String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
 }

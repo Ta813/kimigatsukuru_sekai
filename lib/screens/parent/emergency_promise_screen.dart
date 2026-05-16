@@ -2,8 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
-import '../child/child_home_screen.dart';
-import '../../widgets/custom_back_button.dart';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
@@ -162,12 +161,23 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
       }
     }
     if (_formKey.currentState!.validate()) {
-      final emergencyPromise = {
-        'title': _titleController.text,
-        // 選択されている値を数値に変換して保存
-        'duration': int.tryParse(_selectedDuration) ?? 10,
-        'points': int.tryParse(_selectedPoints) ?? 10,
-      };
+      var emergencyPromise;
+      if (widget.isTutorial) {
+        emergencyPromise = {
+          'title': _titleController.text,
+          // 選択されている値を数値に変換して保存
+          'duration': int.tryParse(_selectedDuration) ?? 10,
+          'points': int.tryParse(_selectedPoints) ?? 10,
+          'isTrial': true,
+        };
+      } else {
+        emergencyPromise = {
+          'title': _titleController.text,
+          // 選択されている値を数値に変換して保存
+          'duration': int.tryParse(_selectedDuration) ?? 10,
+          'points': int.tryParse(_selectedPoints) ?? 10,
+        };
+      }
       // SharedPreferencesに保存
       await SharedPrefsHelper.saveEmergencyPromise(emergencyPromise);
       // 登録回数をインクリメント（非プレミアムの制限チェックに使用）
@@ -183,10 +193,11 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
             ),
           ),
         );
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const ChildHomeScreen()),
-          (route) => false,
-        );
+        if (widget.isTutorial) {
+          Navigator.of(context).pop();
+        } else {
+          Navigator.of(context).pop(true);
+        }
       }
     }
   }
@@ -198,7 +209,33 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const CustomBackButton(),
+        leading: IgnorePointer(
+          ignoring: widget.isTutorial,
+          child: Opacity(
+            opacity: widget.isTutorial ? 0.4 : 1.0,
+            child: InkWell(
+              onTap: () => Navigator.of(context).pop(false),
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.arrow_back),
+                    Text(
+                      AppLocalizations.of(context)!.backButtonLabel,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
         title: Text(l10n.emergencyPromiseSettingsTitle),
       ),
       body: SafeArea(
@@ -240,73 +277,90 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                         itemCount: recommendedPromises.length,
                         itemBuilder: (context, index) {
                           final promise = recommendedPromises[index];
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 8.0),
-                            elevation: 1,
-                            child: ListTile(
-                              leading: Text(
-                                promise['icon'] as String,
-                                style: const TextStyle(fontSize: 24),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                left: 8,
-                                right: 4,
-                                top: 0,
-                                bottom: 0,
-                              ),
-                              title: Text(
-                                promise['title'] as String,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                          final bool isTrialItem =
+                              promise['title'] == l10n.trialPromiseTitle;
+                          final bool isTrialSelected =
+                              _titleController.text == l10n.trialPromiseTitle;
+                          final bool canTapRecommend =
+                              !widget.isTutorial ||
+                              (isTrialItem && !isTrialSelected);
+
+                          return Opacity(
+                            opacity: widget.isTutorial && !canTapRecommend
+                                ? 0.4
+                                : 1.0,
+                            child: Card(
+                              margin: const EdgeInsets.only(bottom: 8.0),
+                              elevation: 1,
+                              child: ListTile(
+                                leading: Text(
+                                  promise['icon'] as String,
+                                  style: const TextStyle(fontSize: 24),
                                 ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Text(
-                                // ▼ 変更: 多言語対応
-                                l10n.durationAndPoints(
-                                  promise['duration'].toString(),
-                                  promise['points'].toString(),
+                                contentPadding: const EdgeInsets.only(
+                                  left: 8,
+                                  right: 4,
+                                  top: 0,
+                                  bottom: 0,
                                 ),
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey.shade600,
+                                title: Text(
+                                  promise['title'] as String,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              trailing:
-                                  widget.isTutorial &&
-                                      promise['title'] == l10n.trialPromiseTitle
-                                  ? Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        BlinkingEffect(
-                                          isBlinking: true,
-                                          child: IconButton(
-                                            icon: Icon(
-                                              Icons.add_circle,
-                                              color: Theme.of(
-                                                context,
-                                              ).primaryColor,
+                                subtitle: Text(
+                                  // ▼ 変更: 多言語対応
+                                  l10n.durationAndPoints(
+                                    promise['duration'].toString(),
+                                    promise['points'].toString(),
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                                trailing:
+                                    widget.isTutorial &&
+                                        isTrialItem &&
+                                        !isTrialSelected
+                                    ? Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          BlinkingEffect(
+                                            isBlinking: true,
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.add_circle,
+                                                color: Theme.of(
+                                                  context,
+                                                ).primaryColor,
+                                              ),
+                                              onPressed: () =>
+                                                  _applyRecommended(promise),
                                             ),
-                                            onPressed: () =>
-                                                _applyRecommended(promise),
                                           ),
+                                          const Positioned(
+                                            right: -5,
+                                            bottom: -5,
+                                            child: AnimatedTapFinger(),
+                                          ),
+                                        ],
+                                      )
+                                    : IconButton(
+                                        icon: Icon(
+                                          Icons.add_circle,
+                                          color: canTapRecommend
+                                              ? Theme.of(context).primaryColor
+                                              : Colors.grey,
                                         ),
-                                        const Positioned(
-                                          right: -5,
-                                          bottom: -5,
-                                          child: AnimatedTapFinger(),
-                                        ),
-                                      ],
-                                    )
-                                  : IconButton(
-                                      icon: Icon(
-                                        Icons.add_circle,
-                                        color: Theme.of(context).primaryColor,
+                                        onPressed: canTapRecommend
+                                            ? () => _applyRecommended(promise)
+                                            : null,
                                       ),
-                                      onPressed: () =>
-                                          _applyRecommended(promise),
-                                    ),
+                              ),
                             ),
                           );
                         },
@@ -332,6 +386,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                     children: <Widget>[
                       TextFormField(
                         controller: _titleController,
+                        enabled: !widget.isTutorial,
                         decoration: InputDecoration(
                           labelText: l10n.promiseNameExampleHint,
                           isDense: true,
@@ -366,11 +421,13 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                             child: Text(value),
                           );
                         }).toList(),
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() => _selectedDuration = newValue);
-                          }
-                        },
+                        onChanged: widget.isTutorial
+                            ? null
+                            : (String? newValue) {
+                                if (newValue != null) {
+                                  setState(() => _selectedDuration = newValue);
+                                }
+                              },
                       ),
 
                       const SizedBox(height: 10),
@@ -392,11 +449,13 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                             child: Text(value),
                           );
                         }).toList(),
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() => _selectedPoints = newValue);
-                          }
-                        },
+                        onChanged: widget.isTutorial
+                            ? null
+                            : (String? newValue) {
+                                if (newValue != null) {
+                                  setState(() => _selectedPoints = newValue);
+                                }
+                              },
                       ),
 
                       const SizedBox(height: 20),
@@ -433,19 +492,24 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                                 ),
                               ],
                             )
-                          : ElevatedButton(
-                              onPressed: () {
-                                FirebaseAnalytics.instance.logEvent(
-                                  name: 'start_emergency_promise_set',
-                                );
-                                _savePromise();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
+                          : Opacity(
+                              opacity: widget.isTutorial ? 0.4 : 1.0,
+                              child: ElevatedButton(
+                                onPressed: widget.isTutorial
+                                    ? null
+                                    : () {
+                                        FirebaseAnalytics.instance.logEvent(
+                                          name: 'start_emergency_promise_set',
+                                        );
+                                        _savePromise();
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
                                 ),
+                                child: Text(l10n.setThisPromiseButton),
                               ),
-                              child: Text(l10n.setThisPromiseButton),
                             ),
                     ],
                   ),

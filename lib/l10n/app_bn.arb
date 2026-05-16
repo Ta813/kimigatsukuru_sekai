@@ -520,9 +520,11 @@
   "resetPromisesConfirm": "আপনি কি নিশ্চিত যে আপনি সব নিয়মিত প্রতিশ্রুতি রিসেট করতে চান? এটি আর ফেরানো যাবে না।",
   "resetPromisesSuccess": "নিয়মিত প্রতিশ্রুতি রিসেট করা হয়েছে.",
   "tutorialStartBubble": "আপনার 'প্রতিশ্রুতি' এখানে\nশুরু হচ্ছে!",
+  "tutorialEmergencyStartBubble": "জরুরি 'প্রতিশ্রুতি' এখানে\nশুরু হচ্ছে!",
   "tutorialShopBubble": "আসুন\nকেনাকাটা করি!",
   "tutorialCustomizeBubble": "আপনি এখানে\nজামাকাপড় পরিবর্তন করতে পারেন!",
   "tutorialParentSettingsBubble": "এখান থেকে আপনার প্রতিশ্রুতি তৈরি করুন!",
+  "tutorialEmergencyPromiseBubble": "আপনার যদি জরুরি প্রতিশ্রুতি থাকে, তবে এখান থেকে তৈরি করুন!",
   "helpMenuTitle": "কীভাবে খেলবেন",
   "helpMenuYakusoku": "প্রতিশ্রুতি",
   "helpMenuShop": "দোকান",
@@ -858,5 +860,18 @@
   "updateDialogTitle": "আপডেট নোটিশ",
   "updateDialogMessage": "একটি নতুন সংস্করণ উপলব্ধ!\nখেলতে অনুগ্রহ করে আপডেট করুন!",
   "updateDialogSkip": "এখন না",
-  "updateDialogUpdate": "আপডেট!"
+  "updateDialogUpdate": "আপডেট!",
+  "initialSetupTimeTitle": "Time for {title}",
+  "@initialSetupTimeTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "initialSetupTimeLabel": "Time: {time}",
+  "@initialSetupTimeLabel": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!"
 }

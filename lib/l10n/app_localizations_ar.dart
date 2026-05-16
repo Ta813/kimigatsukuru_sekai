@@ -1253,6 +1253,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialStartBubble => 'بدء \'الوعد\' الخاص بك\nمن هنا!';
 
   @override
+  String get tutorialEmergencyStartBubble => 'بدء \'وعد الطوارئ\'\nالخاص بك من هنا!';
+
+  @override
   String get tutorialShopBubble => 'لنذهب\nللتسوق!';
 
   @override
@@ -1260,6 +1263,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialParentSettingsBubble => 'أنشئ وعودك من هنا!';
+
+  @override
+  String get tutorialEmergencyPromiseBubble => 'إذا كان لديك وعد طارئ، فأنشئه من هنا!';
 
   @override
   String get helpMenuTitle => 'كيفية اللعب';
@@ -1929,4 +1935,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get updateDialogUpdate => 'تحديث!';
+
+  @override
+  String initialSetupTimeTitle(String title) {
+    return 'Time for $title';
+  }
+
+  @override
+  String initialSetupTimeLabel(String time) {
+    return 'Time: $time';
+  }
+
+  @override
+  String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
 }

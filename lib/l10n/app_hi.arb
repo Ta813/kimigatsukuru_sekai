@@ -474,9 +474,11 @@
   "resetPromisesConfirm": "क्या आप सभी नियमित वादों को उनकी मूल स्थिति में वापस लाना चाहते हैं? इस प्रक्रिया को वापस नहीं लिया जा सकता।",
   "resetPromisesSuccess": "नियमित वादे रीसेट कर दिए गए हैं।",
   "tutorialStartBubble": "यहाँ आपके 'वादे' की\nशुरुआत हो रही है!",
+  "tutorialEmergencyStartBubble": "यहाँ आपके आपातकालीन 'वादे' की\nशुरुआत हो रही है!",
   "tutorialShopBubble": "चलो\nखरीदारी करें!",
   "tutorialCustomizeBubble": "आप यहाँ\nकपड़े बदल सकते हैं!",
   "tutorialParentSettingsBubble": "यहाँ से अपने वादे बनाएँ!",
+  "tutorialEmergencyPromiseBubble": "यदि आपका कोई आपातकालीन वादा है, तो उसे यहाँ से बनाएँ!",
   "helpMenuTitle": "कैसे खेलें",
   "helpMenuYakusoku": "वादा",
   "helpMenuShop": "खरीदारी",
@@ -813,5 +815,18 @@
   "updateDialogTitle": "अपडेट सूचना",
   "updateDialogMessage": "एक नया संस्करण उपलब्ध है!\nखेलने के लिए कृपया अपडेट करें!",
   "updateDialogSkip": "अभी नहीं",
-  "updateDialogUpdate": "अपडेट करें!"
+  "updateDialogUpdate": "अपडेट करें!",
+  "initialSetupTimeTitle": "Time for {title}",
+  "@initialSetupTimeTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "initialSetupTimeLabel": "Time: {time}",
+  "@initialSetupTimeLabel": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!"
 }

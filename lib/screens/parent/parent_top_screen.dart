@@ -45,10 +45,11 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                 ),
               )
             : IgnorePointer(
-                ignoring:
-                    widget.isTutorial &&
-                    _tutorialPhase == _ParentTutorialPhase.regular,
-                child: const CustomBackButton(),
+                ignoring: widget.isTutorial, // チュートリアル中は、backフェーズ以外は常に無効化
+                child: Opacity(
+                  opacity: widget.isTutorial ? 0.4 : 1.0,
+                  child: const CustomBackButton(),
+                ),
               ),
         title: Text(AppLocalizations.of(context)!.parentScreenTitle),
         actions: [
@@ -146,11 +147,14 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                   ignoring:
                       widget.isTutorial &&
                       (_tutorialPhase == _ParentTutorialPhase.regular ||
+                          _tutorialPhase == _ParentTutorialPhase.emergency ||
                           _tutorialPhase == _ParentTutorialPhase.back),
                   child: Opacity(
                     opacity:
                         widget.isTutorial &&
                             (_tutorialPhase == _ParentTutorialPhase.regular ||
+                                _tutorialPhase ==
+                                    _ParentTutorialPhase.emergency ||
                                 _tutorialPhase == _ParentTutorialPhase.back)
                         ? 0.4
                         : 1.0,
@@ -258,12 +262,18 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                           : IgnorePointer(
                               ignoring:
                                   widget.isTutorial &&
-                                  _tutorialPhase == _ParentTutorialPhase.back,
+                                  (_tutorialPhase ==
+                                          _ParentTutorialPhase.emergency ||
+                                      _tutorialPhase ==
+                                          _ParentTutorialPhase.back),
                               child: Opacity(
                                 opacity:
                                     widget.isTutorial &&
-                                        _tutorialPhase ==
-                                            _ParentTutorialPhase.back
+                                        (_tutorialPhase ==
+                                                _ParentTutorialPhase
+                                                    .emergency ||
+                                            _tutorialPhase ==
+                                                _ParentTutorialPhase.back)
                                     ? 0.4
                                     : 1.0,
                                 child: _buildMenuCard(
@@ -326,6 +336,7 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                                               _ParentTutorialPhase.back,
                                         );
                                       }
+                                      Navigator.of(context).pop();
                                     },
                                   ),
                                 ),
@@ -342,7 +353,7 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                                     child: _buildBubble(
                                       AppLocalizations.of(
                                         context,
-                                      )!.tutorialParentSettingsBubble,
+                                      )!.tutorialEmergencyPromiseBubble,
                                     ),
                                   ),
                                 ),
@@ -366,19 +377,24 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                                   )!.emergencyPromiseSettingsButton,
                                   icon: FontAwesomeIcons.bell,
                                   color: Colors.deepOrangeAccent,
-                                  onPressed: () {
+                                  onPressed: () async {
                                     FirebaseAnalytics.instance.logEvent(
                                       name:
                                           'start_parent_top_emergency_promise',
                                     );
                                     _playTapSound();
-                                    Navigator.push(
+                                    final result = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             const EmergencyPromiseScreen(),
                                       ),
                                     );
+                                    //「このやくそくをセットする」が押されたら、強制的に戻る
+                                    if (result != null && result == true) {
+                                      if (!mounted) return;
+                                      Navigator.of(context).pop();
+                                    }
                                   },
                                 ),
                               ),
