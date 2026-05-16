@@ -13,9 +13,10 @@ import '../../l10n/app_localizations.dart';
 import 'settings_screen.dart';
 import 'child_name_settings_screen.dart';
 import '../../managers/purchase_manager.dart';
+import '../../widgets/animated_tap_finger.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-enum _ParentTutorialPhase { regular, back, done }
+enum _ParentTutorialPhase { regular, back, emergency, done }
 
 class ParentTopScreen extends StatefulWidget {
   final bool isTutorial;
@@ -218,7 +219,12 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                                               ),
                                         ),
                                       );
-                                      if (mounted) {
+                                      if (mounted && widget.isTutorial) {
+                                        setState(
+                                          () => _tutorialPhase =
+                                              _ParentTutorialPhase.emergency,
+                                        );
+                                      } else if (mounted) {
                                         setState(
                                           () => _tutorialPhase =
                                               _ParentTutorialPhase.back,
@@ -227,6 +233,14 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                                     },
                                   ),
                                 ),
+                                if (widget.isTutorial &&
+                                    _tutorialPhase ==
+                                        _ParentTutorialPhase.regular)
+                                  const Positioned(
+                                    right: -10,
+                                    bottom: -10,
+                                    child: AnimatedTapFinger(),
+                                  ),
                                 Positioned(
                                   top: -50,
                                   left: 0,
@@ -279,39 +293,96 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                     const SizedBox(width: 12),
                     // 「緊急のやくそく設定」ボタン
                     Expanded(
-                      child: IgnorePointer(
-                        ignoring:
-                            widget.isTutorial &&
-                            _tutorialPhase != _ParentTutorialPhase.done,
-                        child: Opacity(
-                          opacity:
-                              widget.isTutorial &&
-                                  _tutorialPhase != _ParentTutorialPhase.done
-                              ? 0.4
-                              : 1.0,
-                          child: _buildMenuCard(
-                            context: context,
-                            label: AppLocalizations.of(
-                              context,
-                            )!.emergencyPromiseSettingsButton,
-                            icon: FontAwesomeIcons.bell,
-                            color: Colors.deepOrangeAccent,
-                            onPressed: () {
-                              FirebaseAnalytics.instance.logEvent(
-                                name: 'start_parent_top_emergency_promise',
-                              );
-                              _playTapSound();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const EmergencyPromiseScreen(),
+                      child:
+                          widget.isTutorial &&
+                              _tutorialPhase == _ParentTutorialPhase.emergency
+                          ? Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                BlinkingEffect(
+                                  isBlinking: true,
+                                  borderRadius: 16,
+                                  child: _buildMenuCard(
+                                    context: context,
+                                    label: AppLocalizations.of(
+                                      context,
+                                    )!.emergencyPromiseSettingsButton,
+                                    icon: FontAwesomeIcons.bell,
+                                    color: Colors.deepOrangeAccent,
+                                    onPressed: () async {
+                                      _playTapSound();
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const EmergencyPromiseScreen(
+                                                isTutorial: true,
+                                              ),
+                                        ),
+                                      );
+                                      if (mounted) {
+                                        setState(
+                                          () => _tutorialPhase =
+                                              _ParentTutorialPhase.back,
+                                        );
+                                      }
+                                    },
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
+                                const Positioned(
+                                  right: -10,
+                                  bottom: -10,
+                                  child: AnimatedTapFinger(),
+                                ),
+                                Positioned(
+                                  top: -50,
+                                  left: 0,
+                                  right: 0,
+                                  child: Center(
+                                    child: _buildBubble(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.tutorialParentSettingsBubble,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : IgnorePointer(
+                              ignoring:
+                                  widget.isTutorial &&
+                                  _tutorialPhase != _ParentTutorialPhase.done,
+                              child: Opacity(
+                                opacity:
+                                    widget.isTutorial &&
+                                        _tutorialPhase !=
+                                            _ParentTutorialPhase.done
+                                    ? 0.4
+                                    : 1.0,
+                                child: _buildMenuCard(
+                                  context: context,
+                                  label: AppLocalizations.of(
+                                    context,
+                                  )!.emergencyPromiseSettingsButton,
+                                  icon: FontAwesomeIcons.bell,
+                                  color: Colors.deepOrangeAccent,
+                                  onPressed: () {
+                                    FirebaseAnalytics.instance.logEvent(
+                                      name:
+                                          'start_parent_top_emergency_promise',
+                                    );
+                                    _playTapSound();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const EmergencyPromiseScreen(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
                     ),
                   ],
                 ),

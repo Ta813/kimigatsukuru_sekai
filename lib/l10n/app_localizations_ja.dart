@@ -656,6 +656,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get timerExpFailure => 'EXPは 1 になるよ！';
 
   @override
+  String get timerExpTrial => 'EXPは 0 だよ！（おためし）';
+
+  @override
   String get buildings => 'たてもの';
 
   @override

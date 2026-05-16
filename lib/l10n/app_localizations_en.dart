@@ -653,7 +653,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timerExpChance => 'A chance at 3 EXP!';
 
   @override
-  String get timerExpFailure => 'You\'ll get 1 EXP!';
+  String get timerExpFailure => 'EXP will be 1!';
+
+  @override
+  String get timerExpTrial => 'EXP will be 0! (Trial)';
 
   @override
   String get buildings => 'Buildings';

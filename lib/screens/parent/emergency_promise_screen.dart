@@ -11,8 +11,12 @@ import '../../managers/purchase_manager.dart';
 import '../../l10n/app_localizations.dart';
 import '../premium_paywall_screen.dart';
 
+import '../../widgets/animated_tap_finger.dart';
+import '../../widgets/blinking_effect.dart';
+
 class EmergencyPromiseScreen extends StatefulWidget {
-  const EmergencyPromiseScreen({super.key});
+  final bool isTutorial;
+  const EmergencyPromiseScreen({super.key, this.isTutorial = false});
 
   @override
   State<EmergencyPromiseScreen> createState() => _EmergencyPromiseScreenState();
@@ -41,7 +45,18 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
   // ▼ 変更: ハードコードされていたおすすめリストを、ローカライズ対応のメソッドに変更
   List<Map<String, dynamic>> _getRecommendedPromises(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return [
+    final List<Map<String, dynamic>> recommendations = [];
+
+    if (widget.isTutorial) {
+      recommendations.add({
+        'icon': '⭐️',
+        'title': l10n.trialPromiseTitle,
+        'duration': 10,
+        'points': 1,
+      });
+    }
+
+    recommendations.addAll([
       {'icon': '✨', 'title': l10n.recPromiseHelp, 'duration': 15, 'points': 15},
       {
         'icon': '✍️',
@@ -73,7 +88,9 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
         'duration': 20,
         'points': 20,
       },
-    ];
+    ]);
+
+    return recommendations;
   }
 
   @override
@@ -256,13 +273,40 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                                   color: Colors.grey.shade600,
                                 ),
                               ),
-                              trailing: IconButton(
-                                icon: Icon(
-                                  Icons.add_circle,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                                onPressed: () => _applyRecommended(promise),
-                              ),
+                              trailing:
+                                  widget.isTutorial &&
+                                      promise['title'] == l10n.trialPromiseTitle
+                                  ? Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        BlinkingEffect(
+                                          isBlinking: true,
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.add_circle,
+                                              color: Theme.of(
+                                                context,
+                                              ).primaryColor,
+                                            ),
+                                            onPressed: () =>
+                                                _applyRecommended(promise),
+                                          ),
+                                        ),
+                                        const Positioned(
+                                          right: -5,
+                                          bottom: -5,
+                                          child: AnimatedTapFinger(),
+                                        ),
+                                      ],
+                                    )
+                                  : IconButton(
+                                      icon: Icon(
+                                        Icons.add_circle,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      onPressed: () =>
+                                          _applyRecommended(promise),
+                                    ),
                             ),
                           );
                         },
@@ -356,18 +400,53 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                       ),
 
                       const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          FirebaseAnalytics.instance.logEvent(
-                            name: 'start_emergency_promise_set',
-                          );
-                          _savePromise();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                        ),
-                        child: Text(l10n.setThisPromiseButton),
-                      ),
+                      widget.isTutorial &&
+                              _titleController.text == l10n.trialPromiseTitle
+                          ? Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                BlinkingEffect(
+                                  isBlinking: true,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      FirebaseAnalytics.instance.logEvent(
+                                        name: 'start_emergency_promise_set',
+                                      );
+                                      _savePromise();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
+                                      minimumSize: const Size(
+                                        double.infinity,
+                                        48,
+                                      ),
+                                    ),
+                                    child: Text(l10n.setThisPromiseButton),
+                                  ),
+                                ),
+                                const Positioned(
+                                  right: -10,
+                                  bottom: -10,
+                                  child: AnimatedTapFinger(),
+                                ),
+                              ],
+                            )
+                          : ElevatedButton(
+                              onPressed: () {
+                                FirebaseAnalytics.instance.logEvent(
+                                  name: 'start_emergency_promise_set',
+                                );
+                                _savePromise();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                              ),
+                              child: Text(l10n.setThisPromiseButton),
+                            ),
                     ],
                   ),
                 ),

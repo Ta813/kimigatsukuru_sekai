@@ -1354,8 +1354,14 @@ abstract class AppLocalizations {
   /// No description provided for @timerExpFailure.
   ///
   /// In en, this message translates to:
-  /// **'You\'ll get 1 EXP!'**
+  /// **'EXP will be 1!'**
   String get timerExpFailure;
+
+  /// No description provided for @timerExpTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'EXP will be 0! (Trial)'**
+  String get timerExpTrial;
 
   /// No description provided for @buildings.
   ///

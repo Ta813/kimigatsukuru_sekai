@@ -653,7 +653,10 @@ class AppLocalizationsUr extends AppLocalizations {
   String get timerExpChance => '3 EXP حاصل کرنے کا موقع!';
 
   @override
-  String get timerExpFailure => 'آپ کو 1 EXP ملے گا!';
+  String get timerExpFailure => 'EXP 1 ہوگا!';
+
+  @override
+  String get timerExpTrial => 'EXP 0 ہوگا! (آزمائشی)';
 
   @override
   String get buildings => 'عمارات';

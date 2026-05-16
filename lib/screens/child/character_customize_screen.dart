@@ -1,9 +1,11 @@
 // lib/screens/child/character_customize_screen.dart
 
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
+import '../../widgets/animated_tap_finger.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
@@ -60,6 +62,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   bool _showTabBlinking = false;
   bool _showItemBlinking = false;
   bool _showBackButtonBlinking = false;
+  String? _tutorialFaceTarget;
 
   @override
   void initState() {
@@ -159,6 +162,26 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       _setupSelectedCharacter = characters.isNotEmpty
           ? characters.first
           : 'assets/images/character_usagi.gif';
+
+      if (_tutorialFaceTarget == null) {
+        String targetName = '青い瞳の女の子のかお';
+        if (purchased.contains(targetName)) {
+          final available50PFaces = shopItems
+              .where(
+                (i) =>
+                    i.type == 'face' &&
+                    i.price == 50 &&
+                    !purchased.contains(i.name),
+              )
+              .toList();
+          if (available50PFaces.isNotEmpty) {
+            targetName =
+                available50PFaces[Random().nextInt(available50PFaces.length)]
+                    .name;
+          }
+        }
+        _tutorialFaceTarget = targetName;
+      }
     });
   }
 
@@ -1125,46 +1148,56 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     Color color,
   ) {
     final isBlinking = _shouldBlinkMenu(targetView);
-    Widget button = SizedBox(
-      width: 180,
-      height: 180,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+    Widget button = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        SizedBox(
+          width: 180,
+          height: 180,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: color,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
+              padding: const EdgeInsets.all(12),
+            ),
+            onPressed: () {
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (e) {}
+              setState(() {
+                _currentView = targetView;
+              });
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 56),
+                const SizedBox(height: 16),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  subtitle,
+                  style: const TextStyle(fontSize: 11),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
-          elevation: 4,
-          padding: const EdgeInsets.all(12),
         ),
-        onPressed: () {
-          try {
-            SfxManager.instance.playTapSound();
-          } catch (e) {}
-          setState(() {
-            _currentView = targetView;
-          });
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 56),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: const TextStyle(fontSize: 11),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
+        if (isBlinking)
+          const Positioned(right: 0, bottom: 0, child: AnimatedTapFinger()),
+      ],
     );
 
     if (isBlinking) {
@@ -1176,20 +1209,27 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   Widget _buildSubBackButton() {
     return BlinkingEffect(
       isBlinking: _showBackButtonBlinking,
-      child: IconButton(
-        icon: const Icon(
-          Icons.arrow_back_ios_new,
-          color: Colors.white,
-          size: 20,
-        ),
-        onPressed: () {
-          try {
-            SfxManager.instance.playTapSound();
-          } catch (e) {}
-          setState(() {
-            _currentView = CustomizeView.menu;
-          });
-        },
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.white,
+              size: 20,
+            ),
+            onPressed: () {
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (e) {}
+              setState(() {
+                _currentView = CustomizeView.menu;
+              });
+            },
+          ),
+          if (_showBackButtonBlinking)
+            const Positioned(right: -5, bottom: -5, child: AnimatedTapFinger()),
+        ],
       ),
     );
   }
@@ -1518,8 +1558,18 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           ),
         );
 
-        if (_showItemBlinking && item.price <= 100) {
-          return BlinkingEffect(isBlinking: true, child: card);
+        final bool isTutorialTarget =
+            _showItemBlinking && item.name == _tutorialFaceTarget;
+
+        if (isTutorialTarget) {
+          Widget blinkingWidget = BlinkingEffect(isBlinking: true, child: card);
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              blinkingWidget,
+              const Positioned(right: 0, bottom: 0, child: AnimatedTapFinger()),
+            ],
+          );
         }
         return card;
       },
@@ -1682,64 +1732,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           ),
         );
 
-        if (_showItemBlinking && item.price <= 100) {
+        if (_showItemBlinking && item.name == _tutorialFaceTarget) {
           return BlinkingEffect(isBlinking: true, child: itemWidget);
         }
         return itemWidget;
       },
-    );
-  }
-}
-
-// ==============================================================
-// 🌟 追加: タップを促すポワンポワン動く指のアニメーションウィジェット
-// ==============================================================
-class AnimatedTapFinger extends StatefulWidget {
-  const AnimatedTapFinger({super.key});
-
-  @override
-  State<AnimatedTapFinger> createState() => _AnimatedTapFingerState();
-}
-
-class _AnimatedTapFingerState extends State<AnimatedTapFinger>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    )..repeat(reverse: true);
-
-    _animation = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: ScaleTransition(
-        scale: _animation,
-        child: const Icon(
-          Icons.touch_app,
-          size: 50,
-          color: Colors.orangeAccent,
-          shadows: [
-            Shadow(color: Colors.black38, blurRadius: 4, offset: Offset(0, 2)),
-          ],
-        ),
-      ),
     );
   }
 }

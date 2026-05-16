@@ -279,6 +279,7 @@
   "supportPageOpenError": "ページを開けませんでした",
   "timerExpChance": "EXP 3 ゲットのチャンス！",
   "timerExpFailure": "EXPは 1 になるよ！",
+  "timerExpTrial": "EXPは 0 だよ！（おためし）",
   "buildings": "たてもの",
   "vehicles": "のりもの",
   "houseSettings": "いえのせってい",

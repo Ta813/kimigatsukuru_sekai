@@ -14,6 +14,7 @@ import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:confetti/confetti.dart';
 import '../../widgets/blinking_effect.dart';
+import '../../widgets/animated_tap_finger.dart';
 import '../parent/child_name_settings_screen.dart'; // 名前設定画面
 import 'math_lock_dialog.dart'; // ロック画面
 import 'passcode_lock_dialog.dart';
@@ -806,8 +807,10 @@ class _TimerScreenState extends State<TimerScreen>
     final basePoints = _basePoints;
     int pointsAwarded = (basePoints * pointMultiplier).toInt();
 
-    // ポイントが0の場合は経験値も0にする（ガイド用など）
-    final int finalExp = basePoints == 0 ? 0 : exp;
+    // ポイントが0の場合や、お試しの場合は経験値も0にする
+    final int finalExp = (basePoints == 0 || widget.promise['isTrial'] == true)
+        ? 0
+        : exp;
 
     if (widget.isEmergency) {
       await SharedPrefsHelper.saveEmergencyPromise(null);
@@ -1097,9 +1100,13 @@ class _TimerScreenState extends State<TimerScreen>
                                                   .toString(),
                                             ) +
                                             '\n' +
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.timerExpFailure,
+                                            (widget.promise['isTrial'] == true
+                                                ? AppLocalizations.of(
+                                                    context,
+                                                  )!.timerExpTrial
+                                                : AppLocalizations.of(
+                                                    context,
+                                                  )!.timerExpFailure),
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -1111,9 +1118,13 @@ class _TimerScreenState extends State<TimerScreen>
                                               context,
                                             )!.pointsChance(_basePoints) +
                                             '\n' +
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.timerExpChance,
+                                            (widget.promise['isTrial'] == true
+                                                ? AppLocalizations.of(
+                                                    context,
+                                                  )!.timerExpTrial
+                                                : AppLocalizations.of(
+                                                    context,
+                                                  )!.timerExpChance),
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -1128,62 +1139,74 @@ class _TimerScreenState extends State<TimerScreen>
                     },
                   ),
                   const SizedBox(height: 20),
-                  BlinkingEffect(
-                    isBlinking: _isTutorial && !_isFinishedButtonPressed,
-                    child: ElevatedButton(
-                      // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
-                      onPressed: _isFinishedButtonPressed
-                          ? null
-                          : () async {
-                              int elapsedSeconds = 0;
-                              if (_screenStartTime != null) {
-                                elapsedSeconds = DateTime.now()
-                                    .difference(_screenStartTime!)
-                                    .inSeconds;
-                              }
-                              //チュートリアルで「おわった！」ボタンを押したか
-                              final isTutorialStepShown =
-                                  await SharedPrefsHelper.isTutorialStepShown(
-                                    SharedPrefsHelper.tutorialStepPromiseKey,
-                                  );
-                              if (isTutorialStepShown) {
-                                FirebaseAnalytics.instance.logEvent(
-                                  name: 'tutorial_tap_finished_button',
-                                );
-                              } else {
-                                FirebaseAnalytics.instance.logEvent(
-                                  name: 'start_timer_finished',
-                                  parameters: {
-                                    'elapsed_seconds': elapsedSeconds,
-                                  },
-                                );
-                              }
-                              setState(() {
-                                _isFinishedButtonPressed = true;
-                              });
-                              _timer?.cancel();
-                              _showApprovalDialog();
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF7043),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 48,
-                          vertical: 16,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      BlinkingEffect(
+                        isBlinking: _isTutorial && !_isFinishedButtonPressed,
+                        child: ElevatedButton(
+                          // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
+                          onPressed: _isFinishedButtonPressed
+                              ? null
+                              : () async {
+                                  int elapsedSeconds = 0;
+                                  if (_screenStartTime != null) {
+                                    elapsedSeconds = DateTime.now()
+                                        .difference(_screenStartTime!)
+                                        .inSeconds;
+                                  }
+                                  //チュートリアルで「おわった！」ボタンを押したか
+                                  final isTutorialStepShown =
+                                      await SharedPrefsHelper.isTutorialStepShown(
+                                        SharedPrefsHelper.tutorialStepPromiseKey,
+                                      );
+                                  if (isTutorialStepShown) {
+                                    FirebaseAnalytics.instance.logEvent(
+                                      name: 'tutorial_tap_finished_button',
+                                    );
+                                  } else {
+                                    FirebaseAnalytics.instance.logEvent(
+                                      name: 'start_timer_finished',
+                                      parameters: {
+                                        'elapsed_seconds': elapsedSeconds,
+                                      },
+                                    );
+                                  }
+                                  setState(() {
+                                    _isFinishedButtonPressed = true;
+                                  });
+                                  _timer?.cancel();
+                                  _showApprovalDialog();
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF7043),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 48,
+                              vertical: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 4,
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)!.finished,
+                            style: const TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        elevation: 4,
                       ),
-                      child: Text(
-                        AppLocalizations.of(context)!.finished,
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+                      if (_isTutorial && !_isFinishedButtonPressed)
+                        const Positioned(
+                          right: -10,
+                          bottom: -10,
+                          child: AnimatedTapFinger(),
                         ),
-                      ),
-                    ),
+                    ],
                   ),
                 ],
               ),

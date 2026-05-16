@@ -40,6 +40,7 @@ import '../../widgets/blinking_effect.dart';
 import '../../widgets/speech_bubble.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../widgets/avatar_display.dart';
+import '../../widgets/animated_tap_finger.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   final bool isInitialSetup;
@@ -465,6 +466,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           'title': AppLocalizations.of(context)!.trialPromiseTitle,
           'duration': 10,
           'points': 1,
+          'isTrial': true,
         };
         await SharedPrefsHelper.saveEmergencyPromise(emergencyPromise);
         await _loadAndDetermineDisplayPromise();
@@ -2468,6 +2470,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 ),
                               ),
                             ),
+                            if (_showParentSettingsBlinking)
+                              const Positioned(
+                                right: -5,
+                                bottom: -5,
+                                child: AnimatedTapFinger(),
+                              ),
                             if (_isTutorialParentSettingsFocus)
                               Positioned(
                                 top: 10,
@@ -2725,7 +2733,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         // きせかえ（メイン機能として大きく目立たせる！）
                         Stack(
                           clipBehavior: Clip.none,
-                          alignment: Alignment.centerLeft,
+                          alignment: Alignment.center,
                           children: [
                             IgnorePointer(
                               ignoring:
@@ -2811,6 +2819,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 ),
                               ),
                             ),
+                            if (_showCustomizeBlinking)
+                              const Positioned(
+                                right: -10,
+                                bottom: -10,
+                                child: AnimatedTapFinger(),
+                              ),
                           ],
                         ),
                       ],
@@ -2990,6 +3004,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   ),
                                 ),
                               ),
+                              if (_showStartBlinking)
+                                const Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: AnimatedTapFinger(),
+                                ),
                               if (_showStartBlinking)
                                 Positioned(
                                   top: -60,

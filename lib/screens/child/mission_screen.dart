@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../managers/sfx_manager.dart';
 import 'package:confetti/confetti.dart';
 import '../../widgets/blinking_effect.dart';
+import '../../widgets/animated_tap_finger.dart';
 
 // ミッションカテゴリ
 enum MissionCategory { tutorial, firstTime, cumulative }
@@ -711,22 +712,34 @@ class _MissionScreenState extends State<MissionScreen>
                   isBlinking:
                       mission.category == MissionCategory.tutorial &&
                       !mission.isClaimed,
-                  child: ElevatedButton(
-                    onPressed: onPressed,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: buttonColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      ElevatedButton(
+                        onPressed: onPressed,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: buttonColor,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          elevation: mission.isCompleted && !mission.isClaimed
+                              ? 4
+                              : 0,
+                        ),
+                        child: Text(
+                          buttonText,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
-                      elevation: mission.isCompleted && !mission.isClaimed
-                          ? 4
-                          : 0,
-                    ),
-                    child: Text(
-                      buttonText,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                      if (mission.category == MissionCategory.tutorial &&
+                          !mission.isClaimed)
+                        const Positioned(
+                          right: -10,
+                          bottom: -10,
+                          child: AnimatedTapFinger(),
+                        ),
+                    ],
                   ),
                 ),
               ],

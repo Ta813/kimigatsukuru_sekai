@@ -25,20 +25,6 @@ class SharedPrefsHelper {
         'points': 20,
       },
       {
-        'title': l10n.promiseDefault2Title,
-        'icon': '🪥',
-        'time': '07:30',
-        'duration': 10,
-        'points': 10,
-      },
-      {
-        'title': l10n.promiseDefault3Title,
-        'icon': '👕',
-        'time': '07:45',
-        'duration': 10,
-        'points': 10,
-      },
-      {
         'title': l10n.promiseDefault4Title,
         'icon': '🛀',
         'time': '18:00',
@@ -51,20 +37,6 @@ class SharedPrefsHelper {
         'time': '19:00',
         'duration': 30,
         'points': 20,
-      },
-      {
-        'title': l10n.promiseDefault6Title,
-        'icon': '🪥',
-        'time': '19:30',
-        'duration': 10,
-        'points': 10,
-      },
-      {
-        'title': l10n.promiseDefault7Title,
-        'icon': '💤',
-        'time': '20:00',
-        'duration': 10,
-        'points': 10,
       },
     ];
   }

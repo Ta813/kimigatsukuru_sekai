@@ -653,7 +653,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get timerExpChance => '৩ EXP পাওয়ার সুযোগ!';
 
   @override
-  String get timerExpFailure => 'আপনি ১ EXP পাবেন!';
+  String get timerExpFailure => 'EXP ১ হবে!';
+
+  @override
+  String get timerExpTrial => 'EXP ০ হবে! (পরীক্ষামূলক)';
 
   @override
   String get buildings => 'ভবনসমূহ';

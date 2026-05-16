@@ -12,6 +12,7 @@ import '../l10n/app_localizations.dart';
 import '../managers/sfx_manager.dart';
 import 'child/child_home_screen.dart';
 import 'child/character_customize_screen.dart';
+import '../widgets/animated_tap_finger.dart';
 
 class InitialSetupCoordinator extends StatefulWidget {
   const InitialSetupCoordinator({super.key});
@@ -23,8 +24,6 @@ class InitialSetupCoordinator extends StatefulWidget {
 
 class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     with WidgetsBindingObserver, TickerProviderStateMixin {
-  // 最初のイントロ画面を表示するかどうかのフラグ
-  bool _showIntro = true;
   bool _isCheckingResume = true; // 🌟 追加: 再開チェック中かどうか
 
   @override
@@ -46,7 +45,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     if (pattern != null && step > 0) {
       if (!mounted) return;
       setState(() {
-        _showIntro = false;
         _isCheckingResume = false;
       });
 
@@ -111,63 +109,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
       );
     }
 
-    if (_showIntro) {
-      return _buildIntroScreen();
-    }
-
-    final l10n = AppLocalizations.of(context)!;
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF3E0),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                l10n.setupAgeQuestion,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              // 年齢選択のリスト
-              _buildAgeButton(
-                context,
-                label: l10n.setupAgeUnder7,
-                onTap: () {
-                  _runSetupLoop('B', 1);
-                },
-              ),
-              _buildAgeButton(
-                context,
-                label: l10n.setupAge8to12,
-                onTap: () {
-                  _runSetupLoop('C', 1);
-                },
-              ),
-              _buildAgeButton(
-                context,
-                label: l10n.setupAge13to18,
-                onTap: () {
-                  _runSetupLoop('C', 1);
-                },
-              ),
-              _buildAgeButton(
-                context,
-                label: l10n.setupAgeAdult,
-                isAdult: true,
-                onTap: () {
-                  _runSetupLoop('A', 1);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    return _buildIntroScreen();
   }
 
   // 年齢を聞く前のイントロ画面
@@ -213,9 +155,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                         );
                         SfxManager.instance.playTapSound();
                       } catch (e) {}
-                      setState(() {
-                        _showIntro = false;
-                      });
+                      _runSetupLoop('C', 1);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFF7043),
@@ -246,56 +186,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAgeButton(
-    BuildContext context, {
-    required String label,
-    required VoidCallback onTap,
-    bool isAdult = false,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 40),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isAdult ? Colors.blueAccent : Colors.white,
-          foregroundColor: isAdult ? Colors.white : Colors.black87,
-          minimumSize: const Size(double.infinity, 64),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          side: BorderSide(
-            color: isAdult ? Colors.blue : Colors.orangeAccent,
-            width: 2,
-          ),
-          elevation: 2,
-        ),
-        onPressed: () {
-          try {
-            SfxManager.instance.playTapSound();
-          } catch (e) {}
-
-          final l10n = AppLocalizations.of(context)!;
-          if (isAdult) {
-            FirebaseAnalytics.instance.logEvent(name: 'setup_age_18');
-          } else if (label == l10n.setupAgeUnder7) {
-            FirebaseAnalytics.instance.logEvent(name: 'setup_age_7');
-          } else if (label == l10n.setupAge8to12) {
-            FirebaseAnalytics.instance.logEvent(name: 'setup_age_8_12');
-          } else if (label == l10n.setupAge13to18) {
-            FirebaseAnalytics.instance.logEvent(name: 'setup_age_13_17');
-          }
-          setState(() {
-            _showIntro = false;
-          });
-          onTap();
-        },
-        child: Text(
-          label,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -484,7 +374,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
       if (step == 1) {
         // ステップ1で戻った場合は、年齢選択画面（Intro）に戻る
         await SharedPrefsHelper.clearSetupProgress();
-        setState(() => _showIntro = true);
       } else {
         _runSetupLoop(pattern, step - 1, isBack: true); // 前のステップへ
       }
@@ -1233,59 +1122,6 @@ class PassDeviceScreen extends StatelessWidget {
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ==============================================================
-// 🌟 追加: タップを促すポワンポワン動く指のアニメーションウィジェット
-// ==============================================================
-class AnimatedTapFinger extends StatefulWidget {
-  const AnimatedTapFinger({super.key});
-
-  @override
-  State<AnimatedTapFinger> createState() => _AnimatedTapFingerState();
-}
-
-class _AnimatedTapFingerState extends State<AnimatedTapFinger>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    )..repeat(reverse: true);
-
-    _animation = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: ScaleTransition(
-        scale: _animation,
-        child: const Icon(
-          Icons.touch_app,
-          size: 50,
-          color: Colors.orangeAccent,
-          shadows: [
-            Shadow(color: Colors.black38, blurRadius: 4, offset: Offset(0, 2)),
           ],
         ),
       ),

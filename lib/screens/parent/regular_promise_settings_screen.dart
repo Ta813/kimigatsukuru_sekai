@@ -641,9 +641,9 @@ class _RegularPromiseSettingsScreenState
   void _navigateToAddScreen() async {
     _playTapSound();
 
-    // 非プレミアムユーザーは8個まで
+    // 非プレミアムユーザーは5個まで
     if (!PurchaseManager.instance.isPremium.value) {
-      const int limit = 8;
+      const int limit = 5;
       if (_regularPromises.length >= limit) {
         if (!mounted) return;
         final l10n = AppLocalizations.of(context)!;
@@ -740,9 +740,9 @@ class _RegularPromiseSettingsScreenState
     Map<String, dynamic> template,
     bool isTutorial,
   ) async {
-    // 非プレミアムユーザーは8個まで
+    // 非プレミアムユーザーは5個まで
     if (!PurchaseManager.instance.isPremium.value) {
-      const int limit = 8;
+      const int limit = 5;
       if (!isTutorial && _regularPromises.length >= limit) {
         if (!mounted) return;
         final l10n = AppLocalizations.of(context)!;

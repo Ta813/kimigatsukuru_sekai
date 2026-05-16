@@ -279,6 +279,7 @@
   "supportPageOpenError": "تعذر فتح الصفحة",
   "timerExpChance": "فرصة للحصول على ٣ نقاط خبرة!",
   "timerExpFailure": "ستحصل على نقطة خبرة واحدة!",
+  "timerExpTrial": "ستكون نقاط الخبرة ٠! (تجريبي)",
   "buildings": "مباني",
   "vehicles": "مركبات",
   "houseSettings": "إعدادات المنزل",

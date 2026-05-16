@@ -656,6 +656,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get timerExpFailure => 'ستحصل على نقطة خبرة واحدة!';
 
   @override
+  String get timerExpTrial => 'ستكون نقاط الخبرة ٠! (تجريبي)';
+
+  @override
   String get buildings => 'مباني';
 
   @override
