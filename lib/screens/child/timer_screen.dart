@@ -124,7 +124,9 @@ class _TimerScreenState extends State<TimerScreen>
   Future<void> _checkTutorial() async {
     final isTutorialShown =
         await SharedPrefsHelper.getChildTutorial() ==
-        SharedPrefsHelper.tutorialPhaseStart;
+            SharedPrefsHelper.tutorialPhaseStart ||
+        await SharedPrefsHelper.getParentTutorial() ==
+            SharedPrefsHelper.tutorialPhaseStart;
 
     if (isTutorialShown) {
       if (mounted) {

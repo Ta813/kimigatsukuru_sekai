@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
+import 'package:kimigatsukuru_sekai/widgets/animated_tap_finger.dart';
 import 'package:permission_handler/permission_handler.dart'; // 🌟 追加: 通知許可ダイアログ用
 import '../../widgets/custom_back_button.dart';
 import '../../widgets/blinking_effect.dart';
@@ -1253,23 +1254,32 @@ class _RegularPromiseSettingsScreenState
         trailing: isTutorialTrialCard
             ? CompositedTransformTarget(
                 link: _addIconLink,
-                child: BlinkingEffect(
-                  isBlinking: true,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.add_circle,
-                      color: Theme.of(context).primaryColor,
+                child: Stack(
+                  children: [
+                    BlinkingEffect(
+                      isBlinking: true,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.add_circle,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: () {
+                          if (widget.isTutorial) {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'start_promise_add_tutorial',
+                            );
+                          }
+                          _playTapSound();
+                          _addRecommendedPromise(template, true);
+                        },
+                      ),
                     ),
-                    onPressed: () {
-                      if (widget.isTutorial) {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'start_promise_add_tutorial',
-                        );
-                      }
-                      _playTapSound();
-                      _addRecommendedPromise(template, true);
-                    },
-                  ),
+                    const Positioned(
+                      right: -5,
+                      bottom: -20,
+                      child: AnimatedTapFinger(),
+                    ),
+                  ],
                 ),
               )
             : IgnorePointer(
@@ -1306,15 +1316,24 @@ class _RegularPromiseSettingsScreenState
       if (isTutorialTrialCard) {
         deleteButton = CompositedTransformTarget(
           link: _deleteIconLink,
-          child: BlinkingEffect(
-            isBlinking: true,
-            child: IconButton(
-              icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
-              onPressed: () {
-                _playTapSound();
-                _deletePromise(index);
-              },
-            ),
+          child: Stack(
+            children: [
+              BlinkingEffect(
+                isBlinking: true,
+                child: IconButton(
+                  icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
+                  onPressed: () {
+                    _playTapSound();
+                    _deletePromise(index);
+                  },
+                ),
+              ),
+              const Positioned(
+                right: -5,
+                bottom: -20,
+                child: AnimatedTapFinger(),
+              ),
+            ],
           ),
         );
       } else {
@@ -1479,22 +1498,31 @@ class _RegularPromiseSettingsScreenState
                 )
               : AppBar(
                   leading: isFinishPhase
-                      ? BlinkingEffect(
-                          isBlinking: true,
-                          borderRadius: 8,
-                          child: BackButton(
-                            onPressed: () {
-                              if (widget.isTutorial) {
-                                FirebaseAnalytics.instance.logEvent(
-                                  name:
-                                      'finish_regular_promise_settings_tutorial',
-                                );
-                              }
-                              if (Navigator.of(context).canPop()) {
-                                Navigator.of(context).pop();
-                              }
-                            },
-                          ),
+                      ? Stack(
+                          children: [
+                            BlinkingEffect(
+                              isBlinking: true,
+                              borderRadius: 8,
+                              child: BackButton(
+                                onPressed: () {
+                                  if (widget.isTutorial) {
+                                    FirebaseAnalytics.instance.logEvent(
+                                      name:
+                                          'finish_regular_promise_settings_tutorial',
+                                    );
+                                  }
+                                  if (Navigator.of(context).canPop()) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                              ),
+                            ),
+                            const Positioned(
+                              right: -5,
+                              bottom: -10,
+                              child: AnimatedTapFinger(),
+                            ),
+                          ],
                         )
                       : IgnorePointer(
                           ignoring: blockOtherButtons,
