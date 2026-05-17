@@ -28,6 +28,11 @@ class BgmManager with WidgetsBindingObserver {
   // バックグラウンドに移行する前に再生中だったかどうかを記録
   bool _wasPlayingBeforeBackground = false;
 
+  // 🌟 ロード中の競合を防ぐフラグ
+  bool _isLoading = false;
+  BgmTrack? _currentTrack;
+  BgmTrack? _pendingTrack;
+
   factory BgmManager() {
     return instance;
   }
@@ -98,23 +103,54 @@ class BgmManager with WidgetsBindingObserver {
   }
 
   Future<void> play(BgmTrack track) async {
+    // 🌟 同じトラックが既に再生中なら何もしない
+    if (_currentTrack == track && (_bgmPlayer?.playing ?? false)) {
+      return;
+    }
+
+    // 🌟 ロード中なら「次に再生するトラック」を予約してリターン
+    //    ロード完了後に _pendingTrack があれば改めて play() を呼ぶ
+    if (_isLoading) {
+      _pendingTrack = track;
+      print("BgmManager.play: ロード中のため予約: $track");
+      return;
+    }
+
+    _isLoading = true;
+    _pendingTrack = null;
+
     try {
       print("BgmManager.play: $track");
       final trackPath = _getTrackPath(track);
 
       if (trackPath == null) {
         await stopBgm();
+        _currentTrack = track;
         return;
       }
+
+      // 🌟 ロード前に一度停止して "Loading interrupted" を防ぐ
+      await _player.stop();
 
       print("BgmManager.play: アセットをロード中... $trackPath");
       await _player.setAsset(trackPath);
       await _player.setLoopMode(LoopMode.one);
       await _player.play();
 
+      _currentTrack = track;
       print("BgmManager.play: 再生開始しました: $track");
     } catch (e) {
+      // "Loading interrupted" はレース条件由来の一過性エラー。ログのみ。
       print("BGMの再生エラー ($track): $e");
+    } finally {
+      _isLoading = false;
+
+      // 🌟 ロード中に別の play() が来ていた場合、改めて再生
+      final pending = _pendingTrack;
+      if (pending != null && pending != _currentTrack) {
+        _pendingTrack = null;
+        await play(pending);
+      }
     }
   }
 
@@ -142,6 +178,7 @@ class BgmManager with WidgetsBindingObserver {
     try {
       if (_bgmPlayer != null) {
         await _bgmPlayer!.stop();
+        _currentTrack = null;
       }
     } catch (e) {
       print("BGMの停止エラー: $e");

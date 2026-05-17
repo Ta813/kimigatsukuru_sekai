@@ -940,9 +940,9 @@ class _RegularPromiseSettingsScreenState
     bool? shouldRequest = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         title: Text(
-          AppLocalizations.of(context)!.notificationRequestTitle,
+          AppLocalizations.of(dialogCtx)!.notificationRequestTitle,
           textAlign: TextAlign.center,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -957,7 +957,7 @@ class _RegularPromiseSettingsScreenState
             ),
           ),
           child: Text(
-            AppLocalizations.of(context)!.notificationRequestMessage,
+            AppLocalizations.of(dialogCtx)!.notificationRequestMessage,
             style: const TextStyle(fontSize: 15, height: 1.5),
           ),
         ),
@@ -968,11 +968,11 @@ class _RegularPromiseSettingsScreenState
               FirebaseAnalytics.instance.logEvent(
                 name: 'setup_notification_later',
               );
-              Navigator.pop(context, false);
+              Navigator.pop(dialogCtx, false);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.grey),
             child: Text(
-              AppLocalizations.of(context)!.notificationLater,
+              AppLocalizations.of(dialogCtx)!.notificationLater,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
@@ -984,7 +984,7 @@ class _RegularPromiseSettingsScreenState
               try {
                 SfxManager.instance.playTapSound();
               } catch (_) {}
-              Navigator.pop(context, true);
+              Navigator.pop(dialogCtx, true);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
@@ -996,7 +996,7 @@ class _RegularPromiseSettingsScreenState
               elevation: 4,
             ),
             child: Text(
-              AppLocalizations.of(context)!.notificationAccept,
+              AppLocalizations.of(dialogCtx)!.notificationAccept,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
