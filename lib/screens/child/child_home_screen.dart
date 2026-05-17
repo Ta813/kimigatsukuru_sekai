@@ -1704,6 +1704,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       return 100.0;
     } else if (itemPath.contains('assets/images/item_sea_toudai.png')) {
       return 200.0;
+    } else if (itemPath.contains('assets/images/item_sky_kikyuu.png')) {
+      return 200.0;
+    } else if (itemPath.contains('assets/images/item_sky_hikouki.png')) {
+      return 120.0;
+    } else if (itemPath.contains('assets/images/item_sky_niji.png')) {
+      return 120.0;
     } else if (itemPath.contains('assets/images/item_jitensya.png')) {
       return 70.0;
     } else if (itemPath.contains('assets/images/item_jouro.png')) {
