@@ -252,6 +252,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.shopNotEnoughPoints),
+          duration: const Duration(seconds: 1),
         ),
       );
       return;

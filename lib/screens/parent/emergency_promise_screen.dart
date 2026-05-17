@@ -191,6 +191,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                 context,
               )!.emergencyPromiseSet(_titleController.text),
             ),
+            duration: const Duration(seconds: 1),
           ),
         );
         if (widget.isTutorial) {

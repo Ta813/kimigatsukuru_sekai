@@ -547,7 +547,10 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
 
                     // 復元中メッセージ
                     scaffoldMessenger.showSnackBar(
-                      SnackBar(content: Text(l10n.restoringPurchases)),
+                      SnackBar(
+                        content: Text(l10n.restoringPurchases),
+                        duration: const Duration(seconds: 1),
+                      ),
                     );
 
                     final success = await PurchaseManager.instance
@@ -555,11 +558,17 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
 
                     if (success) {
                       scaffoldMessenger.showSnackBar(
-                        SnackBar(content: Text(l10n.restoreSuccess)),
+                        SnackBar(
+                          content: Text(l10n.restoreSuccess),
+                          duration: const Duration(seconds: 1),
+                        ),
                       );
                     } else {
                       scaffoldMessenger.showSnackBar(
-                        SnackBar(content: Text(l10n.restoreFailed)),
+                        SnackBar(
+                          content: Text(l10n.restoreFailed),
+                          duration: const Duration(seconds: 1),
+                        ),
                       );
                     }
                   },

@@ -65,6 +65,7 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.nameAlreadyExists),
+          duration: const Duration(seconds: 1),
         ),
       );
     }

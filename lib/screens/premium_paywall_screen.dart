@@ -146,13 +146,19 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
         if (mounted)
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.paywallError(e.message ?? 'Unknown'))),
+            SnackBar(
+              content: Text(l10n.paywallError(e.message ?? 'Unknown')),
+              duration: const Duration(seconds: 1),
+            ),
           );
       }
     } catch (e) {
       if (mounted)
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.paywallError(e.toString()))),
+          SnackBar(
+            content: Text(l10n.paywallError(e.toString())),
+            duration: const Duration(seconds: 1),
+          ),
         );
     } finally {
       if (mounted)
@@ -210,6 +216,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppLocalizations.of(context)!.pageOpenError),
+              duration: const Duration(seconds: 1),
             ),
           );
         }
@@ -217,7 +224,10 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.pageOpenError)),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.pageOpenError),
+            duration: const Duration(seconds: 1),
+          ),
         );
       }
     }

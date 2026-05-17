@@ -248,6 +248,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.shopNotEnoughPoints),
+          duration: const Duration(seconds: 1),
         ),
       );
       return;

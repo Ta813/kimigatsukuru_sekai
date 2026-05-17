@@ -189,11 +189,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _linkedService = service;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.backupSuccess)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.backupSuccess),
+          duration: const Duration(seconds: 1),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.backupFailure)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.backupFailure),
+          duration: const Duration(seconds: 1),
+        ),
       );
     }
 
@@ -218,14 +224,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (success) {
       await SharedPrefsHelper.saveBackupService(service);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.restoreSuccess)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.restoreSuccess),
+          duration: const Duration(seconds: 1),
+        ),
       );
       // ★ 復元したデータをUIに反映させるために、設定を再読み込み
       _loadSettings();
       // TODO: ホーム画面など、他の画面もリフレッシュする必要があるかもしれない
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.restoreFailure)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.restoreFailure),
+          duration: const Duration(seconds: 1),
+        ),
       );
     }
 
@@ -521,7 +533,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       } else {
                         // URLが開けなかった場合の予備処理
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(l10n.supportPageOpenError)),
+                          SnackBar(
+                            content: Text(l10n.supportPageOpenError),
+                            duration: const Duration(seconds: 1),
+                          ),
                         );
                       }
                     },
@@ -556,6 +571,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('ポイントを $newPoints P に変更しました！'),
+                              duration: const Duration(seconds: 1),
                             ),
                           );
                         }
@@ -599,6 +615,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('経験値を $newExp EXP に変更しました！'),
+                              duration: const Duration(seconds: 1),
                             ),
                           );
                         }
@@ -653,6 +670,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text('実際の日時に戻しました。'),
+                                      duration: Duration(seconds: 1),
                                     ),
                                   );
                                 }
@@ -683,7 +701,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   '日付を ${picked.year}/${picked.month}/${picked.day} に設定しました！\nホーム画面に戻って確認してください。',
                                 ),
                                 backgroundColor: Colors.purple,
-                                duration: const Duration(seconds: 3),
+                                duration: const Duration(seconds: 1),
                               ),
                             );
                           }
@@ -706,7 +724,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 '✨ チュートリアルとガイドをリセットしました！\nアプリを再起動すると最初から始まります。',
                               ),
                               backgroundColor: Colors.redAccent,
-                              duration: Duration(seconds: 3),
+                              duration: Duration(seconds: 1),
                             ),
                           );
                         }
@@ -749,6 +767,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(l10n.resetPromisesSuccess),
+                                duration: const Duration(seconds: 1),
                               ),
                             );
                           }
@@ -765,6 +784,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('🐛 デバッグ: セール期間を期限切れにしました'),
+                              duration: Duration(seconds: 1),
                             ),
                           );
                         }

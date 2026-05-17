@@ -315,7 +315,7 @@ class _RegularPromiseSettingsScreenState
         content: Text(
           AppLocalizations.of(context)!.promiseDeleted(deletedPromiseTitle),
         ),
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),
       ),
     );
   }
@@ -777,7 +777,7 @@ class _RegularPromiseSettingsScreenState
           content: Text(
             AppLocalizations.of(context)!.promiseAdded(newPromise['title']),
           ),
-          duration: const Duration(seconds: 2),
+          duration: const Duration(seconds: 1),
         ),
       );
     }
@@ -809,6 +809,7 @@ class _RegularPromiseSettingsScreenState
               context,
             )!.promiseUpdated(updatedPromise['title']),
           ),
+          duration: const Duration(seconds: 1),
         ),
       );
     }
@@ -904,7 +905,7 @@ class _RegularPromiseSettingsScreenState
         content: Text(
           AppLocalizations.of(context)!.promiseAdded(template['title']),
         ),
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),
       ),
     );
   }
