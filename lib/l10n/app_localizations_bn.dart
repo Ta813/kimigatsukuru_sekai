@@ -1567,6 +1567,21 @@ class AppLocalizationsBn extends AppLocalizations {
   String get missionTabCumulative => 'ক্রমযোজ্য';
 
   @override
+  String get missionTabDaily => 'দৈনিক';
+
+  @override
+  String get missionTitleDailyPromise1 => 'একবার প্রতিশ্রুতি সম্পন্ন করুন';
+
+  @override
+  String get missionTitleDailyPromiseAll => 'আজকের সব প্রতিশ্রুতি সম্পন্ন করুন';
+
+  @override
+  String get missionTitleDailyCustomize => 'একবার পোশাক পরিবর্তন করুন';
+
+  @override
+  String get missionTitleDailyShop => 'একবার কেনাকাটা করুন';
+
+  @override
   String get missionScreenTitle => 'মিশন সমূহ';
 
   @override

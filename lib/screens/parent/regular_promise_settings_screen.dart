@@ -1325,6 +1325,9 @@ class _RegularPromiseSettingsScreenState
                 child: IconButton(
                   icon: Icon(Icons.delete, color: Colors.red[400], size: 20),
                   onPressed: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'tutorial_delete_promise',
+                    );
                     _playTapSound();
                     _deletePromise(index);
                   },

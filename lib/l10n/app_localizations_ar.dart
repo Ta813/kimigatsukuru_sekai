@@ -1567,6 +1567,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get missionTabCumulative => 'تراكمي';
 
   @override
+  String get missionTabDaily => 'يومي';
+
+  @override
+  String get missionTitleDailyPromise1 => 'أكمل وعدًا مرة واحدة';
+
+  @override
+  String get missionTitleDailyPromiseAll => 'أكمل جميع وعود اليوم';
+
+  @override
+  String get missionTitleDailyCustomize => 'غيّر ملابسك مرة واحدة';
+
+  @override
+  String get missionTitleDailyShop => 'اذهب للتسوق مرة واحدة';
+
+  @override
   String get missionScreenTitle => 'المهام';
 
   @override

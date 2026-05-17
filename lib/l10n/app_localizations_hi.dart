@@ -1567,6 +1567,21 @@ class AppLocalizationsHi extends AppLocalizations {
   String get missionTabCumulative => 'संचयी';
 
   @override
+  String get missionTabDaily => 'दैनिक';
+
+  @override
+  String get missionTitleDailyPromise1 => 'एक बार वादा पूरा करें';
+
+  @override
+  String get missionTitleDailyPromiseAll => 'आज के सभी वादे पूरे करें';
+
+  @override
+  String get missionTitleDailyCustomize => 'एक बार वेशभूषा बदलें';
+
+  @override
+  String get missionTitleDailyShop => 'एक बार खरीदारी करें';
+
+  @override
   String get missionScreenTitle => 'मिशन';
 
   @override

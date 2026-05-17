@@ -1567,6 +1567,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get missionTabCumulative => '累計';
 
   @override
+  String get missionTabDaily => 'デイリー';
+
+  @override
+  String get missionTitleDailyPromise1 => 'やくそくを 1回 クリアする';
+
+  @override
+  String get missionTitleDailyPromiseAll => 'きょうの やくそくを すべて クリアする';
+
+  @override
+  String get missionTitleDailyCustomize => '1回 きせかえを する';
+
+  @override
+  String get missionTitleDailyShop => '1回 かいものを する';
+
+  @override
   String get missionScreenTitle => 'ミッション';
 
   @override

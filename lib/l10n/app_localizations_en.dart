@@ -1567,6 +1567,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get missionTabCumulative => 'Cumulative';
 
   @override
+  String get missionTabDaily => 'Daily';
+
+  @override
+  String get missionTitleDailyPromise1 => 'Complete a promise once';
+
+  @override
+  String get missionTitleDailyPromiseAll => 'Complete all of today\'s promises';
+
+  @override
+  String get missionTitleDailyCustomize => 'Change your outfit once';
+
+  @override
+  String get missionTitleDailyShop => 'Go shopping once';
+
+  @override
   String get missionScreenTitle => 'Missions';
 
   @override

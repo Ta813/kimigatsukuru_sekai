@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import '../../models/shop_data.dart';
@@ -313,6 +314,12 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               await SharedPrefsHelper.addPurchasedItem(item.name);
               SharedPrefsHelper.incrementShopCount();
 
+              final prefs = await SharedPreferences.getInstance();
+              final now = DateTime.now();
+              final todayStr = "${now.year}-${now.month}-${now.day}";
+              // かいもの時：
+              await prefs.setBool('daily_shop_done_$todayStr', true);
+
               if (mounted) {
                 Navigator.pop(context);
                 setState(() {
@@ -376,9 +383,14 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: InkWell(
-            onTap: () {
+            onTap: () async {
               if (isPurchased) {
                 _toggleEquip(item, selected, type);
+                final prefs = await SharedPreferences.getInstance();
+                final now = DateTime.now();
+                final todayStr = "${now.year}-${now.month}-${now.day}";
+                // きせかえ時：
+                await prefs.setBool('daily_customize_done_$todayStr', true);
               } else {
                 _handlePurchaseAttempt(item, selected, type);
               }

@@ -105,6 +105,13 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
     } catch (e) {
       print('再生エラー: $e');
     }
+    if (widget.isTutorial) {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'tutorial_emergency_promise_add',
+      );
+    } else {
+      FirebaseAnalytics.instance.logEvent(name: 'start_emergency_promise_add');
+    }
 
     setState(() {
       _titleController.text = promise['title'] as String;
@@ -122,11 +129,19 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
       print('再生エラー: $e');
     }
 
+    if (widget.isTutorial) {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'tutorial_emergency_promise_set',
+      );
+    } else {
+      FirebaseAnalytics.instance.logEvent(name: 'start_emergency_promise_set');
+    }
+
     // 非プレミアムユーザーは1日3回まで
     if (!PurchaseManager.instance.isPremium.value) {
       final count = await SharedPrefsHelper.loadTodayEmergencyPromiseCount();
       const int limit = 3;
-      if (count >= limit) {
+      if (!widget.isTutorial && count >= limit) {
         if (!mounted) return;
         final l10n = AppLocalizations.of(context)!;
         await showDialog(
@@ -469,9 +484,6 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                                   isBlinking: true,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      FirebaseAnalytics.instance.logEvent(
-                                        name: 'start_emergency_promise_set',
-                                      );
                                       _savePromise();
                                     },
                                     style: ElevatedButton.styleFrom(

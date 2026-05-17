@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // 🌟 追加: デイリーミッションの状態取得用
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
 import '../../managers/sfx_manager.dart';
@@ -8,8 +9,8 @@ import 'package:confetti/confetti.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/animated_tap_finger.dart';
 
-// ミッションカテゴリ
-enum MissionCategory { tutorial, firstTime, cumulative }
+// ミッションカテゴリ (🌟 daily を追加)
+enum MissionCategory { daily, tutorial, firstTime, cumulative }
 
 // ミッションのデータをまとめるクラス
 class MissionItem {
@@ -54,6 +55,7 @@ class _MissionScreenState extends State<MissionScreen>
   int _currentPoints = 0;
 
   // 🌟 追加: 各タブに「！」バッジを出すかどうかのフラグ
+  bool _hasUnclaimedDaily = false; // 🌟 追加
   bool _hasUnclaimedTutorial = false;
   bool _hasUnclaimedFirstTime = false;
   bool _hasUnclaimedCumulative = false;
@@ -138,7 +140,71 @@ class _MissionScreenState extends State<MissionScreen>
         await SharedPrefsHelper.loadCumulativeLoginDays();
     final currentPoints = await SharedPrefsHelper.loadPoints();
 
+    // 🌟 デイリーミッション用のデータ読み込み
+    final todaysCompletedTitles =
+        await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
+    final regularPromises = await SharedPrefsHelper.loadRegularPromises(
+      context,
+    );
+    final prefs = await SharedPreferences.getInstance();
+    final now = DateTime.now();
+    final todayStr =
+        "${now.year}-${now.month}-${now.day}"; // 日付ごとにIDを変えることで毎日リセットされる仕組み
+
     List<MissionItem> loadedMissions = [];
+
+    // --- 🌟 デイリーミッション（毎日リセット） ---
+    final isPromise1Done = todaysCompletedTitles.isNotEmpty;
+    bool isPromiseAllDone = false;
+    if (regularPromises.isNotEmpty) {
+      isPromiseAllDone = regularPromises.every(
+        (p) => todaysCompletedTitles.contains(p['title']),
+      );
+    }
+    final isCustomizeDone =
+        prefs.getBool('daily_customize_done_$todayStr') ?? false;
+    final isShopDone = prefs.getBool('daily_shop_done_$todayStr') ?? false;
+
+    loadedMissions.add(
+      MissionItem(
+        id: 'daily_promise_1_$todayStr',
+        title: l10n.missionTitleDailyPromise1,
+        rewardPoints: 20,
+        isCompleted: isPromise1Done,
+        isClaimed: claimedIds.contains('daily_promise_1_$todayStr'),
+        category: MissionCategory.daily,
+      ),
+    );
+    loadedMissions.add(
+      MissionItem(
+        id: 'daily_promise_all_$todayStr',
+        title: l10n.missionTitleDailyPromiseAll,
+        rewardPoints: 50,
+        isCompleted: isPromiseAllDone,
+        isClaimed: claimedIds.contains('daily_promise_all_$todayStr'),
+        category: MissionCategory.daily,
+      ),
+    );
+    loadedMissions.add(
+      MissionItem(
+        id: 'daily_customize_$todayStr',
+        title: l10n.missionTitleDailyCustomize,
+        rewardPoints: 20,
+        isCompleted: isCustomizeDone,
+        isClaimed: claimedIds.contains('daily_customize_$todayStr'),
+        category: MissionCategory.daily,
+      ),
+    );
+    loadedMissions.add(
+      MissionItem(
+        id: 'daily_shop_$todayStr',
+        title: l10n.missionTitleDailyShop,
+        rewardPoints: 20,
+        isCompleted: isShopDone,
+        isClaimed: claimedIds.contains('daily_shop_$todayStr'),
+        category: MissionCategory.daily,
+      ),
+    );
 
     // --- チュートリアル系ミッション ---
     loadedMissions.add(
@@ -358,6 +424,11 @@ class _MissionScreenState extends State<MissionScreen>
       if (cat == MissionCategory.tutorial) {
         // チュートリアル: 未受け取り（未クリア含む）があれば常に「！」を出す
         return loadedMissions.any((m) => m.category == cat && !m.isClaimed);
+      } else if (cat == MissionCategory.daily) {
+        // 🌟 追加: デイリー
+        return loadedMissions.any(
+          (m) => m.category == cat && m.isCompleted && !m.isClaimed,
+        );
       } else if (cat == MissionCategory.firstTime) {
         // はじめて系: 「受け取り可能」または「今のレベルで挑戦可能（ハイライト中）」なら「！」を出す
         return loadedMissions.any(
@@ -380,6 +451,7 @@ class _MissionScreenState extends State<MissionScreen>
         _showTutorialTab = shouldShowTutorial;
         _currentPoints = currentPoints;
         // タブのバッジ状態を更新
+        _hasUnclaimedDaily = checkTabBadge(MissionCategory.daily); // 🌟 追加
         _hasUnclaimedTutorial = checkTabBadge(MissionCategory.tutorial);
         _hasUnclaimedFirstTime = checkTabBadge(MissionCategory.firstTime);
         _hasUnclaimedCumulative = checkTabBadge(MissionCategory.cumulative);
@@ -528,6 +600,16 @@ class _MissionScreenState extends State<MissionScreen>
       );
       tabViews.add(_buildMissionList(MissionCategory.tutorial));
     }
+
+    // 🌟 デイリーミッションタブを追加
+    tabs.add(
+      _buildCompactTab(
+        l10n.missionTabDaily,
+        Icons.event_available,
+        _hasUnclaimedDaily,
+      ),
+    );
+    tabViews.add(_buildMissionList(MissionCategory.daily));
 
     // 「はじめて」と「累計」は常に表示
     tabs.add(

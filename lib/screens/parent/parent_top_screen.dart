@@ -320,6 +320,9 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                                     icon: FontAwesomeIcons.bell,
                                     color: Colors.deepOrangeAccent,
                                     onPressed: () async {
+                                      FirebaseAnalytics.instance.logEvent(
+                                        name: 'tutorial_emergency_promise_open',
+                                      );
                                       _playTapSound();
                                       await Navigator.push(
                                         context,

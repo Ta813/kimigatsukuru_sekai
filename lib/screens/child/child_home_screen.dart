@@ -926,6 +926,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   Future<void> _openParentMode() async {
     if (_isTutorialParentSettingsFocus) {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'tutorial_start_parent_settings',
+      );
       if (!mounted) return;
       await Navigator.push(
         context,
@@ -994,6 +997,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     if (isCorrect == true) {
       if (!mounted) return;
+      FirebaseAnalytics.instance.logEvent(
+        name: 'start_child_home_parent_settings',
+      );
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const ParentTopScreen()),
@@ -1295,7 +1301,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       });
     }
 
-    FirebaseAnalytics.instance.logEvent(name: 'start_child_home_start_promise');
     final isInTutorial =
         !await SharedPrefsHelper.isTutorialStepShown(
           SharedPrefsHelper.tutorialStepPromiseKey,
@@ -1306,7 +1311,17 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       await SharedPrefsHelper.setTutorialStepShown(
         SharedPrefsHelper.tutorialStepPromiseKey,
       );
-      FirebaseAnalytics.instance.logEvent(name: 'tutorial_tap_start_button');
+      FirebaseAnalytics.instance.logEvent(
+        name: 'tutorial_child_start_promise_button',
+      );
+    } else if (_showEmergencyStartBlinking) {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'tutorial_parent_start_promise_button',
+      );
+    } else {
+      FirebaseAnalytics.instance.logEvent(
+        name: 'start_child_start_promise_button',
+      );
     }
 
     final result = await Navigator.push<Map<String, dynamic>?>(
@@ -2497,10 +2512,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             !_showParentSettingsBlinking)
                                         ? null
                                         : () async {
-                                            FirebaseAnalytics.instance.logEvent(
-                                              name:
-                                                  'start_child_home_parent_settings',
-                                            );
                                             try {
                                               SfxManager.instance
                                                   .playTapSound();

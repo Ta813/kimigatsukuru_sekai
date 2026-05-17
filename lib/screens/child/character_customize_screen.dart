@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/animated_tap_finger.dart';
 import '../../models/shop_data.dart';
 import '../../helpers/shared_prefs_helper.dart';
@@ -314,6 +315,12 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               await SharedPrefsHelper.savePoints(newPoints);
               await SharedPrefsHelper.addPurchasedItem(item.name);
               SharedPrefsHelper.incrementShopCount();
+
+              final prefs = await SharedPreferences.getInstance();
+              final now = DateTime.now();
+              final todayStr = "${now.year}-${now.month}-${now.day}";
+              // かいもの時：
+              await prefs.setBool('daily_shop_done_$todayStr', true);
 
               if (mounted) {
                 Navigator.pop(context);
@@ -1479,9 +1486,14 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: InkWell(
-            onTap: () {
+            onTap: () async {
               if (isPurchased) {
                 _equipItem(item);
+                final prefs = await SharedPreferences.getInstance();
+                final now = DateTime.now();
+                final todayStr = "${now.year}-${now.month}-${now.day}";
+                // きせかえ時：
+                await prefs.setBool('daily_customize_done_$todayStr', true);
               } else {
                 _handlePurchaseAttempt(item);
               }
@@ -1634,6 +1646,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   });
                 }
               }
+              final prefs = await SharedPreferences.getInstance();
+              final now = DateTime.now();
+              final todayStr = "${now.year}-${now.month}-${now.day}";
+              // きせかえ時：
+              await prefs.setBool('daily_customize_done_$todayStr', true);
             } else {
               _handlePurchaseAttempt(item);
             }

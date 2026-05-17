@@ -3115,6 +3115,36 @@ abstract class AppLocalizations {
   /// **'Cumulative'**
   String get missionTabCumulative;
 
+  /// No description provided for @missionTabDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get missionTabDaily;
+
+  /// No description provided for @missionTitleDailyPromise1.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete a promise once'**
+  String get missionTitleDailyPromise1;
+
+  /// No description provided for @missionTitleDailyPromiseAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete all of today\'s promises'**
+  String get missionTitleDailyPromiseAll;
+
+  /// No description provided for @missionTitleDailyCustomize.
+  ///
+  /// In en, this message translates to:
+  /// **'Change your outfit once'**
+  String get missionTitleDailyCustomize;
+
+  /// No description provided for @missionTitleDailyShop.
+  ///
+  /// In en, this message translates to:
+  /// **'Go shopping once'**
+  String get missionTitleDailyShop;
+
   /// No description provided for @missionScreenTitle.
   ///
   /// In en, this message translates to:

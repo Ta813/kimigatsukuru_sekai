@@ -1159,14 +1159,21 @@ class _TimerScreenState extends State<TimerScreen>
                                         .inSeconds;
                                   }
                                   //チュートリアルで「おわった！」ボタンを押したか
-                                  final isTutorialStepShown =
-                                      await SharedPrefsHelper.isTutorialStepShown(
-                                        SharedPrefsHelper
-                                            .tutorialStepPromiseKey,
-                                      );
-                                  if (isTutorialStepShown) {
+                                  final isChildTutorial =
+                                      await SharedPrefsHelper.getChildTutorial() ==
+                                      SharedPrefsHelper.tutorialPhaseStart;
+                                  final isParentTutorial =
+                                      await SharedPrefsHelper.getChildTutorial() ==
+                                      SharedPrefsHelper.tutorialPhaseStart;
+                                  if (isChildTutorial) {
                                     FirebaseAnalytics.instance.logEvent(
-                                      name: 'tutorial_tap_finished_button',
+                                      name:
+                                          'tutorial_child_timer_finished_button',
+                                    );
+                                  } else if (isParentTutorial) {
+                                    FirebaseAnalytics.instance.logEvent(
+                                      name:
+                                          'tutorial_parent_timer_finished_button',
                                     );
                                   } else {
                                     FirebaseAnalytics.instance.logEvent(

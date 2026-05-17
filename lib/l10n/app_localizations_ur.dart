@@ -1567,6 +1567,21 @@ class AppLocalizationsUr extends AppLocalizations {
   String get missionTabCumulative => 'مجموعی';
 
   @override
+  String get missionTabDaily => 'روزانہ';
+
+  @override
+  String get missionTitleDailyPromise1 => 'ایک بار وعدہ مکمل کریں';
+
+  @override
+  String get missionTitleDailyPromiseAll => 'آج کے تمام وعدے مکمل کریں';
+
+  @override
+  String get missionTitleDailyCustomize => 'ایک بار لباس تبدیل کریں';
+
+  @override
+  String get missionTitleDailyShop => 'ایک بار خریداری کریں';
+
+  @override
   String get missionScreenTitle => 'مشنز';
 
   @override
