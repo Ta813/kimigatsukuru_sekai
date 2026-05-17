@@ -6,11 +6,9 @@ import 'package:just_audio/just_audio.dart';
 
 class SfxManager {
   static final SfxManager instance = SfxManager._internal();
-
-  // 🌟 プールサイズを維持しつつ、各プレイヤーの「使用中」状態を追跡
-  static const int _poolSize = 5;
   final List<AudioPlayer> _players = [];
   int _currentPlayerIndex = 0;
+  static const int _poolSize = 5;
 
   factory SfxManager() {
     return instance;
@@ -18,24 +16,11 @@ class SfxManager {
 
   SfxManager._internal();
 
-  // 🌟 使用中でないプレイヤーを選んで返す。全員使用中なら順番に返す（最低限）
+  // 🌟 複数プレイヤーのプールを使用して、同時に効果音がなってもクラッシュ（PlatformException）を防ぎつつ自然に重ねて再生する
   AudioPlayer get _player {
-    // プールを必要に応じて拡張
-    while (_players.length < _poolSize) {
+    if (_players.length <= _currentPlayerIndex) {
       _players.add(AudioPlayer());
     }
-
-    // 🌟 playing でないプレイヤーを優先して選ぶ（ローディング中でもない）
-    for (int i = 0; i < _players.length; i++) {
-      final idx = (_currentPlayerIndex + i) % _poolSize;
-      final p = _players[idx];
-      if (!p.playing) {
-        _currentPlayerIndex = (idx + 1) % _poolSize;
-        return p;
-      }
-    }
-
-    // 全員再生中なら循環インデックスで返す
     final player = _players[_currentPlayerIndex];
     _currentPlayerIndex = (_currentPlayerIndex + 1) % _poolSize;
     return player;
@@ -43,15 +28,10 @@ class SfxManager {
 
   // 効果音を再生するための共通メソッド
   Future<void> _playSound(String assetPath) async {
-    final player = _player;
     try {
-      // 🌟 前の操作を stop() でキャンセルしてから新たにロード
-      //    これにより "Loading interrupted" を防ぐ
-      await player.stop();
-      await player.setAsset('assets/$assetPath');
-      await player.play();
+      await _player.setAsset('assets/$assetPath');
+      await _player.play();
     } catch (e) {
-      // "Loading interrupted" はレース条件由来の一過性エラー。クラッシュさせない。
       print("効果音の再生エラー ($assetPath): $e");
     }
   }
@@ -61,11 +41,7 @@ class SfxManager {
     List<String> assetPaths, {
     double speed = 1.0,
   }) async {
-    final player = _player;
     try {
-      // 🌟 前の操作を stop() でキャンセルしてから新たにロード
-      await player.stop();
-
       // プレイリストを作成
       final playlist = ConcatenatingAudioSource(
         children: assetPaths
@@ -73,9 +49,9 @@ class SfxManager {
             .toList(),
       );
 
-      await player.setAudioSource(playlist);
-      await player.setSpeed(speed);
-      await player.play();
+      await _player.setAudioSource(playlist);
+      await _player.setSpeed(speed);
+      await _player.play();
     } catch (e) {
       print("連続再生エラー: $e");
     }
