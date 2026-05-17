@@ -1255,6 +1255,7 @@ class _RegularPromiseSettingsScreenState
             ? CompositedTransformTarget(
                 link: _addIconLink,
                 child: Stack(
+                  clipBehavior: Clip.none,
                   children: [
                     BlinkingEffect(
                       isBlinking: true,
@@ -1317,6 +1318,7 @@ class _RegularPromiseSettingsScreenState
         deleteButton = CompositedTransformTarget(
           link: _deleteIconLink,
           child: Stack(
+            clipBehavior: Clip.none,
             children: [
               BlinkingEffect(
                 isBlinking: true,
@@ -1499,6 +1501,7 @@ class _RegularPromiseSettingsScreenState
               : AppBar(
                   leading: isFinishPhase
                       ? Stack(
+                          clipBehavior: Clip.none,
                           children: [
                             BlinkingEffect(
                               isBlinking: true,
