@@ -117,6 +117,14 @@
   "finished": "শেষ হয়েছে!",
   "addRegularPromiseTitle": "নতুন প্রতিশ্রুতি",
   "editRegularPromiseTitle": "প্রতিশ্রুতি সম্পাদনা",
+  "editRegularPromiseTitleWithName": "{promiseName} সম্পাদনা",
+  "@editRegularPromiseTitleWithName": {
+    "placeholders": {
+      "promiseName": {
+        "type": "String"
+      }
+    }
+  },
   "promiseNameLabel": "প্রতিশ্রুতির নাম",
   "promiseNameHint": "প্রতিশ্রুতির জন্য একটি নাম লিখুন",
   "startTimeLabel": "শুরু করার সময়",

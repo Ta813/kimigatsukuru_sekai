@@ -406,7 +406,15 @@ class _RegularPromiseSettingsScreenState
               ),
               insetPadding: widget.isInitialSetup
                   ? const EdgeInsets.symmetric(horizontal: 150, vertical: 6)
-                  : const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                  : (initialPromise != null
+                        ? const EdgeInsets.symmetric(
+                            horizontal: 150,
+                            vertical: 6,
+                          )
+                        : const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 6,
+                          )),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: screenHeight - keyboardHeight - 48,
@@ -415,7 +423,9 @@ class _RegularPromiseSettingsScreenState
                   child: Padding(
                     padding: widget.isInitialSetup
                         ? const EdgeInsets.fromLTRB(40, 5, 40, 12)
-                        : const EdgeInsets.fromLTRB(5, 5, 5, 12),
+                        : (initialPromise != null
+                              ? const EdgeInsets.fromLTRB(40, 10, 40, 15)
+                              : const EdgeInsets.fromLTRB(5, 5, 5, 12)),
                     child: Form(
                       key: formKey,
                       child: Column(
@@ -435,7 +445,9 @@ class _RegularPromiseSettingsScreenState
                                         )!.addRegularPromiseTitle
                                       : AppLocalizations.of(
                                           context,
-                                        )!.editRegularPromiseTitle),
+                                        )!.editRegularPromiseTitleWithName(
+                                          initialPromise['title'] ?? '',
+                                        )),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
@@ -444,8 +456,9 @@ class _RegularPromiseSettingsScreenState
                           ),
                           const SizedBox(height: 6),
 
-                          // 🌟 セットアップ時は名前の入力を隠す
-                          if (!widget.isInitialSetup) ...[
+                          // 🌟 セットアップ時、または既存のやくそくの編集時は名前の入力を隠す
+                          if (!widget.isInitialSetup &&
+                              initialPromise == null) ...[
                             TextFormField(
                               controller: titleController,
                               scrollPadding: EdgeInsets.only(
@@ -562,77 +575,83 @@ class _RegularPromiseSettingsScreenState
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: DropdownButtonFormField<String>(
-                                    value: selectedPoints,
-                                    decoration: InputDecoration(
-                                      labelText: AppLocalizations.of(
-                                        context,
-                                      )!.points,
-                                      border: const OutlineInputBorder(),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 8,
-                                          ),
-                                    ),
-                                    items: pointOptions
-                                        .map(
-                                          (p) => DropdownMenuItem(
-                                            value: p,
-                                            child: Text(p),
-                                          ),
-                                        )
-                                        .toList(),
-                                    onChanged: (v) => setStateDialog(
-                                      () => selectedPoints = v!,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 6),
-                            Wrap(
-                              spacing: 4.0,
-                              runSpacing: 4.0,
-                              alignment: WrapAlignment.center,
-                              children: emojiList.map((emoji) {
-                                final isSelected = selectedIconKey == emoji;
-                                return GestureDetector(
-                                  onTap: () {
-                                    try {
-                                      SfxManager.instance.playTapSound();
-                                    } catch (_) {}
-                                    setStateDialog(
-                                      () => selectedIconKey = emoji,
-                                    );
-                                  },
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? Theme.of(
-                                              context,
-                                            ).primaryColor.withOpacity(0.15)
-                                          : Colors.transparent,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? Theme.of(context).primaryColor
-                                            : Colors.grey.shade300,
-                                        width: isSelected ? 2 : 1,
+                                if (initialPromise == null) ...[
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: DropdownButtonFormField<String>(
+                                      value: selectedPoints,
+                                      decoration: InputDecoration(
+                                        labelText: AppLocalizations.of(
+                                          context,
+                                        )!.points,
+                                        border: const OutlineInputBorder(),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 8,
+                                            ),
+                                      ),
+                                      items: pointOptions
+                                          .map(
+                                            (p) => DropdownMenuItem(
+                                              value: p,
+                                              child: Text(p),
+                                            ),
+                                          )
+                                          .toList(),
+                                      onChanged: (v) => setStateDialog(
+                                        () => selectedPoints = v!,
                                       ),
                                     ),
-                                    child: Text(
-                                      emoji,
-                                      style: const TextStyle(fontSize: 20),
-                                    ),
                                   ),
-                                );
-                              }).toList(),
+                                ],
+                              ],
                             ),
+                            if (initialPromise == null) ...[
+                              const SizedBox(height: 6),
+                              Wrap(
+                                spacing: 4.0,
+                                runSpacing: 4.0,
+                                alignment: WrapAlignment.center,
+                                children: emojiList.map((emoji) {
+                                  final isSelected = selectedIconKey == emoji;
+                                  return GestureDetector(
+                                    onTap: () {
+                                      try {
+                                        SfxManager.instance.playTapSound();
+                                      } catch (_) {}
+                                      setStateDialog(
+                                        () => selectedIconKey = emoji,
+                                      );
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 200,
+                                      ),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? Theme.of(
+                                                context,
+                                              ).primaryColor.withOpacity(0.15)
+                                            : Colors.transparent,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? Theme.of(context).primaryColor
+                                              : Colors.grey.shade300,
+                                          width: isSelected ? 2 : 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        emoji,
+                                        style: const TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
                           ],
 
                           const SizedBox(height: 6),

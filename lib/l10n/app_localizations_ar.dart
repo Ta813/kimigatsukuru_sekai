@@ -246,6 +246,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get editRegularPromiseTitle => 'تعديل الوعد';
 
   @override
+  String editRegularPromiseTitleWithName(String promiseName) {
+    return 'تعديل $promiseName';
+  }
+
+  @override
   String get promiseNameLabel => 'اسم الوعد';
 
   @override

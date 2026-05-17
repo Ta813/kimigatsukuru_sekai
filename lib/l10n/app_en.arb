@@ -117,6 +117,14 @@
   "finished": "Finished!",
   "addRegularPromiseTitle": "New Promise",
   "editRegularPromiseTitle": "Edit Promise",
+  "editRegularPromiseTitleWithName": "Edit {promiseName}",
+  "@editRegularPromiseTitleWithName": {
+    "placeholders": {
+      "promiseName": {
+        "type": "String"
+      }
+    }
+  },
   "promiseNameLabel": "Promise Name",
   "promiseNameHint": "Please enter a name for the promise",
   "startTimeLabel": "Start Time",

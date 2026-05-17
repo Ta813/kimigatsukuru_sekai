@@ -246,6 +246,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get editRegularPromiseTitle => 'वादा संपादित करें';
 
   @override
+  String editRegularPromiseTitleWithName(String promiseName) {
+    return '$promiseName संपादित करें';
+  }
+
+  @override
   String get promiseNameLabel => 'वादे का नाम';
 
   @override

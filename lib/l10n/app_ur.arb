@@ -117,6 +117,14 @@
   "finished": "مکمل ہو گیا!",
   "addRegularPromiseTitle": "نیا وعدہ",
   "editRegularPromiseTitle": "وعدہ تبدیل کریں",
+  "editRegularPromiseTitleWithName": "{promiseName} تبدیل کریں",
+  "@editRegularPromiseTitleWithName": {
+    "placeholders": {
+      "promiseName": {
+        "type": "String"
+      }
+    }
+  },
   "promiseNameLabel": "وعدے کا نام",
   "promiseNameHint": "براہ کرم وعدے کا نام درج کریں",
   "startTimeLabel": "شروع ہونے کا وقت",

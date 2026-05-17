@@ -117,6 +117,14 @@
   "finished": "انتهى!",
   "addRegularPromiseTitle": "وعد جديد",
   "editRegularPromiseTitle": "تعديل الوعد",
+  "editRegularPromiseTitleWithName": "تعديل {promiseName}",
+  "@editRegularPromiseTitleWithName": {
+    "placeholders": {
+      "promiseName": {
+        "type": "String"
+      }
+    }
+  },
   "promiseNameLabel": "اسم الوعد",
   "promiseNameHint": "يرجى إدخال اسم للوعد",
   "startTimeLabel": "وقت البدء",

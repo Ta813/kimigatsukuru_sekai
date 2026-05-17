@@ -246,6 +246,11 @@ class AppLocalizationsUr extends AppLocalizations {
   String get editRegularPromiseTitle => 'وعدہ تبدیل کریں';
 
   @override
+  String editRegularPromiseTitleWithName(String promiseName) {
+    return '$promiseName تبدیل کریں';
+  }
+
+  @override
   String get promiseNameLabel => 'وعدے کا نام';
 
   @override

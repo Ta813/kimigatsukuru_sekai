@@ -117,6 +117,14 @@
   "finished": "हो गया!",
   "addRegularPromiseTitle": "नया वादा",
   "editRegularPromiseTitle": "वादा संपादित करें",
+  "editRegularPromiseTitleWithName": "{promiseName} संपादित करें",
+  "@editRegularPromiseTitleWithName": {
+    "placeholders": {
+      "promiseName": {
+        "type": "String"
+      }
+    }
+  },
   "promiseNameLabel": "वादे का नाम",
   "promiseNameHint": "कृपया वादे के लिए एक नाम दर्ज करें",
   "startTimeLabel": "शुरू करने का समय",

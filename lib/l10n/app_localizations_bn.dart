@@ -246,6 +246,11 @@ class AppLocalizationsBn extends AppLocalizations {
   String get editRegularPromiseTitle => 'প্রতিশ্রুতি সম্পাদনা';
 
   @override
+  String editRegularPromiseTitleWithName(String promiseName) {
+    return '$promiseName সম্পাদনা';
+  }
+
+  @override
   String get promiseNameLabel => 'প্রতিশ্রুতির নাম';
 
   @override

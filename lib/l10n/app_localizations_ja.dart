@@ -246,6 +246,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get editRegularPromiseTitle => 'やくそくを編集';
 
   @override
+  String editRegularPromiseTitleWithName(String promiseName) {
+    return '$promiseNameを編集';
+  }
+
+  @override
   String get promiseNameLabel => 'やくそくの名前';
 
   @override

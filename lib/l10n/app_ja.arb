@@ -117,6 +117,14 @@
   "finished": "おわった！",
   "addRegularPromiseTitle": "新しいやくそく",
   "editRegularPromiseTitle": "やくそくを編集",
+  "editRegularPromiseTitleWithName": "{promiseName}を編集",
+  "@editRegularPromiseTitleWithName": {
+    "placeholders": {
+      "promiseName": {
+        "type": "String"
+      }
+    }
+  },
   "promiseNameLabel": "やくそくの名前",
   "promiseNameHint": "やくそくの名前を入力してください",
   "startTimeLabel": "開始時間",

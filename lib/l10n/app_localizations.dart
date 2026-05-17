@@ -553,6 +553,12 @@ abstract class AppLocalizations {
   /// **'Edit Promise'**
   String get editRegularPromiseTitle;
 
+  /// No description provided for @editRegularPromiseTitleWithName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {promiseName}'**
+  String editRegularPromiseTitleWithName(String promiseName);
+
   /// No description provided for @promiseNameLabel.
   ///
   /// In en, this message translates to:
