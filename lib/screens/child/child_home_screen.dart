@@ -310,6 +310,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
+      // 🌟 自分がカレント画面の場合のみBGMを操作する。
+      // TimerScreen等が上に乗っている場合は何もしない（フォーカスBGMを上書きしない）
       if (ModalRoute.of(context)?.isCurrent ?? false) {
         _handleAppResumed();
       }
