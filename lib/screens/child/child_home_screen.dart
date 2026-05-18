@@ -42,6 +42,7 @@ import '../../widgets/speech_bubble.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../widgets/avatar_display.dart';
 import '../../widgets/animated_tap_finger.dart';
+import 'package:kimigatsukuru_sekai/managers/reward_ad_manager.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   final bool isInitialSetup;
@@ -396,6 +397,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (!PurchaseManager.instance.isPremium.value) {
       try {
         await MobileAds.instance.initialize();
+        // 🌟 アプリ起動時にリワード広告をあらかじめ読み込んでおく
+        RewardAdManager.instance.loadAd();
       } catch (e) {}
     }
   }

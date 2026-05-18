@@ -1,13 +1,13 @@
 // lib/screens/point_addition_screen.dart
 
 import 'dart:async'; // 🌟 追加: タイマー処理用
-import 'dart:io';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kimigatsukuru_sekai/l10n/app_localizations.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/custom_back_button.dart';
+import '../../managers/reward_ad_manager.dart';
 
 class PointAdditionScreen extends StatefulWidget {
   const PointAdditionScreen({super.key});
@@ -22,31 +22,21 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
   bool _isAfternoonClaimed = false;
   bool _isNightClaimed = false;
 
-  RewardedAd? _rewardedAd;
-  bool _isAdLoading = false;
-
   // 🌟 追加: カウントダウン用のタイマーと文字列
   Timer? _countdownTimer;
   String _timeUntilNextSlot = '';
-
-  // テスト用広告ID（リリース時は本番用に書き換えてください）
-  final String _adUnitId = Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/5224354917'
-      : 'ca-app-pub-3940256099942544/1712485313';
 
   @override
   void initState() {
     super.initState();
     FirebaseAnalytics.instance.logEvent(name: 'point_addition_screen_show');
     _loadData();
-    _loadRewardedAd();
     _startCountdown(); // 🌟 追加: カウントダウン開始
   }
 
   @override
   void dispose() {
     _countdownTimer?.cancel(); // 🌟 追加: 画面を閉じる時にタイマーを破棄
-    _rewardedAd?.dispose();
     super.dispose();
   }
 
@@ -104,30 +94,6 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
     });
   }
 
-  void _loadRewardedAd() {
-    setState(() => _isAdLoading = true);
-    RewardedAd.load(
-      adUnitId: _adUnitId,
-      request: const AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (ad) {
-          debugPrint('リワード広告の読み込み完了');
-          setState(() {
-            _rewardedAd = ad;
-            _isAdLoading = false;
-          });
-        },
-        onAdFailedToLoad: (error) {
-          debugPrint('リワード広告の読み込み失敗: $error');
-          setState(() {
-            _rewardedAd = null;
-            _isAdLoading = false;
-          });
-        },
-      ),
-    );
-  }
-
   // 現在の時間帯を取得
   String _getCurrentSlot() {
     final hour = DateTime.now().hour;
@@ -146,11 +112,17 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
 
   // 広告を再生して報酬を付与する
   void _showRewardedAd() {
-    if (_rewardedAd == null) {
+    // 広告ロードエラーがある場合は再読み込みを試みる
+    if (RewardAdManager.instance.hasLoadError) {
+      RewardAdManager.instance.loadAd();
+      return;
+    }
+
+    if (!RewardAdManager.instance.isAdAvailable) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('広告をじゅんび中です。少し待ってからもう一度おしてね！')),
       );
-      _loadRewardedAd();
+      RewardAdManager.instance.loadAd();
       return;
     }
 
@@ -158,16 +130,15 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
       SfxManager.instance.playTapSound();
     } catch (_) {}
 
-    _rewardedAd!.show(
-      onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
-        // 🌟 報酬付与（50ポイント）
+    // 🌟 マネージャー経由で広告を表示
+    RewardAdManager.instance.showAd(
+      onRewardEarned: () async {
+        // --- 🌟 報酬付与ロジック (既存のものをそのまま保持) ---
         try {
           SfxManager.instance.playSuccessSound();
         } catch (_) {}
-
         final slot = _getCurrentSlot();
         await SharedPrefsHelper.setRewardClaimed(slot);
-
         final newPoints = _currentPoints + 50;
         await SharedPrefsHelper.savePoints(newPoints);
         await SharedPrefsHelper.addCumulativePoints(50);
@@ -184,17 +155,10 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
           );
           _loadData();
         }
+        // --------------------------------------------------
       },
-    );
-
-    _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (ad) {
-        ad.dispose();
-        _loadRewardedAd(); // 次のために読み込んでおく
-      },
-      onAdFailedToShowFullScreenContent: (ad, error) {
-        ad.dispose();
-        _loadRewardedAd();
+      onAdClosed: () {
+        if (mounted) setState(() {});
       },
     );
   }
@@ -209,8 +173,12 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
 
     // 🌟 変更: ボタンのテキストを修正
     if (isClaimed) {
-      buttonText = 'つぎの時間まで $_timeUntilNextSlot';
-    } else if (_isAdLoading) {
+      buttonText = 'つぎの 時間まで $_timeUntilNextSlot';
+    } else if (RewardAdManager.instance.hasLoadError) {
+      buttonText = '広告を再読み込みする';
+      isButtonEnabled = true;
+    } else if (RewardAdManager.instance.isLoading ||
+        !RewardAdManager.instance.isAdAvailable) {
       buttonText = '広告じゅんび中';
     } else {
       buttonText = '動画を見て 50P ゲット！';
@@ -229,13 +197,17 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: Center(
-              child: Text(
-                '$_currentPoints P',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFFF7043),
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    '$_currentPoints ${AppLocalizations.of(context)?.points ?? "P"}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -343,7 +315,7 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
               // ② 今後の課金アイテムセクション (Coming Soon)
               // ==========================================
               const Text(
-                '💎 ポイントをかう（ショップ）',
+                '💎 ポイントブースト（ショップ）',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
