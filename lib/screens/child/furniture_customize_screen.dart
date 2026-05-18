@@ -1,6 +1,7 @@
 // lib/screens/child/furniture_customize_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/screens/point_addition_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -246,10 +247,83 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
 
     // 購入確認ダイアログ
     if (_currentPoints < item.price) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.shopNotEnoughPoints),
-          duration: const Duration(seconds: 1),
+      // 🌟 変更: ポイント不足時に、ポイント追加画面への誘導ダイアログを表示
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            AppLocalizations.of(context)!.shopNotEnoughPoints, // 「ポイントが足りないよ！」等
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.orange,
+            ),
+          ),
+          content: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF3E0),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: const Color(0xFFFF7043).withOpacity(0.5),
+                width: 2,
+              ),
+            ),
+            child: const Text(
+              '「やくそく」をクリアするか、動画をみてポイントをゲットしよう！',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.5,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.spaceEvenly,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('あとで', style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (_) {}
+                FirebaseAnalytics.instance.logEvent(
+                  name: 'open_point_addition_from_shop',
+                );
+                Navigator.pop(context); // ダイアログを閉じる
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PointAdditionScreen(),
+                  ),
+                ).then((_) {
+                  // ポイント追加画面から戻ってきたらポイントを再読み込み
+                  _loadEquippedItems();
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF7043),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add_circle, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    'ポイントをふやす',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       );
       return;

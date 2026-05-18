@@ -1001,6 +1001,16 @@ class SharedPrefsHelper {
     80000,
     90000,
     100000,
+    110000,
+    120000,
+    130000,
+    140000,
+    150000,
+    160000,
+    170000,
+    180000,
+    190000,
+    200000,
   ];
 
   // --- 買い物回数の管理 ---
@@ -1388,5 +1398,21 @@ class SharedPrefsHelper {
   static Future<String?> loadIgnoredUpdateVersion() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_ignoredUpdateVersionKey);
+  }
+
+  // ==============================================================
+  // 🌟 追加: リワード広告の視聴状態を管理
+  // ==============================================================
+  static Future<bool> isRewardClaimed(String slot) async {
+    final prefs = await SharedPreferences.getInstance();
+    // 今日のみ有効なキーを作成（例: reward_2026-05-18_morning）
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    return prefs.getBool('reward_${today}_$slot') ?? false;
+  }
+
+  static Future<void> setRewardClaimed(String slot) async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    await prefs.setBool('reward_${today}_$slot', true);
   }
 }

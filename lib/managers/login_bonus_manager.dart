@@ -8,7 +8,7 @@ import '../widgets/login_bonus_stamp_card.dart';
 class LoginBonusManager {
   // 💡 日数に応じて付与するポイントを返す関数
   int _getPointsForDay(int day) {
-    if (day == 7) return 200;
+    if (day == 7) return 300;
     if (day == 3) return 80;
     return 20; // 基本ポイント
   }

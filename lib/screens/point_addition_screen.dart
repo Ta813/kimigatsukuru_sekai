@@ -1,0 +1,385 @@
+// lib/screens/point_addition_screen.dart
+
+import 'dart:io';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../../helpers/shared_prefs_helper.dart';
+import '../../managers/sfx_manager.dart';
+import '../../widgets/custom_back_button.dart';
+
+class PointAdditionScreen extends StatefulWidget {
+  const PointAdditionScreen({super.key});
+
+  @override
+  State<PointAdditionScreen> createState() => _PointAdditionScreenState();
+}
+
+class _PointAdditionScreenState extends State<PointAdditionScreen> {
+  int _currentPoints = 0;
+  bool _isMorningClaimed = false;
+  bool _isAfternoonClaimed = false;
+  bool _isNightClaimed = false;
+
+  RewardedAd? _rewardedAd;
+  bool _isAdLoading = false;
+
+  // テスト用広告ID（リリース時は本番用に書き換えてください）
+  final String _adUnitId = Platform.isAndroid
+      ? 'ca-app-pub-3940256099942544/5224354917'
+      : 'ca-app-pub-3940256099942544/1712485313';
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAnalytics.instance.logEvent(name: 'point_addition_screen_show');
+    _loadData();
+    _loadRewardedAd();
+  }
+
+  @override
+  void dispose() {
+    _rewardedAd?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadData() async {
+    final points = await SharedPrefsHelper.loadPoints();
+    final morning = await SharedPrefsHelper.isRewardClaimed('morning');
+    final afternoon = await SharedPrefsHelper.isRewardClaimed('afternoon');
+    final night = await SharedPrefsHelper.isRewardClaimed('night');
+
+    setState(() {
+      _currentPoints = points;
+      _isMorningClaimed = morning;
+      _isAfternoonClaimed = afternoon;
+      _isNightClaimed = night;
+    });
+  }
+
+  void _loadRewardedAd() {
+    setState(() => _isAdLoading = true);
+    RewardedAd.load(
+      adUnitId: _adUnitId,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          debugPrint('リワード広告の読み込み完了');
+          setState(() {
+            _rewardedAd = ad;
+            _isAdLoading = false;
+          });
+        },
+        onAdFailedToLoad: (error) {
+          debugPrint('リワード広告の読み込み失敗: $error');
+          setState(() {
+            _rewardedAd = null;
+            _isAdLoading = false;
+          });
+        },
+      ),
+    );
+  }
+
+  // 現在の時間帯を取得
+  String _getCurrentSlot() {
+    final hour = DateTime.now().hour;
+    if (hour >= 0 && hour < 12) return 'morning'; // 0:00〜11:59
+    if (hour >= 12 && hour < 18) return 'afternoon'; // 12:00〜17:59
+    return 'night'; // 18:00〜23:59
+  }
+
+  // 現在の時間帯の視聴状態を確認
+  bool _isCurrentSlotClaimed() {
+    final slot = _getCurrentSlot();
+    if (slot == 'morning') return _isMorningClaimed;
+    if (slot == 'afternoon') return _isAfternoonClaimed;
+    return _isNightClaimed;
+  }
+
+  // 広告を再生して報酬を付与する
+  void _showRewardedAd() {
+    if (_rewardedAd == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('広告をじゅんび中です。少し待ってからもう一度おしてね！')),
+      );
+      _loadRewardedAd();
+      return;
+    }
+
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (_) {}
+
+    _rewardedAd!.show(
+      onUserEarnedReward: (AdWithoutView ad, RewardItem reward) async {
+        // 🌟 報酬付与（50ポイント）
+        try {
+          SfxManager.instance.playSuccessSound();
+        } catch (_) {}
+
+        final slot = _getCurrentSlot();
+        await SharedPrefsHelper.setRewardClaimed(slot);
+
+        final newPoints = _currentPoints + 50;
+        await SharedPrefsHelper.savePoints(newPoints);
+        await SharedPrefsHelper.addCumulativePoints(50);
+
+        FirebaseAnalytics.instance.logEvent(name: 'reward_ad_claimed_{$slot}');
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('50ポイント ゲットしたよ！✨'),
+              backgroundColor: Colors.orange,
+              duration: Duration(seconds: 2),
+            ),
+          );
+          _loadData();
+        }
+      },
+    );
+
+    _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        _loadRewardedAd(); // 次のために読み込んでおく
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        _loadRewardedAd();
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentSlot = _getCurrentSlot();
+    final isClaimed = _isCurrentSlotClaimed();
+
+    String buttonText;
+    bool isButtonEnabled = false;
+
+    if (isClaimed) {
+      buttonText = 'つぎの じかんまで まってね！';
+    } else if (_isAdLoading) {
+      buttonText = 'じゅんび中...';
+    } else {
+      buttonText = '動画を見て 50P ゲット！';
+      isButtonEnabled = true;
+    }
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      appBar: AppBar(
+        leading: const CustomBackButton(),
+        title: const Text(
+          'ポイントをふやす',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: Center(
+              child: Text(
+                '$_currentPoints P',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFF7043),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // ==========================================
+              // ① リワード広告セクション
+              // ==========================================
+              const Text(
+                '📺 1日3回！無料でポイントゲット',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildSlotIndicator(
+                            'あさ',
+                            '🌅',
+                            _isMorningClaimed,
+                            currentSlot == 'morning',
+                          ),
+                          _buildSlotIndicator(
+                            'ひる',
+                            '☀️',
+                            _isAfternoonClaimed,
+                            currentSlot == 'afternoon',
+                          ),
+                          _buildSlotIndicator(
+                            'よる',
+                            '🌙',
+                            _isNightClaimed,
+                            currentSlot == 'night',
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton(
+                        onPressed: isButtonEnabled ? _showRewardedAd : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF7043),
+                          disabledBackgroundColor: Colors.grey[300],
+                          foregroundColor: Colors.white,
+                          disabledForegroundColor: Colors.grey[600],
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 24,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: isButtonEnabled ? 4 : 0,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (isButtonEnabled) ...[
+                              const Icon(Icons.play_circle_fill, size: 24),
+                              const SizedBox(width: 8),
+                            ],
+                            Text(
+                              buttonText,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              // ==========================================
+              // ② 今後の課金アイテムセクション (Coming Soon)
+              // ==========================================
+              const Text(
+                '💎 ポイントをかう（ショップ）',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Opacity(
+                opacity: 0.6,
+                child: Card(
+                  color: Colors.grey[200],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.storefront,
+                            size: 48,
+                            color: Colors.grey[500],
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'じゅんびちゅう',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'これからアイテムが ふえるよ！\nたのしみに まっててね！',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 時間帯のステータスアイコンを作るウィジェット
+  Widget _buildSlotIndicator(
+    String label,
+    String emoji,
+    bool isClaimed,
+    bool isCurrent,
+  ) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: isCurrent ? const Color(0xFFFF7043) : Colors.black54,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: isClaimed
+                ? Colors.grey[200]
+                : (isCurrent ? const Color(0xFFFFF3E0) : Colors.white),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: isCurrent ? const Color(0xFFFF7043) : Colors.grey[300]!,
+              width: isCurrent ? 3 : 1,
+            ),
+          ),
+          child: Center(
+            child: isClaimed
+                ? const Icon(Icons.check_circle, color: Colors.green, size: 32)
+                : Text(emoji, style: const TextStyle(fontSize: 28)),
+          ),
+        ),
+      ],
+    );
+  }
+}

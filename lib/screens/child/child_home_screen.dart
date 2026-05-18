@@ -13,6 +13,7 @@ import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/initial_setup_coordinator.dart';
+import 'package:kimigatsukuru_sekai/screens/point_addition_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
@@ -2030,7 +2031,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            width: 600,
+                            width: 650,
                             child: Row(
                               children: [
                                 Expanded(
@@ -2183,7 +2184,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   color: Colors.grey.withOpacity(0.3),
                                 ),
                                 Expanded(
-                                  flex: 2,
+                                  flex: 3,
                                   child: Stack(
                                     alignment: Alignment.centerLeft,
                                     clipBehavior: Clip.none,
@@ -2203,6 +2204,41 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                               style: const TextStyle(
                                                 fontSize: 17,
                                                 fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            GestureDetector(
+                                              onTap: () {
+                                                try {
+                                                  SfxManager.instance
+                                                      .playTapSound();
+                                                } catch (_) {}
+                                                FirebaseAnalytics.instance.logEvent(
+                                                  name:
+                                                      'open_point_addition_home',
+                                                );
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const PointAdditionScreen(),
+                                                  ),
+                                                ).then((_) {
+                                                  _loadAndDetermineDisplayPromise();
+                                                });
+                                              },
+                                              child: Container(
+                                                width: 20, // 🌟 明示的にサイズを指定
+                                                height: 20,
+                                                decoration: const BoxDecoration(
+                                                  color: Color(0xFFFF7043),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: const Icon(
+                                                  Icons.add,
+                                                  color: Colors.white,
+                                                  size: 14,
+                                                ),
                                               ),
                                             ),
                                           ],

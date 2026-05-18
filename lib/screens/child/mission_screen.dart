@@ -189,7 +189,7 @@ class _MissionScreenState extends State<MissionScreen>
       MissionItem(
         id: 'daily_customize_$todayStr',
         title: l10n.missionTitleDailyCustomize,
-        rewardPoints: 20,
+        rewardPoints: 10,
         isCompleted: isCustomizeDone,
         isClaimed: claimedIds.contains('daily_customize_$todayStr'),
         category: MissionCategory.daily,
@@ -199,7 +199,7 @@ class _MissionScreenState extends State<MissionScreen>
       MissionItem(
         id: 'daily_shop_$todayStr',
         title: l10n.missionTitleDailyShop,
-        rewardPoints: 20,
+        rewardPoints: 10,
         isCompleted: isShopDone,
         isClaimed: claimedIds.contains('daily_shop_$todayStr'),
         category: MissionCategory.daily,
