@@ -1,5 +1,6 @@
 // lib/screens/point_addition_screen.dart
 
+import 'dart:async'; // 🌟 追加: タイマー処理用
 import 'dart:io';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,10 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
   RewardedAd? _rewardedAd;
   bool _isAdLoading = false;
 
+  // 🌟 追加: カウントダウン用のタイマーと文字列
+  Timer? _countdownTimer;
+  String _timeUntilNextSlot = '';
+
   // テスト用広告ID（リリース時は本番用に書き換えてください）
   final String _adUnitId = Platform.isAndroid
       ? 'ca-app-pub-3940256099942544/5224354917'
@@ -35,12 +40,54 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
     FirebaseAnalytics.instance.logEvent(name: 'point_addition_screen_show');
     _loadData();
     _loadRewardedAd();
+    _startCountdown(); // 🌟 追加: カウントダウン開始
   }
 
   @override
   void dispose() {
+    _countdownTimer?.cancel(); // 🌟 追加: 画面を閉じる時にタイマーを破棄
     _rewardedAd?.dispose();
     super.dispose();
+  }
+
+  // 🌟 追加: 1秒ごとに残り時間を計算するメソッド
+  void _startCountdown() {
+    _updateCountdown();
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateCountdown();
+    });
+  }
+
+  // 🌟 追加: 次の時間帯までの計算ロジック
+  void _updateCountdown() {
+    final now = DateTime.now();
+    DateTime nextTarget;
+
+    if (now.hour >= 0 && now.hour < 12) {
+      // 現在が朝なら、次は12:00
+      nextTarget = DateTime(now.year, now.month, now.day, 12, 0, 0);
+    } else if (now.hour >= 12 && now.hour < 18) {
+      // 現在が昼なら、次は18:00
+      nextTarget = DateTime(now.year, now.month, now.day, 18, 0, 0);
+    } else {
+      // 現在が夜なら、次は翌日の0:00
+      nextTarget = DateTime(now.year, now.month, now.day + 1, 0, 0, 0);
+    }
+
+    final diff = nextTarget.difference(now);
+    final hours = diff.inHours.toString().padLeft(2, '0');
+    final minutes = (diff.inMinutes % 60).toString().padLeft(2, '0');
+    final seconds = (diff.inSeconds % 60).toString().padLeft(2, '0');
+
+    if (mounted) {
+      setState(() {
+        _timeUntilNextSlot = '$hours:$minutes:$seconds';
+      });
+      // ちょうど時間が切り替わった時に状態をリロードしてボタンを復活させる
+      if (diff.inSeconds == 0) {
+        _loadData();
+      }
+    }
   }
 
   Future<void> _loadData() async {
@@ -125,7 +172,7 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
         await SharedPrefsHelper.savePoints(newPoints);
         await SharedPrefsHelper.addCumulativePoints(50);
 
-        FirebaseAnalytics.instance.logEvent(name: 'reward_ad_claimed_{$slot}');
+        FirebaseAnalytics.instance.logEvent(name: 'reward_ad_claimed_$slot');
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -160,10 +207,11 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
     String buttonText;
     bool isButtonEnabled = false;
 
+    // 🌟 変更: ボタンのテキストを修正
     if (isClaimed) {
-      buttonText = 'つぎの じかんまで まってね！';
+      buttonText = 'つぎの時間まで $_timeUntilNextSlot';
     } else if (_isAdLoading) {
-      buttonText = 'じゅんび中...';
+      buttonText = '広告じゅんび中';
     } else {
       buttonText = '動画を見て 50P ゲット！';
       isButtonEnabled = true;
@@ -268,11 +316,17 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
                               const Icon(Icons.play_circle_fill, size: 24),
                               const SizedBox(width: 8),
                             ],
-                            Text(
-                              buttonText,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                            // 🌟 変更: カウントダウンが長いのでテキストがはみ出さないように FittedBox で囲む
+                            Flexible(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  buttonText,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
