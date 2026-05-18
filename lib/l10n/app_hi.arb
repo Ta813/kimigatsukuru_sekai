@@ -841,5 +841,29 @@
       "time": { "type": "String" }
     }
   },
-  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!"
+  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
+  "pointAdditionTitle": "पॉइंट्स जोड़ें",
+  "pointAdditionAdTitle": "📺 दिन में 3 बार मुफ़्त पॉइंट्स पाएं!",
+  "pointAdditionAdButton": "वीडियो देखें और 50P पाएं!",
+  "pointAdditionAdLoading": "विज्ञापन लोड हो रहा है...",
+  "pointAdditionAdError": "विज्ञापन पुनः लोड करें",
+  "pointAdditionNextSlot": "अगला मौका {time} में",
+  "@pointAdditionNextSlot": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pointAdditionSlotMorning": "सुबह",
+  "pointAdditionSlotAfternoon": "दोपहर",
+  "pointAdditionSlotNight": "रात",
+  "pointAdditionRewardSuccess": "आपको 50 पॉइंट्स मिले! ✨",
+  "pointAdditionNotReadyMsg": "विज्ञापन तैयार हो रहा है। कृपया कुछ देर बाद फिर प्रयास करें!",
+  "pointAdditionShopTitle": "💎 पॉइंट्स खरीदें (दुकान)",
+  "pointAdditionShopComingSoon": "जल्द आ रहा है",
+  "pointAdditionShopComingSoonDesc": "बाद में और आइटम जोड़े जाएंगे!\nकृपया प्रतीक्षा करें!",
+  "shopNotEnoughPointsDesc": "पॉइंट्स पाने के लिए 'वादे' पूरे करें या वीडियो देखें!",
+  "laterAction": "बाद में",
+  "itemNone": "कोई नहीं"
 }

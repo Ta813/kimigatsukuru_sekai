@@ -3876,6 +3876,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!'**
   String get initialSetupGuidance;
+
+  /// No description provided for @pointAdditionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Points'**
+  String get pointAdditionTitle;
+
+  /// No description provided for @pointAdditionAdTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'📺 Get points for free 3 times a day!'**
+  String get pointAdditionAdTitle;
+
+  /// No description provided for @pointAdditionAdButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch video to get 50P!'**
+  String get pointAdditionAdButton;
+
+  /// No description provided for @pointAdditionAdLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading Ad...'**
+  String get pointAdditionAdLoading;
+
+  /// No description provided for @pointAdditionAdError.
+  ///
+  /// In en, this message translates to:
+  /// **'Reload Ad'**
+  String get pointAdditionAdError;
+
+  /// No description provided for @pointAdditionNextSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Next chance in {time}'**
+  String pointAdditionNextSlot(String time);
+
+  /// No description provided for @pointAdditionSlotMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning'**
+  String get pointAdditionSlotMorning;
+
+  /// No description provided for @pointAdditionSlotAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Noon'**
+  String get pointAdditionSlotAfternoon;
+
+  /// No description provided for @pointAdditionSlotNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Night'**
+  String get pointAdditionSlotNight;
+
+  /// No description provided for @pointAdditionRewardSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'You got 50 points! ✨'**
+  String get pointAdditionRewardSuccess;
+
+  /// No description provided for @pointAdditionNotReadyMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad is preparing. Please try again later!'**
+  String get pointAdditionNotReadyMsg;
+
+  /// No description provided for @pointAdditionShopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'💎 Buy Points (Shop)'**
+  String get pointAdditionShopTitle;
+
+  /// No description provided for @pointAdditionShopComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming Soon'**
+  String get pointAdditionShopComingSoon;
+
+  /// No description provided for @pointAdditionShopComingSoonDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'More items will be added later!\nPlease look forward to it!'**
+  String get pointAdditionShopComingSoonDesc;
+
+  /// No description provided for @shopNotEnoughPointsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete \'Promises\' or watch a video to get points!'**
+  String get shopNotEnoughPointsDesc;
+
+  /// No description provided for @laterAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get laterAction;
+
+  /// No description provided for @itemNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get itemNone;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

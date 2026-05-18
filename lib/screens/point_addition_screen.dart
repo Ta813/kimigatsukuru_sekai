@@ -120,7 +120,9 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
 
     if (!RewardAdManager.instance.isAdAvailable) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('広告をじゅんび中です。少し待ってからもう一度おしてね！')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pointAdditionNotReadyMsg),
+        ),
       );
       RewardAdManager.instance.loadAd();
       return;
@@ -147,10 +149,12 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('50ポイント ゲットしたよ！✨'),
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.pointAdditionRewardSuccess,
+              ),
               backgroundColor: Colors.orange,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           );
           _loadData();
@@ -173,15 +177,17 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
 
     // 🌟 変更: ボタンのテキストを修正
     if (isClaimed) {
-      buttonText = 'つぎの 時間まで $_timeUntilNextSlot';
+      buttonText = AppLocalizations.of(
+        context,
+      )!.pointAdditionNextSlot(_timeUntilNextSlot);
     } else if (RewardAdManager.instance.hasLoadError) {
-      buttonText = '広告を再読み込みする';
+      buttonText = AppLocalizations.of(context)!.pointAdditionAdError;
       isButtonEnabled = true;
     } else if (RewardAdManager.instance.isLoading ||
         !RewardAdManager.instance.isAdAvailable) {
-      buttonText = '広告じゅんび中';
+      buttonText = AppLocalizations.of(context)!.pointAdditionAdLoading;
     } else {
-      buttonText = '動画を見て 50P ゲット！';
+      buttonText = AppLocalizations.of(context)!.pointAdditionAdButton;
       isButtonEnabled = true;
     }
 
@@ -189,9 +195,9 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
       backgroundColor: const Color(0xFFFFF3E0),
       appBar: AppBar(
         leading: const CustomBackButton(),
-        title: const Text(
-          'ポイントをふやす',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          AppLocalizations.of(context)!.pointAdditionTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
           Padding(
@@ -222,9 +228,9 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
               // ==========================================
               // ① リワード広告セクション
               // ==========================================
-              const Text(
-                '📺 1日3回！無料でポイントゲット',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.pointAdditionAdTitle,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
@@ -244,19 +250,25 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           _buildSlotIndicator(
-                            'あさ',
+                            AppLocalizations.of(
+                              context,
+                            )!.pointAdditionSlotMorning,
                             '🌅',
                             _isMorningClaimed,
                             currentSlot == 'morning',
                           ),
                           _buildSlotIndicator(
-                            'ひる',
+                            AppLocalizations.of(
+                              context,
+                            )!.pointAdditionSlotAfternoon,
                             '☀️',
                             _isAfternoonClaimed,
                             currentSlot == 'afternoon',
                           ),
                           _buildSlotIndicator(
-                            'よる',
+                            AppLocalizations.of(
+                              context,
+                            )!.pointAdditionSlotNight,
                             '🌙',
                             _isNightClaimed,
                             currentSlot == 'night',
@@ -314,9 +326,9 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
               // ==========================================
               // ② 今後の課金アイテムセクション (Coming Soon)
               // ==========================================
-              const Text(
-                '💎 ポイントブースト（ショップ）',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.pointAdditionShopTitle,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
@@ -342,19 +354,26 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
                             color: Colors.grey[500],
                           ),
                           const SizedBox(height: 12),
-                          const Text(
-                            'じゅんびちゅう',
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.pointAdditionShopComingSoon,
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.grey,
                             ),
                           ),
                           const SizedBox(height: 8),
-                          const Text(
-                            'これからアイテムが ふえるよ！\nたのしみに まっててね！',
+                          Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.pointAdditionShopComingSoonDesc,
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
                           ),
                         ],
                       ),

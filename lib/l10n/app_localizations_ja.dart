@@ -1968,4 +1968,57 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get initialSetupGuidance => 'ご家庭の せいかつリズムに あわせて\n毎日おこなう 「やくそく」の じかんを 設定してね！';
+
+  @override
+  String get pointAdditionTitle => 'ポイントをふやす';
+
+  @override
+  String get pointAdditionAdTitle => '📺 1日3回！無料でポイントゲット';
+
+  @override
+  String get pointAdditionAdButton => '動画を見て 50P ゲット！';
+
+  @override
+  String get pointAdditionAdLoading => '広告じゅんび中';
+
+  @override
+  String get pointAdditionAdError => '広告を再読み込みする';
+
+  @override
+  String pointAdditionNextSlot(String time) {
+    return 'つぎの 時間まで $time';
+  }
+
+  @override
+  String get pointAdditionSlotMorning => 'あさ';
+
+  @override
+  String get pointAdditionSlotAfternoon => 'ひる';
+
+  @override
+  String get pointAdditionSlotNight => 'よる';
+
+  @override
+  String get pointAdditionRewardSuccess => '50ポイント ゲットしたよ！✨';
+
+  @override
+  String get pointAdditionNotReadyMsg => '広告をじゅんび中です。少し待ってからもう一度おしてね！';
+
+  @override
+  String get pointAdditionShopTitle => '💎 ポイントブースト（ショップ）';
+
+  @override
+  String get pointAdditionShopComingSoon => 'じゅんびちゅう';
+
+  @override
+  String get pointAdditionShopComingSoonDesc => 'これからアイテムが ふえるよ！\nたのしみに まっててね！';
+
+  @override
+  String get shopNotEnoughPointsDesc => '「やくそく」をクリアするか、動画をみてポイントをゲットしよう！';
+
+  @override
+  String get laterAction => 'あとで';
+
+  @override
+  String get itemNone => 'なし';
 }

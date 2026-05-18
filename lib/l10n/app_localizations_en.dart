@@ -1968,4 +1968,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
+
+  @override
+  String get pointAdditionTitle => 'Add Points';
+
+  @override
+  String get pointAdditionAdTitle => '📺 Get points for free 3 times a day!';
+
+  @override
+  String get pointAdditionAdButton => 'Watch video to get 50P!';
+
+  @override
+  String get pointAdditionAdLoading => 'Loading Ad...';
+
+  @override
+  String get pointAdditionAdError => 'Reload Ad';
+
+  @override
+  String pointAdditionNextSlot(String time) {
+    return 'Next chance in $time';
+  }
+
+  @override
+  String get pointAdditionSlotMorning => 'Morning';
+
+  @override
+  String get pointAdditionSlotAfternoon => 'Noon';
+
+  @override
+  String get pointAdditionSlotNight => 'Night';
+
+  @override
+  String get pointAdditionRewardSuccess => 'You got 50 points! ✨';
+
+  @override
+  String get pointAdditionNotReadyMsg => 'Ad is preparing. Please try again later!';
+
+  @override
+  String get pointAdditionShopTitle => '💎 Buy Points (Shop)';
+
+  @override
+  String get pointAdditionShopComingSoon => 'Coming Soon';
+
+  @override
+  String get pointAdditionShopComingSoonDesc => 'More items will be added later!\nPlease look forward to it!';
+
+  @override
+  String get shopNotEnoughPointsDesc => 'Complete \'Promises\' or watch a video to get points!';
+
+  @override
+  String get laterAction => 'Later';
+
+  @override
+  String get itemNone => 'None';
 }

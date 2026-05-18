@@ -887,5 +887,29 @@
       "time": { "type": "String" }
     }
   },
-  "initialSetupGuidance": "ご家庭の せいかつリズムに あわせて\n毎日おこなう 「やくそく」の じかんを 設定してね！"
+  "initialSetupGuidance": "ご家庭の せいかつリズムに あわせて\n毎日おこなう 「やくそく」の じかんを 設定してね！",
+  "pointAdditionTitle": "ポイントをふやす",
+  "pointAdditionAdTitle": "📺 1日3回！無料でポイントゲット",
+  "pointAdditionAdButton": "動画を見て 50P ゲット！",
+  "pointAdditionAdLoading": "広告じゅんび中",
+  "pointAdditionAdError": "広告を再読み込みする",
+  "pointAdditionNextSlot": "つぎの 時間まで {time}",
+  "@pointAdditionNextSlot": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pointAdditionSlotMorning": "あさ",
+  "pointAdditionSlotAfternoon": "ひる",
+  "pointAdditionSlotNight": "よる",
+  "pointAdditionRewardSuccess": "50ポイント ゲットしたよ！✨",
+  "pointAdditionNotReadyMsg": "広告をじゅんび中です。少し待ってからもう一度おしてね！",
+  "pointAdditionShopTitle": "💎 ポイントブースト（ショップ）",
+  "pointAdditionShopComingSoon": "じゅんびちゅう",
+  "pointAdditionShopComingSoonDesc": "これからアイテムが ふえるよ！\nたのしみに まっててね！",
+  "shopNotEnoughPointsDesc": "「やくそく」をクリアするか、動画をみてポイントをゲットしよう！",
+  "laterAction": "あとで",
+  "itemNone": "なし"
 }

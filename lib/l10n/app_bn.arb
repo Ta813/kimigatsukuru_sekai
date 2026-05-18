@@ -886,5 +886,29 @@
       "time": { "type": "String" }
     }
   },
-  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!"
+  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
+  "pointAdditionTitle": "পয়েন্ট যোগ করুন",
+  "pointAdditionAdTitle": "📺 দিনে 3 বার বিনামূল্যে পয়েন্ট পান!",
+  "pointAdditionAdButton": "ভিডিও দেখুন এবং 50P পান!",
+  "pointAdditionAdLoading": "বিজ্ঞাপন লোড হচ্ছে...",
+  "pointAdditionAdError": "বিজ্ঞাপন পুনরায় লোড করুন",
+  "pointAdditionNextSlot": "পরবর্তী সুযোগ {time}-এ",
+  "@pointAdditionNextSlot": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pointAdditionSlotMorning": "সকাল",
+  "pointAdditionSlotAfternoon": "দুপুর",
+  "pointAdditionSlotNight": "রাত",
+  "pointAdditionRewardSuccess": "আপনি 50 পয়েন্ট পেয়েছেন! ✨",
+  "pointAdditionNotReadyMsg": "বিজ্ঞাপন প্রস্তুত হচ্ছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন!",
+  "pointAdditionShopTitle": "💎 পয়েন্ট কিনুন (দোকান)",
+  "pointAdditionShopComingSoon": "শীঘ্রই আসছে",
+  "pointAdditionShopComingSoonDesc": "পরে আরও আইটেম যোগ করা হবে!\nঅনুগ্রহ করে অপেক্ষায় থাকুন!",
+  "shopNotEnoughPointsDesc": "পয়েন্ট পেতে 'প্রতিশ্রুতি' সম্পন্ন করুন বা একটি ভিডিও দেখুন!",
+  "laterAction": "পরে",
+  "itemNone": "কিছু না"
 }

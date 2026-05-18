@@ -887,5 +887,29 @@
       "time": { "type": "String" }
     }
   },
-  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!"
+  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
+  "pointAdditionTitle": "إضافة نقاط",
+  "pointAdditionAdTitle": "📺 احصل على نقاط مجانًا 3 مرات يوميًا!",
+  "pointAdditionAdButton": "شاهد الفيديو واحصل على 50P!",
+  "pointAdditionAdLoading": "جاري تحميل الإعلان...",
+  "pointAdditionAdError": "إعادة تحميل الإعلان",
+  "pointAdditionNextSlot": "الفرصة القادمة خلال {time}",
+  "@pointAdditionNextSlot": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pointAdditionSlotMorning": "صباح",
+  "pointAdditionSlotAfternoon": "ظهر",
+  "pointAdditionSlotNight": "مساء",
+  "pointAdditionRewardSuccess": "حصلت على 50 نقطة! ✨",
+  "pointAdditionNotReadyMsg": "جاري تجهيز الإعلان. يرجى المحاولة مرة أخرى لاحقًا!",
+  "pointAdditionShopTitle": "💎 شراء نقاط (المتجر)",
+  "pointAdditionShopComingSoon": "قريباً",
+  "pointAdditionShopComingSoonDesc": "سيتم إضافة المزيد من العناصر لاحقاً!\nيرجى التطلع إليها!",
+  "shopNotEnoughPointsDesc": "أكمل 'الوعود' أو شاهد فيديو للحصول على نقاط!",
+  "laterAction": "لاحقاً",
+  "itemNone": "لا شيء"
 }

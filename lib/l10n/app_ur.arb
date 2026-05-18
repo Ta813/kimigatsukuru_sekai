@@ -886,5 +886,29 @@
       "time": { "type": "String" }
     }
   },
-  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!"
+  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
+  "pointAdditionTitle": "پوائنٹس شامل کریں",
+  "pointAdditionAdTitle": "📺 دن میں 3 بار مفت پوائنٹس حاصل کریں!",
+  "pointAdditionAdButton": "ویڈیو دیکھیں اور 50P حاصل کریں!",
+  "pointAdditionAdLoading": "اشتہار لوڈ ہو رہا ہے...",
+  "pointAdditionAdError": "اشتہار دوبارہ لوڈ کریں",
+  "pointAdditionNextSlot": "اگلا موقع {time} میں",
+  "@pointAdditionNextSlot": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "pointAdditionSlotMorning": "صبح",
+  "pointAdditionSlotAfternoon": "دوپہر",
+  "pointAdditionSlotNight": "رات",
+  "pointAdditionRewardSuccess": "آپ کو 50 پوائنٹس ملے! ✨",
+  "pointAdditionNotReadyMsg": "اشتہار تیار ہو رہا ہے۔ براہ کرم تھوڑی دیر بعد دوبارہ کوشش کریں!",
+  "pointAdditionShopTitle": "💎 پوائنٹس خریدیں (شاپ)",
+  "pointAdditionShopComingSoon": "جلد آرہا ہے",
+  "pointAdditionShopComingSoonDesc": "مزید آئٹمز بعد میں شامل کیے جائیں گے!\nبراہ کرم انتظار کریں!",
+  "shopNotEnoughPointsDesc": "پوائنٹس حاصل کرنے کے لیے 'وعدے' پورے کریں یا ویڈیو دیکھیں!",
+  "laterAction": "بعد میں",
+  "itemNone": "کچھ نہیں"
 }

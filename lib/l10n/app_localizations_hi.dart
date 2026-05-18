@@ -1968,4 +1968,57 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
+
+  @override
+  String get pointAdditionTitle => 'पॉइंट्स जोड़ें';
+
+  @override
+  String get pointAdditionAdTitle => '📺 दिन में 3 बार मुफ़्त पॉइंट्स पाएं!';
+
+  @override
+  String get pointAdditionAdButton => 'वीडियो देखें और 50P पाएं!';
+
+  @override
+  String get pointAdditionAdLoading => 'विज्ञापन लोड हो रहा है...';
+
+  @override
+  String get pointAdditionAdError => 'विज्ञापन पुनः लोड करें';
+
+  @override
+  String pointAdditionNextSlot(String time) {
+    return 'अगला मौका $time में';
+  }
+
+  @override
+  String get pointAdditionSlotMorning => 'सुबह';
+
+  @override
+  String get pointAdditionSlotAfternoon => 'दोपहर';
+
+  @override
+  String get pointAdditionSlotNight => 'रात';
+
+  @override
+  String get pointAdditionRewardSuccess => 'आपको 50 पॉइंट्स मिले! ✨';
+
+  @override
+  String get pointAdditionNotReadyMsg => 'विज्ञापन तैयार हो रहा है। कृपया कुछ देर बाद फिर प्रयास करें!';
+
+  @override
+  String get pointAdditionShopTitle => '💎 पॉइंट्स खरीदें (दुकान)';
+
+  @override
+  String get pointAdditionShopComingSoon => 'जल्द आ रहा है';
+
+  @override
+  String get pointAdditionShopComingSoonDesc => 'बाद में और आइटम जोड़े जाएंगे!\nकृपया प्रतीक्षा करें!';
+
+  @override
+  String get shopNotEnoughPointsDesc => 'पॉइंट्स पाने के लिए \'वादे\' पूरे करें या वीडियो देखें!';
+
+  @override
+  String get laterAction => 'बाद में';
+
+  @override
+  String get itemNone => 'कोई नहीं';
 }

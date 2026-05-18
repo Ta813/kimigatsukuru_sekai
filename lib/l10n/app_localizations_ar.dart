@@ -1968,4 +1968,57 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
+
+  @override
+  String get pointAdditionTitle => 'إضافة نقاط';
+
+  @override
+  String get pointAdditionAdTitle => '📺 احصل على نقاط مجانًا 3 مرات يوميًا!';
+
+  @override
+  String get pointAdditionAdButton => 'شاهد الفيديو واحصل على 50P!';
+
+  @override
+  String get pointAdditionAdLoading => 'جاري تحميل الإعلان...';
+
+  @override
+  String get pointAdditionAdError => 'إعادة تحميل الإعلان';
+
+  @override
+  String pointAdditionNextSlot(String time) {
+    return 'الفرصة القادمة خلال $time';
+  }
+
+  @override
+  String get pointAdditionSlotMorning => 'صباح';
+
+  @override
+  String get pointAdditionSlotAfternoon => 'ظهر';
+
+  @override
+  String get pointAdditionSlotNight => 'مساء';
+
+  @override
+  String get pointAdditionRewardSuccess => 'حصلت على 50 نقطة! ✨';
+
+  @override
+  String get pointAdditionNotReadyMsg => 'جاري تجهيز الإعلان. يرجى المحاولة مرة أخرى لاحقًا!';
+
+  @override
+  String get pointAdditionShopTitle => '💎 شراء نقاط (المتجر)';
+
+  @override
+  String get pointAdditionShopComingSoon => 'قريباً';
+
+  @override
+  String get pointAdditionShopComingSoonDesc => 'سيتم إضافة المزيد من العناصر لاحقاً!\nيرجى التطلع إليها!';
+
+  @override
+  String get shopNotEnoughPointsDesc => 'أكمل \'الوعود\' أو شاهد فيديو للحصول على نقاط!';
+
+  @override
+  String get laterAction => 'لاحقاً';
+
+  @override
+  String get itemNone => 'لا شيء';
 }

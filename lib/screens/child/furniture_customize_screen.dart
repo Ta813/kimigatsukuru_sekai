@@ -269,10 +269,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 width: 2,
               ),
             ),
-            child: const Text(
-              '「やくそく」をクリアするか、動画をみてポイントをゲットしよう！',
+            child: Text(
+              AppLocalizations.of(context)!.shopNotEnoughPointsDesc,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 height: 1.5,
                 fontWeight: FontWeight.bold,
@@ -283,7 +283,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('あとで', style: TextStyle(color: Colors.grey)),
+              child: Text(
+                AppLocalizations.of(context)!.laterAction,
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -311,13 +314,13 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.add_circle, size: 20),
                   SizedBox(width: 8),
                   Text(
-                    'ポイントをふやす',
+                    AppLocalizations.of(context)!.pointAdditionTitle,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
