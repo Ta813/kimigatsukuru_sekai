@@ -17,8 +17,8 @@ class RewardAdManager {
   bool get hasLoadError => _hasLoadError;
 
   final String _adUnitId = Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/5224354917'
-      : 'ca-app-pub-3940256099942544/1712485313';
+      ? 'ca-app-pub-2333753292729105/1101792271'
+      : 'ca-app-pub-2333753292729105/5014099664';
 
   // 🌟 広告を裏側で読み込む（プリロード）
   void loadAd() {
