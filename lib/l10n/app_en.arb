@@ -911,5 +911,7 @@
   "pointAdditionShopComingSoonDesc": "More items will be added later!\nPlease look forward to it!",
   "shopNotEnoughPointsDesc": "Complete 'Promises' or watch a video to get points!",
   "laterAction": "Later",
-  "itemNone": "None"
+  "itemNone": "None",
+  "guidePointAdditionBubble": "You can also get more\npoints from here!",
+  "navMenu": "Menu"
 }

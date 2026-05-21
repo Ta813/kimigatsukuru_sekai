@@ -910,5 +910,7 @@
   "pointAdditionShopComingSoonDesc": "পরে আরও আইটেম যোগ করা হবে!\nঅনুগ্রহ করে অপেক্ষায় থাকুন!",
   "shopNotEnoughPointsDesc": "পয়েন্ট পেতে 'প্রতিশ্রুতি' সম্পন্ন করুন বা একটি ভিডিও দেখুন!",
   "laterAction": "পরে",
-  "itemNone": "কিছু না"
+  "itemNone": "কিছু না",
+  "guidePointAdditionBubble": "এখান থেকেও তুমি আরও\nপয়েন্ট বাড়াতে পারবে!",
+  "navMenu": "মেনু"
 }

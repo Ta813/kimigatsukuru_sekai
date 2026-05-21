@@ -53,7 +53,7 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
   String _getInteriorBackgroundImage(String houseAssetPath) {
     switch (houseAssetPath) {
       case 'assets/images/house.png': // さいしょのおうち
-        return 'assets/images/house_interior/default_interior.png';
+        return 'assets/images/house_interior/normal_interior.png';
       case 'assets/images/house_normal.png': // ふつうのおうち
         return 'assets/images/house_interior/normal_interior.png';
       case 'assets/images/house_rich.png': // りっぱなおうち

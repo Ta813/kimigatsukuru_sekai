@@ -910,5 +910,7 @@
   "pointAdditionShopComingSoonDesc": "مزید آئٹمز بعد میں شامل کیے جائیں گے!\nبراہ کرم انتظار کریں!",
   "shopNotEnoughPointsDesc": "پوائنٹس حاصل کرنے کے لیے 'وعدے' پورے کریں یا ویڈیو دیکھیں!",
   "laterAction": "بعد میں",
-  "itemNone": "کچھ نہیں"
+  "itemNone": "کچھ نہیں",
+  "guidePointAdditionBubble": "آپ یہاں سے مزید پوائنٹس بھی\nحاصل کر سکتے ہیں!",
+  "navMenu": "مینو"
 }

@@ -10,7 +10,6 @@ import 'emergency_promise_screen.dart';
 import '../../managers/sfx_manager.dart';
 import 'advice_screen.dart';
 import '../../l10n/app_localizations.dart';
-import 'settings_screen.dart';
 import 'child_name_settings_screen.dart';
 import '../../managers/purchase_manager.dart';
 import '../../widgets/animated_tap_finger.dart';
@@ -84,43 +83,6 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                       const Icon(Icons.face_retouching_natural),
                       Text(
                         AppLocalizations.of(context)!.nameSetting,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          IgnorePointer(
-            ignoring: widget.isTutorial,
-            child: Opacity(
-              opacity: widget.isTutorial ? 0.4 : 1.0,
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
-                    ),
-                  );
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 4.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.settings),
-                      Text(
-                        AppLocalizations.of(context)!.settingsTitle,
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,

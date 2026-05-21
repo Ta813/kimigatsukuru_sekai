@@ -911,5 +911,7 @@
   "pointAdditionShopComingSoonDesc": "سيتم إضافة المزيد من العناصر لاحقاً!\nيرجى التطلع إليها!",
   "shopNotEnoughPointsDesc": "أكمل 'الوعود' أو شاهد فيديو للحصول على نقاط!",
   "laterAction": "لاحقاً",
-  "itemNone": "لا شيء"
+  "itemNone": "لا شيء",
+  "guidePointAdditionBubble": "يمكنك أيضًا الحصول على المزيد\nمن النقاط من هنا!",
+  "navMenu": "القائمة"
 }

@@ -56,13 +56,6 @@ final List<ShopItem> shopItems = [
     requiredLevel: 1,
   ),
   ShopItem(
-    name: 'ふつうのおうち',
-    imagePath: 'assets/images/house_normal.png',
-    price: 500,
-    type: 'house',
-    requiredLevel: 1,
-  ),
-  ShopItem(
     name: 'りっぱなおうち',
     imagePath: 'assets/images/house_rich.png',
     price: 1500,

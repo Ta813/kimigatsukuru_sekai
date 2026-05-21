@@ -2021,4 +2021,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get itemNone => 'कोई नहीं';
+
+  @override
+  String get guidePointAdditionBubble => 'आप यहाँ से और पॉइंट्स भी\nप्राप्त कर सकते हैं!';
+
+  @override
+  String get navMenu => 'मेनू';
 }

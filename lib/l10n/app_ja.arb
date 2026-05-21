@@ -911,5 +911,7 @@
   "pointAdditionShopComingSoonDesc": "これからアイテムが ふえるよ！\nたのしみに まっててね！",
   "shopNotEnoughPointsDesc": "「やくそく」をクリアするか、動画をみてポイントをゲットしよう！",
   "laterAction": "あとで",
-  "itemNone": "なし"
+  "itemNone": "なし",
+  "guidePointAdditionBubble": "ここから ポイントを\nふやすことも できるよ！",
+  "navMenu": "メニュー"
 }

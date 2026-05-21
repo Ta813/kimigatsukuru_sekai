@@ -2021,4 +2021,10 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get itemNone => 'کچھ نہیں';
+
+  @override
+  String get guidePointAdditionBubble => 'آپ یہاں سے مزید پوائنٹس بھی\nحاصل کر سکتے ہیں!';
+
+  @override
+  String get navMenu => 'مینو';
 }

@@ -13,6 +13,7 @@ import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/initial_setup_coordinator.dart';
+import 'package:kimigatsukuru_sekai/screens/parent/settings_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/point_addition_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import '../../models/lock_mode.dart';
@@ -99,6 +100,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   late AnimationController _hintAnimationController;
   bool _hasUnclaimedMissions = true;
   bool _showMissionBlinking = false;
+  bool _hasVisitedPointAddition = true;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // 今日のやくそくの達成状況
   int _totalPromisesCount = 0;
@@ -1194,6 +1197,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final items = await SharedPrefsHelper.loadEquippedItems();
     final mediaQuery = MediaQuery.maybeOf(context);
     final orientation = mediaQuery?.orientation ?? Orientation.landscape;
+    final hasVisitedPointAddition = await SharedPrefsHelper.isTutorialStepShown(
+      'tutorial_step_point_addition',
+    );
 
     late double screenWidth;
     late double screenHeight;
@@ -1239,6 +1245,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     setState(() {
       _hasEnteredHouse = entered;
+      _hasVisitedPointAddition = hasVisitedPointAddition;
       _points = loadedPoints;
       _displayPromise = nextPromise;
       _isDisplayPromiseEmergency = isEmergency;
@@ -1894,935 +1901,1211 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _showEmergencyStartBlinking ||
         _showMissionBlinking;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          // 背景
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(_equippedWorldPath),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+    final bool shouldShowPointAdditionHint =
+        !_hasVisitedPointAddition &&
+        !isAnyTutorialBlinking &&
+        !isAnyTutorialActive;
 
-          // 真ん中のエリア（アバターと家）
-          Align(
-            alignment: Alignment.center,
-            child: GestureDetector(
-              onTap: () {
-                _hintTimer?.cancel();
-                setState(() {
-                  _showHouseHint = true;
-                });
-                _hintTimer = Timer(const Duration(seconds: 3), () {
-                  setState(() {
-                    _showHouseHint = false;
-                  });
-                });
-              },
-              onLongPress: () async {
-                try {
-                  SfxManager.instance.playSuccessSound();
-                } catch (e) {}
+    return DefaultTabController(
+      length: 1, // タブ数は適切に調整してください
+      child: Scaffold(
+        key: _scaffoldKey, // 🌟 追加
+        backgroundColor: const Color(0xFFFFF3E0),
 
-                if (!_hasEnteredHouse) {
-                  await SharedPrefsHelper.setHasEnteredHouse(true);
-                  setState(() {
-                    _hasEnteredHouse = true;
-                  });
-                }
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HouseInteriorScreen(
-                      equippedHousePath: _equippedHousePath,
-                      requiredExpForNextLevel: _requiredExpForNextLevel,
-                      experience: _experience,
-                      experienceFraction: _experienceFraction,
-                    ),
-                  ),
-                ).then((_) {
-                  _loadAndDetermineDisplayPromise();
-                });
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [Image.asset(_equippedHousePath, height: 200)],
-              ),
-            ),
-          ),
-
-          if (!_hasEnteredHouse &&
-              !_showCustomizeBlinking &&
-              !_showParentSettingsBlinking &&
-              !_showStartBlinking &&
-              !_showMissionBlinking)
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.45,
-              left: 0,
-              right: 0,
-              child: IgnorePointer(
-                child: Column(
+        // 🌟 追加: 右から出てくるメニュー画面（ドロワー）
+        endDrawer: Drawer(
+          width: MediaQuery.of(context).size.width * 0.7, // 画面幅の70%の広さ
+          backgroundColor: const Color(0xFFFFF3E0),
+          child: Column(
+            children: [
+              // ドロワーのヘッダー（タイトル）
+              Container(
+                height: 70,
+                width: double.infinity,
+                color: const Color(0xFFFF7043),
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(left: 20, top: 30),
+                child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        AppLocalizations.of(context)!.longPressToEnter,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
+                    const Icon(
+                      Icons.grid_view_rounded,
+                      color: Colors.white,
+                      size: 28,
                     ),
-                    const SizedBox(height: 10),
-                    ScaleTransition(
-                      scale: Tween<double>(begin: 1.0, end: 1.3).animate(
-                        CurvedAnimation(
-                          parent: _hintAnimationController,
-                          curve: Curves.easeInOut,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.touch_app,
+                    const SizedBox(width: 12),
+                    Text(
+                      AppLocalizations.of(context)!.navMenu,
+                      style: const TextStyle(
                         color: Colors.white,
-                        size: 40,
-                        shadows: [Shadow(blurRadius: 8, color: Colors.black54)],
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 10),
 
-          if (_showHouseHint)
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.45,
-              left: MediaQuery.of(context).size.width * 0.4,
-              child: IgnorePointer(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.longPressToEnter,
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
-                  ),
+              // 👇 ① やくそくボードメニュー
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.article_rounded,
+                iconColor: Colors.blue,
+                text: AppLocalizations.of(context)!.navPromiseBoard,
+                isTutorialBlinking: isAnyTutorialBlinking,
+                onTap: () async {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_child_home_promise_board',
+                  );
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {}
+                  final result = await Navigator.push<Map<String, int?>>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PromiseBoardScreen(),
+                    ),
+                  );
+                  // ...（元の遷移後のポイント処理等は変更なし）...
+                  final pointsFromBoard = result != null
+                      ? result['points']
+                      : null;
+                  final expFromBoard = result != null ? result['exp'] : null;
+
+                  if (pointsFromBoard != null) {
+                    try {
+                      SfxManager.instance.playSuccessSound();
+                    } catch (e) {}
+                    setState(() {
+                      _points += pointsFromBoard;
+                      _pointsAdded = pointsFromBoard;
+                      _experience += expFromBoard ?? 0;
+                    });
+                    _animationController.forward(from: 0.0);
+                    _pointsAddedAnimationController.forward(from: 0.0);
+                  }
+                  _checkLevelUp();
+                  await SharedPrefsHelper.savePoints(_points);
+                  _loadAndDetermineDisplayPromise();
+                },
+              ),
+
+              const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
+
+              // 👇 ② おんがくメニュー
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.music_note,
+                iconColor: Colors.purple,
+                text: AppLocalizations.of(context)!.navMusic,
+                isTutorialBlinking: isAnyTutorialBlinking,
+                onTap: () async {
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {}
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_child_home_bgm',
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BgmSelectionScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
+
+              // 👇 ③ せかいメニュー
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.public,
+                iconColor: Colors.green,
+                text: AppLocalizations.of(context)!.navWorldMap,
+                isTutorialBlinking: isAnyTutorialBlinking,
+                onTap: () async {
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {}
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_child_home_world_map',
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WorldMapScreen(
+                        currentLevel: _level,
+                        currentPoints: _points,
+                        requiredExpForNextLevel: _requiredExpForNextLevel,
+                        experience: _experience,
+                        experienceFraction: _experienceFraction,
+                      ),
+                    ),
+                  ).then((_) {
+                    _loadAndDetermineDisplayPromise();
+                  });
+                },
+              ),
+
+              const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
+
+              // 👇 ④ あそびかた（ヘルプ）メニュー
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.help_outline,
+                iconColor: Colors.orange,
+                text: AppLocalizations.of(context)!.help,
+                isTutorialBlinking: isAnyTutorialBlinking,
+                onTap: () async {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_child_home_help',
+                  );
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {}
+                  _onHelpButtonPressed();
+                },
+              ),
+
+              const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
+
+              // 👇 ⑤ 設定メニュー
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.settings_outlined,
+                iconColor: Colors.grey,
+                text: AppLocalizations.of(context)!.settingsTitle,
+                isTutorialBlinking: isAnyTutorialBlinking,
+                onTap: () async {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_child_home_settings',
+                  );
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {}
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        body: Stack(
+          children: [
+            // 背景
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(_equippedWorldPath),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
 
-          SafeArea(
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 4,
+            // 真ん中のエリア（アバターと家）
+            Align(
+              alignment: Alignment.center,
+              child: GestureDetector(
+                onTap: () {
+                  _hintTimer?.cancel();
+                  setState(() {
+                    _showHouseHint = true;
+                  });
+                  _hintTimer = Timer(const Duration(seconds: 3), () {
+                    setState(() {
+                      _showHouseHint = false;
+                    });
+                  });
+                },
+                onLongPress: () async {
+                  try {
+                    SfxManager.instance.playSuccessSound();
+                  } catch (e) {}
+
+                  if (!_hasEnteredHouse) {
+                    await SharedPrefsHelper.setHasEnteredHouse(true);
+                    setState(() {
+                      _hasEnteredHouse = true;
+                    });
+                  }
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HouseInteriorScreen(
+                        equippedHousePath: _equippedHousePath,
+                        requiredExpForNextLevel: _requiredExpForNextLevel,
+                        experience: _experience,
+                        experienceFraction: _experienceFraction,
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
-                            spreadRadius: 1,
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
+                    ),
+                  ).then((_) {
+                    _loadAndDetermineDisplayPromise();
+                  });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [Image.asset(_equippedHousePath, height: 200)],
+                ),
+              ),
+            ),
+
+            if (!_hasEnteredHouse &&
+                !_showCustomizeBlinking &&
+                !_showParentSettingsBlinking &&
+                !_showStartBlinking &&
+                !_showMissionBlinking)
+              Positioned(
+                top: MediaQuery.of(context).size.height * 0.45,
+                left: 0,
+                right: 0,
+                child: IgnorePointer(
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          AppLocalizations.of(context)!.longPressToEnter,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
                           ),
-                        ],
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 650,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!.levelLabel(_level),
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 6),
-                                      LinearProgressIndicator(
-                                        value: _experienceFraction,
-                                        backgroundColor: Colors.grey[300],
-                                        valueColor:
-                                            const AlwaysStoppedAnimation<Color>(
-                                              Colors.green,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  height: 30,
-                                  width: 1,
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                  ),
-                                  color: Colors.grey.withOpacity(0.3),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.opaque,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.todaysPromise,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: List.generate(
-                                              _totalPromisesCount == 0
-                                                  ? 1
-                                                  : _totalPromisesCount,
-                                              (index) {
-                                                if (_totalPromisesCount == 0) {
-                                                  return const Text(
-                                                    'なし',
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  );
-                                                }
-                                                final isCompleted =
-                                                    index <
-                                                        _isPromiseCompletedList
-                                                            .length
-                                                    ? _isPromiseCompletedList[index]
-                                                    : false;
-
-                                                final starIcon = Icon(
-                                                  Icons.star,
-                                                  size: 18,
-                                                  color: (isCompleted)
-                                                      ? Colors.amber
-                                                      : Colors.grey[300],
-                                                );
-
-                                                if (isCompleted) {
-                                                  return AnimatedBuilder(
-                                                    animation:
-                                                        _allCompletedAnimationController,
-                                                    builder: (context, child) {
-                                                      final animValue =
-                                                          _allCompletedAnimationController
-                                                              .value;
-                                                      final scale =
-                                                          1.0 +
-                                                          (animValue * 0.3);
-                                                      final rotationY =
-                                                          animValue *
-                                                          2 *
-                                                          math.pi;
-
-                                                      return Transform(
-                                                        transform:
-                                                            Matrix4.identity()
-                                                              ..setEntry(
-                                                                3,
-                                                                2,
-                                                                0.002,
-                                                              )
-                                                              ..rotateY(
-                                                                rotationY,
-                                                              )
-                                                              ..scale(
-                                                                scale,
-                                                                scale,
-                                                              ),
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: child,
-                                                      );
-                                                    },
-                                                    child: starIcon,
-                                                  );
-                                                }
-                                                return starIcon;
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  height: 30,
-                                  width: 1,
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                  ),
-                                  color: Colors.grey.withOpacity(0.3),
-                                ),
-                                Expanded(
-                                  flex: 3,
-                                  child: Stack(
-                                    alignment: Alignment.centerLeft,
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      ScaleTransition(
-                                        scale: _scaleAnimation,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                              size: 24,
-                                            ),
-                                            Text(
-                                              '$_points',
-                                              style: const TextStyle(
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            GestureDetector(
-                                              onTap: () {
-                                                try {
-                                                  SfxManager.instance
-                                                      .playTapSound();
-                                                } catch (_) {}
-                                                FirebaseAnalytics.instance.logEvent(
-                                                  name:
-                                                      'open_point_addition_home',
-                                                );
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const PointAdditionScreen(),
-                                                  ),
-                                                ).then((_) {
-                                                  _loadAndDetermineDisplayPromise();
-                                                });
-                                              },
-                                              child: Container(
-                                                width: 25, // 🌟 明示的にサイズを指定
-                                                height: 25,
-                                                decoration: const BoxDecoration(
-                                                  color: Color(0xFFFF7043),
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: const Icon(
-                                                  Icons.add,
-                                                  color: Colors.white,
-                                                  size: 20,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      if (_pointsAdded != null)
-                                        Positioned(
-                                          top: -20,
-                                          left: 20,
-                                          child: SlideTransition(
-                                            position: _slideAnimation,
-                                            child: FadeTransition(
-                                              opacity: _fadeAnimation,
-                                              child: Text(
-                                                '+$_pointsAdded',
-                                                style: const TextStyle(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.redAccent,
-                                                  shadows: [
-                                                    Shadow(
-                                                      blurRadius: 2,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  height: 30,
-                                  width: 1,
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                  ),
-                                  color: Colors.grey.withOpacity(0.3),
-                                ),
-                                Expanded(
-                                  flex: 4,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      IgnorePointer(
-                                        ignoring: isAnyTutorialBlinking,
-                                        child: Opacity(
-                                          opacity: (isAnyTutorialBlinking)
-                                              ? 0.6
-                                              : 1.0,
-                                          child: InkWell(
-                                            onTap: () async {
-                                              FirebaseAnalytics.instance.logEvent(
-                                                name:
-                                                    'start_child_home_promise_board',
-                                              );
-                                              try {
-                                                SfxManager.instance
-                                                    .playTapSound();
-                                              } catch (e) {}
-                                              final result =
-                                                  await Navigator.push<
-                                                    Map<String, int?>
-                                                  >(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const PromiseBoardScreen(),
-                                                    ),
-                                                  );
-                                              final pointsFromBoard =
-                                                  result != null
-                                                  ? result['points']
-                                                  : null;
-                                              final expFromBoard =
-                                                  result != null
-                                                  ? result['exp']
-                                                  : null;
-
-                                              if (pointsFromBoard != null) {
-                                                try {
-                                                  SfxManager.instance
-                                                      .playSuccessSound();
-                                                } catch (e) {}
-                                                setState(() {
-                                                  _points += pointsFromBoard;
-                                                  _pointsAdded =
-                                                      pointsFromBoard;
-                                                  _experience +=
-                                                      expFromBoard ?? 0;
-                                                });
-                                                _animationController.forward(
-                                                  from: 0.0,
-                                                );
-                                                _pointsAddedAnimationController
-                                                    .forward(from: 0.0);
-                                              }
-                                              _checkLevelUp();
-                                              await SharedPrefsHelper.savePoints(
-                                                _points,
-                                              );
-                                              _loadAndDetermineDisplayPromise();
-                                            },
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8.0,
-                                                    vertical: 0.0,
-                                                  ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Icon(
-                                                    Icons.article_rounded,
-                                                    size: 20,
-                                                  ),
-                                                  Text(
-                                                    AppLocalizations.of(
-                                                      context,
-                                                    )!.navPromiseBoard,
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      // おんがく（サブ機能として小さく）
-                                      IgnorePointer(
-                                        ignoring: isAnyTutorialBlinking,
-                                        child: Opacity(
-                                          opacity: isAnyTutorialBlinking
-                                              ? 0.6
-                                              : 1.0,
-                                          child: InkWell(
-                                            onTap: () async {
-                                              try {
-                                                SfxManager.instance
-                                                    .playTapSound();
-                                              } catch (e) {}
-                                              FirebaseAnalytics.instance
-                                                  .logEvent(
-                                                    name:
-                                                        'start_child_home_bgm',
-                                                  );
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const BgmSelectionScreen(),
-                                                ),
-                                              );
-                                            },
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8.0,
-                                                    vertical: 0.0,
-                                                  ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Icon(
-                                                    Icons.music_note,
-                                                    size: 20,
-                                                  ),
-                                                  Text(
-                                                    AppLocalizations.of(
-                                                      context,
-                                                    )!.navMusic,
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      // せかい（サブ機能として小さく）
-                                      IgnorePointer(
-                                        ignoring: isAnyTutorialBlinking,
-                                        child: Opacity(
-                                          opacity: isAnyTutorialBlinking
-                                              ? 0.6
-                                              : 1.0,
-                                          child: InkWell(
-                                            onTap: () async {
-                                              try {
-                                                SfxManager.instance
-                                                    .playTapSound();
-                                              } catch (e) {}
-                                              FirebaseAnalytics.instance.logEvent(
-                                                name:
-                                                    'start_child_home_world_map',
-                                              );
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      WorldMapScreen(
-                                                        currentLevel: _level,
-                                                        currentPoints: _points,
-                                                        requiredExpForNextLevel:
-                                                            _requiredExpForNextLevel,
-                                                        experience: _experience,
-                                                        experienceFraction:
-                                                            _experienceFraction,
-                                                      ),
-                                                ),
-                                              ).then((_) {
-                                                _loadAndDetermineDisplayPromise();
-                                              });
-                                            },
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8.0,
-                                                    vertical: 0.0,
-                                                  ),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Icon(
-                                                    Icons.public,
-                                                    size: 20,
-                                                  ),
-                                                  Text(
-                                                    AppLocalizations.of(
-                                                      context,
-                                                    )!.navWorldMap,
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                      const SizedBox(height: 10),
+                      ScaleTransition(
+                        scale: Tween<double>(begin: 1.0, end: 1.3).animate(
+                          CurvedAnimation(
+                            parent: _hintAnimationController,
+                            curve: Curves.easeInOut,
                           ),
-                        ],
+                        ),
+                        child: const Icon(
+                          Icons.touch_app,
+                          color: Colors.white,
+                          size: 40,
+                          shadows: [
+                            Shadow(blurRadius: 8, color: Colors.black54),
+                          ],
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+              ),
+
+            if (_showHouseHint)
+              Positioned(
+                top: MediaQuery.of(context).size.height * 0.45,
+                left: MediaQuery.of(context).size.width * 0.4,
+                child: IgnorePointer(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.longPressToEnter,
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 ),
+              ),
 
-                // 🌟 左側のボタン（おやのせってい、きせかえ）
-                Positioned(
-                  top: 70,
-                  left: 10,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // おやのせってい（サブ機能として小さく）
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            IgnorePointer(
-                              ignoring:
-                                  isAnyTutorialBlinking &&
-                                  !_showParentSettingsBlinking,
-                              child: Opacity(
-                                opacity:
-                                    (isAnyTutorialBlinking &&
-                                        !_showParentSettingsBlinking)
-                                    ? 0.6
-                                    : 1.0,
-                                child: BlinkingEffect(
-                                  isBlinking: _showParentSettingsBlinking,
-                                  child: _buildRoundMenuButton(
-                                    icon: Icons.settings,
-                                    label: AppLocalizations.of(
-                                      context,
-                                    )!.parentSettings,
-                                    iconColor: Colors.black,
-                                    backgroundColor: Colors.grey.shade300,
-                                    isMain: false, // 🌟 サブ機能なので小さく
-                                    onTap:
-                                        (isAnyTutorialBlinking &&
-                                            !_showParentSettingsBlinking)
-                                        ? null
-                                        : () async {
-                                            try {
-                                              SfxManager.instance
-                                                  .playTapSound();
-                                            } catch (e) {}
-                                            await _openParentMode();
-                                          },
-                                  ),
-                                ),
-                              ),
+            SafeArea(
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              spreadRadius: 1,
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
                             ),
-                            if (_showParentSettingsBlinking)
-                              const Positioned(
-                                right: -5,
-                                bottom: -5,
-                                child: AnimatedTapFinger(),
-                              ),
-                            if (_isTutorialParentSettingsFocus)
-                              Positioned(
-                                top: 10,
-                                left: 60, // サイズが小さくなったので吹き出しの位置を少し左に調整
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFFF9C4),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: Colors.orange,
-                                        width: 2,
-                                      ),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          blurRadius: 4,
-                                          color: Colors.black26,
-                                        ),
-                                      ],
-                                    ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 450,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.tutorialParentSettingsBubble,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black87,
-                                          ),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(
+                                                context,
+                                              )!.levelLabel(_level),
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 6),
+                                        LinearProgressIndicator(
+                                          value: _experienceFraction,
+                                          backgroundColor: Colors.grey[300],
+                                          valueColor:
+                                              const AlwaysStoppedAnimation<
+                                                Color
+                                              >(Colors.green),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
+                                  Container(
+                                    height: 30,
+                                    width: 1,
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    color: Colors.grey.withOpacity(0.3),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.todaysPromise,
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: List.generate(
+                                                _totalPromisesCount == 0
+                                                    ? 1
+                                                    : _totalPromisesCount,
+                                                (index) {
+                                                  if (_totalPromisesCount ==
+                                                      0) {
+                                                    return const Text(
+                                                      'なし',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    );
+                                                  }
+                                                  final isCompleted =
+                                                      index <
+                                                          _isPromiseCompletedList
+                                                              .length
+                                                      ? _isPromiseCompletedList[index]
+                                                      : false;
+
+                                                  final starIcon = Icon(
+                                                    Icons.star,
+                                                    size: 18,
+                                                    color: (isCompleted)
+                                                        ? Colors.amber
+                                                        : Colors.grey[300],
+                                                  );
+
+                                                  if (isCompleted) {
+                                                    return AnimatedBuilder(
+                                                      animation:
+                                                          _allCompletedAnimationController,
+                                                      builder: (context, child) {
+                                                        final animValue =
+                                                            _allCompletedAnimationController
+                                                                .value;
+                                                        final scale =
+                                                            1.0 +
+                                                            (animValue * 0.3);
+                                                        final rotationY =
+                                                            animValue *
+                                                            2 *
+                                                            math.pi;
+
+                                                        return Transform(
+                                                          transform:
+                                                              Matrix4.identity()
+                                                                ..setEntry(
+                                                                  3,
+                                                                  2,
+                                                                  0.002,
+                                                                )
+                                                                ..rotateY(
+                                                                  rotationY,
+                                                                )
+                                                                ..scale(
+                                                                  scale,
+                                                                  scale,
+                                                                ),
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: child,
+                                                        );
+                                                      },
+                                                      child: starIcon,
+                                                    );
+                                                  }
+                                                  return starIcon;
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 30,
+                                    width: 1,
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    color: Colors.grey.withOpacity(0.3),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Stack(
+                                      alignment: Alignment.centerLeft,
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        ScaleTransition(
+                                          scale: _scaleAnimation,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                                size: 24,
+                                              ),
+                                              Text(
+                                                '$_points',
+                                                style: const TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              BlinkingEffect(
+                                                isBlinking:
+                                                    shouldShowPointAdditionHint,
+                                                child: GestureDetector(
+                                                  onTap: () async {
+                                                    try {
+                                                      SfxManager.instance
+                                                          .playTapSound();
+                                                    } catch (_) {}
+
+                                                    if (!_hasVisitedPointAddition) {
+                                                      await SharedPrefsHelper.setTutorialStepShown(
+                                                        'tutorial_step_point_addition',
+                                                      );
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          _hasVisitedPointAddition =
+                                                              true;
+                                                        });
+                                                      }
+                                                    }
+
+                                                    FirebaseAnalytics.instance
+                                                        .logEvent(
+                                                          name:
+                                                              'open_point_addition_home',
+                                                        );
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const PointAdditionScreen(),
+                                                      ),
+                                                    ).then((_) {
+                                                      _loadAndDetermineDisplayPromise();
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    width: 25, // 🌟 明示的にサイズを指定
+                                                    height: 25,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                          color: Color(
+                                                            0xFFFF7043,
+                                                          ),
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                    child: const Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        if (_pointsAdded != null)
+                                          Positioned(
+                                            top: -20,
+                                            left: 20,
+                                            child: SlideTransition(
+                                              position: _slideAnimation,
+                                              child: FadeTransition(
+                                                opacity: _fadeAnimation,
+                                                child: Text(
+                                                  '+$_pointsAdded',
+                                                  style: const TextStyle(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.redAccent,
+                                                    shadows: [
+                                                      Shadow(
+                                                        blurRadius: 2,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Container(
+                                  //   height: 30,
+                                  //   width: 1,
+                                  //   margin: const EdgeInsets.symmetric(
+                                  //     horizontal: 12,
+                                  //   ),
+                                  //   color: Colors.grey.withOpacity(0.3),
+                                  // ),
+                                  // Expanded(
+                                  //   flex: 4,
+                                  //   child: Row(
+                                  //     mainAxisAlignment:
+                                  //         MainAxisAlignment.center,
+                                  //     children: [
+                                  //       IgnorePointer(
+                                  //         ignoring: isAnyTutorialBlinking,
+                                  //         child: Opacity(
+                                  //           opacity: (isAnyTutorialBlinking)
+                                  //               ? 0.6
+                                  //               : 1.0,
+                                  //           child: InkWell(
+                                  //             onTap: () async {
+                                  //               FirebaseAnalytics.instance.logEvent(
+                                  //                 name:
+                                  //                     'start_child_home_promise_board',
+                                  //               );
+                                  //               try {
+                                  //                 SfxManager.instance
+                                  //                     .playTapSound();
+                                  //               } catch (e) {}
+                                  //               final result =
+                                  //                   await Navigator.push<
+                                  //                     Map<String, int?>
+                                  //                   >(
+                                  //                     context,
+                                  //                     MaterialPageRoute(
+                                  //                       builder: (context) =>
+                                  //                           const PromiseBoardScreen(),
+                                  //                     ),
+                                  //                   );
+                                  //               final pointsFromBoard =
+                                  //                   result != null
+                                  //                   ? result['points']
+                                  //                   : null;
+                                  //               final expFromBoard =
+                                  //                   result != null
+                                  //                   ? result['exp']
+                                  //                   : null;
+
+                                  //               if (pointsFromBoard != null) {
+                                  //                 try {
+                                  //                   SfxManager.instance
+                                  //                       .playSuccessSound();
+                                  //                 } catch (e) {}
+                                  //                 setState(() {
+                                  //                   _points += pointsFromBoard;
+                                  //                   _pointsAdded =
+                                  //                       pointsFromBoard;
+                                  //                   _experience +=
+                                  //                       expFromBoard ?? 0;
+                                  //                 });
+                                  //                 _animationController.forward(
+                                  //                   from: 0.0,
+                                  //                 );
+                                  //                 _pointsAddedAnimationController
+                                  //                     .forward(from: 0.0);
+                                  //               }
+                                  //               _checkLevelUp();
+                                  //               await SharedPrefsHelper.savePoints(
+                                  //                 _points,
+                                  //               );
+                                  //               _loadAndDetermineDisplayPromise();
+                                  //             },
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(8),
+                                  //             child: Padding(
+                                  //               padding:
+                                  //                   const EdgeInsets.symmetric(
+                                  //                     horizontal: 8.0,
+                                  //                     vertical: 0.0,
+                                  //                   ),
+                                  //               child: Column(
+                                  //                 mainAxisAlignment:
+                                  //                     MainAxisAlignment.center,
+                                  //                 mainAxisSize:
+                                  //                     MainAxisSize.min,
+                                  //                 children: [
+                                  //                   const Icon(
+                                  //                     Icons.article_rounded,
+                                  //                     size: 20,
+                                  //                   ),
+                                  //                   Text(
+                                  //                     AppLocalizations.of(
+                                  //                       context,
+                                  //                     )!.navPromiseBoard,
+                                  //                     style: const TextStyle(
+                                  //                       fontSize: 10,
+                                  //                       fontWeight:
+                                  //                           FontWeight.bold,
+                                  //                     ),
+                                  //                   ),
+                                  //                 ],
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //       // おんがく（サブ機能として小さく）
+                                  //       IgnorePointer(
+                                  //         ignoring: isAnyTutorialBlinking,
+                                  //         child: Opacity(
+                                  //           opacity: isAnyTutorialBlinking
+                                  //               ? 0.6
+                                  //               : 1.0,
+                                  //           child: InkWell(
+                                  //             onTap: () async {
+                                  //               try {
+                                  //                 SfxManager.instance
+                                  //                     .playTapSound();
+                                  //               } catch (e) {}
+                                  //               FirebaseAnalytics.instance
+                                  //                   .logEvent(
+                                  //                     name:
+                                  //                         'start_child_home_bgm',
+                                  //                   );
+                                  //               Navigator.push(
+                                  //                 context,
+                                  //                 MaterialPageRoute(
+                                  //                   builder: (context) =>
+                                  //                       const BgmSelectionScreen(),
+                                  //                 ),
+                                  //               );
+                                  //             },
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(8),
+                                  //             child: Padding(
+                                  //               padding:
+                                  //                   const EdgeInsets.symmetric(
+                                  //                     horizontal: 8.0,
+                                  //                     vertical: 0.0,
+                                  //                   ),
+                                  //               child: Column(
+                                  //                 mainAxisAlignment:
+                                  //                     MainAxisAlignment.center,
+                                  //                 mainAxisSize:
+                                  //                     MainAxisSize.min,
+                                  //                 children: [
+                                  //                   const Icon(
+                                  //                     Icons.music_note,
+                                  //                     size: 20,
+                                  //                   ),
+                                  //                   Text(
+                                  //                     AppLocalizations.of(
+                                  //                       context,
+                                  //                     )!.navMusic,
+                                  //                     style: const TextStyle(
+                                  //                       fontSize: 10,
+                                  //                       fontWeight:
+                                  //                           FontWeight.bold,
+                                  //                     ),
+                                  //                   ),
+                                  //                 ],
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //       // せかい（サブ機能として小さく）
+                                  //       IgnorePointer(
+                                  //         ignoring: isAnyTutorialBlinking,
+                                  //         child: Opacity(
+                                  //           opacity: isAnyTutorialBlinking
+                                  //               ? 0.6
+                                  //               : 1.0,
+                                  //           child: InkWell(
+                                  //             onTap: () async {
+                                  //               try {
+                                  //                 SfxManager.instance
+                                  //                     .playTapSound();
+                                  //               } catch (e) {}
+                                  //               FirebaseAnalytics.instance.logEvent(
+                                  //                 name:
+                                  //                     'start_child_home_world_map',
+                                  //               );
+                                  //               Navigator.push(
+                                  //                 context,
+                                  //                 MaterialPageRoute(
+                                  //                   builder: (context) =>
+                                  //                       WorldMapScreen(
+                                  //                         currentLevel: _level,
+                                  //                         currentPoints:
+                                  //                             _points,
+                                  //                         requiredExpForNextLevel:
+                                  //                             _requiredExpForNextLevel,
+                                  //                         experience:
+                                  //                             _experience,
+                                  //                         experienceFraction:
+                                  //                             _experienceFraction,
+                                  //                       ),
+                                  //                 ),
+                                  //               ).then((_) {
+                                  //                 _loadAndDetermineDisplayPromise();
+                                  //               });
+                                  //             },
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(8),
+                                  //             child: Padding(
+                                  //               padding:
+                                  //                   const EdgeInsets.symmetric(
+                                  //                     horizontal: 8.0,
+                                  //                     vertical: 0.0,
+                                  //                   ),
+                                  //               child: Column(
+                                  //                 mainAxisAlignment:
+                                  //                     MainAxisAlignment.center,
+                                  //                 mainAxisSize:
+                                  //                     MainAxisSize.min,
+                                  //                 children: [
+                                  //                   const Icon(
+                                  //                     Icons.public,
+                                  //                     size: 20,
+                                  //                   ),
+                                  //                   Text(
+                                  //                     AppLocalizations.of(
+                                  //                       context,
+                                  //                     )!.navWorldMap,
+                                  //                     style: const TextStyle(
+                                  //                       fontSize: 10,
+                                  //                       fontWeight:
+                                  //                           FontWeight.bold,
+                                  //                     ),
+                                  //                   ),
+                                  //                 ],
+                                  //               ),
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                ],
                               ),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 12),
-                        // ヘルプ（サブ機能として小さく）
-                        IgnorePointer(
-                          ignoring: isAnyTutorialBlinking,
-                          child: Opacity(
-                            opacity: isAnyTutorialBlinking ? 0.6 : 1.0,
-                            child: _buildRoundMenuButton(
-                              icon: Icons.question_mark,
-                              label: AppLocalizations.of(context)!.help,
-                              iconColor: Colors.black, // オレンジ
-                              backgroundColor: Colors.yellow.shade100, // 白背景
-                              isMain: false,
-                              onTap: () {
-                                FirebaseAnalytics.instance.logEvent(
-                                  name: 'start_child_home_help',
-                                );
-                                try {
-                                  SfxManager.instance.playTapSound();
-                                } catch (e) {}
-                                _onHelpButtonPressed();
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
 
-                // 🌟 右側のボタン群
-                Positioned(
-                  top: 0,
-                  bottom: 0,
-                  right: 10,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // ミッション（メイン機能として大きく目立たせる！）
-                        Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.topRight,
-                          children: [
-                            IgnorePointer(
-                              ignoring:
-                                  isAnyTutorialBlinking &&
-                                  !_showMissionBlinking,
-                              child: Opacity(
-                                opacity:
-                                    (isAnyTutorialBlinking &&
-                                        !_showMissionBlinking)
-                                    ? 0.6
-                                    : 1.0,
-                                child: BlinkingEffect(
-                                  // 🌟 追加: ミッションボタンの点滅
-                                  isBlinking: _showMissionBlinking,
-                                  child: _buildRoundMenuButton(
-                                    icon: Icons.assignment_turned_in,
-                                    label: AppLocalizations.of(
-                                      context,
-                                    )!.missionScreenTitle,
-                                    iconColor: Colors.black,
-                                    backgroundColor: Colors.purple.shade100,
-                                    isMain: true, // 🌟 メイン機能なので大きく！
-                                    onTap: () async {
-                                      try {
-                                        SfxManager.instance.playTapSound();
-                                      } catch (e) {}
-                                      FirebaseAnalytics.instance.logEvent(
-                                        name: 'start_child_home_mission',
-                                      );
-
-                                      if (!mounted) return;
-                                      Navigator.push(
+                  // 🌟 左側のボタン（おやのせってい、きせかえ）
+                  Positioned(
+                    top: 0,
+                    left: 10,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // おやのせってい（サブ機能として小さく）
+                          Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              IgnorePointer(
+                                ignoring:
+                                    isAnyTutorialBlinking &&
+                                    !_showParentSettingsBlinking,
+                                child: Opacity(
+                                  opacity:
+                                      (isAnyTutorialBlinking &&
+                                          !_showParentSettingsBlinking)
+                                      ? 0.6
+                                      : 1.0,
+                                  child: BlinkingEffect(
+                                    isBlinking: _showParentSettingsBlinking,
+                                    child: _buildRoundMenuButton(
+                                      icon: Icons.settings,
+                                      label: AppLocalizations.of(
                                         context,
-                                        MaterialPageRoute(
-                                          builder: (context) => MissionScreen(
-                                            isTutorialMode:
-                                                _showMissionBlinking,
+                                      )!.parentSettings,
+                                      iconColor: Colors.black,
+                                      backgroundColor: Colors.grey.shade300,
+                                      isMain: false, // 🌟 サブ機能なので小さく
+                                      onTap:
+                                          (isAnyTutorialBlinking &&
+                                              !_showParentSettingsBlinking)
+                                          ? null
+                                          : () async {
+                                              try {
+                                                SfxManager.instance
+                                                    .playTapSound();
+                                              } catch (e) {}
+                                              await _openParentMode();
+                                            },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (_showParentSettingsBlinking)
+                                const Positioned(
+                                  right: -5,
+                                  bottom: -5,
+                                  child: AnimatedTapFinger(),
+                                ),
+                              if (_isTutorialParentSettingsFocus)
+                                Positioned(
+                                  top: 10,
+                                  left: 60, // サイズが小さくなったので吹き出しの位置を少し左に調整
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFFF9C4),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: Colors.orange,
+                                          width: 2,
+                                        ),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            blurRadius: 4,
+                                            color: Colors.black26,
                                           ),
-                                        ),
-                                      ).then((result) async {
-                                        _loadAndDetermineDisplayPromise();
-                                        _checkUnclaimedMissions();
-                                        //チュートリアル中だったら
-                                        if (_showMissionBlinking) {
-                                          setState(() {
-                                            _showMissionBlinking = false;
-                                          });
-                                          await SharedPrefsHelper.setChildTutorial(
-                                            SharedPrefsHelper
-                                                .tutorialPhaseFinish,
-                                          );
-                                          FirebaseAnalytics.instance.logEvent(
-                                            name: 'tutorial_child_complete',
-                                          );
-                                          if (!mounted) return;
-                                          await _showTutorialDialog(
-                                            title: AppLocalizations.of(
+                                        ],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(
                                               context,
-                                            )!.tutorialFirstPromiseCompleteTitle,
-                                            content: AppLocalizations.of(
-                                              context,
-                                            )!.tutorialFirstPromiseCompleteDesc,
-                                            buttonText: AppLocalizations.of(
-                                              context,
-                                            )!.gotIt,
-                                          );
-                                        }
-
-                                        if (result != null &&
-                                            result is String) {
-                                          if (result ==
-                                              'mission_parent_setup') {
-                                            SharedPrefsHelper.setParentTutorial(
-                                              SharedPrefsHelper
-                                                  .tutorialPhaseStart,
-                                            );
-                                            _showParentTutorial();
-                                          } else if (result ==
-                                              'mission_first_promise') {
-                                            SharedPrefsHelper.setChildTutorial(
-                                              SharedPrefsHelper
-                                                  .tutorialPhaseStart,
-                                            );
-                                            _showChildTutorial();
-                                          }
-                                        }
-                                      });
-                                    },
+                                            )!.tutorialParentSettingsBubble,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            // ミッションチュートリアルが残っている場合の吹き出し
-                            if (_showMissionBlinking)
-                              Positioned(
-                                top: 10,
-                                right: 80, // ボタンの左側に配置
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFFF9C4),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: Colors.orange,
-                                        width: 2,
-                                      ),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          blurRadius: 4,
-                                          color: Colors.black26,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Text(
-                                      AppLocalizations.of(
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          // ヘルプ（サブ機能として小さく）
+                          // IgnorePointer(
+                          //   ignoring: isAnyTutorialBlinking,
+                          //   child: Opacity(
+                          //     opacity: isAnyTutorialBlinking ? 0.6 : 1.0,
+                          //     child: _buildRoundMenuButton(
+                          //       icon: Icons.question_mark,
+                          //       label: AppLocalizations.of(context)!.help,
+                          //       iconColor: Colors.black, // オレンジ
+                          //       backgroundColor: Colors.yellow.shade100, // 白背景
+                          //       isMain: false,
+                          //       onTap: () {
+                          //         FirebaseAnalytics.instance.logEvent(
+                          //           name: 'start_child_home_help',
+                          //         );
+                          //         try {
+                          //           SfxManager.instance.playTapSound();
+                          //         } catch (e) {}
+                          //         _onHelpButtonPressed();
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // ★右上の「？」アイコン (Drawerメニュー用)
+                  Positioned(
+                    top: 10, // 上部バーの高さに合わせて調整してください
+                    right: 10,
+                    child: SafeArea(
+                      child: IgnorePointer(
+                        ignoring: isAnyTutorialBlinking,
+                        child: Opacity(
+                          opacity: isAnyTutorialBlinking ? 0.6 : 1.0,
+                          child: FloatingActionButton.small(
+                            // 小さめのFABを使って浮かせる
+                            onPressed: () {
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (_) {}
+                              // 🌟 keyを使って右側のドロワーを開く
+                              _scaffoldKey.currentState?.openEndDrawer();
+                            },
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black54,
+                            elevation: 4,
+                            child: const Icon(Icons.menu), // ハンバーガーメニューアイコン
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // 🌟 右側のボタン群
+                  Positioned(
+                    top: 0,
+                    bottom: 0,
+                    right: 10,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // ミッション（メイン機能として大きく目立たせる！）
+                          Stack(
+                            clipBehavior: Clip.none,
+                            alignment: Alignment.topRight,
+                            children: [
+                              IgnorePointer(
+                                ignoring:
+                                    isAnyTutorialBlinking &&
+                                    !_showMissionBlinking,
+                                child: Opacity(
+                                  opacity:
+                                      (isAnyTutorialBlinking &&
+                                          !_showMissionBlinking)
+                                      ? 0.6
+                                      : 1.0,
+                                  child: BlinkingEffect(
+                                    // 🌟 追加: ミッションボタンの点滅
+                                    isBlinking: _showMissionBlinking,
+                                    child: _buildRoundMenuButton(
+                                      icon: Icons.assignment_turned_in,
+                                      label: AppLocalizations.of(
                                         context,
-                                      )!.tutorialMissionBubble,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black87,
-                                      ),
+                                      )!.missionScreenTitle,
+                                      iconColor: Colors.black,
+                                      backgroundColor: Colors.purple.shade100,
+                                      isMain: true, // 🌟 メイン機能なので大きく！
+                                      onTap: () async {
+                                        try {
+                                          SfxManager.instance.playTapSound();
+                                        } catch (e) {}
+                                        FirebaseAnalytics.instance.logEvent(
+                                          name: 'start_child_home_mission',
+                                        );
+
+                                        if (!mounted) return;
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => MissionScreen(
+                                              isTutorialMode:
+                                                  _showMissionBlinking,
+                                            ),
+                                          ),
+                                        ).then((result) async {
+                                          _loadAndDetermineDisplayPromise();
+                                          _checkUnclaimedMissions();
+                                          //チュートリアル中だったら
+                                          if (_showMissionBlinking) {
+                                            setState(() {
+                                              _showMissionBlinking = false;
+                                            });
+                                            await SharedPrefsHelper.setChildTutorial(
+                                              SharedPrefsHelper
+                                                  .tutorialPhaseFinish,
+                                            );
+                                            FirebaseAnalytics.instance.logEvent(
+                                              name: 'tutorial_child_complete',
+                                            );
+                                            if (!mounted) return;
+                                            await _showTutorialDialog(
+                                              title: AppLocalizations.of(
+                                                context,
+                                              )!.tutorialFirstPromiseCompleteTitle,
+                                              content: AppLocalizations.of(
+                                                context,
+                                              )!.tutorialFirstPromiseCompleteDesc,
+                                              buttonText: AppLocalizations.of(
+                                                context,
+                                              )!.gotIt,
+                                            );
+                                          }
+
+                                          if (result != null &&
+                                              result is String) {
+                                            if (result ==
+                                                'mission_parent_setup') {
+                                              SharedPrefsHelper.setParentTutorial(
+                                                SharedPrefsHelper
+                                                    .tutorialPhaseStart,
+                                              );
+                                              _showParentTutorial();
+                                            } else if (result ==
+                                                'mission_first_promise') {
+                                              SharedPrefsHelper.setChildTutorial(
+                                                SharedPrefsHelper
+                                                    .tutorialPhaseStart,
+                                              );
+                                              _showChildTutorial();
+                                            }
+                                          }
+                                        });
+                                      },
                                     ),
                                   ),
                                 ),
                               ),
+                              // ミッションチュートリアルが残っている場合の吹き出し
+                              if (_showMissionBlinking)
+                                Positioned(
+                                  top: 10,
+                                  right: 80, // ボタンの左側に配置
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFFF9C4),
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: Colors.orange,
+                                          width: 2,
+                                        ),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            blurRadius: 4,
+                                            color: Colors.black26,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.tutorialMissionBubble,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
 
-                            // ミッションチュートリアルが残っている場合のタップアニメーション
-                            if (_showMissionBlinking)
-                              Positioned(
-                                bottom: 30,
-                                right: 20,
-                                child: IgnorePointer(
+                              // ミッションチュートリアルが残っている場合のタップアニメーション
+                              if (_showMissionBlinking)
+                                Positioned(
+                                  bottom: 30,
+                                  right: 20,
+                                  child: IgnorePointer(
+                                    child: ScaleTransition(
+                                      scale: Tween<double>(begin: 1.0, end: 1.3)
+                                          .animate(
+                                            CurvedAnimation(
+                                              parent: _hintAnimationController,
+                                              curve: Curves.easeInOut,
+                                            ),
+                                          ),
+                                      child: const Icon(
+                                        Icons.touch_app,
+                                        color: Colors.orange,
+                                        size: 40,
+                                        shadows: [
+                                          Shadow(
+                                            blurRadius: 4,
+                                            color: Colors.black26,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              // 「！」バッジの表示
+                              if (_hasUnclaimedMissions)
+                                Positioned(
+                                  top: -4, // バッジの位置を微調整
+                                  right: 0,
                                   child: ScaleTransition(
                                     scale: Tween<double>(begin: 1.0, end: 1.3)
                                         .animate(
@@ -2831,397 +3114,137 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             curve: Curves.easeInOut,
                                           ),
                                         ),
-                                    child: const Icon(
-                                      Icons.touch_app,
-                                      color: Colors.orange,
-                                      size: 40,
-                                      shadows: [
-                                        Shadow(
-                                          blurRadius: 4,
-                                          color: Colors.black26,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 2.0,
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            // 「！」バッジの表示
-                            if (_hasUnclaimedMissions)
-                              Positioned(
-                                top: -4, // バッジの位置を微調整
-                                right: 0,
-                                child: ScaleTransition(
-                                  scale: Tween<double>(begin: 1.0, end: 1.3)
-                                      .animate(
-                                        CurvedAnimation(
-                                          parent: _hintAnimationController,
-                                          curve: Curves.easeInOut,
-                                        ),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.black26,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
                                       ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(6),
-                                    decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 2.0,
-                                      ),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 2),
+                                      child: const Text(
+                                        '!',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ],
-                                    ),
-                                    child: const Text(
-                                      '!',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        // きせかえ（メイン機能として大きく目立たせる！）
-                        Stack(
-                          clipBehavior: Clip.none,
-                          alignment: Alignment.center,
-                          children: [
-                            IgnorePointer(
-                              ignoring:
-                                  isAnyTutorialBlinking &&
-                                  !_showCustomizeBlinking,
-                              child: Opacity(
-                                opacity:
-                                    (isAnyTutorialBlinking &&
-                                        !_showCustomizeBlinking)
-                                    ? 0.6
-                                    : 1.0,
-                                child: BlinkingEffect(
-                                  isBlinking: _showCustomizeBlinking,
-                                  child: _buildRoundMenuButton(
-                                    icon: Icons.checkroom, // 服のアイコンでわかりやすく
-                                    label: AppLocalizations.of(
-                                      context,
-                                    )!.navDressUp,
-                                    iconColor: Colors.black,
-                                    backgroundColor: Colors.green.shade100,
-                                    isMain: true, // 🌟 メイン機能なので大きく！
-                                    onTap: () async {
-                                      bool isShown =
-                                          await SharedPrefsHelper.getChildTutorial() ==
-                                          SharedPrefsHelper.tutorialPhaseStart;
-                                      if (isShown) {
-                                        FirebaseAnalytics.instance.logEvent(
-                                          name: 'tutorial_tap_customize_button',
-                                        );
-                                      } else {
-                                        FirebaseAnalytics.instance.logEvent(
-                                          name: 'start_child_home_dress_up',
-                                        );
-                                      }
-
-                                      try {
-                                        SfxManager.instance.playTapSound();
-                                      } catch (e) {}
-
-                                      Navigator.push(
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          // きせかえ（メイン機能として大きく目立たせる！）
+                          Stack(
+                            clipBehavior: Clip.none,
+                            alignment: Alignment.center,
+                            children: [
+                              IgnorePointer(
+                                ignoring:
+                                    isAnyTutorialBlinking &&
+                                    !_showCustomizeBlinking,
+                                child: Opacity(
+                                  opacity:
+                                      (isAnyTutorialBlinking &&
+                                          !_showCustomizeBlinking)
+                                      ? 0.6
+                                      : 1.0,
+                                  child: BlinkingEffect(
+                                    isBlinking: _showCustomizeBlinking,
+                                    child: _buildRoundMenuButton(
+                                      icon: Icons.checkroom, // 服のアイコンでわかりやすく
+                                      label: AppLocalizations.of(
                                         context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CharacterCustomizeScreen(),
-                                        ),
-                                      ).then((_) async {
-                                        setState(() {
-                                          _showCustomizeBlinking = false;
-                                        });
+                                      )!.navDressUp,
+                                      iconColor: Colors.black,
+                                      backgroundColor: Colors.green.shade100,
+                                      isMain: true, // 🌟 メイン機能なので大きく！
+                                      onTap: () async {
                                         bool isShown =
                                             await SharedPrefsHelper.getChildTutorial() ==
                                             SharedPrefsHelper
                                                 .tutorialPhaseStart;
                                         if (isShown) {
                                           FirebaseAnalytics.instance.logEvent(
-                                            name: 'tutorial_tap_customize_back',
+                                            name:
+                                                'tutorial_tap_customize_button',
                                           );
-                                          setState(() {
-                                            _showMissionBlinking = true;
-                                          });
-                                          await SharedPrefsHelper.setChildTutorial(
-                                            SharedPrefsHelper
-                                                .tutorialPhaseFinish,
+                                        } else {
+                                          FirebaseAnalytics.instance.logEvent(
+                                            name: 'start_child_home_dress_up',
                                           );
-                                          await SharedPrefsHelper.setTutorialStepShown(
-                                            SharedPrefsHelper
-                                                .tutorialStepCustomizeKey,
-                                          );
-                                          // if (!mounted) return;
-                                          // await _showTutorialDialog(
-                                          //   title: AppLocalizations.of(
-                                          //     context,
-                                          //   )!.tutorialFirstPromiseCompleteTitle,
-                                          //   content: AppLocalizations.of(
-                                          //     context,
-                                          //   )!.tutorialFirstPromiseCompleteDesc,
-                                          //   buttonText: AppLocalizations.of(
-                                          //     context,
-                                          //   )!.gotIt,
-                                          // );
                                         }
-                                        await _loadAndDetermineDisplayPromise();
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                            if (_showCustomizeBlinking)
-                              const Positioned(
-                                right: -10,
-                                bottom: -10,
-                                child: AnimatedTapFinger(),
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
 
-          if (_showStartBlinking)
-            Positioned.fill(
-              child: Container(
-                color: Colors.black38, // 薄暗くする
-              ),
-            ),
+                                        try {
+                                          SfxManager.instance.playTapSound();
+                                        } catch (e) {}
 
-          // 下のバー（つぎのやくそく / はじめる）
-          _displayPromise != null
-              ? Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: SafeArea(
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _showStartBlinking
-                            ? Colors.transparent
-                            : (_isDisplayPromiseEmergency
-                                  ? Colors.red[400]
-                                  : Colors.white.withOpacity(0.85)),
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: _showStartBlinking
-                            ? []
-                            : [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.15),
-                                  spreadRadius: 2,
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: IgnorePointer(
-                              ignoring: isAnyTutorialBlinking,
-                              child: Opacity(
-                                opacity: isAnyTutorialBlinking ? 0.3 : 1.0,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (_isDisplayPromiseEmergency)
-                                      Text(
-                                        AppLocalizations.of(context)!.emergency,
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white70,
-                                        ),
-                                      ),
-                                    if (!_isDisplayPromiseEmergency)
-                                      Text(
-                                        AppLocalizations.of(
+                                        Navigator.push(
                                           context,
-                                        )!.nextPromise,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: isAnyTutorialBlinking
-                                              ? Colors.white70
-                                              : Colors.grey[700],
-                                        ),
-                                      ),
-                                    Text(
-                                      _isDisplayPromiseEmergency
-                                          ? '${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}'
-                                          : '${_displayPromise!['time']}〜 ${_displayPromise!['icon']} ${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color:
-                                            (_isDisplayPromiseEmergency ||
-                                                isAnyTutorialBlinking)
-                                            ? Colors.white
-                                            : Colors.black,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-
-                          // やらなかったボタン
-                          IgnorePointer(
-                            ignoring: isAnyTutorialBlinking,
-                            child: Opacity(
-                              opacity: isAnyTutorialBlinking ? 0.3 : 1.0,
-                              child: TextButton(
-                                onPressed: _skipPromise,
-                                child: Text(
-                                  AppLocalizations.of(context)!.didNotDo,
-                                  style: TextStyle(
-                                    color:
-                                        (_isDisplayPromiseEmergency ||
-                                            _showStartBlinking)
-                                        ? Colors.white70
-                                        : Colors.grey[600],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          Stack(
-                            clipBehavior: Clip.none,
-                            alignment: Alignment.center,
-                            children: [
-                              BlinkingEffect(
-                                isBlinking: _showStartBlinking,
-                                borderRadius: 30, // 🌟 丸いボタンに合わせて角丸を変更
-                                child: IgnorePointer(
-                                  ignoring:
-                                      isAnyTutorialBlinking &&
-                                      !_showStartBlinking,
-                                  child: Opacity(
-                                    opacity:
-                                        (isAnyTutorialBlinking &&
-                                            !_showStartBlinking)
-                                        ? 0.3
-                                        : 1.0,
-                                    child: ElevatedButton(
-                                      onPressed: _startPromise,
-                                      style: ElevatedButton.styleFrom(
-                                        // 🌟 変更: はじめるボタンをより大きく・目立たせる！
-                                        backgroundColor:
-                                            _isDisplayPromiseEmergency
-                                            ? Colors.white
-                                            : const Color(
-                                                0xFFFF7043,
-                                              ), // ビビッドなオレンジ
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 32,
-                                          vertical: 9,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            30,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CharacterCustomizeScreen(),
                                           ),
-                                        ),
-                                        elevation: 6,
-                                      ),
-                                      child: Text(
-                                        _isDisplayPromiseEmergency
-                                            ? AppLocalizations.of(
-                                                context,
-                                              )!.startNow
-                                            : AppLocalizations.of(
-                                                context,
-                                              )!.startPromise,
-                                        style: TextStyle(
-                                          color: _isDisplayPromiseEmergency
-                                              ? Colors.red[400]
-                                              : Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20, // 🌟 テキストも少し大きく
-                                        ),
-                                      ),
+                                        ).then((_) async {
+                                          setState(() {
+                                            _showCustomizeBlinking = false;
+                                          });
+                                          bool isShown =
+                                              await SharedPrefsHelper.getChildTutorial() ==
+                                              SharedPrefsHelper
+                                                  .tutorialPhaseStart;
+                                          if (isShown) {
+                                            FirebaseAnalytics.instance.logEvent(
+                                              name:
+                                                  'tutorial_tap_customize_back',
+                                            );
+                                            setState(() {
+                                              _showMissionBlinking = true;
+                                            });
+                                            await SharedPrefsHelper.setChildTutorial(
+                                              SharedPrefsHelper
+                                                  .tutorialPhaseFinish,
+                                            );
+                                            await SharedPrefsHelper.setTutorialStepShown(
+                                              SharedPrefsHelper
+                                                  .tutorialStepCustomizeKey,
+                                            );
+                                            // if (!mounted) return;
+                                            // await _showTutorialDialog(
+                                            //   title: AppLocalizations.of(
+                                            //     context,
+                                            //   )!.tutorialFirstPromiseCompleteTitle,
+                                            //   content: AppLocalizations.of(
+                                            //     context,
+                                            //   )!.tutorialFirstPromiseCompleteDesc,
+                                            //   buttonText: AppLocalizations.of(
+                                            //     context,
+                                            //   )!.gotIt,
+                                            // );
+                                          }
+                                          await _loadAndDetermineDisplayPromise();
+                                        });
+                                      },
                                     ),
                                   ),
                                 ),
                               ),
-                              if (_showStartBlinking)
+                              if (_showCustomizeBlinking)
                                 const Positioned(
-                                  right: 0,
-                                  bottom: 0,
+                                  right: -10,
+                                  bottom: -10,
                                   child: AnimatedTapFinger(),
-                                ),
-                              if (_showStartBlinking)
-                                Positioned(
-                                  top: -80,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 8,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            16,
-                                          ),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Colors.black26,
-                                              blurRadius: 4,
-                                              offset: Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Text(
-                                          _showEmergencyStartBlinking
-                                              ? AppLocalizations.of(
-                                                  context,
-                                                )!.tutorialEmergencyStartBubble
-                                              : AppLocalizations.of(
-                                                  context,
-                                                )!.tutorialStartBubble,
-                                          style: const TextStyle(
-                                            color: Colors.black87,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      ClipPath(
-                                        clipper: SpeechBubbleTailDownClipper(),
-                                        child: Container(
-                                          width: 16,
-                                          height: 8,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                 ),
                             ],
                           ),
@@ -3229,114 +3252,409 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       ),
                     ),
                   ),
-                )
-              : Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: SafeArea(
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
+                ],
+              ),
+            ),
+
+            if (_showStartBlinking)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black38, // 薄暗くする
+                ),
+              ),
+
+            // 下のバー（つぎのやくそく / はじめる）
+            _displayPromise != null
+                ? Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: SafeArea(
+                      child: Container(
+                        margin: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _showStartBlinking
+                              ? Colors.transparent
+                              : (_isDisplayPromiseEmergency
+                                    ? Colors.red[400]
+                                    : Colors.white.withOpacity(0.85)),
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: _showStartBlinking
+                              ? []
+                              : [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.15),
+                                    spreadRadius: 2,
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: IgnorePointer(
+                                ignoring: isAnyTutorialBlinking,
+                                child: Opacity(
+                                  opacity: isAnyTutorialBlinking ? 0.3 : 1.0,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (_isDisplayPromiseEmergency)
+                                        Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.emergency,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                      if (!_isDisplayPromiseEmergency)
+                                        Text(
+                                          AppLocalizations.of(
+                                            context,
+                                          )!.nextPromise,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: isAnyTutorialBlinking
+                                                ? Colors.white70
+                                                : Colors.grey[700],
+                                          ),
+                                        ),
+                                      Text(
+                                        _isDisplayPromiseEmergency
+                                            ? '${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}'
+                                            : '${_displayPromise!['time']}〜 ${_displayPromise!['icon']} ${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              (_isDisplayPromiseEmergency ||
+                                                  isAnyTutorialBlinking)
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+
+                            // やらなかったボタン
+                            IgnorePointer(
+                              ignoring: isAnyTutorialBlinking,
+                              child: Opacity(
+                                opacity: isAnyTutorialBlinking ? 0.3 : 1.0,
+                                child: TextButton(
+                                  onPressed: _skipPromise,
+                                  child: Text(
+                                    AppLocalizations.of(context)!.didNotDo,
+                                    style: TextStyle(
+                                      color:
+                                          (_isDisplayPromiseEmergency ||
+                                              _showStartBlinking)
+                                          ? Colors.white70
+                                          : Colors.grey[600],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            Stack(
+                              clipBehavior: Clip.none,
+                              alignment: Alignment.center,
+                              children: [
+                                BlinkingEffect(
+                                  isBlinking: _showStartBlinking,
+                                  borderRadius: 30, // 🌟 丸いボタンに合わせて角丸を変更
+                                  child: IgnorePointer(
+                                    ignoring:
+                                        isAnyTutorialBlinking &&
+                                        !_showStartBlinking,
+                                    child: Opacity(
+                                      opacity:
+                                          (isAnyTutorialBlinking &&
+                                              !_showStartBlinking)
+                                          ? 0.3
+                                          : 1.0,
+                                      child: ElevatedButton(
+                                        onPressed: _startPromise,
+                                        style: ElevatedButton.styleFrom(
+                                          // 🌟 変更: はじめるボタンをより大きく・目立たせる！
+                                          backgroundColor:
+                                              _isDisplayPromiseEmergency
+                                              ? Colors.white
+                                              : const Color(
+                                                  0xFFFF7043,
+                                                ), // ビビッドなオレンジ
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 32,
+                                            vertical: 9,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              30,
+                                            ),
+                                          ),
+                                          elevation: 6,
+                                        ),
+                                        child: Text(
+                                          _isDisplayPromiseEmergency
+                                              ? AppLocalizations.of(
+                                                  context,
+                                                )!.startNow
+                                              : AppLocalizations.of(
+                                                  context,
+                                                )!.startPromise,
+                                          style: TextStyle(
+                                            color: _isDisplayPromiseEmergency
+                                                ? Colors.red[400]
+                                                : Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16, // 🌟 テキストも少し大きく
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                if (_showStartBlinking)
+                                  const Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: AnimatedTapFinger(),
+                                  ),
+                                if (_showStartBlinking)
+                                  Positioned(
+                                    top: -80,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              16,
+                                            ),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Colors.black26,
+                                                blurRadius: 4,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Text(
+                                            _showEmergencyStartBlinking
+                                                ? AppLocalizations.of(
+                                                    context,
+                                                  )!.tutorialEmergencyStartBubble
+                                                : AppLocalizations.of(
+                                                    context,
+                                                  )!.tutorialStartBubble,
+                                            style: const TextStyle(
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                        ClipPath(
+                                          clipper:
+                                              SpeechBubbleTailDownClipper(),
+                                          child: Container(
+                                            width: 16,
+                                            height: 8,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.85),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child: Text(
-                          AppLocalizations.of(context)!.allPromisesDone,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                    ),
+                  )
+                : Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: SafeArea(
+                      child: Container(
+                        margin: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.85),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.allPromisesDone,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
 
-          // アバターの表示と操作
-          DraggableCharacter(
-            id: 'avatar',
-            customWidget: AvatarDisplay(
-              face: _equippedFace,
-              clothes: _equippedClothes,
-              hair: _equippedHair,
-              headgear: _equippedHeadgear,
-              accessory: _equippedAccessory,
+            // アバターの表示と操作
+            DraggableCharacter(
+              id: 'avatar',
+              customWidget: AvatarDisplay(
+                face: _equippedFace,
+                clothes: _equippedClothes,
+                hair: _equippedHair,
+                headgear: _equippedHeadgear,
+                accessory: _equippedAccessory,
+                size: 80,
+              ),
+              position: _avatarPosition,
               size: 80,
+              isInteractive: !isAnyTutorialActive,
+              onPositionChanged: (delta) {
+                setState(() {
+                  _avatarPosition += delta;
+                });
+              },
             ),
-            position: _avatarPosition,
-            size: 80,
-            isInteractive: !isAnyTutorialActive,
-            onPositionChanged: (delta) {
-              setState(() {
-                _avatarPosition += delta;
-              });
-            },
-          ),
 
-          // 応援キャラクターの表示と操作
-          ..._equippedCharacters.map((charPath) {
-            return DraggableCharacter(
-              id: charPath,
-              imagePath: charPath,
-              position:
-                  _characterPositionsMap[charPath] ??
-                  Offset(safeAreaWidth - 240, 190),
-              size: 80,
-              isInteractive: !isAnyTutorialActive,
-              onPositionChanged: (delta) {
-                setState(() {
-                  _characterPositionsMap[charPath] =
-                      (_characterPositionsMap[charPath] ??
-                          Offset(safeAreaWidth - 240, 190)) +
-                      delta;
-                });
-              },
-            );
-          }).toList(),
+            // 応援キャラクターの表示と操作
+            ..._equippedCharacters.map((charPath) {
+              return DraggableCharacter(
+                id: charPath,
+                imagePath: charPath,
+                position:
+                    _characterPositionsMap[charPath] ??
+                    Offset(safeAreaWidth - 240, 190),
+                size: 80,
+                isInteractive: !isAnyTutorialActive,
+                onPositionChanged: (delta) {
+                  setState(() {
+                    _characterPositionsMap[charPath] =
+                        (_characterPositionsMap[charPath] ??
+                            Offset(safeAreaWidth - 240, 190)) +
+                        delta;
+                  });
+                },
+              );
+            }).toList(),
 
-          // アイテムの表示と操作
-          ..._equippedItems.map((itemPath) {
-            return DraggableCharacter(
-              id: itemPath,
-              imagePath: itemPath,
-              position: _itemPositionsMap[itemPath] ?? const Offset(100, 190),
-              size: _getItemSize(itemPath),
-              isInteractive: !isAnyTutorialActive,
-              onPositionChanged: (delta) {
-                setState(() {
-                  _itemPositionsMap[itemPath] =
-                      (_itemPositionsMap[itemPath] ?? const Offset(100, 190)) +
-                      delta;
-                });
-              },
-            );
-          }).toList(),
-          if (_showCustomizeBlinking)
-            Positioned(
-              bottom: 130, // サイズが大きくなったので位置を調整
-              right: 70,
-              child: SafeArea(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SpeechBubble(
-                      text: AppLocalizations.of(
-                        context,
-                      )!.tutorialCustomizeBubble,
-                      tailDirection: TailDirection.right,
-                    ),
-                  ],
+            // アイテムの表示と操作
+            ..._equippedItems.map((itemPath) {
+              return DraggableCharacter(
+                id: itemPath,
+                imagePath: itemPath,
+                position: _itemPositionsMap[itemPath] ?? const Offset(100, 190),
+                size: _getItemSize(itemPath),
+                isInteractive: !isAnyTutorialActive,
+                onPositionChanged: (delta) {
+                  setState(() {
+                    _itemPositionsMap[itemPath] =
+                        (_itemPositionsMap[itemPath] ??
+                            const Offset(100, 190)) +
+                        delta;
+                  });
+                },
+              );
+            }).toList(),
+            if (_showCustomizeBlinking)
+              Positioned(
+                bottom: 130, // サイズが大きくなったので位置を調整
+                right: 70,
+                child: SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SpeechBubble(
+                        text: AppLocalizations.of(
+                          context,
+                        )!.tutorialCustomizeBubble,
+                        tailDirection: TailDirection.right,
+                      ),
+                    ],
+                  ),
                 ),
               ),
+            if (shouldShowPointAdditionHint)
+              Positioned(
+                top: 50, // 画面真ん中あたりのポイント表示の下あたり
+                right: 150,
+                child: SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SpeechBubble(
+                        text: AppLocalizations.of(
+                          context,
+                        )!.guidePointAdditionBubble,
+                        tailDirection: TailDirection.top,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem({
+    required BuildContext context,
+    required IconData icon,
+    required Color iconColor,
+    required String text,
+    required bool isTutorialBlinking,
+    required VoidCallback onTap,
+  }) {
+    return IgnorePointer(
+      ignoring: isTutorialBlinking,
+      child: Opacity(
+        opacity: isTutorialBlinking ? 0.6 : 1.0,
+        child: ListTile(
+          leading: Icon(icon, color: iconColor, size: 26),
+          title: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
             ),
-        ],
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 0,
+          ),
+          onTap: () {
+            Navigator.pop(context); // 🌟 タップしたらまずドロワーを閉じる
+            onTap(); // その後に遷移処理を実行
+          },
+        ),
       ),
     );
   }

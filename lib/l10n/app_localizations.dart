@@ -3978,6 +3978,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'None'**
   String get itemNone;
+
+  /// No description provided for @guidePointAdditionBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'You can also get more\npoints from here!'**
+  String get guidePointAdditionBubble;
+
+  /// No description provided for @navMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get navMenu;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -2021,4 +2021,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get itemNone => 'لا شيء';
+
+  @override
+  String get guidePointAdditionBubble => 'يمكنك أيضًا الحصول على المزيد\nمن النقاط من هنا!';
+
+  @override
+  String get navMenu => 'القائمة';
 }

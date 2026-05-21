@@ -2021,4 +2021,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itemNone => 'None';
+
+  @override
+  String get guidePointAdditionBubble => 'You can also get more\npoints from here!';
+
+  @override
+  String get navMenu => 'Menu';
 }
