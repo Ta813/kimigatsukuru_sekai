@@ -6,8 +6,8 @@
   "customizeTabHouse": "おうち",
   "customizeTabCharacter": "応援キャラ",
   "customizeTabItem": "アイテム",
-  "guideWelcomeTitle": "まずは**こどもの気分**になって遊んでみよう！",
-  "guideWelcomeDesc": "どんな風に「やくそく」にチャレンジするのか、実際に体験してみてね！\n下のバーに**『お試しのやくそく』**を用意したよ。\nさっそく『スタート』を押して、こどもの気分で遊んでみてね！",
+  "guideWelcomeTitle": "まずは**やくそく**にチャレンジしてみよう！",
+  "guideWelcomeDesc": "どんな風に「やくそく」をクリアするのか、実際にやってみよう！\n下のバーに**『お試しのやくそく』**を用意したよ。\nさっそく『はじめる』を押して、体験してみてね！",
   "guideSettingsTitle": "おうちのひと設定「左上の⚙マーク」",
   "guideSettingsDesc": "やくそくの追加や編集など、\nおうちのひとが詳しい設定をするためのボタンだよ。\n最初にここで「やくそく」をこどもと一緒に決めてみてね！",
   "tutorialShopTitle": "100ポイントゲットだね！✨",
@@ -530,7 +530,7 @@
   "tutorialStartBubble": "ここから\n「やくそく」をはじめるよ！",
   "tutorialEmergencyStartBubble": "ここから急ぎの\nやくそくをはじめるよ！",
   "tutorialShopBubble": "おみせで\nおかいものしよう！",
-  "tutorialCustomizeBubble": "ここで\nきせかえができるよ！",
+  "tutorialCustomizeBubble": "もらったポイントで\nきせかえができるよ！",
   "tutorialParentSettingsBubble": "ここから やくそくをつくってね！",
   "tutorialEmergencyPromiseBubble": "急なやくそくができた場合は、ここからつくってね！",
   "helpMenuTitle": "あそびかた",
@@ -859,7 +859,7 @@
   "setupRulesStep3": "ポイントで アイテムを こうかんして\n「きせかえ」や「もようがえ」を たのしもう！",
   "setupRulesStep4": "「やくそく」を なんども たっせいすると\nレベルが あがって べつのせかいに いけるよ！",
   "setupOkButton": "わかった！",
-  "tutorialMissionBubble": "まずは、あそびかたを\nマスターしよう！",
+  "tutorialMissionBubble": "ミッションをたっせいしたら\nここでもポイントがもらえるよ！",
   "setupStepProgress": "ステップ {currentStep} / {totalSteps}",
   "@setupStepProgress": {
     "placeholders": {

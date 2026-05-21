@@ -158,6 +158,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     List<String> selected,
     String type,
   ) async {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
+
     final bool isLevelLocked = _currentLevel < item.requiredLevel;
     final bool isLocked =
         isLevelLocked && !PurchaseManager.instance.isPremium.value;
@@ -166,9 +169,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       // プレミアム誘導ダイアログ
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: Text(
-            AppLocalizations.of(context)!.upgradeToPremium,
+            l10n.upgradeToPremium,
             textAlign: TextAlign.center,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -186,9 +189,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  AppLocalizations.of(
-                    context,
-                  )!.shopLevelLockMessage(item.requiredLevel),
+                  l10n.shopLevelLockMessage(item.requiredLevel),
                   style: const TextStyle(
                     fontSize: 16,
                     height: 1.5,
@@ -197,7 +198,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                   ),
                 ),
                 Text(
-                  AppLocalizations.of(context)!.premiumShopUnlockMessage,
+                  l10n.premiumShopUnlockMessage,
                   style: const TextStyle(fontSize: 16, height: 1.5),
                 ),
               ],
@@ -206,9 +207,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
           actionsAlignment: MainAxisAlignment.center,
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: Text(
-                AppLocalizations.of(context)!.cancel,
+                l10n.cancel,
                 style: TextStyle(color: Colors.grey[600]),
               ),
             ),
@@ -217,7 +218,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 FirebaseAnalytics.instance.logEvent(
                   name: 'premium_open_furniture_customize',
                 );
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -235,7 +236,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 elevation: 4,
               ),
               child: Text(
-                AppLocalizations.of(context)!.seeDetails,
+                l10n.seeDetails,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -250,9 +251,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       // 🌟 変更: ポイント不足時に、ポイント追加画面への誘導ダイアログを表示
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: Text(
-            AppLocalizations.of(context)!.shopNotEnoughPoints, // 「ポイントが足りないよ！」等
+            l10n.shopNotEnoughPoints, // 「ポイントが足りないよ！」等
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
@@ -270,7 +271,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               ),
             ),
             child: Text(
-              AppLocalizations.of(context)!.shopNotEnoughPointsDesc,
+              l10n.shopNotEnoughPointsDesc,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 16,
@@ -282,9 +283,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
           actionsAlignment: MainAxisAlignment.spaceEvenly,
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: Text(
-                AppLocalizations.of(context)!.laterAction,
+                l10n.laterAction,
                 style: const TextStyle(color: Colors.grey),
               ),
             ),
@@ -296,7 +297,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 FirebaseAnalytics.instance.logEvent(
                   name: 'open_point_addition_from_shop',
                 );
-                Navigator.pop(context); // ダイアログを閉じる
+                Navigator.pop(dialogContext); // ダイアログを閉じる
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -320,7 +321,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                   Icon(Icons.add_circle, size: 20),
                   SizedBox(width: 8),
                   Text(
-                    AppLocalizations.of(context)!.pointAdditionTitle,
+                    l10n.pointAdditionTitle,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -334,7 +335,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         content: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -346,7 +347,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
             ),
           ),
           child: Text(
-            AppLocalizations.of(context)!.shopConfirmExchange(item.price),
+            l10n.shopConfirmExchange(item.price),
             style: const TextStyle(fontSize: 16, height: 1.5),
           ),
         ),
@@ -357,10 +358,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               try {
                 SfxManager.instance.playTapSound();
               } catch (e) {}
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
             },
             child: Text(
-              AppLocalizations.of(context)!.quitAction,
+              l10n.quitAction,
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
@@ -370,8 +371,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 name: 'start_customize_buy_item',
               );
 
-              final l10n = AppLocalizations.of(context);
-              final lang = l10n?.localeName ?? 'en';
+              final lang = l10n.localeName;
               if (lang == 'ja') {
                 try {
                   SfxManager.instance.playShopBuySound();
@@ -398,7 +398,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               await prefs.setBool('daily_shop_done_$todayStr', true);
 
               if (mounted) {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 setState(() {
                   _currentPoints = newPoints;
                   _purchasedItemNames.add(item.name);
@@ -416,7 +416,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               elevation: 4,
             ),
             child: Text(
-              AppLocalizations.of(context)!.exchange,
+              l10n.exchange,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),

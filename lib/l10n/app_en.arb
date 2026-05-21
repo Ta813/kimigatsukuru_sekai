@@ -6,8 +6,8 @@
   "customizeTabHouse": "House",
   "customizeTabCharacter": "Supporter",
   "customizeTabItem": "Items",
-  "guideWelcomeTitle": "First, let's play like a child!",
-  "guideWelcomeDesc": "Experience for yourself how 'Promises' work!\nI've prepared a 'Trial Promise' on the bottom bar.\nPress 'Start' right away and try playing like a child!",
+  "guideWelcomeTitle": "Let's try a **promise** first!",
+  "guideWelcomeDesc": "Let's actually try and see how to clear a 'promise'!\nWe have prepared a **'Trial Promise'** in the bottom bar.\nPress 'Start' right away and experience it!",
   "guideSettingsTitle": "Grown-up Settings (Top-left ⚙️ icon)",
   "guideSettingsDesc": "This is where grown-ups can add or edit promises.\nLet's decide on some 'Promises' together with your child here first!",
   "tutorialShopTitle": "You got 100 points! ✨",
@@ -530,7 +530,7 @@
   "tutorialStartBubble": "Starting your\n'Promise' here!",
   "tutorialEmergencyStartBubble": "Starting your emergency\n'Promise' here!",
   "tutorialShopBubble": "Let's go\nshopping!",
-  "tutorialCustomizeBubble": "You can change\nclothes here!",
+  "tutorialCustomizeBubble": "You can dress up\nwith the points you got!",
   "tutorialParentSettingsBubble": "Create your promises from here!",
   "tutorialEmergencyPromiseBubble": "If you have a quick promise, create it here!",
   "helpMenuTitle": "How to Play",
@@ -859,7 +859,7 @@
   "setupRulesStep3": "Exchange points for items and\nenjoy 'Dress-up' and 'Decorating'!",
   "setupRulesStep4": "By completing 'Promises' many times,\nyour level will go up and you can go to other worlds!",
   "setupOkButton": "Got it!",
-  "tutorialMissionBubble": "First, let's master\nhow to play!",
+  "tutorialMissionBubble": "You can get points here\nwhen you clear a mission!",
   "setupStepProgress": "Step {currentStep} / {totalSteps}",
   "@setupStepProgress": {
     "placeholders": {

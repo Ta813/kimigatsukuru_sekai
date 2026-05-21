@@ -36,7 +36,8 @@ class MissionItem {
 }
 
 class MissionScreen extends StatefulWidget {
-  const MissionScreen({super.key});
+  const MissionScreen({super.key, required this.isTutorialMode});
+  final bool? isTutorialMode;
 
   @override
   State<MissionScreen> createState() => _MissionScreenState();
@@ -59,7 +60,6 @@ class _MissionScreenState extends State<MissionScreen>
   bool _hasUnclaimedTutorial = false;
   bool _hasUnclaimedFirstTime = false;
   bool _hasUnclaimedCumulative = false;
-  bool _isTutorialMissionIncomplete = false;
 
   @override
   void initState() {
@@ -456,9 +456,6 @@ class _MissionScreenState extends State<MissionScreen>
         _hasUnclaimedFirstTime = checkTabBadge(MissionCategory.firstTime);
         _hasUnclaimedCumulative = checkTabBadge(MissionCategory.cumulative);
         _isLoading = false;
-        _isTutorialMissionIncomplete =
-            !claimedIds.contains('mission_parent_setup') ||
-            !claimedIds.contains('mission_first_promise');
       });
     }
   }
@@ -589,13 +586,10 @@ class _MissionScreenState extends State<MissionScreen>
     // フラグが true の時だけ「チュートリアル」タブを追加
     if (_showTutorialTab) {
       tabs.add(
-        BlinkingEffect(
-          isBlinking: _isTutorialMissionIncomplete,
-          child: _buildCompactTab(
-            l10n.missionTabTutorial,
-            Icons.school,
-            _hasUnclaimedTutorial,
-          ),
+        _buildCompactTab(
+          l10n.missionTabTutorial,
+          Icons.school,
+          _hasUnclaimedTutorial,
         ),
       );
       tabViews.add(_buildMissionList(MissionCategory.tutorial));
@@ -630,6 +624,14 @@ class _MissionScreenState extends State<MissionScreen>
     );
     tabViews.add(_buildMissionList(MissionCategory.cumulative));
 
+    bool isTutorialBackBtnBlinking = _missions.any(
+      (m) =>
+          m.category == MissionCategory.tutorial &&
+          m.id == 'mission_first_promise' &&
+          m.isCompleted &&
+          m.isClaimed,
+    );
+
     return DefaultTabController(
       key: ValueKey(tabs.length),
       length: tabs.length,
@@ -642,6 +644,39 @@ class _MissionScreenState extends State<MissionScreen>
           ),
           backgroundColor: const Color(0xFFFF7043),
           foregroundColor: Colors.white,
+          leading: BlinkingEffect(
+            // チュートリアルモードだけど未受け取りがない（＝受け取り完了した）時に戻るボタンを点滅させる
+            isBlinking: widget.isTutorialMode! && isTutorialBackBtnBlinking,
+            child: Stack(
+              children: [
+                IgnorePointer(
+                  ignoring:
+                      widget.isTutorialMode! && !isTutorialBackBtnBlinking,
+                  child: Opacity(
+                    opacity:
+                        (widget.isTutorialMode! && !isTutorialBackBtnBlinking)
+                        ? 0.3
+                        : 1.0,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (e) {}
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
+                if (widget.isTutorialMode! && isTutorialBackBtnBlinking)
+                  const Positioned(
+                    right: -10,
+                    bottom: -10,
+                    child: AnimatedTapFinger(),
+                  ),
+              ],
+            ),
+          ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 20.0),
@@ -695,6 +730,13 @@ class _MissionScreenState extends State<MissionScreen>
     // 🌟 追加: おすすめとしてハイライトするかどうか
     // クリア済みでなく、かつ isHighlight が true の場合
     final bool isHighlightedCard = mission.isHighlight && !mission.isClaimed;
+
+    // 🌟 追加: このカードがチュートリアル対象の「うけとる」ボタンかどうか
+    final bool isTutorialTargetBtn =
+        widget.isTutorialMode! &&
+        mission.id == 'mission_first_promise' &&
+        mission.isCompleted &&
+        !mission.isClaimed;
 
     if (mission.isClaimed) {
       buttonColor = Colors.grey;
@@ -791,31 +833,46 @@ class _MissionScreenState extends State<MissionScreen>
                   ),
                 ),
                 BlinkingEffect(
-                  isBlinking:
-                      mission.category == MissionCategory.tutorial &&
-                      !mission.isClaimed,
+                  // チュートリアル中なら対象ボタンだけを点滅
+                  isBlinking: isTutorialTargetBtn,
+                  // 紫色の点滅を表現したい場合は、BlinkingEffectの内部実装によりますが、
+                  // 今回はCard自体ではなくボタンを覆うようにIgnorePointer等と組み合わせます
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      ElevatedButton(
-                        onPressed: onPressed,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: buttonColor,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                      // 🌟 追加: チュートリアル中かつ対象以外のボタンは非活性にする
+                      IgnorePointer(
+                        ignoring:
+                            widget.isTutorialMode! && !isTutorialTargetBtn,
+                        child: Opacity(
+                          opacity:
+                              (widget.isTutorialMode! && !isTutorialTargetBtn)
+                              ? 0.3
+                              : 1.0,
+                          child: ElevatedButton(
+                            onPressed: onPressed,
+                            style: ElevatedButton.styleFrom(
+                              // 紫色にしたい場合はここで色を上書き
+                              backgroundColor: buttonColor,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              elevation:
+                                  mission.isCompleted && !mission.isClaimed
+                                  ? 4
+                                  : 0,
+                            ),
+                            child: Text(
+                              buttonText,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                          elevation: mission.isCompleted && !mission.isClaimed
-                              ? 4
-                              : 0,
-                        ),
-                        child: Text(
-                          buttonText,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      if (mission.category == MissionCategory.tutorial &&
-                          !mission.isClaimed)
+                      if (isTutorialTargetBtn)
                         const Positioned(
                           right: -10,
                           bottom: -10,

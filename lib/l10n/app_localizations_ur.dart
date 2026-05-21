@@ -27,10 +27,10 @@ class AppLocalizationsUr extends AppLocalizations {
   String get customizeTabItem => 'چیزیں';
 
   @override
-  String get guideWelcomeTitle => 'سب سے پہلے، ایک بچے کی طرح کھیلتے ہیں!';
+  String get guideWelcomeTitle => 'آئیے سب سے پہلے ایک **وعدے** کی کوشش کریں!';
 
   @override
-  String get guideWelcomeDesc => 'خود تجربہ کریں کہ \'وعدے\' کیسے کام کرتے ہیں!\nمیں نے نیچے دی گئی بار میں ایک \'آزمائشی وعدہ\' رکھا ہے۔\nفوراً \'شروع کریں\' دبائیں اور ایک بچے کی طرح کھیلنے کی کوشش کریں!';
+  String get guideWelcomeDesc => 'آئیے دراصل دیکھتے ہیں کہ \'وعدہ\' کیسے مکمل کیا جاتا ہے!\nہم نے نیچے والے بار میں ایک **\'آزمائشی وعدہ\'** تیار کیا ہے۔\nابھی \'شروع کریں\' دبائیں اور اس کا تجربہ کریں!';
 
   @override
   String get guideSettingsTitle => 'بڑوں کی ترتیبات (اوپر بائیں ⚙️ آئیکن)';
@@ -1264,7 +1264,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tutorialShopBubble => 'چلو\nخریداری کریں!';
 
   @override
-  String get tutorialCustomizeBubble => 'آپ یہاں\nکپڑے تبدیل کر سکتے ہیں!';
+  String get tutorialCustomizeBubble => 'آپ حاصل کردہ پوائنٹس سے\nلباس تبدیل کر سکتے ہیں!';
 
   @override
   String get tutorialParentSettingsBubble => 'یہاں سے اپنے وعدے بنائیں!';
@@ -1937,7 +1937,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get setupOkButton => 'سمجھ گیا!';
 
   @override
-  String get tutorialMissionBubble => 'پہلے، آئیے کھیلنا\nسیکھتے ہیں!';
+  String get tutorialMissionBubble => 'مشن مکمل کرنے پر\nآپ یہاں سے بھی پوائنٹس حاصل کر سکتے ہیں!';
 
   @override
   String setupStepProgress(int currentStep, int totalSteps) {

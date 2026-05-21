@@ -42,7 +42,7 @@ class SpeechBubble extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                  fontSize: 18,
                 ),
                 textAlign: TextAlign.center,
               ),

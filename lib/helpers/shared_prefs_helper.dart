@@ -815,6 +815,7 @@ class SharedPrefsHelper {
   static const String tutorialStepShopKey = 'tutorial_step_shop_shown';
   static const String tutorialStepCustomizeKey =
       'tutorial_step_customize_shown';
+  static const String tutorialStepMissionKey = 'tutorial_step_mission_shown';
   static const String tutorialStepMoveKey = 'tutorial_step_move_shown';
   static const String tutorialStepParentSetupShownKey =
       'tutorial_step_parent_setup_shown';
@@ -1276,10 +1277,19 @@ class SharedPrefsHelper {
 
   // --- パスサニタイズ（古いアセットパスの除去） ---
   static String? _sanitizePath(String? path) {
-    if (path == 'assets/images/avatar.png' ||
-        path == 'assets/images/avatar_boy.png' ||
-        path == 'assets/images/clothes_green.gif') {
+    if (path == null) {
       return null;
+    }
+
+    if (path == 'assets/images/avatar.png' ||
+        path == 'assets/images/avatar_boy.png') {
+      return null;
+    }
+    if (path.startsWith('assets/images/clothes_')) {
+      return path.replaceAll(
+        'assets/images/clothes_',
+        'assets/images/clothes/clothes_',
+      );
     }
     return path;
   }

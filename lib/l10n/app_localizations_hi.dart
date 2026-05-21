@@ -27,10 +27,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get customizeTabItem => 'वस्तुएं';
 
   @override
-  String get guideWelcomeTitle => 'सबसे पहले, चलो एक बच्चे की तरह खेलें!';
+  String get guideWelcomeTitle => 'आइए सबसे पहले एक **वादे** की कोशिश करें!';
 
   @override
-  String get guideWelcomeDesc => 'खुद अनुभव करके देखें कि \'वादे\' कैसे काम करते हैं!\nमैंने नीचे की पट्टी पर एक \'ट्रायल वादा\' रखा है।\nतुरंत \'शुरू करें\' दबाएं और एक बच्चे की तरह खेलने की कोशिश करें!';
+  String get guideWelcomeDesc => 'आइए असल में देखते हैं कि \'वादा\' कैसे पूरा किया जाता है!\nहमने नीचे दिए गए बार में एक **\'ट्रायल वादा\'** तैयार किया है।\nअभी \'शुरू करें\' दबाएं और इसका अनुभव लें!';
 
   @override
   String get guideSettingsTitle => 'बड़ों की सेटिंग्स (ऊपर-बाएं ⚙️ आइकन)';
@@ -1264,7 +1264,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tutorialShopBubble => 'चलो\nखरीदारी करें!';
 
   @override
-  String get tutorialCustomizeBubble => 'आप यहाँ\nकपड़े बदल सकते हैं!';
+  String get tutorialCustomizeBubble => 'आप मिले हुए पॉइंट्स से\nड्रेस अप कर सकते हैं!';
 
   @override
   String get tutorialParentSettingsBubble => 'यहाँ से अपने वादे बनाएँ!';
@@ -1937,7 +1937,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get setupOkButton => 'समझ गया!';
 
   @override
-  String get tutorialMissionBubble => 'सबसे पहले, आइए खेलना\nसीखें!';
+  String get tutorialMissionBubble => 'मिशन पूरा करने पर\nआपको यहाँ से भी पॉइंट्स मिलेंगे!';
 
   @override
   String setupStepProgress(int currentStep, int totalSteps) {

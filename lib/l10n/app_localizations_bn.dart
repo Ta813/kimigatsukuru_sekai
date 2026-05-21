@@ -27,10 +27,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get customizeTabItem => 'জিনিসপত্র';
 
   @override
-  String get guideWelcomeTitle => 'প্রথমে, এক শিশুর মতো খেলুন!';
+  String get guideWelcomeTitle => 'চলো প্রথমে একটি **প্রতিশ্রুতি** চেষ্টা করে দেখি!';
 
   @override
-  String get guideWelcomeDesc => 'নিজে অভিজ্ঞতা নিন কীভাবে \'প্রতিশ্রুতি\' কাজ করে!\nআমি নিচের বারে একটি \'পরীক্ষামূলক প্রতিশ্রুতি\' প্রস্তুত করেছি।\nএখনই \'শুরু করুন\' টিপুন এবং এক শিশুর মতো খেলার চেষ্টা করুন!';
+  String get guideWelcomeDesc => 'কীভাবে একটি \'প্রতিশ্রুতি\' পূরণ করতে হয়, চলো তা বাস্তবে করে দেখি!\nআমরা নিচের বারে একটি **\'পরীক্ষামূলক প্রতিশ্রুতি\'** প্রস্তুত করেছি।\nএক্ষুনি \'শুরু করুন\' টিপুন এবং অভিজ্ঞতা নিন!';
 
   @override
   String get guideSettingsTitle => 'বড়দের সেটিংস (উপরে-বামে ⚙️ আইকন)';
@@ -1264,7 +1264,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tutorialShopBubble => 'আসুন\nকেনাকাটা করি!';
 
   @override
-  String get tutorialCustomizeBubble => 'আপনি এখানে\nজামাকাপড় পরিবর্তন করতে পারেন!';
+  String get tutorialCustomizeBubble => 'তুমি পাওয়া পয়েন্ট দিয়ে\nড্রেস আপ করতে পারো!';
 
   @override
   String get tutorialParentSettingsBubble => 'এখান থেকে আপনার প্রতিশ্রুতি তৈরি করুন!';
@@ -1937,7 +1937,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get setupOkButton => 'বুঝেছি!';
 
   @override
-  String get tutorialMissionBubble => 'প্রথমে, কীভাবে খেলতে হয়\nতা আয়ত্ত করি!';
+  String get tutorialMissionBubble => 'মিশন পূরণ করলে\nএখান থেকেও পয়েন্ট পাবে!';
 
   @override
   String setupStepProgress(int currentStep, int totalSteps) {

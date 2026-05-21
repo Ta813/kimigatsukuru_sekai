@@ -88,4 +88,13 @@ class MainActivity: FlutterFragmentActivity() {
         // それ以外（Activity独自に作成されたエンジン）はメモリリーク防止のため破棄する
         return !isUsingSharedEngine
     }
+
+    override fun getRenderMode(): io.flutter.embedding.android.RenderMode {
+        // Android 9 (API 28) の Google デバイスでの SurfaceControl 関連のクラッシュを防ぐための対応
+        if (android.os.Build.VERSION.SDK_INT == android.os.Build.VERSION_CODES.P &&
+            android.os.Build.MANUFACTURER.equals("Google", ignoreCase = true)) {
+            return io.flutter.embedding.android.RenderMode.texture
+        }
+        return super.getRenderMode()
+    }
 }

@@ -6,8 +6,8 @@
   "customizeTabHouse": "منزل",
   "customizeTabCharacter": "المساعد",
   "customizeTabItem": "عناصر",
-  "guideWelcomeTitle": "أولًا، العب كطفل!",
-  "guideWelcomeDesc": "جرب بنفسك كيف تعمل 'الوعود'!\nلقد أعددت 'وعدًا تجريبيًا' في الشريط السفلي.\nاضغط على 'ابدأ' على الفور وحاول اللعب كطفل!",
+  "guideWelcomeTitle": "دعونا نجرب **وعداً** أولاً!",
+  "guideWelcomeDesc": "دعونا نرى عملياً كيف ننجز 'الوعد'!\nلقد أعددنا **'وعداً تجريبياً'** في الشريط السفلي.\nاضغط على 'ابدأ' الآن وجربه بنفسك!",
   "guideSettingsTitle": "إعدادات الكبار (أيقونة ⚙️ في الأعلى واليسار)",
   "guideSettingsDesc": "هذا هو المكان الذي يمكن للكبار فيه إضافة أو تعديل الوعود.\nفلنقرر بعض 'الوعود' مع طفلك هنا أولًا!",
   "tutorialShopTitle": "لقد حصلت على ١٠٠ نقطة! ✨",
@@ -530,7 +530,7 @@
   "tutorialStartBubble": "بدء 'الوعد' الخاص بك\nمن هنا!",
   "tutorialEmergencyStartBubble": "بدء 'وعد الطوارئ'\nالخاص بك من هنا!",
   "tutorialShopBubble": "لنذهب\nللتسوق!",
-  "tutorialCustomizeBubble": "يمكنك تغيير\nالملابس هنا!",
+  "tutorialCustomizeBubble": "يمكنك تغيير ملابسك\nبالنقاط التي حصلت عليها!",
   "tutorialParentSettingsBubble": "أنشئ وعودك من هنا!",
   "tutorialEmergencyPromiseBubble": "إذا كان لديك وعد طارئ، فأنشئه من هنا!",
   "helpMenuTitle": "كيفية اللعب",
@@ -859,7 +859,7 @@
   "setupRulesStep3": "استبدل النقاط بالعناصر و\nاستمتع بـ 'التلبيس' و 'الديكور'!",
   "setupRulesStep4": "من خلال إكمال 'الوعود' عدة مرات،\nسيرتفع مستواك ويمكنك الذهاب إلى عوالم أخرى!",
   "setupOkButton": "فهمت!",
-  "tutorialMissionBubble": "أولاً، دعنا نتقن\nكيفية اللعب!",
+  "tutorialMissionBubble": "يمكنك الحصول على النقاط هنا\nعند إكمال مهمة!",
   "setupStepProgress": "الخطوة {currentStep} / {totalSteps}",
   "@setupStepProgress": {
     "placeholders": {

@@ -27,10 +27,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customizeTabItem => 'Items';
 
   @override
-  String get guideWelcomeTitle => 'First, let\'s play like a child!';
+  String get guideWelcomeTitle => 'Let\'s try a **promise** first!';
 
   @override
-  String get guideWelcomeDesc => 'Experience for yourself how \'Promises\' work!\nI\'ve prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing like a child!';
+  String get guideWelcomeDesc => 'Let\'s actually try and see how to clear a \'promise\'!\nWe have prepared a **\'Trial Promise\'** in the bottom bar.\nPress \'Start\' right away and experience it!';
 
   @override
   String get guideSettingsTitle => 'Grown-up Settings (Top-left ⚙️ icon)';
@@ -1264,7 +1264,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialShopBubble => 'Let\'s go\nshopping!';
 
   @override
-  String get tutorialCustomizeBubble => 'You can change\nclothes here!';
+  String get tutorialCustomizeBubble => 'You can dress up\nwith the points you got!';
 
   @override
   String get tutorialParentSettingsBubble => 'Create your promises from here!';
@@ -1937,7 +1937,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupOkButton => 'Got it!';
 
   @override
-  String get tutorialMissionBubble => 'First, let\'s master\nhow to play!';
+  String get tutorialMissionBubble => 'You can get points here\nwhen you clear a mission!';
 
   @override
   String setupStepProgress(int currentStep, int totalSteps) {

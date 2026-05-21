@@ -142,13 +142,13 @@ abstract class AppLocalizations {
   /// No description provided for @guideWelcomeTitle.
   ///
   /// In en, this message translates to:
-  /// **'First, let\'s play like a child!'**
+  /// **'Let\'s try a **promise** first!'**
   String get guideWelcomeTitle;
 
   /// No description provided for @guideWelcomeDesc.
   ///
   /// In en, this message translates to:
-  /// **'Experience for yourself how \'Promises\' work!\nI\'ve prepared a \'Trial Promise\' on the bottom bar.\nPress \'Start\' right away and try playing like a child!'**
+  /// **'Let\'s actually try and see how to clear a \'promise\'!\nWe have prepared a **\'Trial Promise\'** in the bottom bar.\nPress \'Start\' right away and experience it!'**
   String get guideWelcomeDesc;
 
   /// No description provided for @guideSettingsTitle.
@@ -2548,7 +2548,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialCustomizeBubble.
   ///
   /// In en, this message translates to:
-  /// **'You can change\nclothes here!'**
+  /// **'You can dress up\nwith the points you got!'**
   String get tutorialCustomizeBubble;
 
   /// No description provided for @tutorialParentSettingsBubble.
@@ -3826,7 +3826,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialMissionBubble.
   ///
   /// In en, this message translates to:
-  /// **'First, let\'s master\nhow to play!'**
+  /// **'You can get points here\nwhen you clear a mission!'**
   String get tutorialMissionBubble;
 
   /// No description provided for @setupStepProgress.

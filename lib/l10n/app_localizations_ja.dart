@@ -27,10 +27,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get customizeTabItem => 'アイテム';
 
   @override
-  String get guideWelcomeTitle => 'まずは**こどもの気分**になって遊んでみよう！';
+  String get guideWelcomeTitle => 'まずは**やくそく**にチャレンジしてみよう！';
 
   @override
-  String get guideWelcomeDesc => 'どんな風に「やくそく」にチャレンジするのか、実際に体験してみてね！\n下のバーに**『お試しのやくそく』**を用意したよ。\nさっそく『スタート』を押して、こどもの気分で遊んでみてね！';
+  String get guideWelcomeDesc => 'どんな風に「やくそく」をクリアするのか、実際にやってみよう！\n下のバーに**『お試しのやくそく』**を用意したよ。\nさっそく『はじめる』を押して、体験してみてね！';
 
   @override
   String get guideSettingsTitle => 'おうちのひと設定「左上の⚙マーク」';
@@ -1264,7 +1264,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialShopBubble => 'おみせで\nおかいものしよう！';
 
   @override
-  String get tutorialCustomizeBubble => 'ここで\nきせかえができるよ！';
+  String get tutorialCustomizeBubble => 'もらったポイントで\nきせかえができるよ！';
 
   @override
   String get tutorialParentSettingsBubble => 'ここから やくそくをつくってね！';
@@ -1937,7 +1937,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get setupOkButton => 'わかった！';
 
   @override
-  String get tutorialMissionBubble => 'まずは、あそびかたを\nマスターしよう！';
+  String get tutorialMissionBubble => 'ミッションをたっせいしたら\nここでもポイントがもらえるよ！';
 
   @override
   String setupStepProgress(int currentStep, int totalSteps) {

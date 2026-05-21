@@ -6,8 +6,8 @@
   "customizeTabHouse": "گھر",
   "customizeTabCharacter": "ساتھی",
   "customizeTabItem": "چیزیں",
-  "guideWelcomeTitle": "سب سے پہلے، ایک بچے کی طرح کھیلتے ہیں!",
-  "guideWelcomeDesc": "خود تجربہ کریں کہ 'وعدے' کیسے کام کرتے ہیں!\nمیں نے نیچے دی گئی بار میں ایک 'آزمائشی وعدہ' رکھا ہے۔\nفوراً 'شروع کریں' دبائیں اور ایک بچے کی طرح کھیلنے کی کوشش کریں!",
+  "guideWelcomeTitle": "آئیے سب سے پہلے ایک **وعدے** کی کوشش کریں!",
+  "guideWelcomeDesc": "آئیے دراصل دیکھتے ہیں کہ 'وعدہ' کیسے مکمل کیا جاتا ہے!\nہم نے نیچے والے بار میں ایک **'آزمائشی وعدہ'** تیار کیا ہے۔\nابھی 'شروع کریں' دبائیں اور اس کا تجربہ کریں!",
   "guideSettingsTitle": "بڑوں کی ترتیبات (اوپر بائیں ⚙️ آئیکن)",
   "guideSettingsDesc": "یہ بٹن بڑوں کے لیے ہے تاکہ وہ وعدے شامل کرنے یا بدلنے جیسی ترتیبات کر سکیں۔\nآئیے پہلے یہاں اپنے بچے کے ساتھ مل کر کچھ 'وعدے' طے کرتے ہیں!",
   "tutorialShopTitle": "آپ کو 100 پوائنٹس ملے! ✨",
@@ -530,7 +530,7 @@
   "tutorialStartBubble": "यहाँ سے آپ کے 'وعدے' کا\nآغاز ہو رہا ہے!",
   "tutorialEmergencyStartBubble": "यहाँ سے آپ کے ہنگامی 'وعدے' کا\nآغاز ہو رہا ہے!",
   "tutorialShopBubble": "چلو\nخریداری کریں!",
-  "tutorialCustomizeBubble": "آپ یہاں\nکپڑے تبدیل کر سکتے ہیں!",
+  "tutorialCustomizeBubble": "آپ حاصل کردہ پوائنٹس سے\nلباس تبدیل کر سکتے ہیں!",
   "tutorialParentSettingsBubble": "یہاں سے اپنے وعدے بنائیں!",
   "tutorialEmergencyPromiseBubble": "اگر آپ کا کوئی ہنگامی وعدہ ہے، تو اسے یہاں سے بنائیں!",
   "helpMenuTitle": "کیسے کھیلیں",
@@ -858,7 +858,7 @@
   "setupRulesStep3": "اشیاء کے لیے پوائنٹس کا تبادلہ کریں اور\n'لباس' اور 'سجاوٹ' سے لطف اندوز ہوں!",
   "setupRulesStep4": "کئی بار 'وعدے' مکمل کرنے سے،\nآپ کا لیول بڑھ جائے گا اور آپ دوسری دنیاؤں میں جا سکیں گے!",
   "setupOkButton": "سمجھ گیا!",
-  "tutorialMissionBubble": "پہلے، آئیے کھیلنا\nسیکھتے ہیں!",
+  "tutorialMissionBubble": "مشن مکمل کرنے پر\nآپ یہاں سے بھی پوائنٹس حاصل کر سکتے ہیں!",
   "setupStepProgress": "مرحلہ {currentStep} / {totalSteps}",
   "@setupStepProgress": {
     "placeholders": {

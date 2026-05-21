@@ -6,8 +6,8 @@
   "customizeTabHouse": "घर",
   "customizeTabCharacter": "समर्थक",
   "customizeTabItem": "वस्तुएं",
-  "guideWelcomeTitle": "सबसे पहले, चलो एक बच्चे की तरह खेलें!",
-  "guideWelcomeDesc": "खुद अनुभव करके देखें कि 'वादे' कैसे काम करते हैं!\nमैंने नीचे की पट्टी पर एक 'ट्रायल वादा' रखा है।\nतुरंत 'शुरू करें' दबाएं और एक बच्चे की तरह खेलने की कोशिश करें!",
+  "guideWelcomeTitle": "आइए सबसे पहले एक **वादे** की कोशिश करें!",
+  "guideWelcomeDesc": "आइए असल में देखते हैं कि 'वादा' कैसे पूरा किया जाता है!\nहमने नीचे दिए गए बार में एक **'ट्रायल वादा'** तैयार किया है।\nअभी 'शुरू करें' दबाएं और इसका अनुभव लें!",
   "guideSettingsTitle": "बड़ों की सेटिंग्स (ऊपर-बाएं ⚙️ आइकन)",
   "guideSettingsDesc": "यह बटन बड़ों के लिए है ताकि वे वादे जोड़ने या बदलने जैसी सेटिंग्स कर सकें।\nचलो पहले यहाँ अपने बच्चे के साथ मिलकर कुछ 'वादे' तय करते हैं!",
   "tutorialShopTitle": "तुम्हें 100 अंक मिले! ✨",
@@ -484,7 +484,7 @@
   "tutorialStartBubble": "यहाँ आपके 'वादे' की\nशुरुआत हो रही है!",
   "tutorialEmergencyStartBubble": "यहाँ आपके आपातकालीन 'वादे' की\nशुरुआत हो रही है!",
   "tutorialShopBubble": "चलो\nखरीदारी करें!",
-  "tutorialCustomizeBubble": "आप यहाँ\nकपड़े बदल सकते हैं!",
+  "tutorialCustomizeBubble": "आप मिले हुए पॉइंट्स से\nड्रेस अप कर सकते हैं!",
   "tutorialParentSettingsBubble": "यहाँ से अपने वादे बनाएँ!",
   "tutorialEmergencyPromiseBubble": "यदि आपका कोई आपातकालीन वादा है, तो उसे यहाँ से बनाएँ!",
   "helpMenuTitle": "कैसे खेलें",
@@ -813,7 +813,7 @@
   "setupRulesStep3": "आइटम के लिए पॉइंट बदलें और\n'ड्रेस-अप' और 'सजावट' का आनंद लें!",
   "setupRulesStep4": "कई बार 'वादे' पूरे करने से,\nआपका लेवल बढ़ जाएगा और आप दूसरी दुनिया में जा सकेंगे!",
   "setupOkButton": "समझ गया!",
-  "tutorialMissionBubble": "सबसे पहले, आइए खेलना\nसीखें!",
+  "tutorialMissionBubble": "मिशन पूरा करने पर\nआपको यहाँ से भी पॉइंट्स मिलेंगे!",
   "setupStepProgress": "चरण {currentStep} / {totalSteps}",
   "@setupStepProgress": {
     "placeholders": {

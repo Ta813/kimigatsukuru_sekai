@@ -246,7 +246,7 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                                     child: AnimatedTapFinger(),
                                   ),
                                 Positioned(
-                                  top: -50,
+                                  top: -70,
                                   left: 0,
                                   right: 0,
                                   child: Center(
@@ -349,7 +349,7 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                                   child: AnimatedTapFinger(),
                                 ),
                                 Positioned(
-                                  top: -50,
+                                  top: -70,
                                   left: 0,
                                   right: 0,
                                   child: Center(
@@ -603,7 +603,7 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
   /// 吹き出しウィジェット
   Widget _buildBubble(String text) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 180),
+      constraints: const BoxConstraints(maxWidth: 250),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: const Color(0xFFFFF9C4),
@@ -614,7 +614,7 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
       child: Text(
         text,
         style: const TextStyle(
-          fontSize: 12,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
           color: Colors.black87,
         ),
