@@ -7,10 +7,12 @@ import '../widgets/login_bonus_stamp_card.dart';
 
 class LoginBonusManager {
   // 💡 日数に応じて付与するポイントを返す関数
-  int _getPointsForDay(int day) {
-    if (day == 7) return 300;
-    if (day == 3) return 80;
-    return 20; // 基本ポイント
+  Future<int> _getPointsForDay(int day) async {
+    final int multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
+
+    if (day == 7) return 300 * multiplier;
+    if (day == 3) return 80 * multiplier;
+    return 20 * multiplier; // 基本ポイント
   }
 
   // 💡 便利関数：その日付が含まれる週の「月曜日」の0時0分を返す
@@ -83,9 +85,10 @@ class LoginBonusManager {
 
   Future<int> _showBonusDialog(BuildContext context, int count) async {
     // ポイント付与
-    int pointsToAdd = _getPointsForDay(count);
+    int pointsToAdd = await _getPointsForDay(count);
     int currentPoints = await SharedPrefsHelper.loadPoints();
     await SharedPrefsHelper.savePoints(currentPoints + pointsToAdd);
+    final int multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
 
     if (!context.mounted) return 0;
 
@@ -110,7 +113,10 @@ class LoginBonusManager {
             clipBehavior: Clip.none,
             child: SizedBox(
               width: dialogWidth,
-              child: LoginBonusStampCard(currentLoginCount: count),
+              child: LoginBonusStampCard(
+                currentLoginCount: count,
+                multiplier: multiplier,
+              ),
             ),
           ),
           actionsAlignment: MainAxisAlignment.center,

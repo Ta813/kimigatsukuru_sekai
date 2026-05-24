@@ -62,6 +62,10 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
         return 'assets/images/house_interior/sea_interior.png';
       case 'assets/images/house_sea_kurage.png': // うみのおうち（くらげ）
         return 'assets/images/house_interior/sea_interior.png';
+      case 'assets/images/house_sky_dome.png': // そらのおうち（ドーム）
+        return 'assets/images/house_interior/sky_interior.png';
+      case 'assets/images/house_sky_kumo.png': // そらのおうち（くも）
+        return 'assets/images/house_interior/sky_interior.png';
       default:
         return 'assets/images/house_interior/default_interior.png';
     }
@@ -177,6 +181,10 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
     if (itemPath.contains('/house_interior_items/kumanonuigurumi.png'))
       return 60.0;
     if (itemPath.contains('/house_interior_items/sea_kagami.png')) return 80.0;
+    if (itemPath.contains('/house_interior_items/sky_hoshi.png')) return 80.0;
+    if (itemPath.contains('/house_interior_items/sky_kakejiku.png'))
+      return 80.0;
+    if (itemPath.contains('/house_interior_items/sky_cap.png')) return 30.0;
     if (itemPath.contains('/house_interior_items/')) return 40.0;
     if (itemPath.contains('/house_interior_furniture/rantan.png')) return 70.0;
     if (itemPath.contains('/house_interior_furniture/sea_isu.png')) return 80.0;
@@ -184,6 +192,8 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
       return 60.0;
     if (itemPath.contains('/house_interior_furniture/sea_table.png'))
       return 80.0;
+    if (itemPath.contains('/house_interior_furniture/sky_isu2.png'))
+      return 60.0;
     return 100.0; // デフォルトサイズ
   }
 

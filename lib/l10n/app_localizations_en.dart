@@ -655,10 +655,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get supportPageOpenError => 'Could not open the page';
 
   @override
-  String get timerExpChance => 'A chance at 3 EXP!';
+  String timerExpChance(Object exp) {
+    return 'Chance to get $exp EXP!';
+  }
 
   @override
-  String get timerExpFailure => 'EXP will be 1!';
+  String timerExpFailure(Object exp) {
+    return 'EXP will be $exp!';
+  }
 
   @override
   String get timerExpTrial => 'EXP will be 0! (Trial)';
@@ -1609,10 +1613,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialResumeBtn => 'Resume';
 
   @override
-  String get tutorialFirstPromiseCompleteTitle => 'Promise Experience Complete!';
+  String get tutorialFirstPromiseCompleteTitle => 'You Mastered How to Play!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'The **promise experience** is complete!\nLet\'s go to the mission screen to get your reward!';
+  String get tutorialFirstPromiseCompleteDesc => 'This is the end of the tutorial!\nClear your \'promises\' every day\nand expand your very own world!';
 
   @override
   String get missionHintBubble => 'You can do missions from here!';
@@ -1851,7 +1855,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupFinishTitle100 => 'Setup 100% Complete!';
 
   @override
-  String get setupFinishMessage => 'Let\'s go to your own world!';
+  String get setupFinishMessage => 'Setup is complete!\nLet\'s try out how to play right away!';
 
   @override
   String setupProgressComplete(int progress) {
@@ -1976,7 +1980,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pointAdditionAdTitle => '📺 Get points for free 3 times a day!';
 
   @override
-  String get pointAdditionAdButton => 'Watch video to get 50P!';
+  String pointAdditionAdButton(int points) {
+    return 'Watch a video to get ${points}P!';
+  }
 
   @override
   String get pointAdditionAdLoading => 'Loading Ad...';
@@ -2027,4 +2033,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navMenu => 'Menu';
+
+  @override
+  String get homeRewardAvailable => 'Get!';
+
+  @override
+  String pointAdditionBoostActive(int multiplier) {
+    return '🔥 Points & EXP multiplied by $multiplier now!';
+  }
+
+  @override
+  String get pointAdditionInUse => 'In Use';
+
+  @override
+  String get pointAdditionBoostTitle1 => 'Little Support';
+
+  @override
+  String get pointAdditionBoostDesc1 => '2x Points & EXP for 7 Days';
+
+  @override
+  String get pointAdditionBoostTitle2 => 'Weekend Dash';
+
+  @override
+  String get pointAdditionBoostDesc2 => '5x Points & EXP for 3 Days';
+
+  @override
+  String get pointAdditionBoostTitle3 => 'Miracle Fever';
+
+  @override
+  String get pointAdditionBoostDesc3 => '10x Points & EXP for 24 Hours';
+
+  @override
+  String pointAdditionBoostTestMsg(Object multiplier) {
+    return '🔥 ${multiplier}x Points & EXP boost activated!';
+  }
+
+  @override
+  String homeBoostTimeRemaining(Object time) {
+    return '$time left';
+  }
+
+  @override
+  String homeBoostTimeDays(Object days) {
+    return '${days}d ';
+  }
+
+  @override
+  String get pointAdditionFirstTimeFree => '1st Time FREE';
 }

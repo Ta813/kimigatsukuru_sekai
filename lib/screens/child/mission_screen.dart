@@ -61,6 +61,8 @@ class _MissionScreenState extends State<MissionScreen>
   bool _hasUnclaimedFirstTime = false;
   bool _hasUnclaimedCumulative = false;
 
+  int _multiplier = 1;
+
   @override
   void initState() {
     super.initState();
@@ -139,7 +141,7 @@ class _MissionScreenState extends State<MissionScreen>
     final cumulativeLoginDays =
         await SharedPrefsHelper.loadCumulativeLoginDays();
     final currentPoints = await SharedPrefsHelper.loadPoints();
-
+    final multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
     // 🌟 デイリーミッション用のデータ読み込み
     final todaysCompletedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
@@ -456,6 +458,7 @@ class _MissionScreenState extends State<MissionScreen>
         _hasUnclaimedFirstTime = checkTabBadge(MissionCategory.firstTime);
         _hasUnclaimedCumulative = checkTabBadge(MissionCategory.cumulative);
         _isLoading = false;
+        _multiplier = multiplier;
       });
     }
   }
@@ -468,8 +471,12 @@ class _MissionScreenState extends State<MissionScreen>
     FirebaseAnalytics.instance.logEvent(name: '${mission.id}_reward');
 
     final currentPoints = await SharedPrefsHelper.loadPoints();
-    await SharedPrefsHelper.savePoints(currentPoints + mission.rewardPoints);
-    await SharedPrefsHelper.addCumulativePoints(mission.rewardPoints);
+    await SharedPrefsHelper.savePoints(
+      currentPoints + (mission.rewardPoints * _multiplier),
+    );
+    await SharedPrefsHelper.addCumulativePoints(
+      mission.rewardPoints * _multiplier,
+    );
 
     await SharedPrefsHelper.claimMission(mission.id);
 
@@ -809,7 +816,7 @@ class _MissionScreenState extends State<MissionScreen>
                       Row(
                         children: [
                           Text(
-                            '${l10n.missionRewardPrefix} ${mission.rewardPoints} ${AppLocalizations.of(context)!.points}',
+                            '${l10n.missionRewardPrefix} ${mission.rewardPoints * _multiplier} ${AppLocalizations.of(context)!.points}',
                             style: TextStyle(
                               fontSize: 12,
                               color: mission.isClaimed

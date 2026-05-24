@@ -1425,4 +1425,85 @@ class SharedPrefsHelper {
     final today = DateTime.now().toIso8601String().substring(0, 10);
     await prefs.setBool('reward_${today}_$slot', true);
   }
+
+  // =========================================
+  // 🌟 追加: ポイントブースト関連のロジック
+  // =========================================
+
+  /// ブーストを有効にする（倍率と期間を指定）
+  static Future<void> activateBoost(int multiplier, Duration duration) async {
+    final prefs = await SharedPreferences.getInstance();
+    // 現在時刻に、指定された期間（Duration）を足して終了時刻を計算
+    final endTime = DateTime.now().add(duration);
+
+    // 倍率と終了時刻（文字列）を保存
+    await prefs.setInt('boost_multiplier', multiplier);
+    await prefs.setString('boost_end_time', endTime.toIso8601String());
+  }
+
+  /// 現在有効なブースト倍率を取得する（期限切れなら1倍を返す）
+  static Future<int> getCurrentBoostMultiplier() async {
+    final prefs = await SharedPreferences.getInstance();
+    final endTimeStr = prefs.getString('boost_end_time');
+    final multiplier = prefs.getInt('boost_multiplier') ?? 1;
+
+    // 保存されたデータがない場合は通常状態（1倍）
+    if (endTimeStr == null) return 1;
+
+    final endTime = DateTime.parse(endTimeStr);
+
+    // 現在時刻が終了時刻より「前」なら、ブースト中！
+    if (DateTime.now().isBefore(endTime)) {
+      return multiplier;
+    } else {
+      // 期限切れの場合は、古いデータを消去して通常状態（1倍）に戻す
+      await prefs.remove('boost_multiplier');
+      await prefs.remove('boost_end_time');
+      return 1;
+    }
+  }
+
+  // 🌟 追加: ブーストの終了時刻を取得する（UI表示用）
+  static Future<DateTime?> getBoostEndTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final endTimeStr = prefs.getString('boost_end_time');
+    if (endTimeStr == null) return null;
+
+    final endTime = DateTime.parse(endTimeStr);
+    if (DateTime.now().isBefore(endTime)) {
+      return endTime;
+    }
+    return null; // 期限切れ
+  }
+
+  /// 🌟 【デバッグ用】ブーストの残り時間を30秒にする
+  /// （ブースト中でなければ、仮で2倍ブーストを30秒間発動します）
+  static Future<void> debugSetBoostRemainingTo30Seconds() async {
+    final prefs = await SharedPreferences.getInstance();
+    int multiplier = prefs.getInt('boost_multiplier') ?? 1;
+
+    if (multiplier == 1) {
+      multiplier = 2; // ブースト中でなければ、テスト用に2倍に設定
+      await prefs.setInt('boost_multiplier', multiplier);
+    }
+
+    // 終了時刻を「今から30秒後」に書き換える
+    final newEndTime = DateTime.now().add(const Duration(seconds: 30));
+    await prefs.setString('boost_end_time', newEndTime.toIso8601String());
+  }
+
+  // 🌟 追加: 2倍ブーストの初回無料フラグ用キー
+  static const String _keyBoost2xFreeTrial = 'boost_2x_free_trial_used';
+
+  /// 初回無料枠をすでに使ったかどうかを確認する
+  static Future<bool> isBoost2xFreeTrialUsed() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyBoost2xFreeTrial) ?? false;
+  }
+
+  /// 初回無料枠を使用したことを記録する
+  static Future<void> setBoost2xFreeTrialUsed(bool used) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyBoost2xFreeTrial, used);
+  }
 }

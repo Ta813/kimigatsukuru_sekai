@@ -208,6 +208,18 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   Timer? _midnightTimer;
 
+  bool _isCurrentRewardAvailable = false;
+  String _timeUntilNextReward = '';
+  Timer? _rewardCountdownTimer;
+  // 🌟 追加: リワード「ゲット！」用のパルスアニメーションコントローラー
+  late AnimationController _rewardPulseController;
+
+  int _homeBoostMultiplier = 1;
+  int _boostRemainingDays = 0;
+  String _boostRemainingHms = '';
+  Timer? _boostCountdownTimer;
+  int _multiplier = 1;
+
   @override
   void initState() {
     super.initState();
@@ -263,6 +275,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       ),
     );
 
+    // 🌟 追加: パルスアニメーションの設定（0.6秒かけて大きくなって戻る、を繰り返す）
+    _rewardPulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    )..repeat(reverse: true);
+
     _playSavedBgm();
 
     _loadAndDetermineDisplayPromise();
@@ -308,6 +326,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     _animationController.dispose();
     _pointsAddedAnimationController.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    _rewardCountdownTimer?.cancel();
+    _rewardPulseController.dispose();
+    _boostCountdownTimer?.cancel();
     super.dispose();
   }
 
@@ -532,7 +553,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   void _checkTutorial() async {
     String childTutorialState = await SharedPrefsHelper.getChildTutorial();
     bool hasFinishedChildTutorial = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepCustomizeKey,
+      SharedPrefsHelper.tutorialStepMissionKey,
     );
 
     if (childTutorialState == SharedPrefsHelper.tutorialPhaseRegular &&
@@ -645,11 +666,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         });
       }
 
-      await _showTutorialDialog(
-        title: AppLocalizations.of(context)!.guideWelcomeTitle,
-        content: AppLocalizations.of(context)!.guideWelcomeDesc,
-        buttonText: AppLocalizations.of(context)!.tutorialBtnStart,
-      );
+      // await _showTutorialDialog(
+      //   title: AppLocalizations.of(context)!.guideWelcomeTitle,
+      //   content: AppLocalizations.of(context)!.guideWelcomeDesc,
+      //   buttonText: AppLocalizations.of(context)!.tutorialBtnStart,
+      // );
       FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_promise');
       return;
     }
@@ -1119,6 +1140,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
     var todaysSkippedTitles =
         await SharedPrefsHelper.loadTodaysSkippedPromiseTitles();
+    final int multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
 
     final now = DateTime.now();
     bool hasAutoSkipped = false;
@@ -1309,6 +1331,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       _requiredExpForNextLevel = (_level < requiredExpForLevelUp.length)
           ? requiredExpForLevelUp[_level]
           : requiredExpForLevelUp.last;
+      _multiplier = multiplier;
       if (_level < requiredExpForLevelUp.length - 1) {
         _requiredExpForNextLevel = requiredExpForLevelUp[_level];
 
@@ -1328,6 +1351,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _experienceFraction = 1.0;
       }
     });
+
+    _checkRewardStatus(); // 🌟 追加: ロード時にリワードの状況も確認する
+    _checkHomeBoostStatus();
   }
 
   void _startPromise() async {
@@ -1351,9 +1377,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         await SharedPrefsHelper.getChildTutorial() ==
             SharedPrefsHelper.tutorialPhaseStart;
     if (isInTutorial) {
-      await SharedPrefsHelper.setTutorialStepShown(
-        SharedPrefsHelper.tutorialStepPromiseKey,
-      );
       FirebaseAnalytics.instance.logEvent(
         name: 'tutorial_child_start_promise_button',
       );
@@ -1400,6 +1423,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       final newTotalPoints = _points + pointsAwarded;
 
       await SharedPrefsHelper.savePoints(newTotalPoints);
+      await SharedPrefsHelper.addCumulativePoints(pointsAwarded);
 
       try {
         SfxManager.instance.playSuccessSound();
@@ -1423,6 +1447,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           await SharedPrefsHelper.getChildTutorial() ==
           SharedPrefsHelper.tutorialPhaseStart;
       if (!wasCustomizeStepShown && isShown && mounted) {
+        await SharedPrefsHelper.setTutorialStepShown(
+          SharedPrefsHelper.tutorialStepPromiseKey,
+        );
         setState(() {
           _showCustomizeBlinking = true;
         });
@@ -1445,9 +1472,18 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   }
 
   void _checkLevelUp() {
-    if (_level < requiredExpForLevelUp.length &&
-        _experience >= requiredExpForLevelUp[_level]) {
-      final newLevel = _level + 1;
+    bool isLeveledUp = false;
+    int newLevel = _level;
+
+    // 🌟 変更: if ではなく while を使い、経験値が条件を満たす限り何度でもレベルを上げる
+    while (newLevel < requiredExpForLevelUp.length &&
+        _experience >= requiredExpForLevelUp[newLevel]) {
+      newLevel++;
+      isLeveledUp = true; // 1回でもレベルが上がったらフラグを立てる
+    }
+
+    // 🌟 変更: レベルアップが発生した場合のみ、ダイアログや効果音の処理を行う
+    if (isLeveledUp) {
       setState(() {
         _level = newLevel;
       });
@@ -1486,6 +1522,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               ),
             ),
             child: Text(
+              // 🌟 ここはそのまま newLevel を渡すだけで「レベル〇〇になったよ！」と正しく表示されます
               AppLocalizations.of(context)!.levelUpMessage(newLevel),
               style: const TextStyle(fontSize: 16, height: 1.5),
             ),
@@ -1529,15 +1566,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           ],
         ),
       ).then((_) async {
-        bool didRequestNotification = await _requestNotificationPermission(
-          context,
-          newLevel,
-        );
+        await _requestReviewIfTargetLevel(newLevel);
 
-        if (!didRequestNotification) {
-          await _requestReviewIfTargetLevel(newLevel);
-        }
-
+        // ※補足: 4レベルから6レベルに一気に上がった場合、ここは「6 % 5 == 0」ではないためスルーされます。
+        // もし飛び級でも5の倍数の案内を出したい場合は別の計算が必要ですが、基本はこのままで十分機能します！
         if (newLevel % 5 == 0 && !PurchaseManager.instance.isPremium.value) {
           SharedPrefsHelper.recordLevelUpSaleTime();
           if (mounted) {
@@ -1616,11 +1648,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         }
       });
     }
+
+    // レベルアップしてもしなくても、最終的な経験値は保存しておく
     SharedPrefsHelper.saveExperience(_experience);
   }
 
   Future<void> _requestReviewIfTargetLevel(int level) async {
-    if (level >= 3) {
+    if (level >= 4) {
       try {
         final InAppReview inAppReview = InAppReview.instance;
         if (await inAppReview.isAvailable()) {
@@ -1882,6 +1916,127 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     );
   }
 
+  // =========================================
+  // 🌟 追加: リワード広告関連のロジック
+  // =========================================
+  String _getCurrentSlot() {
+    final hour = DateTime.now().hour;
+    if (hour >= 0 && hour < 12) return 'morning';
+    if (hour >= 12 && hour < 18) return 'afternoon';
+    return 'night';
+  }
+
+  Future<void> _checkRewardStatus() async {
+    final slot = _getCurrentSlot();
+    final isClaimed = await SharedPrefsHelper.isRewardClaimed(slot);
+
+    if (mounted) {
+      setState(() {
+        _isCurrentRewardAvailable = !isClaimed;
+      });
+    }
+
+    // 受け取り済みの場合はカウントダウンを開始
+    if (isClaimed) {
+      _startRewardCountdown();
+    } else {
+      _rewardCountdownTimer?.cancel();
+    }
+  }
+
+  void _startRewardCountdown() {
+    _updateRewardCountdown();
+    _rewardCountdownTimer?.cancel();
+    _rewardCountdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateRewardCountdown();
+    });
+  }
+
+  void _updateRewardCountdown() {
+    final now = DateTime.now();
+    DateTime nextTarget;
+
+    if (now.hour >= 0 && now.hour < 12) {
+      nextTarget = DateTime(now.year, now.month, now.day, 12, 0, 0);
+    } else if (now.hour >= 12 && now.hour < 18) {
+      nextTarget = DateTime(now.year, now.month, now.day, 18, 0, 0);
+    } else {
+      nextTarget = DateTime(now.year, now.month, now.day + 1, 0, 0, 0);
+    }
+
+    final diff = nextTarget.difference(now);
+    final hours = diff.inHours.toString().padLeft(2, '0');
+    final minutes = (diff.inMinutes % 60).toString().padLeft(2, '0');
+    final seconds = (diff.inSeconds % 60).toString().padLeft(2, '0');
+
+    if (mounted) {
+      setState(() {
+        _timeUntilNextReward = '$hours:$minutes:$seconds';
+      });
+      // ちょうど時間が切り替わった時に状態を再確認
+      if (diff.inSeconds <= 0) {
+        _checkRewardStatus();
+      }
+    }
+  }
+
+  // =========================================
+  // 🌟 追加: ホーム画面用 ポイントブーストカウントダウン
+  // =========================================
+  Future<void> _checkHomeBoostStatus() async {
+    final multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
+    final endTime = await SharedPrefsHelper.getBoostEndTime();
+
+    if (mounted) {
+      setState(() {
+        _homeBoostMultiplier = multiplier;
+      });
+    }
+
+    if (multiplier > 1 && endTime != null) {
+      _startBoostCountdown(endTime);
+    } else {
+      _boostCountdownTimer?.cancel();
+    }
+  }
+
+  void _startBoostCountdown(DateTime endTime) {
+    _boostCountdownTimer?.cancel();
+    _updateBoostCountdown(endTime);
+    _boostCountdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateBoostCountdown(endTime);
+    });
+  }
+
+  void _updateBoostCountdown(DateTime endTime) {
+    final now = DateTime.now();
+    final diff = endTime.difference(now);
+
+    final days = diff.inDays;
+    final hours = (diff.inHours % 24).toString().padLeft(2, '0');
+    final minutes = (diff.inMinutes % 60).toString().padLeft(2, '0');
+    final seconds = (diff.inSeconds % 60).toString().padLeft(2, '0');
+
+    if (diff.isNegative || diff.inSeconds <= 0) {
+      _boostCountdownTimer?.cancel();
+      if (mounted) {
+        setState(() {
+          _homeBoostMultiplier = 1;
+          _boostRemainingDays = 0;
+          _boostRemainingHms = '';
+        });
+      }
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _boostRemainingDays = days;
+        _boostRemainingHms = '$hours:$minutes:$seconds';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -1900,11 +2055,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _showStartBlinking ||
         _showEmergencyStartBlinking ||
         _showMissionBlinking;
-
-    final bool shouldShowPointAdditionHint =
-        !_hasVisitedPointAddition &&
-        !isAnyTutorialBlinking &&
-        !isAnyTutorialActive;
 
     return DefaultTabController(
       length: 1, // タブ数は適切に調整してください
@@ -1983,6 +2133,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     });
                     _animationController.forward(from: 0.0);
                     _pointsAddedAnimationController.forward(from: 0.0);
+                    await SharedPrefsHelper.addCumulativePoints(
+                      pointsFromBoard,
+                    );
                   }
                   _checkLevelUp();
                   await SharedPrefsHelper.savePoints(_points);
@@ -2258,7 +2411,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              width: 450,
+                              width: 510,
                               child: Row(
                                 children: [
                                   Expanded(
@@ -2412,86 +2565,137 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                     color: Colors.grey.withOpacity(0.3),
                                   ),
                                   Expanded(
-                                    flex: 2,
+                                    flex: 3,
                                     child: Stack(
                                       alignment: Alignment.centerLeft,
                                       clipBehavior: Clip.none,
                                       children: [
                                         ScaleTransition(
                                           scale: _scaleAnimation,
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.star,
-                                                color: Colors.amber,
-                                                size: 24,
-                                              ),
-                                              Text(
-                                                '$_points',
-                                                style: const TextStyle(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.bold,
+                                          child: GestureDetector(
+                                            onTap: () async {
+                                              try {
+                                                SfxManager.instance
+                                                    .playTapSound();
+                                              } catch (_) {}
+
+                                              if (!_hasVisitedPointAddition) {
+                                                await SharedPrefsHelper.setTutorialStepShown(
+                                                  'tutorial_step_point_addition',
+                                                );
+                                                if (mounted) {
+                                                  setState(() {
+                                                    _hasVisitedPointAddition =
+                                                        true;
+                                                  });
+                                                }
+                                              }
+
+                                              FirebaseAnalytics.instance.logEvent(
+                                                name:
+                                                    'open_point_addition_home',
+                                              );
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const PointAdditionScreen(),
                                                 ),
-                                              ),
-                                              const SizedBox(width: 8),
-                                              BlinkingEffect(
-                                                isBlinking:
-                                                    shouldShowPointAdditionHint,
-                                                child: GestureDetector(
-                                                  onTap: () async {
-                                                    try {
-                                                      SfxManager.instance
-                                                          .playTapSound();
-                                                    } catch (_) {}
-
-                                                    if (!_hasVisitedPointAddition) {
-                                                      await SharedPrefsHelper.setTutorialStepShown(
-                                                        'tutorial_step_point_addition',
-                                                      );
-                                                      if (mounted) {
-                                                        setState(() {
-                                                          _hasVisitedPointAddition =
-                                                              true;
-                                                        });
-                                                      }
-                                                    }
-
-                                                    FirebaseAnalytics.instance
-                                                        .logEvent(
-                                                          name:
-                                                              'open_point_addition_home',
-                                                        );
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const PointAdditionScreen(),
-                                                      ),
-                                                    ).then((_) {
-                                                      _loadAndDetermineDisplayPromise();
-                                                    });
-                                                  },
-                                                  child: Container(
-                                                    width: 25, // 🌟 明示的にサイズを指定
-                                                    height: 25,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                          color: Color(
-                                                            0xFFFF7043,
-                                                          ),
-                                                          shape:
-                                                              BoxShape.circle,
-                                                        ),
-                                                    child: const Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
-                                                      size: 20,
-                                                    ),
+                                              ).then((_) {
+                                                _loadAndDetermineDisplayPromise();
+                                              });
+                                            },
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                  size: 24,
+                                                ),
+                                                Text(
+                                                  '$_points',
+                                                  style: const TextStyle(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                                const SizedBox(width: 8),
+                                                Container(
+                                                  width: 25, // 🌟 明示的にサイズを指定
+                                                  height: 25,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                        color: Color(
+                                                          0xFFFF7043,
+                                                        ),
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                  child: const Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                if (_isCurrentRewardAvailable)
+                                                  ScaleTransition(
+                                                    scale:
+                                                        Tween<double>(
+                                                          begin: 1.0,
+                                                          end: 1.4,
+                                                        ).animate(
+                                                          // 1.0倍から1.4倍の間で動かす
+                                                          CurvedAnimation(
+                                                            parent:
+                                                                _rewardPulseController,
+                                                            curve: Curves
+                                                                .easeInOut, // なめらかな動き
+                                                          ),
+                                                        ),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        const Icon(
+                                                          Icons
+                                                              .play_circle_fill,
+                                                          color: Colors.black,
+                                                          size: 16,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 2,
+                                                        ),
+                                                        Text(
+                                                          AppLocalizations.of(
+                                                            context,
+                                                          )!.homeRewardAvailable,
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                else
+                                                  Text(
+                                                    _timeUntilNextReward,
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors
+                                                          .black, // 待機中は少し暗めの白
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                         if (_pointsAdded != null)
@@ -2902,7 +3106,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
                   // ★右上の「？」アイコン (Drawerメニュー用)
                   Positioned(
-                    top: 10, // 上部バーの高さに合わせて調整してください
+                    top: 0, // 上部バーの高さに合わせて調整してください
                     right: 10,
                     child: SafeArea(
                       child: IgnorePointer(
@@ -2991,6 +3195,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             await SharedPrefsHelper.setChildTutorial(
                                               SharedPrefsHelper
                                                   .tutorialPhaseFinish,
+                                            );
+                                            await SharedPrefsHelper.setTutorialStepShown(
+                                              SharedPrefsHelper
+                                                  .tutorialStepMissionKey,
                                             );
                                             FirebaseAnalytics.instance.logEvent(
                                               name: 'tutorial_child_complete',
@@ -3212,10 +3420,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             setState(() {
                                               _showMissionBlinking = true;
                                             });
-                                            await SharedPrefsHelper.setChildTutorial(
-                                              SharedPrefsHelper
-                                                  .tutorialPhaseFinish,
-                                            );
                                             await SharedPrefsHelper.setTutorialStepShown(
                                               SharedPrefsHelper
                                                   .tutorialStepCustomizeKey,
@@ -3260,6 +3464,93 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               Positioned.fill(
                 child: Container(
                   color: Colors.black38, // 薄暗くする
+                ),
+              ),
+
+            // 🌟 追加: つぎのやくそくバーのちょっと上に表示するブースト帯
+            if (_homeBoostMultiplier > 1 && _boostRemainingHms.isNotEmpty)
+              Positioned(
+                bottom: 65, // 💡「つぎのやくそく」バーの高さが 70 前後であれば、90〜100 付与すると少し上に浮きます
+                left: 10,
+                child: IgnorePointer(
+                  // タップを裏に透過させる
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2,
+                        horizontal: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Colors.orangeAccent,
+                            Colors.deepOrangeAccent,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            // UIをすっきりさせるためショップ用を流用するか、新キーを作ってください
+                            // ここではショップ用「🔥 現在ポイント 〇倍中！」をそのまま流用するイメージです
+                            AppLocalizations.of(
+                              context,
+                            )!.pointAdditionBoostActive(_homeBoostMultiplier),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          const Icon(
+                            Icons.access_time_filled,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Builder(
+                            builder: (context) {
+                              // 1. まず時間の文字列を作る（例: "2日 14:30:00" または "14:30:00"）
+                              String timeString = '';
+                              if (_boostRemainingDays > 0) {
+                                final daysText = AppLocalizations.of(
+                                  context,
+                                )!.homeBoostTimeDays(_boostRemainingDays);
+                                timeString = '$daysText$_boostRemainingHms';
+                              } else {
+                                timeString = _boostRemainingHms;
+                              }
+
+                              // 2. 「あと {time}」の形に当てはめる
+                              final finalText = AppLocalizations.of(
+                                context,
+                              )!.homeBoostTimeRemaining(timeString);
+
+                              return Text(
+                                finalText,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Courier', // デジタル時計っぽく等幅フォントに
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
 
@@ -3329,8 +3620,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                         ),
                                       Text(
                                         _isDisplayPromiseEmergency
-                                            ? '${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}'
-                                            : '${_displayPromise!['time']}〜 ${_displayPromise!['icon']} ${_displayPromise!['title']} / ${_displayPromise!['points']}${AppLocalizations.of(context)!.points}',
+                                            ? '${_displayPromise!['title']} / ${_displayPromise!['points'] * _multiplier}${AppLocalizations.of(context)!.points}'
+                                            : '${_displayPromise!['time']}〜 ${_displayPromise!['icon']} ${_displayPromise!['title']} / ${_displayPromise!['points'] * _multiplier}${AppLocalizations.of(context)!.points}',
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -3595,24 +3886,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           context,
                         )!.tutorialCustomizeBubble,
                         tailDirection: TailDirection.right,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            if (shouldShowPointAdditionHint)
-              Positioned(
-                top: 50, // 画面真ん中あたりのポイント表示の下あたり
-                right: 150,
-                child: SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SpeechBubble(
-                        text: AppLocalizations.of(
-                          context,
-                        )!.guidePointAdditionBubble,
-                        tailDirection: TailDirection.top,
                       ),
                     ],
                   ),

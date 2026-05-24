@@ -655,10 +655,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get supportPageOpenError => 'ページを開けませんでした';
 
   @override
-  String get timerExpChance => 'EXP 3 ゲットのチャンス！';
+  String timerExpChance(Object exp) {
+    return 'EXP $exp ゲットのチャンス！';
+  }
 
   @override
-  String get timerExpFailure => 'EXPは 1 になるよ！';
+  String timerExpFailure(Object exp) {
+    return 'EXPは $exp になるよ！';
+  }
 
   @override
   String get timerExpTrial => 'EXPは 0 だよ！（おためし）';
@@ -1609,10 +1613,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialResumeBtn => 'つづきから';
 
   @override
-  String get tutorialFirstPromiseCompleteTitle => 'やくそく体験完了！';
+  String get tutorialFirstPromiseCompleteTitle => 'あそびかた マスター！';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'これで**やくそく体験**は完了です！\nミッション画面でごほうびを受け取ろう!';
+  String get tutorialFirstPromiseCompleteDesc => 'これで あそびかたの れんしゅうは おわりだよ！\nまいにち「やくそく」を クリアして、\nきみだけの せかいを ひろげていこう！';
 
   @override
   String get missionHintBubble => 'ここからミッションができるよ！';
@@ -1851,7 +1855,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get setupFinishTitle100 => 'セットアップ 100% かんりょう！';
 
   @override
-  String get setupFinishMessage => 'きみだけの せかいへ\nしゅっぱつしよう！';
+  String get setupFinishMessage => 'せってい が おわったよ！\nさっそく あそびかたを たいけんしよう！';
 
   @override
   String setupProgressComplete(int progress) {
@@ -1976,7 +1980,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pointAdditionAdTitle => '📺 1日3回！無料でポイントゲット';
 
   @override
-  String get pointAdditionAdButton => '動画を見て 50P ゲット！';
+  String pointAdditionAdButton(int points) {
+    return '動画を見て ${points}P ゲット！';
+  }
 
   @override
   String get pointAdditionAdLoading => '広告じゅんび中';
@@ -2027,4 +2033,51 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get navMenu => 'メニュー';
+
+  @override
+  String get homeRewardAvailable => 'ゲット!';
+
+  @override
+  String pointAdditionBoostActive(int multiplier) {
+    return '🔥 現在ポイントとEXP $multiplier 倍中！';
+  }
+
+  @override
+  String get pointAdditionInUse => '使用中';
+
+  @override
+  String get pointAdditionBoostTitle1 => 'ちょこっとおうえん';
+
+  @override
+  String get pointAdditionBoostDesc1 => '7日間 ポイントとEXP 2倍';
+
+  @override
+  String get pointAdditionBoostTitle2 => 'しゅうまつダッシュ';
+
+  @override
+  String get pointAdditionBoostDesc2 => '3日間 ポイントとEXP 5倍';
+
+  @override
+  String get pointAdditionBoostTitle3 => 'ミラクルフィーバー';
+
+  @override
+  String get pointAdditionBoostDesc3 => '24時間 ポイントとEXP 10倍';
+
+  @override
+  String pointAdditionBoostTestMsg(Object multiplier) {
+    return '🔥 ポイントとEXP $multiplier 倍を発動しました！';
+  }
+
+  @override
+  String homeBoostTimeRemaining(Object time) {
+    return 'あと $time';
+  }
+
+  @override
+  String homeBoostTimeDays(Object days) {
+    return '$days日';
+  }
+
+  @override
+  String get pointAdditionFirstTimeFree => '初回無料';
 }

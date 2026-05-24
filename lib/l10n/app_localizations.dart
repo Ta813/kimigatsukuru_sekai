@@ -1354,14 +1354,14 @@ abstract class AppLocalizations {
   /// No description provided for @timerExpChance.
   ///
   /// In en, this message translates to:
-  /// **'A chance at 3 EXP!'**
-  String get timerExpChance;
+  /// **'Chance to get {exp} EXP!'**
+  String timerExpChance(Object exp);
 
   /// No description provided for @timerExpFailure.
   ///
   /// In en, this message translates to:
-  /// **'EXP will be 1!'**
-  String get timerExpFailure;
+  /// **'EXP will be {exp}!'**
+  String timerExpFailure(Object exp);
 
   /// No description provided for @timerExpTrial.
   ///
@@ -3202,13 +3202,13 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialFirstPromiseCompleteTitle.
   ///
   /// In en, this message translates to:
-  /// **'Promise Experience Complete!'**
+  /// **'You Mastered How to Play!'**
   String get tutorialFirstPromiseCompleteTitle;
 
   /// No description provided for @tutorialFirstPromiseCompleteDesc.
   ///
   /// In en, this message translates to:
-  /// **'The **promise experience** is complete!\nLet\'s go to the mission screen to get your reward!'**
+  /// **'This is the end of the tutorial!\nClear your \'promises\' every day\nand expand your very own world!'**
   String get tutorialFirstPromiseCompleteDesc;
 
   /// No description provided for @missionHintBubble.
@@ -3670,7 +3670,7 @@ abstract class AppLocalizations {
   /// No description provided for @setupFinishMessage.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s go to your own world!'**
+  /// **'Setup is complete!\nLet\'s try out how to play right away!'**
   String get setupFinishMessage;
 
   /// No description provided for @setupProgressComplete.
@@ -3892,8 +3892,8 @@ abstract class AppLocalizations {
   /// No description provided for @pointAdditionAdButton.
   ///
   /// In en, this message translates to:
-  /// **'Watch video to get 50P!'**
-  String get pointAdditionAdButton;
+  /// **'Watch a video to get {points}P!'**
+  String pointAdditionAdButton(int points);
 
   /// No description provided for @pointAdditionAdLoading.
   ///
@@ -3990,6 +3990,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Menu'**
   String get navMenu;
+
+  /// No description provided for @homeRewardAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Get!'**
+  String get homeRewardAvailable;
+
+  /// No description provided for @pointAdditionBoostActive.
+  ///
+  /// In en, this message translates to:
+  /// **'🔥 Points & EXP multiplied by {multiplier} now!'**
+  String pointAdditionBoostActive(int multiplier);
+
+  /// No description provided for @pointAdditionInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'In Use'**
+  String get pointAdditionInUse;
+
+  /// No description provided for @pointAdditionBoostTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Little Support'**
+  String get pointAdditionBoostTitle1;
+
+  /// No description provided for @pointAdditionBoostDesc1.
+  ///
+  /// In en, this message translates to:
+  /// **'2x Points & EXP for 7 Days'**
+  String get pointAdditionBoostDesc1;
+
+  /// No description provided for @pointAdditionBoostTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekend Dash'**
+  String get pointAdditionBoostTitle2;
+
+  /// No description provided for @pointAdditionBoostDesc2.
+  ///
+  /// In en, this message translates to:
+  /// **'5x Points & EXP for 3 Days'**
+  String get pointAdditionBoostDesc2;
+
+  /// No description provided for @pointAdditionBoostTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Miracle Fever'**
+  String get pointAdditionBoostTitle3;
+
+  /// No description provided for @pointAdditionBoostDesc3.
+  ///
+  /// In en, this message translates to:
+  /// **'10x Points & EXP for 24 Hours'**
+  String get pointAdditionBoostDesc3;
+
+  /// No description provided for @pointAdditionBoostTestMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'🔥 {multiplier}x Points & EXP boost activated!'**
+  String pointAdditionBoostTestMsg(Object multiplier);
+
+  /// No description provided for @homeBoostTimeRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} left'**
+  String homeBoostTimeRemaining(Object time);
+
+  /// No description provided for @homeBoostTimeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d '**
+  String homeBoostTimeDays(Object days);
+
+  /// No description provided for @pointAdditionFirstTimeFree.
+  ///
+  /// In en, this message translates to:
+  /// **'1st Time FREE'**
+  String get pointAdditionFirstTimeFree;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

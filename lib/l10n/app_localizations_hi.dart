@@ -655,10 +655,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get supportPageOpenError => 'पेज नहीं खोला जा सका';
 
   @override
-  String get timerExpChance => '3 EXP पाने का मौका!';
+  String timerExpChance(Object exp) {
+    return '$exp EXP पाने का मौका!';
+  }
 
   @override
-  String get timerExpFailure => 'EXP 1 होगा!';
+  String timerExpFailure(Object exp) {
+    return 'EXP $exp हो जाएगा!';
+  }
 
   @override
   String get timerExpTrial => 'EXP 0 होगा! (ट्रायल)';
@@ -1609,10 +1613,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tutorialResumeBtn => 'फिर से शुरू करें';
 
   @override
-  String get tutorialFirstPromiseCompleteTitle => 'वादा का अनुभव पूरा हुआ!';
+  String get tutorialFirstPromiseCompleteTitle => 'आप खेलना सीख गए!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => '**वादा का अनुभव** पूरा हो गया है!\nअपना इनाम पाने के लिए मिशन स्क्रीन पर जाएं!';
+  String get tutorialFirstPromiseCompleteDesc => 'खेलने के तरीके का अभ्यास यहीं समाप्त होता है!\nहर दिन \'वादे\' पूरे करें,\nऔर अपनी खुद की दुनिया का विस्तार करें!';
 
   @override
   String get missionHintBubble => 'आप यहाँ से मिशन कर सकते हैं!';
@@ -1851,7 +1855,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get setupFinishTitle100 => 'सेटअप 100% पूरा हुआ!';
 
   @override
-  String get setupFinishMessage => 'आइए आपकी अपनी दुनिया में चलें!';
+  String get setupFinishMessage => 'सेटअप पूरा हो गया है!\nआइए तुरंत अनुभव करें कि कैसे खेलना है!';
 
   @override
   String setupProgressComplete(int progress) {
@@ -1976,7 +1980,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get pointAdditionAdTitle => '📺 दिन में 3 बार मुफ़्त पॉइंट्स पाएं!';
 
   @override
-  String get pointAdditionAdButton => 'वीडियो देखें और 50P पाएं!';
+  String pointAdditionAdButton(int points) {
+    return 'वीडियो देखकर ${points}P पाएं!';
+  }
 
   @override
   String get pointAdditionAdLoading => 'विज्ञापन लोड हो रहा है...';
@@ -2027,4 +2033,51 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get navMenu => 'मेनू';
+
+  @override
+  String get homeRewardAvailable => 'पाएं!';
+
+  @override
+  String pointAdditionBoostActive(int multiplier) {
+    return '🔥 अब पॉइंट्स और EXP $multiplier गुना हो गए हैं!';
+  }
+
+  @override
+  String get pointAdditionInUse => 'उपयोग में';
+
+  @override
+  String get pointAdditionBoostTitle1 => 'छोटा सपोर्ट';
+
+  @override
+  String get pointAdditionBoostDesc1 => '7 दिनों के लिए 2 गुना पॉइंट्स और EXP';
+
+  @override
+  String get pointAdditionBoostTitle2 => 'वीकेंड डैश';
+
+  @override
+  String get pointAdditionBoostDesc2 => '3 दिनों के लिए 5 गुना पॉइंट्स और EXP';
+
+  @override
+  String get pointAdditionBoostTitle3 => 'मिरेकल फीवर';
+
+  @override
+  String get pointAdditionBoostDesc3 => '24 घंटों के लिए 10 गुना पॉइंट्स और EXP';
+
+  @override
+  String pointAdditionBoostTestMsg(Object multiplier) {
+    return '🔥 पॉइंट्स और EXP $multiplier गुना चालू हो गया है!';
+  }
+
+  @override
+  String homeBoostTimeRemaining(Object time) {
+    return '$time शेष';
+  }
+
+  @override
+  String homeBoostTimeDays(Object days) {
+    return '$days दिन ';
+  }
+
+  @override
+  String get pointAdditionFirstTimeFree => 'पहली बार मुफ़्त';
 }

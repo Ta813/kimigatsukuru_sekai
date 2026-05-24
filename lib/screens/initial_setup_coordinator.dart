@@ -954,7 +954,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
 // ==============================================================
 // 🌟 最終のセットアップ100%完了画面 (全画面)
 // ==============================================================
-class SetupCompleteScreen extends StatelessWidget {
+class SetupCompleteScreen extends StatefulWidget {
   final int currentStep;
   final int totalSteps;
 
@@ -965,11 +965,52 @@ class SetupCompleteScreen extends StatelessWidget {
   });
 
   @override
+  State<SetupCompleteScreen> createState() => _SetupCompleteScreenState();
+}
+
+class _SetupCompleteScreenState extends State<SetupCompleteScreen> {
+  List<String> _equippedCharacters = [];
+  String _equippedFace = 'assets/images/face/face_default.png';
+  String _equippedHair = 'assets/images/hair/hair_default.png';
+  String _equippedClothes = 'assets/images/clothes/clothes_default.png';
+  String? _equippedHeadgear;
+  String? _equippedAccessory;
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAnalytics.instance.logEvent(name: 'setup_drag_instruction_show');
+    _loadItems();
+  }
+
+  Future<void> _loadItems() async {
+    final face = await SharedPrefsHelper.loadEquippedFace();
+    final hair = await SharedPrefsHelper.loadEquippedHairstyle();
+    final clothes = await SharedPrefsHelper.loadEquippedClothes();
+    final headgear = await SharedPrefsHelper.loadEquippedHeadgear();
+    final accessory = await SharedPrefsHelper.loadEquippedAccessory();
+    final characters = await SharedPrefsHelper.loadEquippedCharacters();
+
+    setState(() {
+      _equippedFace = face ?? 'assets/images/face/face_default.png';
+      _equippedHair = hair ?? 'assets/images/hair/hair_default.png';
+      _equippedClothes = clothes ?? 'assets/images/clothes/clothes_default.png';
+      _equippedHeadgear = headgear;
+      _equippedAccessory = accessory;
+      _equippedCharacters = characters;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
-      appBar: buildSetupAppBar(context, currentStep, totalSteps), // 🌟 追加
+      appBar: buildSetupAppBar(
+        context,
+        widget.currentStep,
+        widget.totalSteps,
+      ), // 🌟 追加
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -979,9 +1020,17 @@ class SetupCompleteScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Image.asset('assets/images/character_panda.gif', height: 100),
+                AvatarDisplay(
+                  face: _equippedFace,
+                  clothes: _equippedClothes,
+                  hair: _equippedHair,
+                  headgear: _equippedHeadgear,
+                  accessory: _equippedAccessory,
+                  size: 100,
+                ),
                 const SizedBox(width: 20),
-                Image.asset('assets/images/character_kuma.gif', height: 100),
+                if (_equippedCharacters.isNotEmpty)
+                  Image.asset(_equippedCharacters.first, height: 100),
               ],
             ),
             const SizedBox(height: 16),

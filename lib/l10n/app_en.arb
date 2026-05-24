@@ -285,8 +285,8 @@
   "supportThisApp": "Support this app",
   "supportEncouragement": "Your support encourages future development!",
   "supportPageOpenError": "Could not open the page",
-  "timerExpChance": "A chance at 3 EXP!",
-  "timerExpFailure": "EXP will be 1!",
+  "timerExpChance": "Chance to get {exp} EXP!",
+  "timerExpFailure": "EXP will be {exp}!",
   "timerExpTrial": "EXP will be 0! (Trial)",
   "buildings": "Buildings",
   "vehicles": "Vehicles",
@@ -702,8 +702,8 @@
   "missionBadgeAvailableNow": "Available now!",
   "tutorialResumeDesc": "You are in the middle of the tutorial.\nLet's resume!",
   "tutorialResumeBtn": "Resume",
-  "tutorialFirstPromiseCompleteTitle": "Promise Experience Complete!",
-  "tutorialFirstPromiseCompleteDesc": "The **promise experience** is complete!\nLet's go to the mission screen to get your reward!",
+  "tutorialFirstPromiseCompleteTitle": "You Mastered How to Play!",
+  "tutorialFirstPromiseCompleteDesc": "This is the end of the tutorial!\nClear your 'promises' every day\nand expand your very own world!",
   "missionHintBubble": "You can do missions from here!",
   "helpMenuPromiseSettings": "Set Promises",
   "missionTutorialBonusChance": "Chance to get\n200 points by completing the tutorial!!",
@@ -804,7 +804,7 @@
   "setupIntroMessage": "Let's start setting up the app!\nIt will take about 3 minutes.",
   "setupIntroNext": "Next",
   "setupFinishTitle100": "Setup 100% Complete!",
-  "setupFinishMessage": "Let's go to your own world!",
+  "setupFinishMessage": "Setup is complete!\nLet's try out how to play right away!",
   "setupProgressComplete": "Setup {progress}% complete!",
   "@setupProgressComplete": {
     "placeholders": {
@@ -890,7 +890,14 @@
   "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
   "pointAdditionTitle": "Add Points",
   "pointAdditionAdTitle": "📺 Get points for free 3 times a day!",
-  "pointAdditionAdButton": "Watch video to get 50P!",
+  "pointAdditionAdButton": "Watch a video to get {points}P!",
+  "@pointAdditionAdButton": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
   "pointAdditionAdLoading": "Loading Ad...",
   "pointAdditionAdError": "Reload Ad",
   "pointAdditionNextSlot": "Next chance in {time}",
@@ -913,5 +920,25 @@
   "laterAction": "Later",
   "itemNone": "None",
   "guidePointAdditionBubble": "You can also get more\npoints from here!",
-  "navMenu": "Menu"
+  "navMenu": "Menu",
+  "homeRewardAvailable": "Get!",
+  "pointAdditionBoostActive": "🔥 Points & EXP multiplied by {multiplier} now!",
+  "@pointAdditionBoostActive": {
+    "placeholders": {
+      "multiplier": {
+        "type": "int"
+      }
+    }
+  },
+  "pointAdditionInUse": "In Use",
+  "pointAdditionBoostTitle1": "Little Support",
+  "pointAdditionBoostDesc1": "2x Points & EXP for 7 Days",
+  "pointAdditionBoostTitle2": "Weekend Dash",
+  "pointAdditionBoostDesc2": "5x Points & EXP for 3 Days",
+  "pointAdditionBoostTitle3": "Miracle Fever",
+  "pointAdditionBoostDesc3": "10x Points & EXP for 24 Hours",
+  "pointAdditionBoostTestMsg": "🔥 {multiplier}x Points & EXP boost activated!",
+  "homeBoostTimeRemaining": "{time} left",
+  "homeBoostTimeDays": "{days}d ",
+  "pointAdditionFirstTimeFree": "1st Time FREE"
 }

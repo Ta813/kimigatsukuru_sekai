@@ -655,10 +655,14 @@ class AppLocalizationsUr extends AppLocalizations {
   String get supportPageOpenError => 'صفحہ نہیں کھل سکا';
 
   @override
-  String get timerExpChance => '3 EXP حاصل کرنے کا موقع!';
+  String timerExpChance(Object exp) {
+    return '$exp EXP حاصل کرنے کا موقع!';
+  }
 
   @override
-  String get timerExpFailure => 'EXP 1 ہوگا!';
+  String timerExpFailure(Object exp) {
+    return 'EXP $exp ہو جائے گا!';
+  }
 
   @override
   String get timerExpTrial => 'EXP 0 ہوگا! (آزمائشی)';
@@ -1609,10 +1613,10 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tutorialResumeBtn => 'جاری رکھیں';
 
   @override
-  String get tutorialFirstPromiseCompleteTitle => 'وعدے کا تجربہ مکمل ہوا!';
+  String get tutorialFirstPromiseCompleteTitle => 'آپ کھیلنا سیکھ گئے!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => '**وعدے کا تجربہ** مکمل ہو گیا ہے!\nاپنا انعام حاصل کرنے کے لیے مشن اسکرین پر جائیں!';
+  String get tutorialFirstPromiseCompleteDesc => 'کھیلنے کے طریقے کی مشق یہیں ختم ہوتی ہے!\nہر دن \'وعدے\' پورے کریں،\nاور اپنی خود کی دنیا کو وسیع کریں!';
 
   @override
   String get missionHintBubble => 'آپ یہاں سے مشن کر سکتے ہیں!';
@@ -1851,7 +1855,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get setupFinishTitle100 => 'سیٹ اپ 100% مکمل ہو گیا!';
 
   @override
-  String get setupFinishMessage => 'آئیے آپ کی اپنی دنیا میں چلیں!';
+  String get setupFinishMessage => 'سیٹ اپ مکمل ہو گیا ہے!\nآئیے فوراً سیکھیں کہ کیسے کھیلنا ہے!';
 
   @override
   String setupProgressComplete(int progress) {
@@ -1976,7 +1980,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get pointAdditionAdTitle => '📺 دن میں 3 بار مفت پوائنٹس حاصل کریں!';
 
   @override
-  String get pointAdditionAdButton => 'ویڈیو دیکھیں اور 50P حاصل کریں!';
+  String pointAdditionAdButton(int points) {
+    return 'ویڈیو دیکھیں اور ${points}P حاصل کریں!';
+  }
 
   @override
   String get pointAdditionAdLoading => 'اشتہار لوڈ ہو رہا ہے...';
@@ -2027,4 +2033,51 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get navMenu => 'مینو';
+
+  @override
+  String get homeRewardAvailable => 'حاصل کریں!';
+
+  @override
+  String pointAdditionBoostActive(int multiplier) {
+    return '🔥 اب پوائنٹس اور EXP $multiplier گنا ہو گئے ہیں!';
+  }
+
+  @override
+  String get pointAdditionInUse => 'استعمال میں';
+
+  @override
+  String get pointAdditionBoostTitle1 => 'چھوٹی مدد';
+
+  @override
+  String get pointAdditionBoostDesc1 => '7 دنوں کے لیے 2 گنا پوائنٹس اور EXP';
+
+  @override
+  String get pointAdditionBoostTitle2 => 'ویک اینڈ ڈیش';
+
+  @override
+  String get pointAdditionBoostDesc2 => '3 دنوں کے لیے 5 گنا پوائنٹس اور EXP';
+
+  @override
+  String get pointAdditionBoostTitle3 => 'میراکل فیور';
+
+  @override
+  String get pointAdditionBoostDesc3 => '24 گھنٹوں کے لیے 10 گنا پوائنٹس اور EXP';
+
+  @override
+  String pointAdditionBoostTestMsg(Object multiplier) {
+    return '🔥 پوائنٹس اور EXP کا $multiplier گنا بوسٹ فعال ہو گیا ہے!';
+  }
+
+  @override
+  String homeBoostTimeRemaining(Object time) {
+    return '$time باقی';
+  }
+
+  @override
+  String homeBoostTimeDays(Object days) {
+    return '$days دن ';
+  }
+
+  @override
+  String get pointAdditionFirstTimeFree => 'پہلی بار مفت';
 }

@@ -70,6 +70,7 @@ class _TimerScreenState extends State<TimerScreen>
 
   int _basePoints = 0;
   bool _isTutorial = false;
+  int _boostMultiplier = 1;
 
   // 広告を表示するかどうかのフラグ（最初は絶対にfalseにしておく）
   //bool _showAd = false;
@@ -84,6 +85,7 @@ class _TimerScreenState extends State<TimerScreen>
     _screenStartTime = DateTime.now(); // ★ 追加：画面起動時刻を記録
     _basePoints = widget.promise['points'] as int? ?? 0;
     _checkTutorial();
+    _loadBoostMultiplier();
 
     _confettiController = ConfettiController(
       duration: const Duration(seconds: 6), // 6秒間だけ紙吹雪を出す
@@ -134,6 +136,16 @@ class _TimerScreenState extends State<TimerScreen>
           _isTutorial = true;
         });
       }
+    }
+  }
+
+  // 🌟 追加: 倍率を非同期で取得してStateを更新するメソッド
+  Future<void> _loadBoostMultiplier() async {
+    final multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
+    if (mounted) {
+      setState(() {
+        _boostMultiplier = multiplier;
+      });
     }
   }
 
@@ -791,7 +803,7 @@ class _TimerScreenState extends State<TimerScreen>
 
   // ★ルーレットを表示して、その結果で終了処理を呼ぶメソッド
   void _showRouletteAndFinish() async {
-    final basePoints = _basePoints;
+    final basePoints = _basePoints * _boostMultiplier;
 
     final multiplier = await showDialog<double>(
       context: context,
@@ -806,13 +818,14 @@ class _TimerScreenState extends State<TimerScreen>
 
   // ★ポイントを計算して、画面を閉じる最終処理メソッド
   void _finishPromise({required num pointMultiplier, required int exp}) async {
-    final basePoints = _basePoints;
+    final basePoints = _basePoints * _boostMultiplier;
     int pointsAwarded = (basePoints * pointMultiplier).toInt();
 
     // ポイントが0の場合や、お試しの場合は経験値も0にする
-    final int finalExp = (basePoints == 0 || widget.promise['isTrial'] == true)
-        ? 0
-        : exp;
+    final int calculatedBaseExp =
+        (basePoints == 0 || widget.promise['isTrial'] == true) ? 0 : exp;
+
+    final int finalExp = calculatedBaseExp * _boostMultiplier;
 
     if (widget.isEmergency) {
       await SharedPrefsHelper.saveEmergencyPromise(null);
@@ -1108,7 +1121,9 @@ class _TimerScreenState extends State<TimerScreen>
                                                   )!.timerExpTrial
                                                 : AppLocalizations.of(
                                                     context,
-                                                  )!.timerExpFailure),
+                                                  )!.timerExpFailure(
+                                                    1 * _boostMultiplier,
+                                                  )),
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -1118,7 +1133,9 @@ class _TimerScreenState extends State<TimerScreen>
                                     : Text(
                                         AppLocalizations.of(
                                               context,
-                                            )!.pointsChance(_basePoints) +
+                                            )!.pointsChance(
+                                              _basePoints * _boostMultiplier,
+                                            ) +
                                             '\n' +
                                             (widget.promise['isTrial'] == true
                                                 ? AppLocalizations.of(
@@ -1126,7 +1143,9 @@ class _TimerScreenState extends State<TimerScreen>
                                                   )!.timerExpTrial
                                                 : AppLocalizations.of(
                                                     context,
-                                                  )!.timerExpChance),
+                                                  )!.timerExpChance(
+                                                    3 * _boostMultiplier,
+                                                  )),
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,

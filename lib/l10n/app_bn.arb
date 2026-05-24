@@ -285,8 +285,8 @@
   "supportThisApp": "এই অ্য্যাপটি সমর্থন করুন",
   "supportEncouragement": "আপনার সমর্থন ভবিষ্যতে উন্নয়নে উৎসাহ দেয়!",
   "supportPageOpenError": "পৃষ্ঠাটি খোলা যায়নি",
-  "timerExpChance": "৩ EXP পাওয়ার সুযোগ!",
-  "timerExpFailure": "EXP ১ হবে!",
+  "timerExpChance": "{exp} EXP পাওয়ার সুযোগ!",
+  "timerExpFailure": "EXP হবে {exp}!",
   "timerExpTrial": "EXP ০ হবে! (পরীক্ষামূলক)",
   "buildings": "ভবনসমূহ",
   "vehicles": "যানবাহন",
@@ -702,8 +702,8 @@
   "missionBadgeAvailableNow": "এখন উপলব্ধ!",
   "tutorialResumeDesc": "আপনি টিউটোরিয়ালের মাঝখানে আছেন।\nচলুন আবার শুরু করি!",
   "tutorialResumeBtn": "চালিয়ে যান",
-  "tutorialFirstPromiseCompleteTitle": "প্রতিশ্রুতি নেওয়া সম্পন্ন!",
-  "tutorialFirstPromiseCompleteDesc": "**প্রতিশ্রুতি নেওয়া** সম্পন্ন হয়েছে!\nপুরস্কার পেতে মিশন স্ক্রিনে যান!",
+  "tutorialFirstPromiseCompleteTitle": "খেলার নিয়ম শিখে গেছো!",
+  "tutorialFirstPromiseCompleteDesc": "কীভাবে খেলতে হয় তার অনুশীলন এখানেই শেষ!\nপ্রতিদিন 'প্রতিশ্রুতি' পূরণ করো,\nএবং তোমার নিজের জগতকে প্রসারিত করো!",
   "missionHintBubble": "আপনি এখান থেকে মিশন করতে পারেন!",
   "helpMenuPromiseSettings": "প্রতিশ্রুতি সেট",
   "missionTutorialBonusChance": "টিউটোরিয়াল সম্পন্ন করে\n২০০ পয়েন্ট পাওয়ার সুযোগ!!",
@@ -804,7 +804,7 @@
   "setupIntroMessage": "চলুন অ্যাপটি সেট আপ করা শুরু করি!\nএতে প্রায় ৩ মিনিট সময় লাগবে।",
   "setupIntroNext": "পরবর্তী",
   "setupFinishTitle100": "সেটআপ ১০০% সম্পন্ন!",
-  "setupFinishMessage": "চলুন আপনার নিজের পৃথিবীতে যাই!",
+  "setupFinishMessage": "সেটআপ সম্পন্ন হয়েছে!\nচলো এক্ষুনি কীভাবে খেলতে হয় তা দেখে নিই!",
   "setupProgressComplete": "সেটআপ {progress}% সম্পন্ন!",
   "@setupProgressComplete": {
     "placeholders": {
@@ -889,7 +889,14 @@
   "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
   "pointAdditionTitle": "পয়েন্ট যোগ করুন",
   "pointAdditionAdTitle": "📺 দিনে 3 বার বিনামূল্যে পয়েন্ট পান!",
-  "pointAdditionAdButton": "ভিডিও দেখুন এবং 50P পান!",
+  "pointAdditionAdButton": "ভিডিও দেখে {points}P নিন!",
+  "@pointAdditionAdButton": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
   "pointAdditionAdLoading": "বিজ্ঞাপন লোড হচ্ছে...",
   "pointAdditionAdError": "বিজ্ঞাপন পুনরায় লোড করুন",
   "pointAdditionNextSlot": "পরবর্তী সুযোগ {time}-এ",
@@ -912,5 +919,25 @@
   "laterAction": "পরে",
   "itemNone": "কিছু না",
   "guidePointAdditionBubble": "এখান থেকেও তুমি আরও\nপয়েন্ট বাড়াতে পারবে!",
-  "navMenu": "মেনু"
+  "navMenu": "মেনু",
+  "homeRewardAvailable": "নাও!",
+  "pointAdditionBoostActive": "🔥 এখন পয়েন্ট ও EXP {multiplier} গুণ!",
+  "@pointAdditionBoostActive": {
+    "placeholders": {
+      "multiplier": {
+        "type": "int"
+      }
+    }
+  },
+  "pointAdditionInUse": "ব্যবহৃত হচ্ছে",
+  "pointAdditionBoostTitle1": "ছোট্ট সাহায্য",
+  "pointAdditionBoostDesc1": "৭ দিনের জন্য ২ গুণ পয়েন্ট ও EXP",
+  "pointAdditionBoostTitle2": "উইকএন্ড ড্যাশ",
+  "pointAdditionBoostDesc2": "৩ দিনের জন্য ৫ গুণ পয়েন্ট ও EXP",
+  "pointAdditionBoostTitle3": "মিরাকল ফিভার",
+  "pointAdditionBoostDesc3": "২৪ ঘণ্টার জন্য ১০ গুণ পয়েন্ট ও EXP",
+  "pointAdditionBoostTestMsg": "🔥 পয়েন্ট ও EXP {multiplier} গুণ চালু করা হয়েছে!",
+  "homeBoostTimeRemaining": "আর {time} বাকি",
+  "homeBoostTimeDays": "{days} দিন ",
+  "pointAdditionFirstTimeFree": "প্রথমবার ফ্রি"
 }

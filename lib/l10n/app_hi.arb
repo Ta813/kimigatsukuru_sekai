@@ -285,8 +285,8 @@
   "supportThisApp": "इस ऐप का समर्थन करें",
   "supportEncouragement": "आपका समर्थन भविष्य के विकास को प्रोत्साहित करता है!",
   "supportPageOpenError": "पेज नहीं खोला जा सका",
-  "timerExpChance": "3 EXP पाने का मौका!",
-  "timerExpFailure": "EXP 1 होगा!",
+  "timerExpChance": "{exp} EXP पाने का मौका!",
+  "timerExpFailure": "EXP {exp} हो जाएगा!",
   "timerExpTrial": "EXP 0 होगा! (ट्रायल)",
   "buildings": "इमारतें",
   "vehicles": "वाहन",
@@ -656,8 +656,8 @@
   "missionBadgeAvailableNow": "अभी उपलब्ध है!",
   "tutorialResumeDesc": "आप ट्यूटोरियल के बीच में हैं।\nआइए फिर से शुरू करें!",
   "tutorialResumeBtn": "फिर से शुरू करें",
-  "tutorialFirstPromiseCompleteTitle": "वादा का अनुभव पूरा हुआ!",
-  "tutorialFirstPromiseCompleteDesc": "**वादा का अनुभव** पूरा हो गया है!\nअपना इनाम पाने के लिए मिशन स्क्रीन पर जाएं!",
+  "tutorialFirstPromiseCompleteTitle": "आप खेलना सीख गए!",
+  "tutorialFirstPromiseCompleteDesc": "खेलने के तरीके का अभ्यास यहीं समाप्त होता है!\nहर दिन 'वादे' पूरे करें,\nऔर अपनी खुद की दुनिया का विस्तार करें!",
   "missionHintBubble": "आप यहाँ से मिशन कर सकते हैं!",
   "helpMenuPromiseSettings": "वादे सेट करें",
   "missionTutorialBonusChance": "ट्यूटोरियल पूरा करके\n200 पॉइंट पाने का मौका!!",
@@ -758,7 +758,7 @@
   "setupIntroMessage": "आइए ऐप सेटअप करना शुरू करें!\nइसमें लगभग 3 मिनट लगेंगे।",
   "setupIntroNext": "अगला",
   "setupFinishTitle100": "सेटअप 100% पूरा हुआ!",
-  "setupFinishMessage": "आइए आपकी अपनी दुनिया में चलें!",
+  "setupFinishMessage": "सेटअप पूरा हो गया है!\nआइए तुरंत अनुभव करें कि कैसे खेलना है!",
   "setupProgressComplete": "सेटअप {progress}% पूरा हुआ!",
   "@setupProgressComplete": {
     "placeholders": {
@@ -844,7 +844,14 @@
   "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
   "pointAdditionTitle": "पॉइंट्स जोड़ें",
   "pointAdditionAdTitle": "📺 दिन में 3 बार मुफ़्त पॉइंट्स पाएं!",
-  "pointAdditionAdButton": "वीडियो देखें और 50P पाएं!",
+  "pointAdditionAdButton": "वीडियो देखकर {points}P पाएं!",
+  "@pointAdditionAdButton": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
   "pointAdditionAdLoading": "विज्ञापन लोड हो रहा है...",
   "pointAdditionAdError": "विज्ञापन पुनः लोड करें",
   "pointAdditionNextSlot": "अगला मौका {time} में",
@@ -867,5 +874,25 @@
   "laterAction": "बाद में",
   "itemNone": "कोई नहीं",
   "guidePointAdditionBubble": "आप यहाँ से और पॉइंट्स भी\nप्राप्त कर सकते हैं!",
-  "navMenu": "मेनू"
+  "navMenu": "मेनू",
+  "homeRewardAvailable": "पाएं!",
+  "pointAdditionBoostActive": "🔥 अब पॉइंट्स और EXP {multiplier} गुना हो गए हैं!",
+  "@pointAdditionBoostActive": {
+    "placeholders": {
+      "multiplier": {
+        "type": "int"
+      }
+    }
+  },
+  "pointAdditionInUse": "उपयोग में",
+  "pointAdditionBoostTitle1": "छोटा सपोर्ट",
+  "pointAdditionBoostDesc1": "7 दिनों के लिए 2 गुना पॉइंट्स और EXP",
+  "pointAdditionBoostTitle2": "वीकेंड डैश",
+  "pointAdditionBoostDesc2": "3 दिनों के लिए 5 गुना पॉइंट्स और EXP",
+  "pointAdditionBoostTitle3": "मिरेकल फीवर",
+  "pointAdditionBoostDesc3": "24 घंटों के लिए 10 गुना पॉइंट्स और EXP",
+  "pointAdditionBoostTestMsg": "🔥 पॉइंट्स और EXP {multiplier} गुना चालू हो गया है!",
+  "homeBoostTimeRemaining": "{time} शेष",
+  "homeBoostTimeDays": "{days} दिन ",
+  "pointAdditionFirstTimeFree": "पहली बार मुफ़्त"
 }

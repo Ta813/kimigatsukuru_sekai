@@ -655,10 +655,14 @@ class AppLocalizationsBn extends AppLocalizations {
   String get supportPageOpenError => 'পৃষ্ঠাটি খোলা যায়নি';
 
   @override
-  String get timerExpChance => '৩ EXP পাওয়ার সুযোগ!';
+  String timerExpChance(Object exp) {
+    return '$exp EXP পাওয়ার সুযোগ!';
+  }
 
   @override
-  String get timerExpFailure => 'EXP ১ হবে!';
+  String timerExpFailure(Object exp) {
+    return 'EXP হবে $exp!';
+  }
 
   @override
   String get timerExpTrial => 'EXP ০ হবে! (পরীক্ষামূলক)';
@@ -1609,10 +1613,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tutorialResumeBtn => 'চালিয়ে যান';
 
   @override
-  String get tutorialFirstPromiseCompleteTitle => 'প্রতিশ্রুতি নেওয়া সম্পন্ন!';
+  String get tutorialFirstPromiseCompleteTitle => 'খেলার নিয়ম শিখে গেছো!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => '**প্রতিশ্রুতি নেওয়া** সম্পন্ন হয়েছে!\nপুরস্কার পেতে মিশন স্ক্রিনে যান!';
+  String get tutorialFirstPromiseCompleteDesc => 'কীভাবে খেলতে হয় তার অনুশীলন এখানেই শেষ!\nপ্রতিদিন \'প্রতিশ্রুতি\' পূরণ করো,\nএবং তোমার নিজের জগতকে প্রসারিত করো!';
 
   @override
   String get missionHintBubble => 'আপনি এখান থেকে মিশন করতে পারেন!';
@@ -1851,7 +1855,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get setupFinishTitle100 => 'সেটআপ ১০০% সম্পন্ন!';
 
   @override
-  String get setupFinishMessage => 'চলুন আপনার নিজের পৃথিবীতে যাই!';
+  String get setupFinishMessage => 'সেটআপ সম্পন্ন হয়েছে!\nচলো এক্ষুনি কীভাবে খেলতে হয় তা দেখে নিই!';
 
   @override
   String setupProgressComplete(int progress) {
@@ -1976,7 +1980,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get pointAdditionAdTitle => '📺 দিনে 3 বার বিনামূল্যে পয়েন্ট পান!';
 
   @override
-  String get pointAdditionAdButton => 'ভিডিও দেখুন এবং 50P পান!';
+  String pointAdditionAdButton(int points) {
+    return 'ভিডিও দেখে ${points}P নিন!';
+  }
 
   @override
   String get pointAdditionAdLoading => 'বিজ্ঞাপন লোড হচ্ছে...';
@@ -2027,4 +2033,51 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get navMenu => 'মেনু';
+
+  @override
+  String get homeRewardAvailable => 'নাও!';
+
+  @override
+  String pointAdditionBoostActive(int multiplier) {
+    return '🔥 এখন পয়েন্ট ও EXP $multiplier গুণ!';
+  }
+
+  @override
+  String get pointAdditionInUse => 'ব্যবহৃত হচ্ছে';
+
+  @override
+  String get pointAdditionBoostTitle1 => 'ছোট্ট সাহায্য';
+
+  @override
+  String get pointAdditionBoostDesc1 => '৭ দিনের জন্য ২ গুণ পয়েন্ট ও EXP';
+
+  @override
+  String get pointAdditionBoostTitle2 => 'উইকএন্ড ড্যাশ';
+
+  @override
+  String get pointAdditionBoostDesc2 => '৩ দিনের জন্য ৫ গুণ পয়েন্ট ও EXP';
+
+  @override
+  String get pointAdditionBoostTitle3 => 'মিরাকল ফিভার';
+
+  @override
+  String get pointAdditionBoostDesc3 => '২৪ ঘণ্টার জন্য ১০ গুণ পয়েন্ট ও EXP';
+
+  @override
+  String pointAdditionBoostTestMsg(Object multiplier) {
+    return '🔥 পয়েন্ট ও EXP $multiplier গুণ চালু করা হয়েছে!';
+  }
+
+  @override
+  String homeBoostTimeRemaining(Object time) {
+    return 'আর $time বাকি';
+  }
+
+  @override
+  String homeBoostTimeDays(Object days) {
+    return '$days দিন ';
+  }
+
+  @override
+  String get pointAdditionFirstTimeFree => 'প্রথমবার ফ্রি';
 }

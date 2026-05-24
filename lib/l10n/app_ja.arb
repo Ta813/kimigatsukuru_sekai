@@ -285,8 +285,8 @@
   "supportThisApp": "このアプリを支援する",
   "supportEncouragement": "今後の開発の励みになります！",
   "supportPageOpenError": "ページを開けませんでした",
-  "timerExpChance": "EXP 3 ゲットのチャンス！",
-  "timerExpFailure": "EXPは 1 になるよ！",
+  "timerExpChance": "EXP {exp} ゲットのチャンス！",
+  "timerExpFailure": "EXPは {exp} になるよ！",
   "timerExpTrial": "EXPは 0 だよ！（おためし）",
   "buildings": "たてもの",
   "vehicles": "のりもの",
@@ -702,8 +702,8 @@
   "missionBadgeAvailableNow": "いまできるよ！",
   "tutorialResumeDesc": "チュートリアルの とちゅうだったね。\nつづきから はじめるよ！",
   "tutorialResumeBtn": "つづきから",
-  "tutorialFirstPromiseCompleteTitle": "やくそく体験完了！",
-  "tutorialFirstPromiseCompleteDesc": "これで**やくそく体験**は完了です！\nミッション画面でごほうびを受け取ろう!",
+  "tutorialFirstPromiseCompleteTitle": "あそびかた マスター！",
+  "tutorialFirstPromiseCompleteDesc": "これで あそびかたの れんしゅうは おわりだよ！\nまいにち「やくそく」を クリアして、\nきみだけの せかいを ひろげていこう！",
   "missionHintBubble": "ここからミッションができるよ！",
   "helpMenuPromiseSettings": "やくそくの設定",
   "missionTutorialBonusChance": "チュートリアル完了で\n200ポイントゲットのチャンス！！",
@@ -804,7 +804,7 @@
   "setupIntroMessage": "アプリの せってい を はじめます！\nおよそ 3分 ていどで おわります。",
   "setupIntroNext": "つぎへ",
   "setupFinishTitle100": "セットアップ 100% かんりょう！",
-  "setupFinishMessage": "きみだけの せかいへ\nしゅっぱつしよう！",
+  "setupFinishMessage": "せってい が おわったよ！\nさっそく あそびかたを たいけんしよう！",
   "setupProgressComplete": "セットアップ {progress}% かんりょう！",
   "@setupProgressComplete": {
     "placeholders": {
@@ -890,7 +890,14 @@
   "initialSetupGuidance": "ご家庭の せいかつリズムに あわせて\n毎日おこなう 「やくそく」の じかんを 設定してね！",
   "pointAdditionTitle": "ポイントをふやす",
   "pointAdditionAdTitle": "📺 1日3回！無料でポイントゲット",
-  "pointAdditionAdButton": "動画を見て 50P ゲット！",
+  "pointAdditionAdButton": "動画を見て {points}P ゲット！",
+  "@pointAdditionAdButton": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
   "pointAdditionAdLoading": "広告じゅんび中",
   "pointAdditionAdError": "広告を再読み込みする",
   "pointAdditionNextSlot": "つぎの 時間まで {time}",
@@ -913,5 +920,26 @@
   "laterAction": "あとで",
   "itemNone": "なし",
   "guidePointAdditionBubble": "ここから ポイントを\nふやすことも できるよ！",
-  "navMenu": "メニュー"
+  "navMenu": "メニュー",
+  "homeRewardAvailable": "ゲット!",
+  "pointAdditionBoostBuy": "購入",
+  "pointAdditionBoostActive": "🔥 現在ポイントとEXP {multiplier} 倍中！",
+  "@pointAdditionBoostActive": {
+    "placeholders": {
+      "multiplier": {
+        "type": "int"
+      }
+    }
+  },
+  "pointAdditionInUse": "使用中",
+  "pointAdditionBoostTitle1": "ちょこっとおうえん",
+  "pointAdditionBoostDesc1": "7日間 ポイントとEXP 2倍",
+  "pointAdditionBoostTitle2": "しゅうまつダッシュ",
+  "pointAdditionBoostDesc2": "3日間 ポイントとEXP 5倍",
+  "pointAdditionBoostTitle3": "ミラクルフィーバー",
+  "pointAdditionBoostDesc3": "24時間 ポイントとEXP 10倍",
+  "pointAdditionBoostTestMsg": "🔥 ポイントとEXP {multiplier} 倍を発動しました！",
+  "homeBoostTimeRemaining": "あと {time}",
+  "homeBoostTimeDays": "{days}日",
+  "pointAdditionFirstTimeFree": "初回無料"
 }

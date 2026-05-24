@@ -655,10 +655,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get supportPageOpenError => 'تعذر فتح الصفحة';
 
   @override
-  String get timerExpChance => 'فرصة للحصول على ٣ نقاط خبرة!';
+  String timerExpChance(Object exp) {
+    return 'فرصة للحصول على $exp EXP!';
+  }
 
   @override
-  String get timerExpFailure => 'ستحصل على نقطة خبرة واحدة!';
+  String timerExpFailure(Object exp) {
+    return 'سيكون EXP $exp!';
+  }
 
   @override
   String get timerExpTrial => 'ستكون نقاط الخبرة ٠! (تجريبي)';
@@ -1609,10 +1613,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialResumeBtn => 'استئناف';
 
   @override
-  String get tutorialFirstPromiseCompleteTitle => 'اكتملت تجربة الوعد!';
+  String get tutorialFirstPromiseCompleteTitle => 'لقد أتقنت طريقة اللعب!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'لقد اكتملت **تجربة الوعد**!\nدعنا نذهب إلى شاشة المهام للحصول على مكافأتك!';
+  String get tutorialFirstPromiseCompleteDesc => 'هنا ينتهي التدريب على كيفية اللعب!\nأكمل \'وعودك\' كل يوم،\nووسع عالمك الخاص بك!';
 
   @override
   String get missionHintBubble => 'يمكنك أداء المهام من هنا!';
@@ -1851,7 +1855,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get setupFinishTitle100 => 'اكتمل الإعداد بنسبة 100%!';
 
   @override
-  String get setupFinishMessage => 'لننطلق إلى عالمك الخاص!';
+  String get setupFinishMessage => 'اكتمل الإعداد!\nدعنا نجرب طريقة اللعب على الفور!';
 
   @override
   String setupProgressComplete(int progress) {
@@ -1976,7 +1980,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pointAdditionAdTitle => '📺 احصل على نقاط مجانًا 3 مرات يوميًا!';
 
   @override
-  String get pointAdditionAdButton => 'شاهد الفيديو واحصل على 50P!';
+  String pointAdditionAdButton(int points) {
+    return 'شاهد فيديو واحصل على ${points}P!';
+  }
 
   @override
   String get pointAdditionAdLoading => 'جاري تحميل الإعلان...';
@@ -2027,4 +2033,51 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get navMenu => 'القائمة';
+
+  @override
+  String get homeRewardAvailable => 'احصل!';
+
+  @override
+  String pointAdditionBoostActive(int multiplier) {
+    return '🔥 النقاط والخبرة (EXP) مضاعفة بـ $multiplier الآن!';
+  }
+
+  @override
+  String get pointAdditionInUse => 'قيد الاستخدام';
+
+  @override
+  String get pointAdditionBoostTitle1 => 'دعم صغير';
+
+  @override
+  String get pointAdditionBoostDesc1 => 'نقاط وخبرة مضاعفة مرتين لمدة 7 أيام';
+
+  @override
+  String get pointAdditionBoostTitle2 => 'انطلاقة نهاية الأسبوع';
+
+  @override
+  String get pointAdditionBoostDesc2 => 'نقاط وخبرة مضاعفة 5 مرات لمدة 3 أيام';
+
+  @override
+  String get pointAdditionBoostTitle3 => 'حمى المعجزة';
+
+  @override
+  String get pointAdditionBoostDesc3 => 'نقاط وخبرة مضاعفة 10 مرات لمدة 24 ساعة';
+
+  @override
+  String pointAdditionBoostTestMsg(Object multiplier) {
+    return '🔥 تم تفعيل مضاعفة النقاط والخبرة (EXP) بـ $multiplier!';
+  }
+
+  @override
+  String homeBoostTimeRemaining(Object time) {
+    return 'متبقي $time';
+  }
+
+  @override
+  String homeBoostTimeDays(Object days) {
+    return '$days يوم ';
+  }
+
+  @override
+  String get pointAdditionFirstTimeFree => 'أول مرة مجانًا';
 }

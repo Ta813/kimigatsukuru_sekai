@@ -4,14 +4,19 @@ import 'poyon_animation.dart';
 
 class LoginBonusStampCard extends StatelessWidget {
   final int currentLoginCount; // 現在の連続ログイン日数 (1〜7)
+  final int multiplier;
 
-  const LoginBonusStampCard({super.key, required this.currentLoginCount});
+  const LoginBonusStampCard({
+    super.key,
+    required this.currentLoginCount,
+    required this.multiplier,
+  });
 
   // 💡 日数に応じて付与するポイントを返す関数
   int _getPointsForDay(int day) {
-    if (day == 7) return 200;
-    if (day == 3) return 80;
-    return 20; // 基本ポイント
+    if (day == 7) return 300 * multiplier; // 10倍ブースト込み
+    if (day == 3) return 80 * multiplier; // 10倍ブースト込み
+    return 20 * multiplier; // 基本ポイント
   }
 
   @override

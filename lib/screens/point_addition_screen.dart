@@ -4,10 +4,14 @@ import 'dart:async'; // 🌟 追加: タイマー処理用
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/l10n/app_localizations.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/custom_back_button.dart';
 import '../../managers/reward_ad_manager.dart';
+import 'package:flutter/foundation.dart';
+import '../../managers/purchase_manager.dart';
+import '../../widgets/pulsing_effect.dart';
 
 class PointAdditionScreen extends StatefulWidget {
   const PointAdditionScreen({super.key});
@@ -25,6 +29,11 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
   // 🌟 追加: カウントダウン用のタイマーと文字列
   Timer? _countdownTimer;
   String _timeUntilNextSlot = '';
+
+  // クラス上部の変数定義に追加
+  int _currentBoostMultiplier = 1;
+  int _multiplier = 1;
+  bool _isBoost2xTrialUsed = false;
 
   @override
   void initState() {
@@ -85,12 +94,23 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
     final morning = await SharedPrefsHelper.isRewardClaimed('morning');
     final afternoon = await SharedPrefsHelper.isRewardClaimed('afternoon');
     final night = await SharedPrefsHelper.isRewardClaimed('night');
+    final int multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
+
+    // 🌟 追加: ブースト状態の読み込み
+    final boostMultiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
+
+    // 🌟 追加: 無料枠の使用状況を取得
+    final boost2xTrialUsed = await SharedPrefsHelper.isBoost2xFreeTrialUsed();
+    await PurchaseManager.instance.loadBoostPrices();
 
     setState(() {
       _currentPoints = points;
       _isMorningClaimed = morning;
       _isAfternoonClaimed = afternoon;
       _isNightClaimed = night;
+      _currentBoostMultiplier = boostMultiplier; // 🌟 追加
+      _multiplier = multiplier;
+      _isBoost2xTrialUsed = boost2xTrialUsed;
     });
   }
 
@@ -111,7 +131,24 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
   }
 
   // 広告を再生して報酬を付与する
-  void _showRewardedAd() {
+  void _showRewardedAd() async {
+    // 🌟 追加: デバッグモード時は広告をスキップして即報酬付与
+    if (kDebugMode) {
+      final slot = _getCurrentSlot();
+      await SharedPrefsHelper.setRewardClaimed(slot); // 状態を視聴済みにする
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('【DEBUG】広告をスキップしました（報酬なし）'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        _loadData(); // 画面を「つぎの じかんまで」に更新
+      }
+      return;
+    }
+
     // 広告ロードエラーがある場合は再読み込みを試みる
     if (RewardAdManager.instance.hasLoadError) {
       RewardAdManager.instance.loadAd();
@@ -141,9 +178,12 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
         } catch (_) {}
         final slot = _getCurrentSlot();
         await SharedPrefsHelper.setRewardClaimed(slot);
-        final newPoints = _currentPoints + 50;
+        // 🌟 追加: 現在のブースト倍率を取得（期限切れなら自動で1倍になります）
+        final int multiplier =
+            await SharedPrefsHelper.getCurrentBoostMultiplier();
+        final newPoints = _currentPoints + (50 * multiplier);
         await SharedPrefsHelper.savePoints(newPoints);
-        await SharedPrefsHelper.addCumulativePoints(50);
+        await SharedPrefsHelper.addCumulativePoints(50 * multiplier);
 
         FirebaseAnalytics.instance.logEvent(name: 'reward_ad_claimed_$slot');
 
@@ -167,6 +207,91 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
     );
   }
 
+  Future<void> _processBoostPurchase(
+    String productId,
+    int multiplier,
+    Duration duration,
+  ) async {
+    FirebaseAnalytics.instance.logEvent(name: 'boost_prepare_$multiplier');
+    // UI側のローディング表示（二重タップ防止）
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    // RevenueCat を通じて購入！
+    final success = await PurchaseManager.instance.purchaseBoostProduct(
+      productId,
+    );
+
+    // ローディングを閉じる
+    if (mounted) Navigator.of(context).pop();
+
+    if (success) {
+      FirebaseAnalytics.instance.logEvent(name: 'boost_purchase_$multiplier');
+      // 購入成功時：効果音を鳴らしてデータを保存
+      try {
+        SfxManager.instance.playSuccessSound();
+      } catch (_) {}
+      await SharedPrefsHelper.activateBoost(multiplier, duration);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(
+                context,
+              )!.pointAdditionBoostTestMsg(multiplier),
+            ), // ※後で「テスト」の文字を外すようローカライズを修正してください
+            backgroundColor: Colors.orange,
+          ),
+        );
+        _loadData(); // 画面を更新してブースト状態を反映
+      }
+    }
+  }
+
+  // 🌟 追加: 初回無料枠を利用した場合の処理
+  Future<void> _processFreeTrial() async {
+    FirebaseAnalytics.instance.logEvent(name: 'free_trial_used');
+    // 少しだけロード画面を出して「処理してる感」を演出
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    await Future.delayed(const Duration(seconds: 1)); // 1秒待機
+
+    // 無料枠使用済みに変更し、2倍ブーストを7日間発動
+    await SharedPrefsHelper.setBoost2xFreeTrialUsed(true);
+    await SharedPrefsHelper.activateBoost(2, const Duration(days: 7));
+
+    try {
+      await Purchases.setAttributes({"used_free_boost_2x": "true"});
+    } catch (e) {
+      debugPrint("RevenueCat属性の送信エラー: $e");
+    }
+
+    if (mounted) Navigator.of(context).pop(); // ロード画面を閉じる
+
+    try {
+      SfxManager.instance.playSuccessSound();
+    } catch (_) {}
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.pointAdditionBoostTestMsg(2),
+          ),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      _loadData(); // 画面を更新してボタンを「使用中」にする
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentSlot = _getCurrentSlot();
@@ -187,7 +312,9 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
         !RewardAdManager.instance.isAdAvailable) {
       buttonText = AppLocalizations.of(context)!.pointAdditionAdLoading;
     } else {
-      buttonText = AppLocalizations.of(context)!.pointAdditionAdButton;
+      buttonText = AppLocalizations.of(
+        context,
+      )!.pointAdditionAdButton(50 * _multiplier);
       isButtonEnabled = true;
     }
 
@@ -221,7 +348,7 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -236,14 +363,14 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 6),
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 4,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
                       Row(
@@ -275,45 +402,48 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
-                      ElevatedButton(
-                        onPressed: isButtonEnabled ? _showRewardedAd : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF7043),
-                          disabledBackgroundColor: Colors.grey[300],
-                          foregroundColor: Colors.white,
-                          disabledForegroundColor: Colors.grey[600],
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 24,
+                      const SizedBox(height: 6),
+                      PulsingEffect(
+                        isPulsing: isButtonEnabled, // 🌟 引数名変更
+                        child: ElevatedButton(
+                          onPressed: isButtonEnabled ? _showRewardedAd : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF7043),
+                            disabledBackgroundColor: Colors.grey[300],
+                            foregroundColor: Colors.white,
+                            disabledForegroundColor: Colors.grey[600],
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 24,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: isButtonEnabled ? 4 : 0,
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          elevation: isButtonEnabled ? 4 : 0,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (isButtonEnabled) ...[
-                              const Icon(Icons.play_circle_fill, size: 24),
-                              const SizedBox(width: 8),
-                            ],
-                            // 🌟 変更: カウントダウンが長いのでテキストがはみ出さないように FittedBox で囲む
-                            Flexible(
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  buttonText,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (isButtonEnabled) ...[
+                                const Icon(Icons.play_circle_fill, size: 24),
+                                const SizedBox(width: 8),
+                              ],
+                              // 🌟 変更: カウントダウンが長いのでテキストがはみ出さないように FittedBox で囲む
+                              Flexible(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    buttonText,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -321,64 +451,153 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
                 ),
               ),
 
-              const SizedBox(height: 40),
-
               // ==========================================
-              // ② 今後の課金アイテムセクション (Coming Soon)
+              // ② アイテムショップ（ポイントブースト）
               // ==========================================
-              Text(
-                AppLocalizations.of(context)!.pointAdditionShopTitle,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Opacity(
-                opacity: 0.6,
-                child: Card(
-                  color: Colors.grey[200],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.storefront,
-                            size: 48,
-                            color: Colors.grey[500],
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.pointAdditionShopComingSoon,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.pointAdditionShopComingSoonDesc,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppLocalizations.of(context)!.pointAdditionShopTitle,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
                     ),
                   ),
+
+                  // 🌟 追加: デバッグモードの時だけ表示される秘密のボタン
+                  if (kDebugMode)
+                    TextButton.icon(
+                      onPressed: () async {
+                        await SharedPrefsHelper.debugSetBoostRemainingTo30Seconds();
+                        _loadData(); // データを再読み込みして画面を更新
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('【DEBUG】残り時間を30秒にしました'),
+                              backgroundColor: Colors.redAccent,
+                            ),
+                          );
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.av_timer,
+                        color: Colors.red,
+                        size: 18,
+                      ),
+                      label: const Text(
+                        '残り30秒にする',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+
+              // 🌟 追加: ブースト中の場合のアピール帯
+              if (_currentBoostMultiplier > 1)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Colors.orangeAccent, Colors.deepOrangeAccent],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(
+                        context,
+                      )!.pointAdditionBoostActive(_currentBoostMultiplier),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+
+              // 🌟 追加: ブースト商品のリスト
+              _buildBoostCard(
+                title: AppLocalizations.of(context)!.pointAdditionBoostTitle1,
+                description: AppLocalizations.of(
+                  context,
+                )!.pointAdditionBoostDesc1,
+                priceLabel: !_isBoost2xTrialUsed
+                    ? AppLocalizations.of(context)!.pointAdditionFirstTimeFree
+                    : (PurchaseManager.instance.boostPrices[PurchaseManager
+                              .boost2xKey] ??
+                          '¥160'),
+                icon: Icons.star_border_purple500,
+                color: Colors.blueAccent,
+                isPurchasable: _currentBoostMultiplier == 1, // ブースト中は買えないようにする
+                onTap: () {
+                  if (!_isBoost2xTrialUsed) {
+                    _processFreeTrial();
+                  } else {
+                    _processBoostPurchase(
+                      PurchaseManager.boost2xKey,
+                      2,
+                      const Duration(days: 7),
+                    );
+                  }
+                },
+                isPulsing: !_isBoost2xTrialUsed,
+              ),
+              const SizedBox(height: 6),
+              _buildBoostCard(
+                title: AppLocalizations.of(context)!.pointAdditionBoostTitle2,
+                description: AppLocalizations.of(
+                  context,
+                )!.pointAdditionBoostDesc2,
+                priceLabel:
+                    PurchaseManager.instance.boostPrices[PurchaseManager
+                        .boost5xKey] ??
+                    '¥320',
+                icon: Icons.flash_on,
+                color: Colors.orange,
+                isPurchasable: _currentBoostMultiplier == 1,
+                onTap: () => _processBoostPurchase(
+                  PurchaseManager.boost5xKey,
+                  5,
+                  const Duration(days: 3),
+                ),
+              ),
+              const SizedBox(height: 6),
+              _buildBoostCard(
+                title: AppLocalizations.of(context)!.pointAdditionBoostTitle3,
+                description: AppLocalizations.of(
+                  context,
+                )!.pointAdditionBoostDesc3,
+                priceLabel:
+                    PurchaseManager.instance.boostPrices[PurchaseManager
+                        .boost10xKey] ??
+                    '¥480',
+                icon: Icons.local_fire_department,
+                color: Colors.pinkAccent,
+                isPurchasable: _currentBoostMultiplier == 1,
+                onTap: () => _processBoostPurchase(
+                  PurchaseManager.boost10xKey,
+                  10,
+                  const Duration(hours: 24),
                 ),
               ),
             ],
@@ -404,10 +623,10 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
             color: isCurrent ? const Color(0xFFFF7043) : Colors.black54,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Container(
-          width: 60,
-          height: 60,
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(
             color: isClaimed
                 ? Colors.grey[200]
@@ -425,6 +644,79 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  // 🌟 追加: ブースト商品のカードを作るウィジェット
+  Widget _buildBoostCard({
+    required String title,
+    required String description,
+    required String priceLabel,
+    required IconData icon,
+    required Color color,
+    required bool isPurchasable,
+    required VoidCallback onTap,
+    bool isPulsing = false,
+  }) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 28),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: const TextStyle(color: Colors.black54, fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
+            PulsingEffect(
+              isPulsing: isPulsing,
+              child: ElevatedButton(
+                onPressed: isPurchasable ? onTap : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: color,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: Colors.grey[300],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: Text(
+                  isPurchasable
+                      ? priceLabel
+                      : AppLocalizations.of(context)!.pointAdditionInUse,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

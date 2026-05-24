@@ -11,6 +11,32 @@ import 'bgm_manager.dart';
 class PurchaseManager with WidgetsBindingObserver {
   PurchaseManager._internal();
   static final PurchaseManager instance = PurchaseManager._internal();
+  // 🍏 iOS (Apple) 用の製品ID
+  static const String _iosBoost2xId =
+      'com.kotoapp.kimigatsukurusekai.v2.boost_2x';
+  static const String _iosBoost5xId =
+      'com.kotoapp.kimigatsukurusekai.v2.boost_5x';
+  static const String _iosBoost10xId =
+      'com.kotoapp.kimigatsukurusekai.v2.boost_10x';
+
+  // 🤖 Android (Google) 用の製品ID
+  static const String _androidBoost2xId =
+      'com.kotoapp.kimigatsukurusekai.boost_2x';
+  static const String _androidBoost5xId =
+      'com.kotoapp.kimigatsukurusekai.boost_5x';
+  static const String _androidBoost10xId =
+      'com.kotoapp.kimigatsukurusekai.boost_10x';
+
+  // 🌟 外部（UI画面など）から呼ぶための共通キー（これは引数として使います）
+  static const String boost2xKey = 'boost_2x';
+  static const String boost5xKey = 'boost_5x';
+  static const String boost10xKey = 'boost_10x';
+
+  final Map<String, String> boostPrices = {
+    boost2xKey: '¥160',
+    boost5xKey: '¥320',
+    boost10xKey: '¥480',
+  };
 
   static const String _entitlementId = 'KimigatsukuruSekai Premium';
   //static const String _test_apiKey = 'test_tfUevccBSXyNBxmFkegyhuJiRFs';
@@ -208,6 +234,93 @@ class PurchaseManager with WidgetsBindingObserver {
       debugPrint('ペイウォール表示エラー: $e');
       // スタックトレースもログに残してクラッシュ調査に役立てる
       debugPrint('ペイウォール表示エラー (stackTrace): ${StackTrace.current}');
+    }
+  }
+
+  Future<bool> purchaseBoostProduct(String boostKey) async {
+    try {
+      // OSに応じた適切な製品IDを選択する
+      String productId = '';
+      if (Platform.isAndroid) {
+        if (boostKey == boost2xKey) productId = _androidBoost2xId;
+        if (boostKey == boost5xKey) productId = _androidBoost5xId;
+        if (boostKey == boost10xKey) productId = _androidBoost10xId;
+      } else if (Platform.isIOS) {
+        if (boostKey == boost2xKey) productId = _iosBoost2xId;
+        if (boostKey == boost5xKey) productId = _iosBoost5xId;
+        if (boostKey == boost10xKey) productId = _iosBoost10xId;
+      }
+
+      if (productId.isEmpty) {
+        debugPrint('不正なブーストキー、またはサポート外のOSです: $boostKey');
+        return false;
+      }
+
+      debugPrint('ブーストアイテムの購入を開始 ($Platform): $productId');
+
+      // 1. 指定されたIDの商品情報をストアから取得
+      final products = await Purchases.getProducts([
+        productId,
+      ], productCategory: ProductCategory.nonSubscription);
+      if (products.isEmpty) {
+        debugPrint('商品が見つかりません: $productId (ストアやRevenueCatの登録を確認してください)');
+        return false;
+      }
+
+      // 2. 取得した商品を購入
+      final StoreProduct product = products.first;
+      await Purchases.purchaseStoreProduct(product);
+
+      debugPrint('購入成功: $productId');
+      return true;
+    } on PlatformException catch (e) {
+      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        debugPrint('購入エラー: ${e.message}');
+      } else {
+        debugPrint('ユーザーが購入をキャンセルしました');
+      }
+      return false;
+    } catch (e) {
+      debugPrint('予期せぬ購入エラー: $e');
+      return false;
+    }
+  }
+
+  /// 🌟 追加: ストアからブースト商品の最新価格（ローカライズ済み文字列）を取得して更新する
+  Future<void> loadBoostPrices() async {
+    try {
+      List<String> productIds = [];
+      if (Platform.isAndroid) {
+        productIds = [_androidBoost2xId, _androidBoost5xId, _androidBoost10xId];
+      } else if (Platform.isIOS) {
+        productIds = [_iosBoost2xId, _iosBoost5xId, _iosBoost10xId];
+      }
+
+      if (productIds.isEmpty) return;
+
+      // ストアから製品情報を一括取得
+      final List<StoreProduct> products = await Purchases.getProducts(
+        productIds,
+        productCategory: ProductCategory.nonSubscription,
+      );
+
+      for (final product in products) {
+        // OSごとのIDをチェックし、共通のキー（boost2xKeyなど）に対応する価格文字列を格納
+        if (product.identifier == _androidBoost2xId ||
+            product.identifier == _iosBoost2xId) {
+          boostPrices[boost2xKey] = product.priceString;
+        } else if (product.identifier == _androidBoost5xId ||
+            product.identifier == _iosBoost5xId) {
+          boostPrices[boost5xKey] = product.priceString;
+        } else if (product.identifier == _androidBoost10xId ||
+            product.identifier == _iosBoost10xId) {
+          boostPrices[boost10xKey] = product.priceString;
+        }
+      }
+      debugPrint('【IAP】ブースト商品の価格ロード完了: $boostPrices');
+    } catch (e) {
+      debugPrint('【IAP】ブースト商品の価格ロードエラー: $e');
     }
   }
 
