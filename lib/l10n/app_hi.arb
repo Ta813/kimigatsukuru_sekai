@@ -1,6 +1,6 @@
 {
   "@@locale": "hi",
-  "appName": "किड्स हैबिट हीरो",
+  "appName": "फैमिली हैबिट हीरो",
   "customizeTitle": "अनुकूलित करें",
   "customizeTabClothes": "कपड़े",
   "customizeTabHouse": "घर",
@@ -894,5 +894,15 @@
   "pointAdditionBoostTestMsg": "🔥 पॉइंट्स और EXP {multiplier} गुना चालू हो गया है!",
   "homeBoostTimeRemaining": "{time} शेष",
   "homeBoostTimeDays": "{days} दिन ",
-  "pointAdditionFirstTimeFree": "पहली बार मुफ़्त"
+  "pointAdditionFirstTimeFree": "पहली बार मुफ़्त",
+  "missionXShareText": "मेरा बच्चा 'फैमिली हैबिट हीरो' ऐप के साथ अच्छी आदतों का अभ्यास कर रहा है! माता-पिता और बच्चों के लिए मज़ेदार! 🎉 #फैमिलीहैबिटहीरो #ParentingApp",
+  "missionXShareTitle": "X (Twitter) पर शेयर करें!",
+  "missionXShareButton": "शेयर करें और पाएं",
+  "missionXOpenedSuccess": "🎉 अपने पॉइंट्स पाने के लिए 'प्राप्त करें' पर टैप करें!",
+  "missionXOpenError": "X को खोला नहीं जा सका।",
+  "missionXFollowTitle": "डेवलपर को X (Twitter) पर फॉलो करें!",
+  "missionXFollowButton": "फॉलो करें",
+  "shareHouseText": "वादे पूरे करने के इनाम के रूप में मैंने अपना कमरा सजाया है! ✨\n🔍 ऐप स्टोर में 'फैमिली हैबिट हीरो' खोजें!",
+  "shareWorldText": "वादे पूरे करने के इनाम के रूप में मैंने यह दुनिया बनाई है! ✨\n🔍 ऐप स्टोर में 'फैमिली हैबिट हीरो' खोजें!",
+  "shareLabel": "शेयर"
 }

@@ -106,7 +106,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Kids Habit Hero'**
+  /// **'Family Habit Hero'**
   String get appName;
 
   /// No description provided for @customizeTitle.
@@ -4068,6 +4068,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'1st Time FREE'**
   String get pointAdditionFirstTimeFree;
+
+  /// No description provided for @missionXShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'My child is practicing good habits with the app \'Family Habit Hero\'! Fun for both parents and kids! 🎉 #FamilyHabitHero #ParentingApp'**
+  String get missionXShareText;
+
+  /// No description provided for @missionXShareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share on X (Twitter)!'**
+  String get missionXShareTitle;
+
+  /// No description provided for @missionXShareButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Share & Get'**
+  String get missionXShareButton;
+
+  /// No description provided for @missionXOpenedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'🎉 Tap \'Claim\' to get your points!'**
+  String get missionXOpenedSuccess;
+
+  /// No description provided for @missionXOpenError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open X.'**
+  String get missionXOpenError;
+
+  /// No description provided for @missionXFollowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the Dev on X (Twitter)!'**
+  String get missionXFollowTitle;
+
+  /// No description provided for @missionXFollowButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get missionXFollowButton;
+
+  /// No description provided for @shareHouseText.
+  ///
+  /// In en, this message translates to:
+  /// **'I decorated my room as a reward for keeping my promises! ✨\n🔍 Search for \'Family Habit Hero\' in the app store!'**
+  String get shareHouseText;
+
+  /// No description provided for @shareWorldText.
+  ///
+  /// In en, this message translates to:
+  /// **'I created this world as a reward for keeping my promises! ✨\n🔍 Search for \'Family Habit Hero\' in the app store!'**
+  String get shareWorldText;
+
+  /// No description provided for @shareLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareLabel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

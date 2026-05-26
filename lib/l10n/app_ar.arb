@@ -1,6 +1,6 @@
 {
   "@@locale": "ar",
-  "appName": "بطل عادات الأطفال",
+  "appName": "بطل عادات العائلة",
   "customizeTitle": "تخصيص",
   "customizeTabClothes": "ملابس",
   "customizeTabHouse": "منزل",
@@ -940,5 +940,15 @@
   "pointAdditionBoostTestMsg": "🔥 تم تفعيل مضاعفة النقاط والخبرة (EXP) بـ {multiplier}!",
   "homeBoostTimeRemaining": "متبقي {time}",
   "homeBoostTimeDays": "{days} يوم ",
-  "pointAdditionFirstTimeFree": "أول مرة مجانًا"
+  "pointAdditionFirstTimeFree": "أول مرة مجانًا",
+  "missionXShareText": "طفلي يتدرب على عادات جيدة مع تطبيق 'ةبطل عادات العائل'! ممتع للآباء والأطفال معًا! 🎉 #ةبطل_عادات_العائل #تطبيق_تربية",
+  "missionXShareTitle": "شارك على إكس (تويتر)!",
+  "missionXShareButton": "شارك واحصل",
+  "missionXOpenedSuccess": "🎉 اضغط على 'استلام' للحصول على نقاطك!",
+  "missionXOpenError": "تعذر فتح إكس.",
+  "missionXFollowTitle": "تابع المطور على إكس (تويتر)!",
+  "missionXFollowButton": "متابعة",
+  "shareHouseText": "قمت بتزيين غرفتي كمكافأة للالتزام بوعودي! ✨\n🔍 ابحث عن 'ةبطل عادات العائل' في متجر التطبيقات!",
+  "shareWorldText": "صنعت هذا العالم كمكافأة للالتزام بوعودي! ✨\n🔍 ابحث عن 'ةبطل عادات العائل' في متجر التطبيقات!",
+  "shareLabel": "مشاركة"
 }

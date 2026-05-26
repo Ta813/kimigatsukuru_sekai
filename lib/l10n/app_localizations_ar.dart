@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => 'بطل عادات الأطفال';
+  String get appName => 'بطل عادات العائلة';
 
   @override
   String get customizeTitle => 'تخصيص';
@@ -2080,4 +2080,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pointAdditionFirstTimeFree => 'أول مرة مجانًا';
+
+  @override
+  String get missionXShareText => 'طفلي يتدرب على عادات جيدة مع تطبيق \'ةبطل عادات العائل\'! ممتع للآباء والأطفال معًا! 🎉 #ةبطل_عادات_العائل #تطبيق_تربية';
+
+  @override
+  String get missionXShareTitle => 'شارك على إكس (تويتر)!';
+
+  @override
+  String get missionXShareButton => 'شارك واحصل';
+
+  @override
+  String get missionXOpenedSuccess => '🎉 اضغط على \'استلام\' للحصول على نقاطك!';
+
+  @override
+  String get missionXOpenError => 'تعذر فتح إكس.';
+
+  @override
+  String get missionXFollowTitle => 'تابع المطور على إكس (تويتر)!';
+
+  @override
+  String get missionXFollowButton => 'متابعة';
+
+  @override
+  String get shareHouseText => 'قمت بتزيين غرفتي كمكافأة للالتزام بوعودي! ✨\n🔍 ابحث عن \'ةبطل عادات العائل\' في متجر التطبيقات!';
+
+  @override
+  String get shareWorldText => 'صنعت هذا العالم كمكافأة للالتزام بوعودي! ✨\n🔍 ابحث عن \'ةبطل عادات العائل\' في متجر التطبيقات!';
+
+  @override
+  String get shareLabel => 'مشاركة';
 }

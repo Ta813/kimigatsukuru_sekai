@@ -1,6 +1,6 @@
 {
   "@@locale": "bn",
-  "appName": "কিডস হ্যাবিট হিরো",
+  "appName": "ফ্যামিলি হ্যাবিট হিরো",
   "customizeTitle": "কাস্টমাইজ করুন",
   "customizeTabClothes": "পোশাক",
   "customizeTabHouse": "ঘর",
@@ -939,5 +939,15 @@
   "pointAdditionBoostTestMsg": "🔥 পয়েন্ট ও EXP {multiplier} গুণ চালু করা হয়েছে!",
   "homeBoostTimeRemaining": "আর {time} বাকি",
   "homeBoostTimeDays": "{days} দিন ",
-  "pointAdditionFirstTimeFree": "প্রথমবার ফ্রি"
+  "pointAdditionFirstTimeFree": "প্রথমবার ফ্রি",
+  "missionXShareText": "আমার সন্তান 'ফ্যামিলি হ্যাবিট হিরো' অ্যাপের মাধ্যমে ভালো অভ্যাস চর্চা করছে! বাবা-মা এবং শিশুদের জন্য মজাদার! 🎉 #ফ্যামিলিহ্যাবিটহিরো #প্যারেন্টিংঅ্যাপ",
+  "missionXShareTitle": "X (Twitter) এ শেয়ার করুন!",
+  "missionXShareButton": "শেয়ার করে পান",
+  "missionXOpenedSuccess": "🎉 আপনার পয়েন্ট পেতে 'সংগ্রহ করুন' চাপুন!",
+  "missionXOpenError": "X খুলতে ব্যর্থ হয়েছে।",
+  "missionXFollowTitle": "ডেভেলপারকে X (Twitter)-এ ফলো করুন!",
+  "missionXFollowButton": "ফলো করুন",
+  "shareHouseText": "প্রতিশ্রুতি পূরণের পুরস্কার হিসেবে আমি আমার ঘর সাজিয়েছি! ✨\n🔍 অ্যাপ স্টোরে 'ফ্যামিলি হ্যাবিট হিরো' খুঁজুন!",
+  "shareWorldText": "প্রতিশ্রুতি পূরণের পুরস্কার হিসেবে আমি এই বিশ্ব তৈরি করেছি! ✨\n🔍 অ্যাপ স্টোরে 'ফ্যামিলি হ্যাবিট হিরো' খুঁজুন!",
+  "shareLabel": "শেয়ার"
 }

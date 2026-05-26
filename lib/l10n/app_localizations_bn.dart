@@ -9,7 +9,7 @@ class AppLocalizationsBn extends AppLocalizations {
   AppLocalizationsBn([String locale = 'bn']) : super(locale);
 
   @override
-  String get appName => 'কিডস হ্যাবিট হিরো';
+  String get appName => 'ফ্যামিলি হ্যাবিট হিরো';
 
   @override
   String get customizeTitle => 'কাস্টমাইজ করুন';
@@ -2080,4 +2080,34 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get pointAdditionFirstTimeFree => 'প্রথমবার ফ্রি';
+
+  @override
+  String get missionXShareText => 'আমার সন্তান \'ফ্যামিলি হ্যাবিট হিরো\' অ্যাপের মাধ্যমে ভালো অভ্যাস চর্চা করছে! বাবা-মা এবং শিশুদের জন্য মজাদার! 🎉 #ফ্যামিলিহ্যাবিটহিরো #প্যারেন্টিংঅ্যাপ';
+
+  @override
+  String get missionXShareTitle => 'X (Twitter) এ শেয়ার করুন!';
+
+  @override
+  String get missionXShareButton => 'শেয়ার করে পান';
+
+  @override
+  String get missionXOpenedSuccess => '🎉 আপনার পয়েন্ট পেতে \'সংগ্রহ করুন\' চাপুন!';
+
+  @override
+  String get missionXOpenError => 'X খুলতে ব্যর্থ হয়েছে।';
+
+  @override
+  String get missionXFollowTitle => 'ডেভেলপারকে X (Twitter)-এ ফলো করুন!';
+
+  @override
+  String get missionXFollowButton => 'ফলো করুন';
+
+  @override
+  String get shareHouseText => 'প্রতিশ্রুতি পূরণের পুরস্কার হিসেবে আমি আমার ঘর সাজিয়েছি! ✨\n🔍 অ্যাপ স্টোরে \'ফ্যামিলি হ্যাবিট হিরো\' খুঁজুন!';
+
+  @override
+  String get shareWorldText => 'প্রতিশ্রুতি পূরণের পুরস্কার হিসেবে আমি এই বিশ্ব তৈরি করেছি! ✨\n🔍 অ্যাপ স্টোরে \'ফ্যামিলি হ্যাবিট হিরো\' খুঁজুন!';
+
+  @override
+  String get shareLabel => 'শেয়ার';
 }

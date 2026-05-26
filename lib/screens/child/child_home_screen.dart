@@ -9,6 +9,7 @@ import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:kimigatsukuru_sekai/helpers/image_share_helper.dart';
 import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
@@ -219,6 +220,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   String _boostRemainingHms = '';
   Timer? _boostCountdownTimer;
   int _multiplier = 1;
+
+  // 画像として切り取る枠を指定するためのキー
+  final GlobalKey _shareKey = GlobalKey();
+
+  bool _showWatermarkForCapture = false;
 
   @override
   void initState() {
@@ -3076,6 +3082,69 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             ],
                           ),
                           const SizedBox(height: 12),
+
+                          IgnorePointer(
+                            ignoring: isAnyTutorialBlinking,
+                            child: Opacity(
+                              opacity: (isAnyTutorialBlinking) ? 0.6 : 1.0,
+                              child: _buildRoundMenuButton(
+                                icon: Icons.camera_alt,
+                                label: AppLocalizations.of(context)!.shareLabel,
+                                iconColor: const Color(0xFF5D4037),
+                                backgroundColor: const Color(0xFFFFD54F),
+                                isMain: false, // 🌟 サブ機能なので小さく
+
+                                onTap: () async {
+                                  FirebaseAnalytics.instance.logEvent(
+                                    name: 'share_home_image',
+                                  );
+                                  try {
+                                    SfxManager.instance.playTapSound();
+                                  } catch (_) {}
+
+                                  // 1. ロード画面を表示 (画面のチカつきを隠す)
+                                  if (!mounted) return;
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+
+                                  // 2. フラグを true にして build メソッドでロゴを表示させる
+                                  if (mounted) {
+                                    setState(() {
+                                      _showWatermarkForCapture = true;
+                                    });
+                                  }
+
+                                  // 3. 次のフレームの描画（ロゴあり状態のペイント）が完了するのを待つ
+                                  await WidgetsBinding.instance.endOfFrame;
+
+                                  // 4. 画像を切り取ってシェアする処理 (ImageShareHelper の中で boundary.toImage() が呼ばれる)
+                                  await ImageShareHelper.shareWidget(
+                                    globalKey: _shareKey,
+                                    shareText: AppLocalizations.of(
+                                      context,
+                                    )!.shareWorldText,
+                                  );
+
+                                  // 5. OSのシェアメニューが開いたら（またはエラーになっても）、ロード画面を閉じる
+                                  if (mounted) {
+                                    Navigator.of(context).pop(); // ロード画面を閉じる
+                                  }
+
+                                  // 6. フラグを false に戻して build メソッドでロゴを非表示にする
+                                  if (mounted) {
+                                    setState(() {
+                                      _showWatermarkForCapture = false;
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
                           // ヘルプ（サブ機能として小さく）
                           // IgnorePointer(
                           //   ignoring: isAnyTutorialBlinking,
@@ -3813,66 +3882,110 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     ),
                   ),
 
-            // アバターの表示と操作
-            DraggableCharacter(
-              id: 'avatar',
-              customWidget: AvatarDisplay(
-                face: _equippedFace,
-                clothes: _equippedClothes,
-                hair: _equippedHair,
-                headgear: _equippedHeadgear,
-                accessory: _equippedAccessory,
-                size: 80,
+            // ==========================================
+            // 📸 画像として切り取る「世界」のレイヤー
+            // ==========================================
+            RepaintBoundary(
+              key: _shareKey,
+              child: Stack(
+                children: [
+                  // 背景
+                  if (_showWatermarkForCapture)
+                    Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(_equippedWorldPath),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+
+                  // アバターの表示と操作
+                  DraggableCharacter(
+                    id: 'avatar',
+                    customWidget: AvatarDisplay(
+                      face: _equippedFace,
+                      clothes: _equippedClothes,
+                      hair: _equippedHair,
+                      headgear: _equippedHeadgear,
+                      accessory: _equippedAccessory,
+                      size: 80,
+                    ),
+                    position: _avatarPosition,
+                    size: 80,
+                    isInteractive: !isAnyTutorialActive,
+                    onPositionChanged: (delta) {
+                      setState(() {
+                        _avatarPosition += delta;
+                      });
+                    },
+                  ),
+
+                  // 応援キャラクターの表示と操作
+                  ..._equippedCharacters.map((charPath) {
+                    return DraggableCharacter(
+                      id: charPath,
+                      imagePath: charPath,
+                      position:
+                          _characterPositionsMap[charPath] ??
+                          Offset(safeAreaWidth - 240, 190),
+                      size: 80,
+                      isInteractive: !isAnyTutorialActive,
+                      onPositionChanged: (delta) {
+                        setState(() {
+                          _characterPositionsMap[charPath] =
+                              (_characterPositionsMap[charPath] ??
+                                  Offset(safeAreaWidth - 240, 190)) +
+                              delta;
+                        });
+                      },
+                    );
+                  }).toList(),
+
+                  // アイテムの表示と操作
+                  ..._equippedItems.map((itemPath) {
+                    return DraggableCharacter(
+                      id: itemPath,
+                      imagePath: itemPath,
+                      position:
+                          _itemPositionsMap[itemPath] ?? const Offset(100, 190),
+                      size: _getItemSize(itemPath),
+                      isInteractive: !isAnyTutorialActive,
+                      onPositionChanged: (delta) {
+                        setState(() {
+                          _itemPositionsMap[itemPath] =
+                              (_itemPositionsMap[itemPath] ??
+                                  const Offset(100, 190)) +
+                              delta;
+                        });
+                      },
+                    );
+                  }).toList(),
+
+                  // シェア画像にだけ写る「宣伝用ロゴ（ウォーターマーク）」
+                  if (_showWatermarkForCapture)
+                    Positioned(
+                      bottom: 16.0,
+                      right: 16.0,
+                      child: Text(
+                        AppLocalizations.of(context)!.appName,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          shadows: const [
+                            Shadow(
+                              color: Colors.black54,
+                              blurRadius: 4,
+                              offset: Offset(1, 1),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
               ),
-              position: _avatarPosition,
-              size: 80,
-              isInteractive: !isAnyTutorialActive,
-              onPositionChanged: (delta) {
-                setState(() {
-                  _avatarPosition += delta;
-                });
-              },
             ),
-
-            // 応援キャラクターの表示と操作
-            ..._equippedCharacters.map((charPath) {
-              return DraggableCharacter(
-                id: charPath,
-                imagePath: charPath,
-                position:
-                    _characterPositionsMap[charPath] ??
-                    Offset(safeAreaWidth - 240, 190),
-                size: 80,
-                isInteractive: !isAnyTutorialActive,
-                onPositionChanged: (delta) {
-                  setState(() {
-                    _characterPositionsMap[charPath] =
-                        (_characterPositionsMap[charPath] ??
-                            Offset(safeAreaWidth - 240, 190)) +
-                        delta;
-                  });
-                },
-              );
-            }).toList(),
-
-            // アイテムの表示と操作
-            ..._equippedItems.map((itemPath) {
-              return DraggableCharacter(
-                id: itemPath,
-                imagePath: itemPath,
-                position: _itemPositionsMap[itemPath] ?? const Offset(100, 190),
-                size: _getItemSize(itemPath),
-                isInteractive: !isAnyTutorialActive,
-                onPositionChanged: (delta) {
-                  setState(() {
-                    _itemPositionsMap[itemPath] =
-                        (_itemPositionsMap[itemPath] ??
-                            const Offset(100, 190)) +
-                        delta;
-                  });
-                },
-              );
-            }).toList(),
             if (_showCustomizeBlinking)
               Positioned(
                 bottom: 130, // サイズが大きくなったので位置を調整

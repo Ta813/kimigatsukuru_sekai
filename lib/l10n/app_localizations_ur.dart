@@ -9,7 +9,7 @@ class AppLocalizationsUr extends AppLocalizations {
   AppLocalizationsUr([String locale = 'ur']) : super(locale);
 
   @override
-  String get appName => 'کڈز ہیبٹ ہیرو';
+  String get appName => 'فیملی ہیبٹ ہیرو';
 
   @override
   String get customizeTitle => 'اپنی پسند سے سجائیں';
@@ -2080,4 +2080,34 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get pointAdditionFirstTimeFree => 'پہلی بار مفت';
+
+  @override
+  String get missionXShareText => 'میرا بچہ ایپ \'فیملی ہیبٹ ہیرو\' کے ساتھ اچھی عادات کی مشق کر رہا ہے! والدین اور بچوں کے لیے تفریحی! 🎉 #فیملی_ہیبٹ_ہیرو #ParentingApp';
+
+  @override
+  String get missionXShareTitle => 'ایکس (ٹویٹر) پر شیئر کریں!';
+
+  @override
+  String get missionXShareButton => 'شیئر کریں اور حاصل کریں';
+
+  @override
+  String get missionXOpenedSuccess => '🎉 اپنے پوائنٹس حاصل کرنے کے لیے \'حاصل کریں\' پر ٹیپ کریں!';
+
+  @override
+  String get missionXOpenError => 'ایکس (X) نہیں کھولا جا سکا۔';
+
+  @override
+  String get missionXFollowTitle => 'ڈویلپر کو ایکس (ٹویٹر) پر فالو کریں!';
+
+  @override
+  String get missionXFollowButton => 'فالو کریں';
+
+  @override
+  String get shareHouseText => 'وعدے پورے کرنے کے انعام کے طور پر میں نے اپنا کمرہ سجایا ہے! ✨\n🔍 ایپ اسٹور میں \'فیملی ہیبٹ ہیرو\' تلاش کریں!';
+
+  @override
+  String get shareWorldText => 'وعدے پورے کرنے کے انعام کے طور پر میں نے یہ دنیا بنائی ہے! ✨\n🔍 ایپ اسٹور میں \'فیملی ہیبٹ ہیرو\' تلاش کریں!';
+
+  @override
+  String get shareLabel => 'شیئر';
 }

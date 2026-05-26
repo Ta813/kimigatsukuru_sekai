@@ -8,6 +8,7 @@ import '../../managers/sfx_manager.dart';
 import 'package:confetti/confetti.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/animated_tap_finger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ミッションカテゴリ (🌟 daily を追加)
 enum MissionCategory { daily, tutorial, firstTime, cumulative }
@@ -148,6 +149,8 @@ class _MissionScreenState extends State<MissionScreen>
     final regularPromises = await SharedPrefsHelper.loadRegularPromises(
       context,
     );
+    final hasFollowedX = await SharedPrefsHelper.isXFollowClaimedEver();
+    final hasSharedX = await SharedPrefsHelper.isXShareClaimedEver();
     final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now();
     final todayStr =
@@ -236,6 +239,30 @@ class _MissionScreenState extends State<MissionScreen>
 
     // --- 初めて系ミッション ---
     // 🌟 レベル制限のないものは、未クリアなら常に目立たせる
+    loadedMissions.add(
+      MissionItem(
+        id: 'mission_x_follow',
+        title: l10n.missionXFollowTitle, // 🌟 先ほど追加したローカライズキー
+        rewardPoints: 200,
+        isCompleted: hasFollowedX, // Xを開いて戻ってきていれば true になる
+        isClaimed: claimedIds.contains('mission_x_follow'),
+        category: MissionCategory.firstTime,
+        isHighlight: !claimedIds.contains('mission_x_follow'), // 未受け取りなら目立たせる
+      ),
+    );
+
+    loadedMissions.add(
+      MissionItem(
+        id: 'mission_x_share',
+        title: l10n.missionXShareTitle, // 「X(Twitter)でシェアしよう！」
+        rewardPoints: 200,
+        isCompleted: hasSharedX,
+        isClaimed: claimedIds.contains('mission_x_share'),
+        category: MissionCategory.firstTime, // 1回きりなので「はじめて」タブへ
+        isHighlight: !claimedIds.contains('mission_x_share'),
+      ),
+    );
+
     loadedMissions.add(
       MissionItem(
         id: 'mission_enter_house',
@@ -577,6 +604,105 @@ class _MissionScreenState extends State<MissionScreen>
     );
   }
 
+  // シェア（投稿）ボタンを押した時の処理
+  Future<void> _executeXShare() async {
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (_) {}
+
+    final String shareText = AppLocalizations.of(context)!.missionXShareText;
+
+    // 🌟 変更: OSでの分岐をやめ、両方のストアURLを改行して並べる
+    final String iosUrl = "https://apps.apple.com/app/id6761637868";
+    final String androidUrl =
+        "https://play.google.com/store/apps/details?id=com.kotoapp.kimigatsukuru_sekai";
+
+    // 投稿を見る人が分かりやすいように絵文字で区別
+    final String appUrls = "🍎 iOS:\n$iosUrl\n\n🤖 Android:\n$androidUrl";
+
+    // テキストとURLを合体させてエンコード
+    final String urlString =
+        "https://twitter.com/intent/tweet?text=${Uri.encodeComponent('$shareText\n\n$appUrls')}";
+    final Uri url = Uri.parse(urlString);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) Navigator.of(context).pop();
+
+      await SharedPrefsHelper.setXShareClaimedEver();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.missionXOpenedSuccess),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        _loadMissions();
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.missionXOpenError),
+          ),
+        );
+      }
+    }
+  }
+
+  // フォローボタンを押した時の処理
+  Future<void> _executeXFollow() async {
+    try {
+      SfxManager.instance.playTapSound();
+    } catch (_) {}
+
+    // 🌟 修正: あなたのアプリの公式XアカウントのURLに変更してください
+    final String urlString = "https://x.com/ta813com";
+    final Uri url = Uri.parse(urlString);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+
+      // Xからアプリに戻ってきた時の処理（少しだけロード演出を入れる）
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) Navigator.of(context).pop();
+
+      // 🌟 Xを開いたので「ミッション達成済み（isCompleted）」として記録！
+      await SharedPrefsHelper.setXFollowClaimedEver();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.missionXOpenedSuccess),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        _loadMissions(); // 画面をリロードしてボタンを「うけとる！」に変化させる
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.missionXOpenError),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -754,7 +880,15 @@ class _MissionScreenState extends State<MissionScreen>
       buttonText = l10n.missionButtonClaim;
       onPressed = () => _claimReward(mission);
     } else {
-      if (mission.category == MissionCategory.tutorial) {
+      if (mission.id == 'mission_x_follow') {
+        buttonColor = Colors.blue; // X（Twitter）っぽい色に
+        buttonText = l10n.missionXFollowButton; // 「フォローする」
+        onPressed = () => _executeXFollow(); // 先ほど作ったメソッドを呼ぶ
+      } else if (mission.id == 'mission_x_share') {
+        buttonColor = Colors.blue;
+        buttonText = l10n.missionXShareButton; // 「シェアしてゲット」
+        onPressed = () => _executeXShare();
+      } else if (mission.category == MissionCategory.tutorial) {
         buttonColor = Colors.blue;
         buttonText = l10n.missionButtonTry;
         onPressed = () {

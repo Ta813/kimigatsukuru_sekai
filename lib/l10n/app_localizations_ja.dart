@@ -2080,4 +2080,34 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get pointAdditionFirstTimeFree => '初回無料';
+
+  @override
+  String get missionXShareText => '子どもが自発的に「やくそく」を守れるようになるアプリ『きみがつくる世界』で遊んでいるよ！親子で楽しく子育て習慣化🎉 #きみがつくる世界 #子育てアプリ';
+
+  @override
+  String get missionXShareTitle => 'X(Twitter)でシェアしよう！';
+
+  @override
+  String get missionXShareButton => 'シェアしてゲット';
+
+  @override
+  String get missionXOpenedSuccess => '🎉 「うけとる」を押してポイントをゲットしてね！';
+
+  @override
+  String get missionXOpenError => 'Xを開くことができませんでした';
+
+  @override
+  String get missionXFollowTitle => '開発者のX(Twitter)をフォロー！';
+
+  @override
+  String get missionXFollowButton => 'フォローする';
+
+  @override
+  String get shareHouseText => 'やくそくを達成したご褒美で、こんなお部屋を作ったよ！✨\n🔍 アプリストアで「きみがつくる世界」を検索！';
+
+  @override
+  String get shareWorldText => 'やくそくを達成したご褒美で、こんな世界を作ったよ！✨\n🔍 アプリストアで「きみがつくる世界」を検索！';
+
+  @override
+  String get shareLabel => 'シェア';
 }

@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Kids Habit Hero';
+  String get appName => 'Family Habit Hero';
 
   @override
   String get customizeTitle => 'Customize';
@@ -2080,4 +2080,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pointAdditionFirstTimeFree => '1st Time FREE';
+
+  @override
+  String get missionXShareText => 'My child is practicing good habits with the app \'Family Habit Hero\'! Fun for both parents and kids! 🎉 #FamilyHabitHero #ParentingApp';
+
+  @override
+  String get missionXShareTitle => 'Share on X (Twitter)!';
+
+  @override
+  String get missionXShareButton => 'Share & Get';
+
+  @override
+  String get missionXOpenedSuccess => '🎉 Tap \'Claim\' to get your points!';
+
+  @override
+  String get missionXOpenError => 'Could not open X.';
+
+  @override
+  String get missionXFollowTitle => 'Follow the Dev on X (Twitter)!';
+
+  @override
+  String get missionXFollowButton => 'Follow';
+
+  @override
+  String get shareHouseText => 'I decorated my room as a reward for keeping my promises! ✨\n🔍 Search for \'Family Habit Hero\' in the app store!';
+
+  @override
+  String get shareWorldText => 'I created this world as a reward for keeping my promises! ✨\n🔍 Search for \'Family Habit Hero\' in the app store!';
+
+  @override
+  String get shareLabel => 'Share';
 }

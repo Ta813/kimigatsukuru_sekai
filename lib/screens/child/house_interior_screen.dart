@@ -1,5 +1,7 @@
 // lib/screens/house_interior/house_interior_screen.dart
 
+import 'dart:ui' as import_ui;
+
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/helpers/shared_prefs_helper.dart';
@@ -9,6 +11,7 @@ import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/round_menu_button.dart';
+import '../../helpers/image_share_helper.dart';
 
 class HouseInteriorScreen extends StatefulWidget {
   // ★ホーム画面から、現在装備中の家の画像パスを受け取る
@@ -46,9 +49,19 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
   List<String> _equippedCharacters = [];
   Map<String, Offset> _characterPositionsMap = {};
 
+  bool _isDrawingMode = false; // おえかきモードかどうか
+  List<DrawingPoint?> _drawingPoints = []; // 描いた線のデータ
+  Color _selectedColor = Colors.redAccent; // とりあえず最初は赤色
+  final double _strokeWidth = 6.0; // 線の太さ
+
   // ポイント数の状態を管理するための変数
   int _points = 0;
   int _level = 1;
+
+  // 画像として切り取る枠を指定するためのキー
+  final GlobalKey _shareKey = GlobalKey();
+
+  bool _showWatermarkForCapture = false;
 
   String _getInteriorBackgroundImage(String houseAssetPath) {
     switch (houseAssetPath) {
@@ -351,79 +364,6 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
               ),
             ),
           ),
-
-          // ★ 配置された家具のリストを表示 (ホーム画面と全く同じ仕組み)
-          ..._equippedFurniture.map((itemPath) {
-            return DraggableCharacter(
-              id: itemPath, // IDとして画像パスを使う
-              imagePath: itemPath,
-              position: _itemPositionsMap[itemPath] ?? const Offset(100, 150),
-              size: _getItemSize(itemPath),
-              onPositionChanged: (delta) {
-                setState(() {
-                  final currentPos =
-                      _itemPositionsMap[itemPath] ?? const Offset(100, 150);
-                  _itemPositionsMap[itemPath] = currentPos + delta;
-                });
-              },
-            );
-          }).toList(),
-
-          // ★ 配置された家のアイテムのリストを表示
-          ..._equippedHouseItems.map((itemPath) {
-            return DraggableCharacter(
-              id: itemPath,
-              imagePath: itemPath,
-              position: _itemPositionsMap[itemPath] ?? const Offset(150, 200),
-              size: _getItemSize(itemPath),
-              onPositionChanged: (delta) {
-                setState(() {
-                  final currentPos =
-                      _itemPositionsMap[itemPath] ?? const Offset(150, 200);
-                  _itemPositionsMap[itemPath] = currentPos + delta;
-                });
-              },
-            );
-          }).toList(),
-
-          DraggableCharacter(
-            id: 'avatar_in_house', // ★ 家の中専用のユニークID
-            customWidget: AvatarDisplay(
-              face: _equippedFace,
-              clothes: _equippedClothes,
-              hair: _equippedHair,
-              headgear: _equippedHeadgear,
-              accessory: _equippedAccessory,
-              size: 80,
-            ),
-            position: _avatarPosition,
-            size: 80.0, // ホーム画面と同じサイズ感
-            onPositionChanged: (delta) {
-              setState(() {
-                _avatarPosition += delta;
-              });
-            },
-          ),
-
-          // ★応援キャラクターの表示と操作
-          ..._equippedCharacters.map((charPath) {
-            return DraggableCharacter(
-              id: 'house_$charPath', // IDとして画像パスを使う
-              imagePath: charPath,
-              position: _characterPositionsMap[charPath] ?? Offset(490, 190),
-              size: 80,
-              onPositionChanged: (delta) {
-                setState(() {
-                  // ★位置の更新
-                  _characterPositionsMap[charPath] =
-                      (_characterPositionsMap[charPath] ??
-                          const Offset(490, 190)) +
-                      delta;
-                });
-              },
-            );
-          }).toList(),
-
           // 右側のボタン群
           Positioned(
             top: 80.0,
@@ -459,12 +399,288 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                       });
                     },
                   ),
+                  RoundMenuButton(
+                    icon: Icons.camera_alt,
+                    label: AppLocalizations.of(
+                      context,
+                    )!.shareLabel, // 必要に応じてAppLocalizationsに追加してください
+                    iconColor: const Color(0xFF5D4037),
+                    backgroundColor: const Color(0xFFFFD54F), // 目立つ黄色
+                    onTap: () async {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'share_house_interior_image',
+                      );
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (_) {}
+
+                      // 1. ロード画面を表示 (画面のチカつきを隠す)
+                      if (!mounted) return;
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) =>
+                            const Center(child: CircularProgressIndicator()),
+                      );
+
+                      // 2. フラグを true にして build メソッドでロゴを表示させる
+                      if (mounted) {
+                        setState(() {
+                          _showWatermarkForCapture = true;
+                        });
+                      }
+
+                      // 3. 次のフレームの描画（ロゴあり状態のペイント）が完了するのを待つ
+                      await WidgetsBinding.instance.endOfFrame;
+
+                      // 4. 画像を切り取ってシェアする処理 (ImageShareHelper の中で boundary.toImage() が呼ばれる)
+                      await ImageShareHelper.shareWidget(
+                        globalKey: _shareKey,
+                        shareText: AppLocalizations.of(context)!.shareHouseText,
+                      );
+
+                      // 5. OSのシェアメニューが開いたら（またはエラーになっても）、ロード画面を閉じる
+                      if (mounted) {
+                        Navigator.of(context).pop(); // ロード画面を閉じる
+                      }
+
+                      // 6. フラグを false に戻して build メソッドでロゴを非表示にする
+                      if (mounted) {
+                        setState(() {
+                          _showWatermarkForCapture = false;
+                        });
+                      }
+                    },
+                  ),
                 ],
               ),
+            ),
+          ),
+          // ==========================================
+          // 📸 画像として切り取る「世界」のレイヤー
+          // ==========================================
+          RepaintBoundary(
+            key: _shareKey,
+            child: Stack(
+              children: [
+                // 画像の背景画像
+                if (_showWatermarkForCapture)
+                  Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(backgroundImagePath), // ★決定された背景画像を使用
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+
+                // ★ 配置された家具のリストを表示 (ホーム画面と全く同じ仕組み)
+                ..._equippedFurniture.map((itemPath) {
+                  return DraggableCharacter(
+                    id: itemPath, // IDとして画像パスを使う
+                    imagePath: itemPath,
+                    position:
+                        _itemPositionsMap[itemPath] ?? const Offset(100, 150),
+                    size: _getItemSize(itemPath),
+                    onPositionChanged: (delta) {
+                      setState(() {
+                        final currentPos =
+                            _itemPositionsMap[itemPath] ??
+                            const Offset(100, 150);
+                        _itemPositionsMap[itemPath] = currentPos + delta;
+                      });
+                    },
+                  );
+                }).toList(),
+
+                // ★ 配置された家のアイテムのリストを表示
+                ..._equippedHouseItems.map((itemPath) {
+                  return DraggableCharacter(
+                    id: itemPath,
+                    imagePath: itemPath,
+                    position:
+                        _itemPositionsMap[itemPath] ?? const Offset(150, 200),
+                    size: _getItemSize(itemPath),
+                    onPositionChanged: (delta) {
+                      setState(() {
+                        final currentPos =
+                            _itemPositionsMap[itemPath] ??
+                            const Offset(150, 200);
+                        _itemPositionsMap[itemPath] = currentPos + delta;
+                      });
+                    },
+                  );
+                }).toList(),
+
+                DraggableCharacter(
+                  id: 'avatar_in_house', // ★ 家の中専用のユニークID
+                  customWidget: AvatarDisplay(
+                    face: _equippedFace,
+                    clothes: _equippedClothes,
+                    hair: _equippedHair,
+                    headgear: _equippedHeadgear,
+                    accessory: _equippedAccessory,
+                    size: 80,
+                  ),
+                  position: _avatarPosition,
+                  size: 80.0, // ホーム画面と同じサイズ感
+                  onPositionChanged: (delta) {
+                    setState(() {
+                      _avatarPosition += delta;
+                    });
+                  },
+                ),
+
+                // ★応援キャラクターの表示と操作
+                ..._equippedCharacters.map((charPath) {
+                  return DraggableCharacter(
+                    id: 'house_$charPath', // IDとして画像パスを使う
+                    imagePath: charPath,
+                    position:
+                        _characterPositionsMap[charPath] ?? Offset(490, 190),
+                    size: 80,
+                    onPositionChanged: (delta) {
+                      setState(() {
+                        // ★位置の更新
+                        _characterPositionsMap[charPath] =
+                            (_characterPositionsMap[charPath] ??
+                                const Offset(490, 190)) +
+                            delta;
+                      });
+                    },
+                  );
+                }).toList(),
+
+                // ==========================================
+                // 🎨 追加: おえかきキャンバスレイヤー
+                // ==========================================
+                if (_isDrawingMode)
+                  // モードONの時：指の動きを検知して線を描く
+                  GestureDetector(
+                    onPanStart: (details) {
+                      setState(() {
+                        RenderBox renderBox =
+                            context.findRenderObject() as RenderBox;
+                        _drawingPoints.add(
+                          DrawingPoint(
+                            offset: renderBox.globalToLocal(
+                              details.globalPosition,
+                            ),
+                            paint: Paint()
+                              ..color = _selectedColor
+                              ..strokeCap = StrokeCap.round
+                              ..strokeWidth = _strokeWidth,
+                          ),
+                        );
+                      });
+                    },
+                    onPanUpdate: (details) {
+                      setState(() {
+                        RenderBox renderBox =
+                            context.findRenderObject() as RenderBox;
+                        _drawingPoints.add(
+                          DrawingPoint(
+                            offset: renderBox.globalToLocal(
+                              details.globalPosition,
+                            ),
+                            paint: Paint()
+                              ..color = _selectedColor
+                              ..strokeCap = StrokeCap.round
+                              ..strokeWidth = _strokeWidth,
+                          ),
+                        );
+                      });
+                    },
+                    onPanEnd: (details) {
+                      setState(() {
+                        _drawingPoints.add(null); // 指を離したら線を切る
+                      });
+                    },
+                    child: Container(
+                      color: Colors.white.withOpacity(
+                        0.01,
+                      ), // 透明だと検知しない場合があるためごく僅かに色をつける
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: CustomPaint(
+                        painter: DrawingPainter(points: _drawingPoints),
+                      ),
+                    ),
+                  )
+                else
+                  // モードOFFの時：線は表示するが、タッチは家具に貫通させる
+                  IgnorePointer(
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: CustomPaint(
+                        painter: DrawingPainter(points: _drawingPoints),
+                      ),
+                    ),
+                  ),
+
+                // シェア画像にだけ写る「宣伝用ロゴ（ウォーターマーク）」
+                if (_showWatermarkForCapture)
+                  Positioned(
+                    bottom: 16.0,
+                    right: 16.0,
+                    child: Text(
+                      AppLocalizations.of(context)!.appName,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        shadows: const [
+                          Shadow(
+                            color: Colors.black54,
+                            blurRadius: 4,
+                            offset: Offset(1, 1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ],
       ),
     );
   }
+}
+
+// ==========================================
+// 🎨 追加: おえかき用のデータクラスとペインター
+// ==========================================
+class DrawingPoint {
+  final Offset offset;
+  final Paint paint;
+  DrawingPoint({required this.offset, required this.paint});
+}
+
+class DrawingPainter extends CustomPainter {
+  final List<DrawingPoint?> points;
+  DrawingPainter({required this.points});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null) {
+        // 点と点が連続していれば線を引く
+        canvas.drawLine(
+          points[i]!.offset,
+          points[i + 1]!.offset,
+          points[i]!.paint,
+        );
+      } else if (points[i] != null && points[i + 1] == null) {
+        // 点（タップしただけ）の描画
+        canvas.drawPoints(import_ui.PointMode.points, [
+          points[i]!.offset,
+        ], points[i]!.paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

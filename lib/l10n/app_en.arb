@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appName": "Kids Habit Hero",
+  "appName": "Family Habit Hero",
   "customizeTitle": "Customize",
   "customizeTabClothes": "Clothes",
   "customizeTabHouse": "House",
@@ -940,5 +940,15 @@
   "pointAdditionBoostTestMsg": "🔥 {multiplier}x Points & EXP boost activated!",
   "homeBoostTimeRemaining": "{time} left",
   "homeBoostTimeDays": "{days}d ",
-  "pointAdditionFirstTimeFree": "1st Time FREE"
+  "pointAdditionFirstTimeFree": "1st Time FREE",
+  "missionXShareText": "My child is practicing good habits with the app 'Family Habit Hero'! Fun for both parents and kids! 🎉 #FamilyHabitHero #ParentingApp",
+  "missionXShareTitle": "Share on X (Twitter)!",
+  "missionXShareButton": "Share & Get",
+  "missionXOpenedSuccess": "🎉 Tap 'Claim' to get your points!",
+  "missionXOpenError": "Could not open X.",
+  "missionXFollowTitle": "Follow the Dev on X (Twitter)!",
+  "missionXFollowButton": "Follow",
+  "shareHouseText": "I decorated my room as a reward for keeping my promises! ✨\n🔍 Search for 'Family Habit Hero' in the app store!",
+  "shareWorldText": "I created this world as a reward for keeping my promises! ✨\n🔍 Search for 'Family Habit Hero' in the app store!",
+  "shareLabel": "Share"
 }

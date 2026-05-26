@@ -941,5 +941,15 @@
   "pointAdditionBoostTestMsg": "🔥 ポイントとEXP {multiplier} 倍を発動しました！",
   "homeBoostTimeRemaining": "あと {time}",
   "homeBoostTimeDays": "{days}日",
-  "pointAdditionFirstTimeFree": "初回無料"
+  "pointAdditionFirstTimeFree": "初回無料",
+  "missionXShareText": "子どもが自発的に「やくそく」を守れるようになるアプリ『きみがつくる世界』で遊んでいるよ！親子で楽しく子育て習慣化🎉 #きみがつくる世界 #子育てアプリ",
+  "missionXShareTitle": "X(Twitter)でシェアしよう！",
+  "missionXShareButton": "シェアしてゲット",
+  "missionXOpenedSuccess": "🎉 「うけとる」を押してポイントをゲットしてね！",
+  "missionXOpenError": "Xを開くことができませんでした",
+  "missionXFollowTitle": "開発者のX(Twitter)をフォロー！",
+  "missionXFollowButton": "フォローする",
+  "shareHouseText": "やくそくを達成したご褒美で、こんなお部屋を作ったよ！✨\n🔍 アプリストアで「きみがつくる世界」を検索！",
+  "shareWorldText": "やくそくを達成したご褒美で、こんな世界を作ったよ！✨\n🔍 アプリストアで「きみがつくる世界」を検索！",
+  "shareLabel": "シェア"
 }

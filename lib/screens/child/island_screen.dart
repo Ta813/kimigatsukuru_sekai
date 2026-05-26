@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/helpers/image_share_helper.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart'; // 家具設定画面
@@ -46,6 +47,11 @@ class _IslandScreenState extends State<IslandScreen> {
 
   List<String> _equippedCharacters = [];
   Map<String, Offset> _characterPositionsMap = {};
+
+  // 画像として切り取る枠を指定するためのキー
+  final GlobalKey _shareKey = GlobalKey();
+
+  bool _showWatermarkForCapture = false;
 
   @override
   void initState() {
@@ -365,81 +371,182 @@ class _IslandScreenState extends State<IslandScreen> {
                       });
                     },
                   ),
+                  RoundMenuButton(
+                    icon: Icons.camera_alt,
+                    label: AppLocalizations.of(
+                      context,
+                    )!.shareLabel, // 必要に応じてAppLocalizationsに追加してください
+                    iconColor: const Color(0xFF5D4037),
+                    backgroundColor: const Color(0xFFFFD54F), // 目立つ黄色
+                    onTap: () async {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'share_island_image',
+                      );
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (_) {}
+
+                      // 1. ロード画面を表示 (画面のチカつきを隠す)
+                      if (!mounted) return;
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) =>
+                            const Center(child: CircularProgressIndicator()),
+                      );
+
+                      // 2. フラグを true にして build メソッドでロゴを表示させる
+                      if (mounted) {
+                        setState(() {
+                          _showWatermarkForCapture = true;
+                        });
+                      }
+
+                      // 3. 次のフレームの描画（ロゴあり状態のペイント）が完了するのを待つ
+                      await WidgetsBinding.instance.endOfFrame;
+
+                      // 4. 画像を切り取ってシェアする処理 (ImageShareHelper の中で boundary.toImage() が呼ばれる)
+                      await ImageShareHelper.shareWidget(
+                        globalKey: _shareKey,
+                        shareText: AppLocalizations.of(context)!.shareWorldText,
+                      );
+
+                      // 5. OSのシェアメニューが開いたら（またはエラーになっても）、ロード画面を閉じる
+                      if (mounted) {
+                        Navigator.of(context).pop(); // ロード画面を閉じる
+                      }
+
+                      // 6. フラグを false に戻して build メソッドでロゴを非表示にする
+                      if (mounted) {
+                        setState(() {
+                          _showWatermarkForCapture = false;
+                        });
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
           ),
 
-          // 配置された建物のリストを表示 (ホーム画面と全く同じ仕組み)
-          ..._equippedBuildings.map((itemPath) {
-            return DraggableCharacter(
-              id: itemPath, // IDとして画像パスを使う
-              imagePath: itemPath,
-              position: _itemPositionsMap[itemPath] ?? const Offset(100, 150),
-              size: _getItemSize(itemPath),
-              onPositionChanged: (delta) {
-                setState(() {
-                  final currentPos =
-                      _itemPositionsMap[itemPath] ?? const Offset(100, 150);
-                  _itemPositionsMap[itemPath] = currentPos + delta;
-                });
-              },
-            );
-          }).toList(),
+          // ==========================================
+          // 📸 画像として切り取る「世界」のレイヤー
+          // ==========================================
+          RepaintBoundary(
+            key: _shareKey,
+            child: Stack(
+              children: [
+                if (_showWatermarkForCapture)
+                  Container(
+                    // 島の背景画像を設定します
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        //「世界の全貌」の背景画像を指定
+                        image: AssetImage('assets/images/island.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                // 配置された建物のリストを表示 (ホーム画面と全く同じ仕組み)
+                ..._equippedBuildings.map((itemPath) {
+                  return DraggableCharacter(
+                    id: itemPath, // IDとして画像パスを使う
+                    imagePath: itemPath,
+                    position:
+                        _itemPositionsMap[itemPath] ?? const Offset(100, 150),
+                    size: _getItemSize(itemPath),
+                    onPositionChanged: (delta) {
+                      setState(() {
+                        final currentPos =
+                            _itemPositionsMap[itemPath] ??
+                            const Offset(100, 150);
+                        _itemPositionsMap[itemPath] = currentPos + delta;
+                      });
+                    },
+                  );
+                }).toList(),
 
-          // 配置された乗り物のアイテムのリストを表示
-          ..._equippedVehicles.map((itemPath) {
-            return DraggableCharacter(
-              id: itemPath,
-              imagePath: itemPath,
-              position: _itemPositionsMap[itemPath] ?? const Offset(150, 200),
-              size: _getItemSize(itemPath),
-              onPositionChanged: (delta) {
-                setState(() {
-                  final currentPos =
-                      _itemPositionsMap[itemPath] ?? const Offset(150, 200);
-                  _itemPositionsMap[itemPath] = currentPos + delta;
-                });
-              },
-            );
-          }).toList(),
+                // 配置された乗り物のアイテムのリストを表示
+                ..._equippedVehicles.map((itemPath) {
+                  return DraggableCharacter(
+                    id: itemPath,
+                    imagePath: itemPath,
+                    position:
+                        _itemPositionsMap[itemPath] ?? const Offset(150, 200),
+                    size: _getItemSize(itemPath),
+                    onPositionChanged: (delta) {
+                      setState(() {
+                        final currentPos =
+                            _itemPositionsMap[itemPath] ??
+                            const Offset(150, 200);
+                        _itemPositionsMap[itemPath] = currentPos + delta;
+                      });
+                    },
+                  );
+                }).toList(),
 
-          // --- アバターの表示 ---
-          DraggableCharacter(
-            id: 'avatar_on_island',
-            customWidget: AvatarDisplay(
-              face: _equippedFace,
-              clothes: _equippedClothes,
-              hair: _equippedHair,
-              headgear: _equippedHeadgear,
-              accessory: _equippedAccessory,
-              size: _getItemSize(_equippedClothes),
+                // --- アバターの表示 ---
+                DraggableCharacter(
+                  id: 'avatar_on_island',
+                  customWidget: AvatarDisplay(
+                    face: _equippedFace,
+                    clothes: _equippedClothes,
+                    hair: _equippedHair,
+                    headgear: _equippedHeadgear,
+                    accessory: _equippedAccessory,
+                    size: _getItemSize(_equippedClothes),
+                  ),
+                  position: _avatarPosition,
+                  size: _getItemSize(_equippedClothes),
+                  onPositionChanged: (delta) {
+                    setState(() => _avatarPosition += delta);
+                  },
+                ),
+
+                // ★応援キャラクターの表示と操作
+                ..._equippedCharacters.map((charPath) {
+                  return DraggableCharacter(
+                    id: 'island_$charPath', // IDとして画像パスを使う
+                    imagePath: charPath,
+                    position:
+                        _characterPositionsMap[charPath] ?? Offset(490, 190),
+                    size: _getItemSize(charPath),
+                    onPositionChanged: (delta) {
+                      setState(() {
+                        // ★位置の更新
+                        _characterPositionsMap[charPath] =
+                            (_characterPositionsMap[charPath] ??
+                                const Offset(490, 190)) +
+                            delta;
+                      });
+                    },
+                  );
+                }).toList(),
+
+                // シェア画像にだけ写る「宣伝用ロゴ（ウォーターマーク）」
+                if (_showWatermarkForCapture)
+                  Positioned(
+                    bottom: 16.0,
+                    right: 16.0,
+                    child: Text(
+                      AppLocalizations.of(context)!.appName,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        shadows: const [
+                          Shadow(
+                            color: Colors.black54,
+                            blurRadius: 4,
+                            offset: Offset(1, 1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            position: _avatarPosition,
-            size: _getItemSize(_equippedClothes),
-            onPositionChanged: (delta) {
-              setState(() => _avatarPosition += delta);
-            },
           ),
-
-          // ★応援キャラクターの表示と操作
-          ..._equippedCharacters.map((charPath) {
-            return DraggableCharacter(
-              id: 'island_$charPath', // IDとして画像パスを使う
-              imagePath: charPath,
-              position: _characterPositionsMap[charPath] ?? Offset(490, 190),
-              size: _getItemSize(charPath),
-              onPositionChanged: (delta) {
-                setState(() {
-                  // ★位置の更新
-                  _characterPositionsMap[charPath] =
-                      (_characterPositionsMap[charPath] ??
-                          const Offset(490, 190)) +
-                      delta;
-                });
-              },
-            );
-          }).toList(),
         ],
       ),
     );

@@ -1506,4 +1506,34 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyBoost2xFreeTrial, used);
   }
+
+  static const String _keyXShareClaimedEver = 'x_share_claimed_ever';
+
+  /// 一度でもXシェアミッションを達成したことがあるかチェック
+  static Future<bool> isXShareClaimedEver() async {
+    final prefs = await SharedPreferences.getInstance();
+    // 過去に保存されていなければ false を返す
+    return prefs.getBool(_keyXShareClaimedEver) ?? false;
+  }
+
+  /// Xシェアミッションを達成した（生涯達成済み）として記録する
+  static Future<void> setXShareClaimedEver() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyXShareClaimedEver, true);
+  }
+
+  // 🌟 追加: Xフォローミッションの達成記録キー
+  static const String _keyXFollowClaimedEver = 'x_follow_claimed_ever';
+
+  /// 一度でもXフォローミッションを達成したことがあるかチェック
+  static Future<bool> isXFollowClaimedEver() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyXFollowClaimedEver) ?? false;
+  }
+
+  /// Xフォローミッションを達成した（生涯達成済み）として記録する
+  static Future<void> setXFollowClaimedEver() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyXFollowClaimedEver, true);
+  }
 }
