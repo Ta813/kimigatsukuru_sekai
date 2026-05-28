@@ -2110,4 +2110,13 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get shareLabel => 'شیئر';
+
+  @override
+  String get drawingClear => 'صاف کریں';
+
+  @override
+  String get drawingCancel => 'منسوخ کریں';
+
+  @override
+  String get drawingButton => 'ڈرائنگ';
 }

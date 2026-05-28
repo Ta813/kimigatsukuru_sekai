@@ -20,7 +20,8 @@ class PointAdditionScreen extends StatefulWidget {
   State<PointAdditionScreen> createState() => _PointAdditionScreenState();
 }
 
-class _PointAdditionScreenState extends State<PointAdditionScreen> {
+class _PointAdditionScreenState extends State<PointAdditionScreen>
+    with WidgetsBindingObserver {
   int _currentPoints = 0;
   bool _isMorningClaimed = false;
   bool _isAfternoonClaimed = false;
@@ -38,6 +39,7 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     FirebaseAnalytics.instance.logEvent(name: 'point_addition_screen_show');
     _loadData();
     _startCountdown(); // 🌟 追加: カウントダウン開始
@@ -45,8 +47,17 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _countdownTimer?.cancel(); // 🌟 追加: 画面を閉じる時にタイマーを破棄
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // App has come to the foreground, reload data to refresh state
+      _loadData();
+    }
   }
 
   // 🌟 追加: 1秒ごとに残り時間を計算するメソッド
@@ -90,28 +101,36 @@ class _PointAdditionScreenState extends State<PointAdditionScreen> {
   }
 
   Future<void> _loadData() async {
-    final points = await SharedPrefsHelper.loadPoints();
-    final morning = await SharedPrefsHelper.isRewardClaimed('morning');
-    final afternoon = await SharedPrefsHelper.isRewardClaimed('afternoon');
-    final night = await SharedPrefsHelper.isRewardClaimed('night');
-    final int multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
+    try {
+      final points = await SharedPrefsHelper.loadPoints();
+      final morning = await SharedPrefsHelper.isRewardClaimed('morning');
+      final afternoon = await SharedPrefsHelper.isRewardClaimed('afternoon');
+      final night = await SharedPrefsHelper.isRewardClaimed('night');
+      final int multiplier =
+          await SharedPrefsHelper.getCurrentBoostMultiplier();
 
-    // 🌟 追加: ブースト状態の読み込み
-    final boostMultiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
+      // 🌟 追加: ブースト状態の読み込み
+      final boostMultiplier =
+          await SharedPrefsHelper.getCurrentBoostMultiplier();
 
-    // 🌟 追加: 無料枠の使用状況を取得
-    final boost2xTrialUsed = await SharedPrefsHelper.isBoost2xFreeTrialUsed();
-    await PurchaseManager.instance.loadBoostPrices();
+      // 🌟 追加: 無料枠の使用状況を取得
+      final boost2xTrialUsed = await SharedPrefsHelper.isBoost2xFreeTrialUsed();
+      await PurchaseManager.instance.loadBoostPrices();
 
-    setState(() {
-      _currentPoints = points;
-      _isMorningClaimed = morning;
-      _isAfternoonClaimed = afternoon;
-      _isNightClaimed = night;
-      _currentBoostMultiplier = boostMultiplier; // 🌟 追加
-      _multiplier = multiplier;
-      _isBoost2xTrialUsed = boost2xTrialUsed;
-    });
+      if (!mounted) return;
+
+      setState(() {
+        _currentPoints = points;
+        _isMorningClaimed = morning;
+        _isAfternoonClaimed = afternoon;
+        _isNightClaimed = night;
+        _currentBoostMultiplier = boostMultiplier; // 🌟 追加
+        _multiplier = multiplier;
+        _isBoost2xTrialUsed = boost2xTrialUsed;
+      });
+    } catch (e) {
+      debugPrint('Error loading data in _PointAdditionScreenState: $e');
+    }
   }
 
   // 現在の時間帯を取得

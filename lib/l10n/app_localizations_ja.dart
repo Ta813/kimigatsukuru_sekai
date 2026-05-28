@@ -2110,4 +2110,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get shareLabel => 'シェア';
+
+  @override
+  String get drawingClear => 'けす';
+
+  @override
+  String get drawingCancel => 'やめる';
+
+  @override
+  String get drawingButton => 'おえかき';
 }

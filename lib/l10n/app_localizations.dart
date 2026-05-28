@@ -4128,6 +4128,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get shareLabel;
+
+  /// No description provided for @drawingClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get drawingClear;
+
+  /// No description provided for @drawingCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get drawingCancel;
+
+  /// No description provided for @drawingButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw'**
+  String get drawingButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

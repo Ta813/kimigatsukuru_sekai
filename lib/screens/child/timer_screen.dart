@@ -805,15 +805,38 @@ class _TimerScreenState extends State<TimerScreen>
   void _showRouletteAndFinish() async {
     final basePoints = _basePoints * _boostMultiplier;
 
-    final multiplier = await showDialog<double>(
+    final dynamic rawResult = await showDialog<dynamic>(
       context: context,
       barrierDismissible: false,
       builder: (context) =>
           RouletteDialog(basePoints: basePoints, isTutorial: _isTutorial),
     );
     if (!mounted) return;
+
+    double finalMultiplier = 1.0;
+    if (rawResult is double) {
+      finalMultiplier = rawResult;
+    } else if (rawResult is int) {
+      finalMultiplier = rawResult.toDouble();
+    } else if (rawResult is Map) {
+      // 🌟 _finishPromiseが別の場所から呼ばれてダイアログが閉じられた場合
+      // その結果のMapが返ってくるので、そのままTimerScreenを閉じる
+      debugPrint(
+        'Warning: showDialog returned Map instead of double: $rawResult',
+      );
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(
+          context,
+        ).pop<Map<String, dynamic>>(Map<String, dynamic>.from(rawResult));
+      }
+      return;
+    } else if (rawResult != null) {
+      final parsed = double.tryParse(rawResult.toString());
+      if (parsed != null) finalMultiplier = parsed;
+    }
+
     // ルーレットの結果（1倍か2倍か）で終了処理を呼ぶ
-    _finishPromise(pointMultiplier: multiplier ?? 1, exp: 3);
+    _finishPromise(pointMultiplier: finalMultiplier, exp: 3);
   }
 
   // ★ポイントを計算して、画面を閉じる最終処理メソッド

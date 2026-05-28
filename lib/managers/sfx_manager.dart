@@ -19,7 +19,14 @@ class SfxManager {
   // 🌟 複数プレイヤーのプールを使用して、同時に効果音がなってもクラッシュ（PlatformException）を防ぎつつ自然に重ねて再生する
   AudioPlayer get _player {
     if (_players.length <= _currentPlayerIndex) {
-      _players.add(AudioPlayer());
+      final newPlayer = AudioPlayer();
+      newPlayer.playbackEventStream.listen(
+        (event) {},
+        onError: (Object e, StackTrace stackTrace) {
+          print('SfxManager playback stream error: $e');
+        },
+      );
+      _players.add(newPlayer);
     }
     final player = _players[_currentPlayerIndex];
     _currentPlayerIndex = (_currentPlayerIndex + 1) % _poolSize;
@@ -31,6 +38,10 @@ class SfxManager {
     try {
       await _player.setAsset('assets/$assetPath');
       await _player.play();
+    } on PlayerInterruptedException catch (e) {
+      print("効果音の loading interrupted ($assetPath): ${e.message}");
+    } on PlayerException catch (e) {
+      print("効果音の PlayerException ($assetPath): ${e.message}");
     } catch (e) {
       print("効果音の再生エラー ($assetPath): $e");
     }
@@ -52,6 +63,10 @@ class SfxManager {
       await _player.setAudioSource(playlist);
       await _player.setSpeed(speed);
       await _player.play();
+    } on PlayerInterruptedException catch (e) {
+      print("連続再生の loading interrupted: ${e.message}");
+    } on PlayerException catch (e) {
+      print("連続再生の PlayerException: ${e.message}");
     } catch (e) {
       print("連続再生エラー: $e");
     }

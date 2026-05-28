@@ -39,7 +39,13 @@ class BgmManager with WidgetsBindingObserver {
 
   // 🌟 複雑なCompleterを廃止し、シンプルで安全な遅延初期化に変更
   AudioPlayer get _player {
-    _bgmPlayer ??= AudioPlayer();
+    if (_bgmPlayer == null) {
+      _bgmPlayer = AudioPlayer();
+      _bgmPlayer!.playbackEventStream.listen((event) {},
+          onError: (Object e, StackTrace stackTrace) {
+        print('BgmManager playback stream error: $e');
+      });
+    }
     return _bgmPlayer!;
   }
 
@@ -113,6 +119,10 @@ class BgmManager with WidgetsBindingObserver {
       await _player.play();
 
       print("BgmManager.play: 再生開始しました: $track");
+    } on PlayerInterruptedException catch (e) {
+      print("BGM loading interrupted ($track): ${e.message}");
+    } on PlayerException catch (e) {
+      print("BGM PlayerException ($track): ${e.message}");
     } catch (e) {
       print("BGMの再生エラー ($track): $e");
     }

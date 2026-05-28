@@ -1286,10 +1286,11 @@ class SharedPrefsHelper {
       return null;
     }
     if (path.startsWith('assets/images/clothes_')) {
-      return path.replaceAll(
+      String newPath = path.replaceAll(
         'assets/images/clothes_',
         'assets/images/clothes/clothes_',
       );
+      return newPath.replaceAll('.gif', '.png');
     }
     return path;
   }

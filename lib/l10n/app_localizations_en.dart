@@ -2110,4 +2110,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareLabel => 'Share';
+
+  @override
+  String get drawingClear => 'Clear';
+
+  @override
+  String get drawingCancel => 'Cancel';
+
+  @override
+  String get drawingButton => 'Draw';
 }

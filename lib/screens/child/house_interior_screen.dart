@@ -54,6 +54,17 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
   Color _selectedColor = Colors.redAccent; // とりあえず最初は赤色
   final double _strokeWidth = 6.0; // 線の太さ
 
+  bool _isEraserMode = false;
+  final List<Color> _paletteColors = [
+    Colors.redAccent,
+    Colors.orangeAccent,
+    Colors.yellowAccent,
+    Colors.greenAccent,
+    Colors.blueAccent,
+    Colors.white,
+    Colors.black87,
+  ];
+
   // ポイント数の状態を管理するための変数
   int _points = 0;
   int _level = 1;
@@ -229,233 +240,144 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
             ),
           ),
 
-          // 戻るボタン
-          Positioned(
-            top: 20.0,
-            left: 20.0,
-            child: SafeArea(
-              child: RoundMenuButton(
-                icon: Icons.keyboard_return,
-                label: AppLocalizations.of(context)!.navBack,
-                iconColor: const Color(0xFF5D4037),
-                backgroundColor: const Color(0xFFCFD8DC), // ブルーグレー
-                onTap: () {
-                  FirebaseAnalytics.instance.logEvent(
-                    name: 'start_house_interior_back',
-                  );
-                  try {
-                    SfxManager.instance.playTapSound();
-                  } catch (e) {
-                    print('再生エラー: $e');
-                  }
-                  Navigator.pop(context);
-                },
+          if (!_isDrawingMode)
+            // 戻るボタン
+            Positioned(
+              top: 20.0,
+              left: 20.0,
+              child: SafeArea(
+                child: RoundMenuButton(
+                  icon: Icons.keyboard_return,
+                  label: AppLocalizations.of(context)!.navBack,
+                  iconColor: const Color(0xFF5D4037),
+                  backgroundColor: const Color(0xFFCFD8DC), // ブルーグレー
+                  onTap: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_house_interior_back',
+                    );
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (e) {
+                      print('再生エラー: $e');
+                    }
+                    Navigator.pop(context);
+                  },
+                ),
               ),
             ),
-          ),
 
-          Positioned(
-            top: 25,
-            right: 10,
-            child: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                SafeArea(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        // 少し影をつけて立体感を出す
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 1,
-                          blurRadius: 3,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 24),
-                        const SizedBox(width: 8),
-                        Text(
-                          '$_points', // ポイント数を表示
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+          if (!_isDrawingMode)
+            Positioned(
+              top: 25,
+              right: 10,
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  SafeArea(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          // 少し影をつけて立体感を出す
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 2),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Positioned(
-            top: 30, // ポイント表示の下あたり
-            left: 0, // 左端を画面の左端に合わせる
-            right: 0, // 右端を画面の右端に合わせる
-            child: Center(
-              // ★ Centerウィジェットで中央に配置
-              child: Container(
-                // ★ ここからが白い枠のデザイン設定
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9), // 少し半透明の白
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    // ポイント表示と同じような影をつける
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      spreadRadius: 1,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 220, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        ],
+                      ),
+                      child: Row(
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min, // Rowが中身のサイズに合わせる
-                            children: [
-                              Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!.levelLabel(_level),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          //経験値バー
-                          LinearProgressIndicator(
-                            value: widget.experienceFraction, // 現在の経験値の割合
-                            backgroundColor: Colors.grey[300],
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.green,
+                          const Icon(Icons.star, color: Colors.amber, size: 24),
+                          const SizedBox(width: 8),
+                          Text(
+                            '$_points', // ポイント数を表示
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // 右側のボタン群
-          Positioned(
-            top: 80.0,
-            right: 20.0,
-            child: SafeArea(
-              child: Column(
-                children: [
-                  // 家具設定ボタン
-                  RoundMenuButton(
-                    icon: Icons.chair,
-                    label: AppLocalizations.of(context)!.navDressUp,
-                    iconColor: const Color(0xFF5D4037),
-                    backgroundColor: const Color(0xFFD1F2E1), // ライトミントグリーン
-                    onTap: () {
-                      FirebaseAnalytics.instance.logEvent(
-                        name: 'start_house_interior_customize',
-                      );
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {
-                        print('再生エラー: $e');
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FurnitureCustomizeScreen(
-                            mode: CustomizeMode.house,
-                          ),
-                        ),
-                      ).then((_) {
-                        // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
-                        _loadItemsAndPositions();
-                      });
-                    },
-                  ),
-                  RoundMenuButton(
-                    icon: Icons.camera_alt,
-                    label: AppLocalizations.of(
-                      context,
-                    )!.shareLabel, // 必要に応じてAppLocalizationsに追加してください
-                    iconColor: const Color(0xFF5D4037),
-                    backgroundColor: const Color(0xFFFFD54F), // 目立つ黄色
-                    onTap: () async {
-                      FirebaseAnalytics.instance.logEvent(
-                        name: 'share_house_interior_image',
-                      );
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (_) {}
-
-                      // 1. ロード画面を表示 (画面のチカつきを隠す)
-                      if (!mounted) return;
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) =>
-                            const Center(child: CircularProgressIndicator()),
-                      );
-
-                      // 2. フラグを true にして build メソッドでロゴを表示させる
-                      if (mounted) {
-                        setState(() {
-                          _showWatermarkForCapture = true;
-                        });
-                      }
-
-                      // 3. 次のフレームの描画（ロゴあり状態のペイント）が完了するのを待つ
-                      await WidgetsBinding.instance.endOfFrame;
-
-                      // 4. 画像を切り取ってシェアする処理 (ImageShareHelper の中で boundary.toImage() が呼ばれる)
-                      await ImageShareHelper.shareWidget(
-                        globalKey: _shareKey,
-                        shareText: AppLocalizations.of(context)!.shareHouseText,
-                      );
-
-                      // 5. OSのシェアメニューが開いたら（またはエラーになっても）、ロード画面を閉じる
-                      if (mounted) {
-                        Navigator.of(context).pop(); // ロード画面を閉じる
-                      }
-
-                      // 6. フラグを false に戻して build メソッドでロゴを非表示にする
-                      if (mounted) {
-                        setState(() {
-                          _showWatermarkForCapture = false;
-                        });
-                      }
-                    },
                   ),
                 ],
               ),
             ),
-          ),
+
+          if (!_isDrawingMode)
+            Positioned(
+              top: 30, // ポイント表示の下あたり
+              left: 0, // 左端を画面の左端に合わせる
+              right: 0, // 右端を画面の右端に合わせる
+              child: Center(
+                // ★ Centerウィジェットで中央に配置
+                child: Container(
+                  // ★ ここからが白い枠のデザイン設定
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9), // 少し半透明の白
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      // ポイント表示と同じような影をつける
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        spreadRadius: 1,
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 220, // ★ 例として横幅を200に設定（画面に合わせて調整してください）
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min, // Rowが中身のサイズに合わせる
+                              children: [
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.levelLabel(_level),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            //経験値バー
+                            LinearProgressIndicator(
+                              value: widget.experienceFraction, // 現在の経験値の割合
+                              backgroundColor: Colors.grey[300],
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           // ==========================================
           // 📸 画像として切り取る「世界」のレイヤー
           // ==========================================
@@ -567,9 +489,18 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                               details.globalPosition,
                             ),
                             paint: Paint()
-                              ..color = _selectedColor
+                              // 🌟 変更: 消しゴムモードなら透明色と「削る（clear）」設定にする
+                              ..color = _isEraserMode
+                                  ? Colors.transparent
+                                  : _selectedColor
+                              ..blendMode = _isEraserMode
+                                  ? BlendMode.clear
+                                  : BlendMode.srcOver
                               ..strokeCap = StrokeCap.round
-                              ..strokeWidth = _strokeWidth,
+                              // お子さんが消しやすいように消しゴムは太めに設定
+                              ..strokeWidth = _isEraserMode
+                                  ? _strokeWidth * 3
+                                  : _strokeWidth,
                           ),
                         );
                       });
@@ -584,9 +515,18 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
                               details.globalPosition,
                             ),
                             paint: Paint()
-                              ..color = _selectedColor
+                              // 🌟 変更: 消しゴムモードなら透明色と「削る（clear）」設定にする
+                              ..color = _isEraserMode
+                                  ? Colors.transparent
+                                  : _selectedColor
+                              ..blendMode = _isEraserMode
+                                  ? BlendMode.clear
+                                  : BlendMode.srcOver
                               ..strokeCap = StrokeCap.round
-                              ..strokeWidth = _strokeWidth,
+                              // お子さんが消しやすいように消しゴムは太めに設定
+                              ..strokeWidth = _isEraserMode
+                                  ? _strokeWidth * 3
+                                  : _strokeWidth,
                           ),
                         );
                       });
@@ -643,6 +583,277 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
               ],
             ),
           ),
+          if (!_showWatermarkForCapture)
+            // 右側のボタン群
+            if (!_isDrawingMode)
+              Positioned(
+                top: 80.0,
+                right: 20.0,
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      // 家具設定ボタン
+                      RoundMenuButton(
+                        icon: Icons.chair,
+                        label: AppLocalizations.of(context)!.navDressUp,
+                        iconColor: const Color(0xFF5D4037),
+                        backgroundColor: const Color(0xFFD1F2E1), // ライトミントグリーン
+                        onTap: () {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_house_interior_customize',
+                          );
+                          try {
+                            SfxManager.instance.playTapSound();
+                          } catch (e) {
+                            print('再生エラー: $e');
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const FurnitureCustomizeScreen(
+                                    mode: CustomizeMode.house,
+                                  ),
+                            ),
+                          ).then((_) {
+                            // ★ショップ画面から戻ってきたら、必ずデータを再読み込みする
+                            _loadItemsAndPositions();
+                          });
+                        },
+                      ),
+                      RoundMenuButton(
+                        icon: Icons.brush,
+                        label: AppLocalizations.of(context)!.drawingButton,
+                        iconColor: Colors.white,
+                        backgroundColor: Colors.pinkAccent, // 目立つ黄色
+                        onTap: () async {
+                          setState(() {
+                            _isDrawingMode = true; // おえかきモードON
+                          });
+                          try {
+                            SfxManager.instance.playTapSound();
+                          } catch (_) {}
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+          // 🎨 おえかきモード中のボタン群
+          if (_isDrawingMode)
+            Positioned(
+              top: 10.0,
+              right: 10.0,
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    // 全消しボタン
+                    RoundMenuButton(
+                      icon: Icons.delete_outline,
+                      label: AppLocalizations.of(context)!.drawingClear,
+                      iconColor: Colors.white,
+                      backgroundColor: Colors.grey,
+                      onTap: () {
+                        setState(() {
+                          _drawingPoints.clear();
+                        });
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (_) {}
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    // シェアボタン
+                    RoundMenuButton(
+                      icon: Icons.camera_alt,
+                      label: AppLocalizations.of(context)!.shareLabel,
+                      iconColor: const Color(0xFF5D4037),
+                      backgroundColor: const Color(0xFFFFD54F), // 目立つ黄色
+                      onTap: () async {
+                        // モードを終了しつつ、すぐにシェア処理へ移行
+                        setState(() {
+                          _isDrawingMode = false;
+                        });
+
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'share_house_interior_image',
+                        );
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (_) {}
+
+                        // 1. ロード画面を表示 (画面のチカつきを隠す)
+                        if (!mounted) return;
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) =>
+                              const Center(child: CircularProgressIndicator()),
+                        );
+
+                        // 2. フラグを true にして build メソッドでロゴを表示させる
+                        if (mounted) {
+                          setState(() {
+                            _showWatermarkForCapture = true;
+                          });
+                        }
+
+                        // 3. 次のフレームの描画（ロゴあり状態のペイント）が完了するのを待つ
+                        await WidgetsBinding.instance.endOfFrame;
+
+                        // 4. 画像を切り取ってシェアする処理 (ImageShareHelper の中で boundary.toImage() が呼ばれる)
+                        await ImageShareHelper.shareWidget(
+                          globalKey: _shareKey,
+                          shareText: AppLocalizations.of(
+                            context,
+                          )!.shareHouseText,
+                        );
+
+                        // 5. OSのシェアメニューが開いたら（またはエラーになっても）、ロード画面を閉じる
+                        if (mounted) {
+                          Navigator.of(context).pop(); // ロード画面を閉じる
+                        }
+
+                        // 6. フラグを false に戻して build メソッドでロゴを非表示にする
+                        if (mounted) {
+                          setState(() {
+                            _showWatermarkForCapture = false;
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    // やめる（キャンセル）ボタン
+                    RoundMenuButton(
+                      icon: Icons.close,
+                      label: AppLocalizations.of(context)!.drawingCancel,
+                      iconColor: Colors.white,
+                      backgroundColor: Colors.red,
+                      onTap: () {
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (_) {}
+                        setState(() {
+                          _isDrawingMode = false;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          // ==========================================
+          // 🎨 追加: カラーパレット ＆ 消しゴム
+          // ==========================================
+          if (_isDrawingMode)
+            Positioned(
+              top: 0.0, // ウォーターマークよりも少し上に配置
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // ① カラーボタンのリスト
+                        ..._paletteColors.map((color) {
+                          final isSelected =
+                              !_isEraserMode && _selectedColor == color;
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedColor = color;
+                                _isEraserMode = false; // 消しゴムを解除
+                              });
+                              try {
+                                SfxManager.instance.playTapSound();
+                              } catch (_) {}
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 6),
+                              width: isSelected ? 36 : 28,
+                              height: isSelected ? 36 : 28,
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.black54
+                                      : Colors.grey[300]!,
+                                  width: isSelected ? 3 : 1,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+
+                        // 縦の仕切り線
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          width: 2,
+                          height: 30,
+                          color: Colors.grey[400],
+                        ),
+
+                        // ② 消しゴムボタン
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isEraserMode = true; // 消しゴムモードON
+                            });
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (_) {}
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 6),
+                            width: _isEraserMode ? 40 : 32,
+                            height: _isEraserMode ? 40 : 32,
+                            decoration: BoxDecoration(
+                              color: _isEraserMode
+                                  ? Colors.pink[100]
+                                  : Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: _isEraserMode
+                                    ? Colors.pink
+                                    : Colors.grey[400]!,
+                                width: _isEraserMode ? 2 : 1,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.cleaning_services_rounded,
+                              size: 20,
+                              color: _isEraserMode
+                                  ? Colors.pink
+                                  : Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -664,21 +875,25 @@ class DrawingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // 🌟 追加: キャンバスを独立レイヤーとして保存（消しゴムの切り抜きバグを防ぐ）
+    canvas.saveLayer(Rect.fromLTWH(0, 0, size.width, size.height), Paint());
+
     for (int i = 0; i < points.length - 1; i++) {
       if (points[i] != null && points[i + 1] != null) {
-        // 点と点が連続していれば線を引く
         canvas.drawLine(
           points[i]!.offset,
           points[i + 1]!.offset,
           points[i]!.paint,
         );
       } else if (points[i] != null && points[i + 1] == null) {
-        // 点（タップしただけ）の描画
         canvas.drawPoints(import_ui.PointMode.points, [
           points[i]!.offset,
         ], points[i]!.paint);
       }
     }
+
+    // 🌟 追加: レイヤーを確定
+    canvas.restore();
   }
 
   @override

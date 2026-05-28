@@ -2110,4 +2110,13 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get shareLabel => 'শেয়ার';
+
+  @override
+  String get drawingClear => 'মুছুন';
+
+  @override
+  String get drawingCancel => 'বাতিল';
+
+  @override
+  String get drawingButton => 'আঁকা';
 }

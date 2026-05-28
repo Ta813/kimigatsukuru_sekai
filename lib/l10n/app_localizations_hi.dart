@@ -2110,4 +2110,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get shareLabel => 'शेयर';
+
+  @override
+  String get drawingClear => 'मिटाएं';
+
+  @override
+  String get drawingCancel => 'रद्द करें';
+
+  @override
+  String get drawingButton => 'ड्राइंग';
 }

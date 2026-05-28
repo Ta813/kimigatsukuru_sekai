@@ -128,9 +128,24 @@ class _RouletteDialogState extends State<RouletteDialog> {
       // 結果を2.5秒表示したら、自動でダイアログを閉じる
       Timer(const Duration(milliseconds: 3000), () {
         if (mounted) {
+          // 🌟 既に別の要因（TimerScreen側など）でダイアログが閉じられようとしている
+          // （exitアニメーション中など）場合は、重複してpopしないようにする
+          final route = ModalRoute.of(context);
+          if (route != null &&
+              route.animation?.status == AnimationStatus.reverse) {
+            debugPrint('RouletteDialog is already popping. Skipping pop.');
+            return;
+          }
+
           // 閉じる時に、結果（1倍か2倍か）を返す
-          if (Navigator.of(context).canPop()) {
-            Navigator.of(context).pop(_pointMultiplier);
+          try {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(_pointMultiplier);
+            }
+          } catch (e) {
+            // Samsung等のバックグラウンド時にNavigatorスタックが狂い、
+            // TimerScreenをpopしようとして型エラーになるケースを防ぐ
+            debugPrint('Error popping RouletteDialog: $e');
           }
         }
       });

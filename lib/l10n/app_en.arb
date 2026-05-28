@@ -950,5 +950,8 @@
   "missionXFollowButton": "Follow",
   "shareHouseText": "I decorated my room as a reward for keeping my promises! ✨\n🔍 Search for 'Family Habit Hero' in the app store!",
   "shareWorldText": "I created this world as a reward for keeping my promises! ✨\n🔍 Search for 'Family Habit Hero' in the app store!",
-  "shareLabel": "Share"
+  "shareLabel": "Share",
+  "drawingClear": "Clear",
+  "drawingCancel": "Cancel",
+  "drawingButton": "Draw"
 }

@@ -2110,4 +2110,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shareLabel => 'مشاركة';
+
+  @override
+  String get drawingClear => 'مسح';
+
+  @override
+  String get drawingCancel => 'إلغاء';
+
+  @override
+  String get drawingButton => 'رسم';
 }

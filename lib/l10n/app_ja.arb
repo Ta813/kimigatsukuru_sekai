@@ -951,5 +951,8 @@
   "missionXFollowButton": "フォローする",
   "shareHouseText": "やくそくを達成したご褒美で、こんなお部屋を作ったよ！✨\n🔍 アプリストアで「きみがつくる世界」を検索！",
   "shareWorldText": "やくそくを達成したご褒美で、こんな世界を作ったよ！✨\n🔍 アプリストアで「きみがつくる世界」を検索！",
-  "shareLabel": "シェア"
+  "shareLabel": "シェア",
+  "drawingClear": "けす",
+  "drawingCancel": "やめる",
+  "drawingButton": "おえかき"
 }
