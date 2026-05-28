@@ -952,5 +952,7 @@
   "shareLabel": "শেয়ার",
   "drawingClear": "মুছুন",
   "drawingCancel": "বাতিল",
-  "drawingButton": "আঁকা"
+  "drawingButton": "আঁকা",
+  "stampSelectTitle": "একটি স্ট্যাম্প বেছে নিন!",
+  "tutorialTimerBubble": "শেষ হলে এখানে চাপুন✨"
 }

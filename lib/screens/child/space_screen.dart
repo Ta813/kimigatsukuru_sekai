@@ -61,6 +61,9 @@ class _SpaceScreenState extends State<SpaceScreen> {
   final double _strokeWidth = 6.0; // 線の太さ
 
   bool _isEraserMode = false;
+  bool _isStampMode = false; // スタンプモードON/OFF
+  String _selectedEmoji = '⭐'; // 初期状態のスタンプ
+
   final List<Color> _paletteColors = [
     Colors.redAccent,
     Colors.orangeAccent,
@@ -69,6 +72,25 @@ class _SpaceScreenState extends State<SpaceScreen> {
     Colors.blueAccent,
     Colors.white,
     Colors.black87,
+  ];
+
+  // 🌟 追加: スタンプに使う絵文字のリスト（自由に増やせます！）
+  final List<String> _paletteEmojis = [
+    '⭐',
+    '❤️',
+    '🎵',
+    '🌸',
+    '✨',
+    '🍀',
+    '🍎',
+    '🍦',
+    '🐶',
+    '🐱',
+    '🐘',
+    '🚀',
+    '🌈',
+    '🎁',
+    '💎',
   ];
 
   @override
@@ -190,6 +212,83 @@ class _SpaceScreenState extends State<SpaceScreen> {
     if (itemPath.contains('living')) return 60.0;
     // ... 他のアイテムのサイズ ...
     return 60.0;
+  }
+
+  void _showEmojiPicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent, // 背景を透過させてカスタムデザインに
+      isScrollControlled: true,
+      builder: (context) {
+        return SafeArea(
+          child: Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.stampSelectTitle,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                // 15個の絵文字をグリッドで表示
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 10, // 5列
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                  ),
+                  itemCount: _paletteEmojis.length,
+                  itemBuilder: (context, index) {
+                    final emoji = _paletteEmojis[index];
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedEmoji = emoji;
+                          _isStampMode = true;
+                          _isEraserMode = false;
+                        });
+                        Navigator.pop(context); // 閉じる
+                        try {
+                          SfxManager.instance.playTapSound();
+                        } catch (_) {}
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: _selectedEmoji == emoji && _isStampMode
+                              ? Colors.pink[50]
+                              : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: _selectedEmoji == emoji && _isStampMode
+                                ? Colors.pink
+                                : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                        child: Text(
+                          emoji,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -449,29 +548,45 @@ class _SpaceScreenState extends State<SpaceScreen> {
                       setState(() {
                         RenderBox renderBox =
                             context.findRenderObject() as RenderBox;
-                        _drawingPoints.add(
-                          DrawingPoint(
-                            offset: renderBox.globalToLocal(
-                              details.globalPosition,
-                            ),
-                            paint: Paint()
-                              // 🌟 変更: 消しゴムモードなら透明色と「削る（clear）」設定にする
-                              ..color = _isEraserMode
-                                  ? Colors.transparent
-                                  : _selectedColor
-                              ..blendMode = _isEraserMode
-                                  ? BlendMode.clear
-                                  : BlendMode.srcOver
-                              ..strokeCap = StrokeCap.round
-                              // お子さんが消しやすいように消しゴムは太めに設定
-                              ..strokeWidth = _isEraserMode
-                                  ? _strokeWidth * 3
-                                  : _strokeWidth,
-                          ),
+                        final localOffset = renderBox.globalToLocal(
+                          details.globalPosition,
                         );
+
+                        if (_isStampMode && !_isEraserMode) {
+                          // 🌟 スタンプモードの処理
+                          _drawingPoints.add(
+                            DrawingPoint(
+                              offset: localOffset,
+                              isEmoji: true,
+                              emoji: _selectedEmoji,
+                            ),
+                          );
+                          _drawingPoints.add(null); // スタンプは1点で完結するので直後に線を切る
+                        } else {
+                          // 🌟 ペン・消しゴムモードの処理
+                          _drawingPoints.add(
+                            DrawingPoint(
+                              offset: localOffset,
+                              paint: Paint()
+                                ..color = _isEraserMode
+                                    ? Colors.transparent
+                                    : _selectedColor
+                                ..blendMode = _isEraserMode
+                                    ? BlendMode.clear
+                                    : BlendMode.srcOver
+                                ..strokeCap = StrokeCap.round
+                                ..strokeWidth = _isEraserMode
+                                    ? _strokeWidth * 3
+                                    : _strokeWidth,
+                            ),
+                          );
+                        }
                       });
                     },
                     onPanUpdate: (details) {
+                      // 🌟 スタンプモード中はドラッグしても何もしない（連続して出ないようにする）
+                      if (_isStampMode && !_isEraserMode) return;
+
                       setState(() {
                         RenderBox renderBox =
                             context.findRenderObject() as RenderBox;
@@ -481,7 +596,6 @@ class _SpaceScreenState extends State<SpaceScreen> {
                               details.globalPosition,
                             ),
                             paint: Paint()
-                              // 🌟 変更: 消しゴムモードなら透明色と「削る（clear）」設定にする
                               ..color = _isEraserMode
                                   ? Colors.transparent
                                   : _selectedColor
@@ -489,7 +603,6 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                   ? BlendMode.clear
                                   : BlendMode.srcOver
                               ..strokeCap = StrokeCap.round
-                              // お子さんが消しやすいように消しゴムは太めに設定
                               ..strokeWidth = _isEraserMode
                                   ? _strokeWidth * 3
                                   : _strokeWidth,
@@ -499,7 +612,9 @@ class _SpaceScreenState extends State<SpaceScreen> {
                     },
                     onPanEnd: (details) {
                       setState(() {
-                        _drawingPoints.add(null); // 指を離したら線を切る
+                        if (!_isStampMode || _isEraserMode) {
+                          _drawingPoints.add(null);
+                        }
                       });
                     },
                     child: Container(
@@ -595,6 +710,9 @@ class _SpaceScreenState extends State<SpaceScreen> {
                         iconColor: Colors.white,
                         backgroundColor: Colors.pinkAccent, // 目立つ黄色
                         onTap: () async {
+                          FirebaseAnalytics.instance.logEvent(
+                            name: 'start_space_drawing',
+                          );
                           setState(() {
                             _isDrawingMode = true; // おえかきモードON
                           });
@@ -713,11 +831,11 @@ class _SpaceScreenState extends State<SpaceScreen> {
             ),
 
           // ==========================================
-          // 🎨 追加: カラーパレット ＆ 消しゴム
+          // 🎨 追加: カラーパレット ＆ 絵文字 ＆ 消しゴム
           // ==========================================
           if (_isDrawingMode)
             Positioned(
-              top: 0.0, // ウォーターマークよりも少し上に配置
+              top: 0,
               left: 0,
               right: 0,
               child: SafeArea(
@@ -729,7 +847,7 @@ class _SpaceScreenState extends State<SpaceScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(35),
                       boxShadow: const [
                         BoxShadow(
                           color: Colors.black26,
@@ -744,12 +862,15 @@ class _SpaceScreenState extends State<SpaceScreen> {
                         // ① カラーボタンのリスト
                         ..._paletteColors.map((color) {
                           final isSelected =
-                              !_isEraserMode && _selectedColor == color;
+                              !_isEraserMode &&
+                              !_isStampMode &&
+                              _selectedColor == color;
                           return GestureDetector(
                             onTap: () {
                               setState(() {
                                 _selectedColor = color;
-                                _isEraserMode = false; // 消しゴムを解除
+                                _isEraserMode = false;
+                                _isStampMode = false;
                               });
                               try {
                                 SfxManager.instance.playTapSound();
@@ -773,43 +894,98 @@ class _SpaceScreenState extends State<SpaceScreen> {
                           );
                         }).toList(),
 
-                        // 縦の仕切り線
+                        // 仕切り線
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 8),
-                          width: 2,
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          width: 1.5,
                           height: 30,
-                          color: Colors.grey[400],
+                          color: Colors.grey[300],
                         ),
 
-                        // ② 消しゴムボタン
+                        // 🌟 ② スタンプ選択ボタン（今選んでいる絵文字が表示される）
+                        GestureDetector(
+                          onTap: _showEmojiPicker, // メニューを開く
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: _isStampMode && !_isEraserMode
+                                  ? Colors.pink[50]
+                                  : Colors.grey[100],
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: _isStampMode && !_isEraserMode
+                                    ? Colors.pink
+                                    : Colors.grey[300]!,
+                                width: 2,
+                              ),
+                            ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Text(
+                                  _selectedEmoji,
+                                  style: const TextStyle(fontSize: 28),
+                                ),
+                                // ＋マークをつけて「選べる感」を出す
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.pink,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.add,
+                                      size: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // 仕切り線
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          width: 1.5,
+                          height: 30,
+                          color: Colors.grey[300],
+                        ),
+
+                        // ③ 消しゴムボタン
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              _isEraserMode = true; // 消しゴムモードON
+                              _isEraserMode = true;
+                              _isStampMode = false;
                             });
                             try {
                               SfxManager.instance.playTapSound();
                             } catch (_) {}
                           },
                           child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 6),
-                            width: _isEraserMode ? 40 : 32,
-                            height: _isEraserMode ? 40 : 32,
+                            width: 40,
+                            height: 40,
                             decoration: BoxDecoration(
                               color: _isEraserMode
                                   ? Colors.pink[100]
                                   : Colors.grey[200],
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: _isEraserMode
                                     ? Colors.pink
                                     : Colors.grey[400]!,
-                                width: _isEraserMode ? 2 : 1,
+                                width: 2,
                               ),
                             ),
                             child: Icon(
                               Icons.cleaning_services_rounded,
-                              size: 20,
+                              size: 22,
                               color: _isEraserMode
                                   ? Colors.pink
                                   : Colors.grey[600],
@@ -829,12 +1005,20 @@ class _SpaceScreenState extends State<SpaceScreen> {
 }
 
 // ==========================================
-// 🎨 追加: おえかき用のデータクラスとペインター
+// 🎨 おえかき用のデータクラスとペインター
 // ==========================================
 class DrawingPoint {
   final Offset offset;
-  final Paint paint;
-  DrawingPoint({required this.offset, required this.paint});
+  final Paint? paint;
+  final bool isEmoji; // 🌟 追加: 絵文字かどうか
+  final String? emoji; // 🌟 追加: 描画する絵文字
+
+  DrawingPoint({
+    required this.offset,
+    this.paint,
+    this.isEmoji = false,
+    this.emoji,
+  });
 }
 
 class DrawingPainter extends CustomPainter {
@@ -843,24 +1027,43 @@ class DrawingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // 🌟 追加: キャンバスを独立レイヤーとして保存（消しゴムの切り抜きバグを防ぐ）
     canvas.saveLayer(Rect.fromLTWH(0, 0, size.width, size.height), Paint());
 
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null) {
-        canvas.drawLine(
-          points[i]!.offset,
-          points[i + 1]!.offset,
-          points[i]!.paint,
+    for (int i = 0; i < points.length; i++) {
+      final point = points[i];
+      if (point == null) continue;
+
+      if (point.isEmoji) {
+        // 🌟 絵文字（スタンプ）の描画
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: point.emoji,
+            style: const TextStyle(fontSize: 45), // スタンプの大きさ
+          ),
+          textDirection: TextDirection.ltr,
         );
-      } else if (points[i] != null && points[i + 1] == null) {
-        canvas.drawPoints(import_ui.PointMode.points, [
-          points[i]!.offset,
-        ], points[i]!.paint);
+        textPainter.layout();
+        // タップした指の中心にスタンプが来るようにオフセットを調整
+        textPainter.paint(
+          canvas,
+          Offset(
+            point.offset.dx - textPainter.width / 2,
+            point.offset.dy - textPainter.height / 2,
+          ),
+        );
+      } else {
+        // 🌟 線または点の描画
+        final nextPoint = (i + 1 < points.length) ? points[i + 1] : null;
+        if (nextPoint != null && !nextPoint.isEmoji) {
+          canvas.drawLine(point.offset, nextPoint.offset, point.paint!);
+        } else {
+          canvas.drawPoints(import_ui.PointMode.points, [
+            point.offset,
+          ], point.paint!);
+        }
       }
     }
 
-    // 🌟 追加: レイヤーを確定
     canvas.restore();
   }
 

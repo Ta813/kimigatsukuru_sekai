@@ -952,5 +952,7 @@
   "shareLabel": "شیئر",
   "drawingClear": "صاف کریں",
   "drawingCancel": "منسوخ کریں",
-  "drawingButton": "ڈرائنگ"
+  "drawingButton": "ڈرائنگ",
+  "stampSelectTitle": "ایک اسٹیمپ منتخب کریں!",
+  "tutorialTimerBubble": "جب ختم ہو جائے تو یہاں دبائیں✨"
 }

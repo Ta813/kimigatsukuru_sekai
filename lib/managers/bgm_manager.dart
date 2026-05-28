@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:audio_session/audio_session.dart';
 
 enum BgmTrack {
   main,
@@ -40,11 +41,15 @@ class BgmManager with WidgetsBindingObserver {
   // 🌟 複雑なCompleterを廃止し、シンプルで安全な遅延初期化に変更
   AudioPlayer get _player {
     if (_bgmPlayer == null) {
-      _bgmPlayer = AudioPlayer();
-      _bgmPlayer!.playbackEventStream.listen((event) {},
-          onError: (Object e, StackTrace stackTrace) {
-        print('BgmManager playback stream error: $e');
-      });
+      _bgmPlayer = AudioPlayer(
+        handleAudioSessionActivation: false, // 🌟 自動アクティベーションを無効化（クラッシュ対策）
+      );
+      _bgmPlayer!.playbackEventStream.listen(
+        (event) {},
+        onError: (Object e, StackTrace stackTrace) {
+          print('BgmManager playback stream error: $e');
+        },
+      );
     }
     return _bgmPlayer!;
   }
@@ -105,6 +110,16 @@ class BgmManager with WidgetsBindingObserver {
 
   Future<void> play(BgmTrack track) async {
     try {
+      // 🌟 手動でセッションをアクティブ化し、iPad特有のバックグラウンドエラーをキャッチ
+      try {
+        final session = await AudioSession.instance;
+        await session.setActive(true);
+      } catch (e) {
+        print(
+          "BgmManager: AudioSession activation failed (safe to ignore): $e",
+        );
+      }
+
       print("BgmManager.play: $track");
       final trackPath = _getTrackPath(track);
 
@@ -132,6 +147,12 @@ class BgmManager with WidgetsBindingObserver {
     try {
       if (_bgmPlayer != null) {
         await _bgmPlayer!.pause();
+        try {
+          final session = await AudioSession.instance;
+          await session.setActive(false);
+        } catch (e) {
+          print("BgmManager: AudioSession deactivation failed: $e");
+        }
       }
     } catch (e) {
       print("BGMの一時停止エラー: $e");
@@ -141,6 +162,12 @@ class BgmManager with WidgetsBindingObserver {
   Future<void> resume() async {
     try {
       if (_bgmPlayer != null) {
+        try {
+          final session = await AudioSession.instance;
+          await session.setActive(true);
+        } catch (e) {
+          print("BgmManager: AudioSession activation failed on resume: $e");
+        }
         await _bgmPlayer!.play();
       }
     } catch (e) {
@@ -152,6 +179,12 @@ class BgmManager with WidgetsBindingObserver {
     try {
       if (_bgmPlayer != null) {
         await _bgmPlayer!.stop();
+        try {
+          final session = await AudioSession.instance;
+          await session.setActive(false);
+        } catch (e) {
+          print("BgmManager: AudioSession deactivation failed on stop: $e");
+        }
       }
     } catch (e) {
       print("BGMの停止エラー: $e");

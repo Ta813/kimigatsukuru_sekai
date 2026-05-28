@@ -2119,4 +2119,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get drawingButton => 'ड्राइंग';
+
+  @override
+  String get stampSelectTitle => 'एक स्टैंप चुनें!';
+
+  @override
+  String get tutorialTimerBubble => 'खत्म होने पर यहाँ दबाएँ✨';
 }

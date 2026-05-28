@@ -2119,4 +2119,10 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get drawingButton => 'ڈرائنگ';
+
+  @override
+  String get stampSelectTitle => 'ایک اسٹیمپ منتخب کریں!';
+
+  @override
+  String get tutorialTimerBubble => 'جب ختم ہو جائے تو یہاں دبائیں✨';
 }

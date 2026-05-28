@@ -2119,4 +2119,10 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get drawingButton => 'আঁকা';
+
+  @override
+  String get stampSelectTitle => 'একটি স্ট্যাম্প বেছে নিন!';
+
+  @override
+  String get tutorialTimerBubble => 'শেষ হলে এখানে চাপুন✨';
 }

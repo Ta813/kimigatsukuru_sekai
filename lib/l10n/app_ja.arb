@@ -954,5 +954,7 @@
   "shareLabel": "シェア",
   "drawingClear": "けす",
   "drawingCancel": "やめる",
-  "drawingButton": "おえかき"
+  "drawingButton": "おえかき",
+  "stampSelectTitle": "スタンプをえらぼう！",
+  "tutorialTimerBubble": "クリアしたら、ここをおしてね✨"
 }

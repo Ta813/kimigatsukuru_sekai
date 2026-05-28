@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:just_audio/just_audio.dart';
+import 'package:audio_session/audio_session.dart';
 
 class SfxManager {
   static final SfxManager instance = SfxManager._internal();
@@ -19,7 +20,9 @@ class SfxManager {
   // 🌟 複数プレイヤーのプールを使用して、同時に効果音がなってもクラッシュ（PlatformException）を防ぎつつ自然に重ねて再生する
   AudioPlayer get _player {
     if (_players.length <= _currentPlayerIndex) {
-      final newPlayer = AudioPlayer();
+      final newPlayer = AudioPlayer(
+        handleAudioSessionActivation: false, // 🌟 自動アクティベーションを無効化
+      );
       newPlayer.playbackEventStream.listen(
         (event) {},
         onError: (Object e, StackTrace stackTrace) {
@@ -36,6 +39,15 @@ class SfxManager {
   // 効果音を再生するための共通メソッド
   Future<void> _playSound(String assetPath) async {
     try {
+      try {
+        final session = await AudioSession.instance;
+        await session.setActive(true);
+      } catch (e) {
+        print(
+          "SfxManager: AudioSession activation failed (safe to ignore): $e",
+        );
+      }
+
       await _player.setAsset('assets/$assetPath');
       await _player.play();
     } on PlayerInterruptedException catch (e) {
@@ -47,12 +59,20 @@ class SfxManager {
     }
   }
 
-  // 複数の効果音を順番に再生するためのメソッド
   Future<void> playSequentialSounds(
     List<String> assetPaths, {
     double speed = 1.0,
   }) async {
     try {
+      try {
+        final session = await AudioSession.instance;
+        await session.setActive(true);
+      } catch (e) {
+        print(
+          "SfxManager: AudioSession activation failed (safe to ignore): $e",
+        );
+      }
+
       // プレイリストを作成
       final playlist = ConcatenatingAudioSource(
         children: assetPaths

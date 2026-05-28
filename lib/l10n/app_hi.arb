@@ -907,5 +907,7 @@
   "shareLabel": "शेयर",
   "drawingClear": "मिटाएं",
   "drawingCancel": "रद्द करें",
-  "drawingButton": "ड्राइंग"
+  "drawingButton": "ड्राइंग",
+  "stampSelectTitle": "एक स्टैंप चुनें!",
+  "tutorialTimerBubble": "खत्म होने पर यहाँ दबाएँ✨"
 }

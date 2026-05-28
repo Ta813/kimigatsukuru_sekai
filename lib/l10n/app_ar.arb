@@ -953,5 +953,7 @@
   "shareLabel": "مشاركة",
   "drawingClear": "مسح",
   "drawingCancel": "إلغاء",
-  "drawingButton": "رسم"
+  "drawingButton": "رسم",
+  "stampSelectTitle": "اختر ملصقاً!",
+  "tutorialTimerBubble": "عندما تنتهي، اضغط هنا✨"
 }

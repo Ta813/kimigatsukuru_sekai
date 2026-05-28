@@ -1258,6 +1258,43 @@ class _TimerScreenState extends State<TimerScreen>
                           bottom: -10,
                           child: AnimatedTapFinger(),
                         ),
+                      if (_isTutorial && !_isFinishedButtonPressed)
+                        Positioned(
+                          bottom: -65,
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFF9C4),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.orange,
+                                  width: 2,
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    blurRadius: 4,
+                                    color: Colors.black26,
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!.tutorialTimerBubble,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ],

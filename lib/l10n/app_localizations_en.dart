@@ -2119,4 +2119,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get drawingButton => 'Draw';
+
+  @override
+  String get stampSelectTitle => 'Choose a stamp!';
+
+  @override
+  String get tutorialTimerBubble => 'When you finish, press here✨';
 }

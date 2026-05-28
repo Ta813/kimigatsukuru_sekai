@@ -2119,4 +2119,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get drawingButton => 'おえかき';
+
+  @override
+  String get stampSelectTitle => 'スタンプをえらぼう！';
+
+  @override
+  String get tutorialTimerBubble => 'クリアしたら、ここをおしてね✨';
 }

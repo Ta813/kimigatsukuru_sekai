@@ -953,5 +953,7 @@
   "shareLabel": "Share",
   "drawingClear": "Clear",
   "drawingCancel": "Cancel",
-  "drawingButton": "Draw"
+  "drawingButton": "Draw",
+  "stampSelectTitle": "Choose a stamp!",
+  "tutorialTimerBubble": "When you finish, press here✨"
 }

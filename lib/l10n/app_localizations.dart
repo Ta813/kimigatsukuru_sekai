@@ -4146,6 +4146,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Draw'**
   String get drawingButton;
+
+  /// No description provided for @stampSelectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a stamp!'**
+  String get stampSelectTitle;
+
+  /// No description provided for @tutorialTimerBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'When you finish, press here✨'**
+  String get tutorialTimerBubble;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
