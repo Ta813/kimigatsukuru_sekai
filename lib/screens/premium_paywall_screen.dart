@@ -327,17 +327,17 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                             'assets/images/character_ouji.gif', // 💡 王子様の画像名に合わせてください
                             height: 60,
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 6),
                           Text(
                             l10n.paywallSubtitle,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 13,
                               color: Colors.black87,
                               height: 1.5,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 6),
                           Image.asset(
                             'assets/images/character_hime.gif', // 💡 お姫様の画像名に合わせてください
                             height: 60,

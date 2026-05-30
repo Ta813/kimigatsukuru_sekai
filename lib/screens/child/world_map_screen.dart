@@ -353,51 +353,53 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
 
               // ★ --- 上の空エリアのタップ領域 --- ★
               Align(
-                alignment: const Alignment(-0.7, -0.3), // 左のほうにずらす
-                child: GestureDetector(
-                  onTap: () {
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'start_world_map_sky',
-                    );
-                    // ★ レベル15以上かチェック
-                    if (widget.currentLevel >= 15 || isPremium) {
-                      try {
-                        SfxManager.instance.playSuccessSound();
-                      } catch (e) {
-                        // エラーが発生した場合
-                        print('再生エラー: $e');
-                      }
-                      // ★ レベル15以上なら、SkyScreenに遷移
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SkyScreen(
-                            currentLevel: widget.currentLevel,
-                            currentPoints: widget.currentPoints,
-                            requiredExpForNextLevel:
-                                widget.requiredExpForNextLevel,
-                            experience: widget.experience,
-                            experienceFraction: widget.experienceFraction,
-                          ),
-                        ),
+                alignment: const Alignment(-0.6, -0.3), // 左のほうにずらす
+                child: SafeArea(
+                  child: GestureDetector(
+                    onTap: () {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'start_world_map_sky',
                       );
-                    } else {
-                      // レベルが足りない場合
-                      _showPremiumUpgradeDialog(15);
-                    }
-                  },
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    color: Colors.transparent,
-                    child: Center(
-                      // ★ サムネイル画像に変更
-                      child: _AnimatedMapThumbnail(
-                        imagePath: 'assets/images/sky_background.png',
-                        offsetY: 8,
-                        duration: const Duration(seconds: 2),
-                        isLocked: widget.currentLevel < 15 && !isPremium,
-                        requiredLevel: 15,
+                      // ★ レベル15以上かチェック
+                      if (widget.currentLevel >= 15 || isPremium) {
+                        try {
+                          SfxManager.instance.playSuccessSound();
+                        } catch (e) {
+                          // エラーが発生した場合
+                          print('再生エラー: $e');
+                        }
+                        // ★ レベル15以上なら、SkyScreenに遷移
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SkyScreen(
+                              currentLevel: widget.currentLevel,
+                              currentPoints: widget.currentPoints,
+                              requiredExpForNextLevel:
+                                  widget.requiredExpForNextLevel,
+                              experience: widget.experience,
+                              experienceFraction: widget.experienceFraction,
+                            ),
+                          ),
+                        );
+                      } else {
+                        // レベルが足りない場合
+                        _showPremiumUpgradeDialog(15);
+                      }
+                    },
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      color: Colors.transparent,
+                      child: Center(
+                        // ★ サムネイル画像に変更
+                        child: _AnimatedMapThumbnail(
+                          imagePath: 'assets/images/sky_background.png',
+                          offsetY: 8,
+                          duration: const Duration(seconds: 2),
+                          isLocked: widget.currentLevel < 15 && !isPremium,
+                          requiredLevel: 15,
+                        ),
                       ),
                     ),
                   ),
@@ -406,48 +408,50 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
 
               // ★ --- さらに上の宇宙エリアのタップ領域 --- ★
               Align(
-                alignment: const Alignment(-0.7, -1.1), // 空のさらに上に配置
-                child: GestureDetector(
-                  onTap: () {
-                    FirebaseAnalytics.instance.logEvent(
-                      name: 'start_world_map_space',
-                    );
-                    // ★ レベル20以上かチェック
-                    if (widget.currentLevel >= 20 || isPremium) {
-                      try {
-                        SfxManager.instance.playSuccessSound();
-                      } catch (e) {
-                        print('再生エラー: $e');
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SpaceScreen(
-                            currentLevel: widget.currentLevel,
-                            currentPoints: widget.currentPoints,
-                            requiredExpForNextLevel:
-                                widget.requiredExpForNextLevel,
-                            experience: widget.experience,
-                            experienceFraction: widget.experienceFraction,
-                          ),
-                        ),
+                alignment: const Alignment(-0.6, -1.1), // 空のさらに上に配置
+                child: SafeArea(
+                  child: GestureDetector(
+                    onTap: () {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'start_world_map_space',
                       );
-                    } else {
-                      // レベルが足りない場合
-                      _showPremiumUpgradeDialog(20);
-                    }
-                  },
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    color: Colors.transparent,
-                    child: Center(
-                      child: _AnimatedMapThumbnail(
-                        imagePath: 'assets/images/space_background.png',
-                        offsetY: 8,
-                        duration: const Duration(seconds: 2),
-                        isLocked: widget.currentLevel < 20 && !isPremium,
-                        requiredLevel: 20,
+                      // ★ レベル20以上かチェック
+                      if (widget.currentLevel >= 20 || isPremium) {
+                        try {
+                          SfxManager.instance.playSuccessSound();
+                        } catch (e) {
+                          print('再生エラー: $e');
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SpaceScreen(
+                              currentLevel: widget.currentLevel,
+                              currentPoints: widget.currentPoints,
+                              requiredExpForNextLevel:
+                                  widget.requiredExpForNextLevel,
+                              experience: widget.experience,
+                              experienceFraction: widget.experienceFraction,
+                            ),
+                          ),
+                        );
+                      } else {
+                        // レベルが足りない場合
+                        _showPremiumUpgradeDialog(20);
+                      }
+                    },
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      color: Colors.transparent,
+                      child: Center(
+                        child: _AnimatedMapThumbnail(
+                          imagePath: 'assets/images/space_background.png',
+                          offsetY: 8,
+                          duration: const Duration(seconds: 2),
+                          isLocked: widget.currentLevel < 20 && !isPremium,
+                          requiredLevel: 20,
+                        ),
                       ),
                     ),
                   ),

@@ -1148,7 +1148,7 @@ class _TimerScreenState extends State<TimerScreen>
                                                     1 * _boostMultiplier,
                                                   )),
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.red[700],
                                         ),
@@ -1170,7 +1170,7 @@ class _TimerScreenState extends State<TimerScreen>
                                                     3 * _boostMultiplier,
                                                   )),
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.grey[600],
                                         ),
@@ -1485,8 +1485,8 @@ class _TimerScreenState extends State<TimerScreen>
             ),
           ],
         ),
-        // 画面下部にバナーを設置（初回起動時は広告を表示しない）
-        bottomNavigationBar: const AdBanner(),
+        // 画面下部にバナーを設置
+        bottomNavigationBar: _isTutorial ? null : const AdBanner(),
       ),
     );
   }

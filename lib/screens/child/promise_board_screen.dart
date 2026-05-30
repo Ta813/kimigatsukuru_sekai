@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'timer_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../managers/bgm_manager.dart';
@@ -305,7 +304,7 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                                             )!.untitled,
                                         overflow: TextOverflow
                                             .ellipsis, // 長い名前は「...」で省略
-                                        style: const TextStyle(fontSize: 14),
+                                        style: const TextStyle(fontSize: 11),
                                       ),
                                     ),
                                   ],
@@ -388,8 +387,6 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
           ),
         ],
       ),
-      // 画面下部にバナーを設置
-      bottomNavigationBar: const AdBanner(),
     );
   }
 }

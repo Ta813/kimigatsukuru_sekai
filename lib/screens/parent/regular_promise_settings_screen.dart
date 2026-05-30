@@ -3,7 +3,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
-import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'package:kimigatsukuru_sekai/widgets/animated_tap_finger.dart';
 import 'package:permission_handler/permission_handler.dart'; // 🌟 追加: 通知許可ダイアログ用
 import '../../widgets/custom_back_button.dart';
@@ -1260,7 +1259,7 @@ class _RegularPromiseSettingsScreenState
         ),
         subtitle: Text(
           '${template['time']} / ${AppLocalizations.of(context)!.durationAndPoints(template['duration'].toString(), template['points'].toString())}',
-          style: const TextStyle(fontSize: 13),
+          style: const TextStyle(fontSize: 12),
         ),
         trailing: isTutorialTrialCard
             ? CompositedTransformTarget(
@@ -1416,7 +1415,7 @@ class _RegularPromiseSettingsScreenState
               )
             : Text(
                 '${AppLocalizations.of(context)!.timeLabel}: ${promise['time']} / ${promise['duration']}${AppLocalizations.of(context)!.minutesLabel} / ${promise['points']}${AppLocalizations.of(context)!.points}',
-                style: const TextStyle(fontSize: 13),
+                style: const TextStyle(fontSize: 11),
               ),
         trailing: widget.isInitialSetup
             ? const Icon(
@@ -1854,7 +1853,7 @@ class _RegularPromiseSettingsScreenState
               ],
             ),
           ),
-          // 🌟 変更: 初期設定時はAdBannerの代わりに「設定完了」ボタンを表示
+          // 🌟 初期設定時は「設定完了」ボタンを表示
           bottomNavigationBar: widget.isInitialSetup
               ? SafeArea(
                   child: Container(
@@ -1893,7 +1892,7 @@ class _RegularPromiseSettingsScreenState
                     ),
                   ),
                 )
-              : const AdBanner(),
+              : null,
         ),
         if (widget.isTutorial &&
             !widget.isInitialSetup &&

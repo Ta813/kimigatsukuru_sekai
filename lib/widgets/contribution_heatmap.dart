@@ -58,7 +58,7 @@ class _ContributionHeatmapState extends State<ContributionHeatmap> {
                 Text(
                   _getViewTitle(context),
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 9,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),

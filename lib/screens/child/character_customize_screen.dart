@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
-import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/animated_tap_finger.dart';
 import '../../models/shop_data.dart';
@@ -432,7 +431,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   void _showPremiumUpgradeDialog(ShopItem item) {
     final l10n = AppLocalizations.of(context);
     if (l10n == null) return;
-    
+
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -474,10 +473,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text(
-              l10n.cancel,
-              style: TextStyle(color: Colors.grey[600]),
-            ),
+            child: Text(l10n.cancel, style: TextStyle(color: Colors.grey[600])),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -1224,7 +1220,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const AdBanner(),
     );
   }
 
@@ -1444,7 +1439,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ],
           ),
         ),
-        bottomNavigationBar: const AdBanner(),
       ),
     );
   }
@@ -1471,7 +1465,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           'character',
         ),
       ),
-      bottomNavigationBar: const AdBanner(),
     );
   }
 
@@ -1518,7 +1511,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ],
           ),
         ),
-        bottomNavigationBar: const AdBanner(),
       ),
     );
   }
@@ -1561,7 +1553,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           shape: RoundedRectangleBorder(
             side: BorderSide(
               color: isEquipped ? Colors.amber : Colors.transparent,
-              width: 4,
+              width: 2,
             ),
             borderRadius: BorderRadius.circular(12),
           ),
@@ -1613,7 +1605,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: 7,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

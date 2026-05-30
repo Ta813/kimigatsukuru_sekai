@@ -2412,7 +2412,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                width: 510,
+                                width: 430,
                                 child: Row(
                                   children: [
                                     Expanded(
@@ -2468,7 +2468,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                 context,
                                               )!.todaysPromise,
                                               style: const TextStyle(
-                                                fontSize: 10,
+                                                fontSize: 9,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black87,
                                               ),
@@ -2566,7 +2566,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       color: Colors.grey.withOpacity(0.3),
                                     ),
                                     Expanded(
-                                      flex: 3,
+                                      flex: 4,
                                       child: Stack(
                                         alignment: Alignment.centerLeft,
                                         clipBehavior: Clip.none,
