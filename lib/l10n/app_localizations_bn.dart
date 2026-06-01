@@ -2125,4 +2125,77 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get tutorialTimerBubble => 'শেষ হলে এখানে চাপুন✨';
+
+  @override
+  String get trophyRoom => 'ট্রফি রুম';
+
+  @override
+  String get trophyNone => 'এখনো কোনো ট্রফি নেই';
+
+  @override
+  String get trophyCleared => 'সম্পন্ন!';
+
+  @override
+  String get trophyNewTitle => 'নতুন ট্রফি!';
+
+  @override
+  String get trophyGotMessage => 'আপনি একটি ট্রফি পেয়েছেন!';
+
+  @override
+  String get trophyLater => 'পরে';
+
+  @override
+  String get trophyGoSee => 'গিয়ে দেখুন!';
+
+  @override
+  String get trophyLogin => 'লগইন';
+
+  @override
+  String get trophyShopping => 'শপিং';
+
+  @override
+  String get trophyLevel => 'লেভেল';
+
+  @override
+  String get trophyPoint => 'পয়েন্ট';
+
+  @override
+  String trophyLoginTitle(int target) {
+    return '$target দিন\nলগইন';
+  }
+
+  @override
+  String trophyLoginDesc(int target) {
+    return 'প্রমাণ যে আপনি $target দিনের জন্য অ্যাপটি ব্যবহার করেছেন';
+  }
+
+  @override
+  String trophyShopTitle(int target) {
+    return 'শপিং\n$target বার';
+  }
+
+  @override
+  String trophyShopDesc(int target) {
+    return 'প্রমাণ যে আপনি $target বার শপিং করেছেন';
+  }
+
+  @override
+  String trophyLevelTitle(int target) {
+    return 'লেভেল $target পৌঁছেছেন!';
+  }
+
+  @override
+  String trophyLevelDesc(int target) {
+    return 'প্রমাণ যে আপনি লেভেল $target পৌঁছেছেন';
+  }
+
+  @override
+  String trophyPointTitle(int target) {
+    return '$target পয়েন্ট';
+  }
+
+  @override
+  String trophyPointDesc(int target) {
+    return 'প্রমাণ যে আপনি $target পয়েন্ট সংগ্রহ করেছেন';
+  }
 }

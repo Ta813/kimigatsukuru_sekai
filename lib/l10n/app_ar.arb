@@ -760,7 +760,9 @@
   "paywallError": "حدث خطأ: {error}",
   "@paywallError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "paywallRestoreSuccess": "تمت استعادة المشتريات بنجاح!",
@@ -789,7 +791,9 @@
   "paywallJustPerMonth": "فقط {price}/شهر",
   "@paywallJustPerMonth": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "paywallPlanLifetime": "مدى الحياة",
@@ -848,7 +852,6 @@
       }
     }
   },
-  "upgradeToPremium": "الترقية إلى بريميوم",
   "paywallPromiseLimitBefore": "عدد محدود من الوعود",
   "paywallPromiseLimitAfter": "تسجيل وعود غير محدود!\nدعم قوي مهما كانت حياتك اليومية مزدحمة.",
   "setupDraggableTitle": "يمكن تحريك الصور الرمزية والشخصيات بحرية بإصبعك!",
@@ -878,13 +881,17 @@
   "initialSetupTimeTitle": "Time for {title}",
   "@initialSetupTimeTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "initialSetupTimeLabel": "Time: {time}",
   "@initialSetupTimeLabel": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
@@ -955,5 +962,80 @@
   "drawingCancel": "إلغاء",
   "drawingButton": "رسم",
   "stampSelectTitle": "اختر ملصقاً!",
-  "tutorialTimerBubble": "عندما تنتهي، اضغط هنا✨"
+  "tutorialTimerBubble": "عندما تنتهي، اضغط هنا✨",
+  "trophyRoom": "غرفة الكؤوس",
+  "trophyNone": "لا كؤوس بعد",
+  "trophyCleared": "اكتمل!",
+  "trophyNewTitle": "كأس جديد!",
+  "trophyGotMessage": "لقد حصلت على كأس!",
+  "trophyLater": "لاحقاً",
+  "trophyGoSee": "اذهب لرؤيته!",
+  "trophyLogin": "تسجيل الدخول",
+  "trophyShopping": "التسوق",
+  "trophyLevel": "المستوى",
+  "trophyPoint": "نقطة",
+  "trophyLoginTitle": "{target} أيام\nتسجيل الدخول",
+  "@trophyLoginTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLoginDesc": "دليل على استخدام التطبيق لـ {target} أيام",
+  "@trophyLoginDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopTitle": "تسوق\n{target} مرة",
+  "@trophyShopTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopDesc": "دليل على تسوقك {target} مرة",
+  "@trophyShopDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelTitle": "وصلت المستوى {target}!",
+  "@trophyLevelTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelDesc": "دليل على وصولك المستوى {target}",
+  "@trophyLevelDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointTitle": "{target} نقطة",
+  "@trophyPointTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointDesc": "دليل على جمع {target} نقطة",
+  "@trophyPointDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  }
 }

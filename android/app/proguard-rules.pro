@@ -1,3 +1,23 @@
+# -------------------------------------------------------
+# Flutter Engine Native Library (libflutter.so)
+# ReLinker を使って libflutter.so を読み込む際に R8 が
+# 関連クラスを削除・難読化するのを防ぐ
+# -------------------------------------------------------
+-keep class io.flutter.embedding.engine.** { *; }
+-keep class io.flutter.embedding.android.** { *; }
+-keep class io.flutter.plugin.** { *; }
+-keep class io.flutter.util.** { *; }
+-keep class io.flutter.view.** { *; }
+-keep class io.flutter.** { *; }
+
+# ReLinker: libflutter.so の読み込みに使われるライブラリ
+-keep class com.getkeepsafe.relinker.** { *; }
+
+# JNI経由で参照されるFlutterのネイティブメソッドを保護
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
 # Unity Ads Mediation
 -keep class com.unity3d.ads.** { *; }
 -keep class com.unity3d.services.** { *; }

@@ -1,6 +1,7 @@
 // lib/screens/child/furniture_customize_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/point_addition_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -395,6 +396,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               final todayStr = "${now.year}-${now.month}-${now.day}";
               // かいもの時：
               await prefs.setBool('daily_shop_done_$todayStr', true);
+
+              // 🌟 追加: お買い物後のトロフィーチェック
+              if (mounted) TrophyManager.checkAndShowTrophies(context);
 
               if (mounted) {
                 Navigator.pop(dialogContext);

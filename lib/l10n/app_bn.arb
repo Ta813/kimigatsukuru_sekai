@@ -760,7 +760,9 @@
   "paywallError": "একটি ত্রুটি ঘটেছে: {error}",
   "@paywallError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "paywallRestoreSuccess": "কেনাকাটা সফলভাবে পুনরুদ্ধার করা হয়েছে!",
@@ -789,7 +791,9 @@
   "paywallJustPerMonth": "মাত্র {price}/মাস",
   "@paywallJustPerMonth": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "paywallPlanLifetime": "আজীবন",
@@ -877,13 +881,17 @@
   "initialSetupTimeTitle": "Time for {title}",
   "@initialSetupTimeTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "initialSetupTimeLabel": "Time: {time}",
   "@initialSetupTimeLabel": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
@@ -954,5 +962,80 @@
   "drawingCancel": "বাতিল",
   "drawingButton": "আঁকা",
   "stampSelectTitle": "একটি স্ট্যাম্প বেছে নিন!",
-  "tutorialTimerBubble": "শেষ হলে এখানে চাপুন✨"
+  "tutorialTimerBubble": "শেষ হলে এখানে চাপুন✨",
+  "trophyRoom": "ট্রফি রুম",
+  "trophyNone": "এখনো কোনো ট্রফি নেই",
+  "trophyCleared": "সম্পন্ন!",
+  "trophyNewTitle": "নতুন ট্রফি!",
+  "trophyGotMessage": "আপনি একটি ট্রফি পেয়েছেন!",
+  "trophyLater": "পরে",
+  "trophyGoSee": "গিয়ে দেখুন!",
+  "trophyLogin": "লগইন",
+  "trophyShopping": "শপিং",
+  "trophyLevel": "লেভেল",
+  "trophyPoint": "পয়েন্ট",
+  "trophyLoginTitle": "{target} দিন\nলগইন",
+  "@trophyLoginTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLoginDesc": "প্রমাণ যে আপনি {target} দিনের জন্য অ্যাপটি ব্যবহার করেছেন",
+  "@trophyLoginDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopTitle": "শপিং\n{target} বার",
+  "@trophyShopTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopDesc": "প্রমাণ যে আপনি {target} বার শপিং করেছেন",
+  "@trophyShopDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelTitle": "লেভেল {target} পৌঁছেছেন!",
+  "@trophyLevelTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelDesc": "প্রমাণ যে আপনি লেভেল {target} পৌঁছেছেন",
+  "@trophyLevelDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointTitle": "{target} পয়েন্ট",
+  "@trophyPointTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointDesc": "প্রমাণ যে আপনি {target} পয়েন্ট সংগ্রহ করেছেন",
+  "@trophyPointDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -760,7 +760,9 @@
   "paywallError": "エラーが発生しました: {error}",
   "@paywallError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "paywallRestoreSuccess": "購入履歴を復元しました！",
@@ -789,7 +791,9 @@
   "paywallJustPerMonth": "わずか{price}/月",
   "@paywallJustPerMonth": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "paywallPlanLifetime": "買い切り",
@@ -848,7 +852,6 @@
       }
     }
   },
-  "upgradeToPremium": "プレミアムにアップグレード",
   "paywallPromiseLimitBefore": "やくそくの登録数に制限がある",
   "paywallPromiseLimitAfter": "やくそく登録も無制限！\nどんなに忙しい毎日でも、しっかりサポート。",
   "setupDraggableTitle": "アバターと キャラクターは\nゆびで 自由に うごかせるよ！",
@@ -878,13 +881,17 @@
   "initialSetupTimeTitle": "{title} の じかん",
   "@initialSetupTimeTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "initialSetupTimeLabel": "じかん: {time}",
   "@initialSetupTimeLabel": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "initialSetupGuidance": "ご家庭の せいかつリズムに あわせて\n毎日おこなう 「やくそく」の じかんを 設定してね！",
@@ -956,5 +963,80 @@
   "drawingCancel": "やめる",
   "drawingButton": "おえかき",
   "stampSelectTitle": "スタンプをえらぼう！",
-  "tutorialTimerBubble": "クリアしたら、ここをおしてね✨"
+  "tutorialTimerBubble": "クリアしたら、ここをおしてね✨",
+  "trophyRoom": "トロフィーおきば",
+  "trophyNone": "トロフィーがありません",
+  "trophyCleared": "クリア！",
+  "trophyNewTitle": "あたらしい トロフィー！",
+  "trophyGotMessage": "を ゲットしたよ！",
+  "trophyLater": "あとで",
+  "trophyGoSee": "みにいく！",
+  "trophyLogin": "ログイン",
+  "trophyShopping": "おかいもの",
+  "trophyLevel": "レベル",
+  "trophyPoint": "ポイント",
+  "trophyLoginTitle": "{target}にち\nログイン",
+  "@trophyLoginTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLoginDesc": "アプリを {target}日 つかった証",
+  "@trophyLoginDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopTitle": "おかいもの\n{target}かい",
+  "@trophyShopTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopDesc": "おみせで {target}回 お買い物をした証",
+  "@trophyShopDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelTitle": "レベル {target}\n到達！",
+  "@trophyLevelTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelDesc": "レベルを {target} まであげた証",
+  "@trophyLevelDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointTitle": "{target} \nポイント",
+  "@trophyPointTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointDesc": "ポイントを {target} 集めた証",
+  "@trophyPointDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  }
 }

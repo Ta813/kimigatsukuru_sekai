@@ -1,5 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 🌟 追加: デイリーミッションの状態取得用
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
@@ -507,6 +508,11 @@ class _MissionScreenState extends State<MissionScreen>
     await SharedPrefsHelper.claimMission(mission.id);
 
     await _loadMissions();
+
+    if (widget.isTutorialMode == false) {
+      // 🌟 追加: ミッション報酬で累計ポイントが増えた後のトロフィーチェック
+      if (mounted) TrophyManager.checkAndShowTrophies(context);
+    }
   }
 
   List<MissionItem> _missionsForCategory(MissionCategory category) {

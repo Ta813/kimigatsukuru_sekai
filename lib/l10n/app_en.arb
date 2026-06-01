@@ -760,7 +760,9 @@
   "paywallError": "An error occurred: {error}",
   "@paywallError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "paywallRestoreSuccess": "Purchases restored successfully!",
@@ -789,7 +791,9 @@
   "paywallJustPerMonth": "Just {price}/mo",
   "@paywallJustPerMonth": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "paywallPlanLifetime": "Lifetime",
@@ -848,7 +852,6 @@
       }
     }
   },
-  "upgradeToPremium": "Upgrade to Premium",
   "paywallPromiseLimitBefore": "Limited number of promises",
   "paywallPromiseLimitAfter": "Unlimited promise registration!\nSolid support no matter how busy your daily life is.",
   "setupDraggableTitle": "Avatars and characters can be moved freely with your finger!",
@@ -878,13 +881,17 @@
   "initialSetupTimeTitle": "Time for {title}",
   "@initialSetupTimeTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "initialSetupTimeLabel": "Time: {time}",
   "@initialSetupTimeLabel": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
@@ -955,5 +962,80 @@
   "drawingCancel": "Cancel",
   "drawingButton": "Draw",
   "stampSelectTitle": "Choose a stamp!",
-  "tutorialTimerBubble": "When you finish, press here✨"
+  "tutorialTimerBubble": "When you finish, press here✨",
+  "trophyRoom": "Trophy Room",
+  "trophyNone": "No trophies yet",
+  "trophyCleared": "Cleared!",
+  "trophyNewTitle": "New Trophy!",
+  "trophyGotMessage": "You got a trophy!",
+  "trophyLater": "Later",
+  "trophyGoSee": "Go see it!",
+  "trophyLogin": "Login",
+  "trophyShopping": "Shopping",
+  "trophyLevel": "Level",
+  "trophyPoint": "Point",
+  "trophyLoginTitle": "{target} Days\nLogin",
+  "@trophyLoginTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLoginDesc": "Proof you used the app for {target} days",
+  "@trophyLoginDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopTitle": "Shopping\n{target} times",
+  "@trophyShopTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopDesc": "Proof you shopped {target} times",
+  "@trophyShopDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelTitle": "Reached Level {target}!",
+  "@trophyLevelTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelDesc": "Proof you reached level {target}",
+  "@trophyLevelDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointTitle": "{target} Points",
+  "@trophyPointTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointDesc": "Proof you collected {target} points",
+  "@trophyPointDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  }
 }

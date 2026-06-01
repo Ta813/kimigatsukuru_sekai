@@ -714,7 +714,9 @@
   "paywallError": "एक त्रुटि हुई: {error}",
   "@paywallError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "paywallRestoreSuccess": "खरीदारी सफलतापूर्वक पुनर्स्थापित हो गई!",
@@ -743,7 +745,9 @@
   "paywallJustPerMonth": "केवल {price}/माह",
   "@paywallJustPerMonth": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "paywallPlanLifetime": "आजीवन",
@@ -802,7 +806,6 @@
       }
     }
   },
-  "upgradeToPremium": "प्रीमियम में अपग्रेड करें",
   "paywallPromiseLimitBefore": "वादों की सीमित संख्या",
   "paywallPromiseLimitAfter": "असीमित वादा पंजीकरण!\nआपका दैनिक जीवन कितना भी व्यस्त क्यों न हो, ठोस समर्थन।",
   "setupDraggableTitle": "अवतार और पात्रों को आपकी उंगली से स्वतंत्र रूप से घुमाया जा सकता है!",
@@ -832,13 +835,17 @@
   "initialSetupTimeTitle": "Time for {title}",
   "@initialSetupTimeTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "initialSetupTimeLabel": "Time: {time}",
   "@initialSetupTimeLabel": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
@@ -909,5 +916,80 @@
   "drawingCancel": "रद्द करें",
   "drawingButton": "ड्राइंग",
   "stampSelectTitle": "एक स्टैंप चुनें!",
-  "tutorialTimerBubble": "खत्म होने पर यहाँ दबाएँ✨"
+  "tutorialTimerBubble": "खत्म होने पर यहाँ दबाएँ✨",
+  "trophyRoom": "ट्रॉफी कक्ष",
+  "trophyNone": "अभी तक कोई ट्रॉफी नहीं",
+  "trophyCleared": "पूरा किया!",
+  "trophyNewTitle": "नई ट्रॉफी!",
+  "trophyGotMessage": "आपको एक ट्रॉफी मिली है!",
+  "trophyLater": "बाद में",
+  "trophyGoSee": "देखने जाओ!",
+  "trophyLogin": "लॉगिन",
+  "trophyShopping": "खरीदारी",
+  "trophyLevel": "स्तर",
+  "trophyPoint": "प्वाइंट",
+  "trophyLoginTitle": "{target} दिन\nलॉगिन",
+  "@trophyLoginTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLoginDesc": "सबूत कि आपने {target} दिनों के लिए ऐप का उपयोग किया",
+  "@trophyLoginDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopTitle": "खरीदारी\n{target} बार",
+  "@trophyShopTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopDesc": "सबूत कि आपने {target} बार खरीदारी की",
+  "@trophyShopDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelTitle": "स्तर {target} तक पहुँचे!",
+  "@trophyLevelTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelDesc": "सबूत कि आप स्तर {target} तक पहुँच गए",
+  "@trophyLevelDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointTitle": "{target} प्वाइंट",
+  "@trophyPointTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointDesc": "सबूत कि आपने {target} अंक एकत्र किए हैं",
+  "@trophyPointDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  }
 }

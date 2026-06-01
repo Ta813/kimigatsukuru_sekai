@@ -3,6 +3,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/animated_tap_finger.dart';
@@ -399,6 +400,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               final todayStr = "${now.year}-${now.month}-${now.day}";
               // かいもの時：
               await prefs.setBool('daily_shop_done_$todayStr', true);
+              if (!_showItemBlinking) {
+                // 🌟 追加: お買い物後のトロフィーチェック
+                if (mounted) TrophyManager.checkAndShowTrophies(context);
+              }
 
               if (mounted) {
                 Navigator.pop(dialogContext);

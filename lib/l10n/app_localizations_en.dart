@@ -2125,4 +2125,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialTimerBubble => 'When you finish, press here✨';
+
+  @override
+  String get trophyRoom => 'Trophy Room';
+
+  @override
+  String get trophyNone => 'No trophies yet';
+
+  @override
+  String get trophyCleared => 'Cleared!';
+
+  @override
+  String get trophyNewTitle => 'New Trophy!';
+
+  @override
+  String get trophyGotMessage => 'You got a trophy!';
+
+  @override
+  String get trophyLater => 'Later';
+
+  @override
+  String get trophyGoSee => 'Go see it!';
+
+  @override
+  String get trophyLogin => 'Login';
+
+  @override
+  String get trophyShopping => 'Shopping';
+
+  @override
+  String get trophyLevel => 'Level';
+
+  @override
+  String get trophyPoint => 'Point';
+
+  @override
+  String trophyLoginTitle(int target) {
+    return '$target Days\nLogin';
+  }
+
+  @override
+  String trophyLoginDesc(int target) {
+    return 'Proof you used the app for $target days';
+  }
+
+  @override
+  String trophyShopTitle(int target) {
+    return 'Shopping\n$target times';
+  }
+
+  @override
+  String trophyShopDesc(int target) {
+    return 'Proof you shopped $target times';
+  }
+
+  @override
+  String trophyLevelTitle(int target) {
+    return 'Reached Level $target!';
+  }
+
+  @override
+  String trophyLevelDesc(int target) {
+    return 'Proof you reached level $target';
+  }
+
+  @override
+  String trophyPointTitle(int target) {
+    return '$target Points';
+  }
+
+  @override
+  String trophyPointDesc(int target) {
+    return 'Proof you collected $target points';
+  }
 }

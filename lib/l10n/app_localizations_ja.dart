@@ -2125,4 +2125,77 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialTimerBubble => 'クリアしたら、ここをおしてね✨';
+
+  @override
+  String get trophyRoom => 'トロフィーおきば';
+
+  @override
+  String get trophyNone => 'トロフィーがありません';
+
+  @override
+  String get trophyCleared => 'クリア！';
+
+  @override
+  String get trophyNewTitle => 'あたらしい トロフィー！';
+
+  @override
+  String get trophyGotMessage => 'を ゲットしたよ！';
+
+  @override
+  String get trophyLater => 'あとで';
+
+  @override
+  String get trophyGoSee => 'みにいく！';
+
+  @override
+  String get trophyLogin => 'ログイン';
+
+  @override
+  String get trophyShopping => 'おかいもの';
+
+  @override
+  String get trophyLevel => 'レベル';
+
+  @override
+  String get trophyPoint => 'ポイント';
+
+  @override
+  String trophyLoginTitle(int target) {
+    return '$targetにち\nログイン';
+  }
+
+  @override
+  String trophyLoginDesc(int target) {
+    return 'アプリを $target日 つかった証';
+  }
+
+  @override
+  String trophyShopTitle(int target) {
+    return 'おかいもの\n$targetかい';
+  }
+
+  @override
+  String trophyShopDesc(int target) {
+    return 'おみせで $target回 お買い物をした証';
+  }
+
+  @override
+  String trophyLevelTitle(int target) {
+    return 'レベル $target\n到達！';
+  }
+
+  @override
+  String trophyLevelDesc(int target) {
+    return 'レベルを $target まであげた証';
+  }
+
+  @override
+  String trophyPointTitle(int target) {
+    return '$target \nポイント';
+  }
+
+  @override
+  String trophyPointDesc(int target) {
+    return 'ポイントを $target 集めた証';
+  }
 }

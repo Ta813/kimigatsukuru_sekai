@@ -73,10 +73,10 @@ class _TimerScreenState extends State<TimerScreen>
   int _boostMultiplier = 1;
 
   // 広告を表示するかどうかのフラグ（最初は絶対にfalseにしておく）
-  //bool _showAd = false;
+  bool _showAd = false;
 
   // 広告表示用の遅延タイマー
-  //Timer? _adDelayTimer;
+  Timer? _adDelayTimer;
 
   // この画面が表示された瞬間に、一度だけ呼ばれる初期化処理
   @override
@@ -110,15 +110,15 @@ class _TimerScreenState extends State<TimerScreen>
 
     _loadAndSetRandomCharacter();
 
-    // 🌟 画面が開いてから1分後（テスト時は seconds: 5 等）にフラグを true にする
-    // _adDelayTimer = Timer(const Duration(minutes: 1), () {
-    //   if (mounted) {
-    //     setState(() {
-    //       _showAd = true;
-    //     });
-    //     print("1分経過！AdBannerを表示します");
-    //   }
-    // });
+    // 🌟 画面が開いてから10秒後にフラグを true にする
+    _adDelayTimer = Timer(const Duration(seconds: 10), () {
+      if (mounted) {
+        setState(() {
+          _showAd = true;
+        });
+        print("10秒経過！AdBannerを表示します");
+      }
+    });
     _playFocusBgm();
   }
 
@@ -192,7 +192,7 @@ class _TimerScreenState extends State<TimerScreen>
     // ★画面が閉じられたら、スリープを有効に戻す（非常に重要！）
     WakelockPlus.disable();
     _timer?.cancel(); // タイマーが動いていたら、必ず停止する
-    //_adDelayTimer?.cancel();
+    _adDelayTimer?.cancel();
     super.dispose();
   }
 
@@ -1486,7 +1486,7 @@ class _TimerScreenState extends State<TimerScreen>
           ],
         ),
         // 画面下部にバナーを設置
-        bottomNavigationBar: _isTutorial ? null : const AdBanner(),
+        bottomNavigationBar: _isTutorial || !_showAd ? null : const AdBanner(),
       ),
     );
   }

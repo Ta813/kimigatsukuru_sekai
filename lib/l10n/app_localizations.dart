@@ -4158,6 +4158,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'When you finish, press here✨'**
   String get tutorialTimerBubble;
+
+  /// No description provided for @trophyRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Trophy Room'**
+  String get trophyRoom;
+
+  /// No description provided for @trophyNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No trophies yet'**
+  String get trophyNone;
+
+  /// No description provided for @trophyCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleared!'**
+  String get trophyCleared;
+
+  /// No description provided for @trophyNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Trophy!'**
+  String get trophyNewTitle;
+
+  /// No description provided for @trophyGotMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You got a trophy!'**
+  String get trophyGotMessage;
+
+  /// No description provided for @trophyLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get trophyLater;
+
+  /// No description provided for @trophyGoSee.
+  ///
+  /// In en, this message translates to:
+  /// **'Go see it!'**
+  String get trophyGoSee;
+
+  /// No description provided for @trophyLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get trophyLogin;
+
+  /// No description provided for @trophyShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get trophyShopping;
+
+  /// No description provided for @trophyLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get trophyLevel;
+
+  /// No description provided for @trophyPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point'**
+  String get trophyPoint;
+
+  /// No description provided for @trophyLoginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{target} Days\nLogin'**
+  String trophyLoginTitle(int target);
+
+  /// No description provided for @trophyLoginDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Proof you used the app for {target} days'**
+  String trophyLoginDesc(int target);
+
+  /// No description provided for @trophyShopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping\n{target} times'**
+  String trophyShopTitle(int target);
+
+  /// No description provided for @trophyShopDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Proof you shopped {target} times'**
+  String trophyShopDesc(int target);
+
+  /// No description provided for @trophyLevelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reached Level {target}!'**
+  String trophyLevelTitle(int target);
+
+  /// No description provided for @trophyLevelDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Proof you reached level {target}'**
+  String trophyLevelDesc(int target);
+
+  /// No description provided for @trophyPointTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{target} Points'**
+  String trophyPointTitle(int target);
+
+  /// No description provided for @trophyPointDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Proof you collected {target} points'**
+  String trophyPointDesc(int target);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

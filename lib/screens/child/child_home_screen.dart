@@ -14,6 +14,8 @@ import 'package:kimigatsukuru_sekai/helpers/image_share_helper.dart';
 import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
+import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
+import 'package:kimigatsukuru_sekai/screens/child/trophy_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/initial_setup_coordinator.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/settings_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/point_addition_screen.dart';
@@ -102,7 +104,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   late AnimationController _hintAnimationController;
   bool _hasUnclaimedMissions = true;
   bool _showMissionBlinking = false;
-  bool _hasVisitedPointAddition = true;
+  bool _hasVisitedPointAddition = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // 今日のやくそくの達成状況
@@ -353,7 +355,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           setState(() {
             _pointsAdded = earnedPoints;
           });
-          _animationController.forward(from: 0.0);
+          if (!_hasVisitedPointAddition) {
+            _animationController.forward(from: 0.0);
+          }
           _pointsAddedAnimationController.forward(from: 0.0);
         }
       }
@@ -497,6 +501,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       await SharedPrefsHelper.clearTodaysCompletedPromises();
       await SharedPrefsHelper.recordLoginDay();
       _loadAndDetermineDisplayPromise();
+
+      // 🌟 追加: ログイントロフィーのチェック
+      if (mounted) TrophyManager.checkAndShowTrophies(context);
     }
     await SharedPrefsHelper.saveLastActiveDate(todayStr);
     _scheduleMidnightRefresh();
@@ -747,13 +754,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       setState(() {
         _showMissionBlinking = true;
       });
-      // WidgetsBinding.instance.addPostFrameCallback((_) async {
-      //   await _showTutorialDialog(
-      //     title: AppLocalizations.of(context)!.tutorialMissionTitle,
-      //     content: AppLocalizations.of(context)!.tutorialMissionDesc,
-      //     buttonText: AppLocalizations.of(context)!.tutorialBtnMission,
-      //   );
-      // });
       return;
     }
   }
@@ -1480,10 +1480,18 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _pointsAdded = pointsAwarded;
         _experience += exp ?? 0;
       });
-      _animationController.forward(from: 0.0);
+      if (!_hasVisitedPointAddition) {
+        _animationController.forward(from: 0.0);
+      }
       _pointsAddedAnimationController.forward(from: 0.0);
-      _checkLevelUp();
       _loadAndDetermineDisplayPromise();
+
+      // チュートリアル中の場合はトロフィーチェック不要
+      if (!isInTutorial) {
+        _checkLevelUp();
+        // 🌟 追加: タイマー完了、レベルアップ後のトロフィーチェック
+        if (mounted) TrophyManager.checkAndShowTrophies(context);
+      }
 
       bool wasCustomizeStepShown = await SharedPrefsHelper.isTutorialStepShown(
         SharedPrefsHelper.tutorialStepCustomizeKey,
@@ -1498,13 +1506,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         setState(() {
           _showCustomizeBlinking = true;
         });
-        // WidgetsBinding.instance.addPostFrameCallback((_) async {
-        //   await _showTutorialDialog(
-        //     title: AppLocalizations.of(context)!.tutorialCustomizeTitle,
-        //     content: AppLocalizations.of(context)!.tutorialCustomizeDesc,
-        //     buttonText: AppLocalizations.of(context)!.tutorialBtnCustomize,
-        //   );
-        // });
         FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_dress_up');
       }
     } else {
@@ -2188,15 +2189,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         endDrawer: Drawer(
           width: MediaQuery.of(context).size.width * 0.7, // 画面幅の70%の広さ
           backgroundColor: const Color(0xFFFFF3E0),
-          child: Column(
+          child: ListView(
+            padding: EdgeInsets.zero,
             children: [
               // ドロワーのヘッダー（タイトル）
               Container(
-                height: 70,
+                height: 60,
                 width: double.infinity,
                 color: const Color(0xFFFF7043),
                 alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.only(left: 20, top: 30),
+                padding: const EdgeInsets.only(left: 20, top: 20),
                 child: Row(
                   children: [
                     const Icon(
@@ -2216,7 +2218,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
 
               // 👇 ① やくそくボードメニュー
               _buildDrawerItem(
@@ -2253,7 +2254,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       _pointsAdded = pointsFromBoard;
                       _experience += expFromBoard ?? 0;
                     });
-                    _animationController.forward(from: 0.0);
+                    if (!_hasVisitedPointAddition) {
+                      _animationController.forward(from: 0.0);
+                    }
                     _pointsAddedAnimationController.forward(from: 0.0);
                     await SharedPrefsHelper.addCumulativePoints(
                       pointsFromBoard,
@@ -2325,7 +2328,39 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
               const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
 
-              // 👇 ④ あそびかた（ヘルプ）メニュー
+              // ④トロフィールーム メニュー
+              _buildDrawerItem(
+                context: context,
+                icon: Icons.emoji_events, // トロフィーのアイコン
+                iconColor: Colors.amber, // ゴールド色
+                text: AppLocalizations.of(
+                  context,
+                )!.trophyRoom, // ※必要に応じてAppLocalizationsに追加してください
+                isTutorialBlinking: isAnyTutorialBlinking,
+                onTap: () async {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'start_child_home_trophy_room',
+                  );
+                  try {
+                    SfxManager.instance.playTapSound();
+                  } catch (e) {}
+
+                  // 作成したTrophyScreenへ遷移
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TrophyScreen(),
+                    ),
+                  ).then((_) {
+                    // 戻ってきた時に状態を更新したい場合はここに書く
+                    _loadAndDetermineDisplayPromise();
+                  });
+                },
+              ),
+
+              const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
+
+              // 👇 ⑤ あそびかた（ヘルプ）メニュー
               _buildDrawerItem(
                 context: context,
                 icon: Icons.help_outline,
@@ -2345,7 +2380,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
               const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
 
-              // 👇 ⑤ 設定メニュー
+              // ⑥ 設定メニュー
               _buildDrawerItem(
                 context: context,
                 icon: Icons.settings_outlined,
@@ -2643,7 +2678,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                   if (!isAnyTutorialBlinking &&
                                                       !_showStartBlinking) ...[
                                                     const SizedBox(width: 8),
-                                                    if (_isCurrentRewardAvailable)
+                                                    if (_isCurrentRewardAvailable &&
+                                                        !_hasVisitedPointAddition)
                                                       ScaleTransition(
                                                         scale:
                                                             Tween<double>(
@@ -2687,6 +2723,37 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                             ),
                                                           ],
                                                         ),
+                                                      )
+                                                    else if (_isCurrentRewardAvailable &&
+                                                        _hasVisitedPointAddition)
+                                                      Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          const Icon(
+                                                            Icons
+                                                                .play_circle_fill,
+                                                            color: Colors.black,
+                                                            size: 16,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 2,
+                                                          ),
+                                                          Text(
+                                                            AppLocalizations.of(
+                                                              context,
+                                                            )!.homeRewardAvailable,
+                                                            style:
+                                                                const TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                          ),
+                                                        ],
                                                       )
                                                     else
                                                       Text(
@@ -2856,6 +2923,34 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                   context,
                                                 )!.gotIt,
                                               );
+
+                                              // チュートリアル完了後にログインボーナス
+                                              int earnedPoints =
+                                                  await LoginBonusManager()
+                                                      .checkLoginBonus(context);
+
+                                              if (earnedPoints > 0 && mounted) {
+                                                try {
+                                                  SfxManager.instance
+                                                      .playSuccessSound();
+                                                } catch (e) {
+                                                  print('再生エラー: $e');
+                                                }
+                                                setState(() {
+                                                  _pointsAdded = earnedPoints;
+                                                });
+                                                _animationController.forward(
+                                                  from: 0.0,
+                                                );
+                                                _pointsAddedAnimationController
+                                                    .forward(from: 0.0);
+                                              }
+                                              // ログインボーナス後にトロフィーチェック
+                                              if (mounted) {
+                                                await TrophyManager.checkAndShowTrophies(
+                                                  context,
+                                                );
+                                              }
                                             }
 
                                             if (result != null &&
@@ -4227,6 +4322,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       child: Opacity(
         opacity: isTutorialBlinking ? 0.6 : 1.0,
         child: ListTile(
+          dense: true,
+          visualDensity: const VisualDensity(vertical: 0),
           leading: Icon(icon, color: iconColor, size: 26),
           title: Text(
             text,
@@ -4237,7 +4334,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 24,
+            horizontal: 12,
             vertical: 0,
           ),
           onTap: () {

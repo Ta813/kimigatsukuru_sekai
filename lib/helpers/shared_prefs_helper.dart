@@ -924,6 +924,13 @@ class SharedPrefsHelper {
     250,
     300,
     365, // 1周年！
+    400,
+    500,
+    600,
+    700,
+    800,
+    900,
+    1000,
   ];
 
   // --- 累計系ミッション（買い物） ---
@@ -944,6 +951,16 @@ class SharedPrefsHelper {
     200,
     225,
     250,
+    275,
+    300,
+    350,
+    400,
+    500,
+    600,
+    700,
+    800,
+    900,
+    1000,
   ];
 
   // --- 累計系ミッション（レベル） ---
@@ -1536,5 +1553,24 @@ class SharedPrefsHelper {
   static Future<void> setXFollowClaimedEver() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyXFollowClaimedEver, true);
+  }
+
+  // 🌟 追加：トロフィーの保存キー
+  static const String unlockedTrophiesKey = 'unlocked_trophies';
+
+  // 🌟 追加：獲得済みのトロフィーIDリストを読み込む
+  static Future<List<String>> loadUnlockedTrophies() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(unlockedTrophiesKey) ?? [];
+  }
+
+  // 🌟 追加：新しく獲得したトロフィーIDを保存する
+  static Future<void> addUnlockedTrophy(String trophyId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final list = prefs.getStringList(unlockedTrophiesKey) ?? [];
+    if (!list.contains(trophyId)) {
+      list.add(trophyId);
+      await prefs.setStringList(unlockedTrophiesKey, list);
+    }
   }
 }

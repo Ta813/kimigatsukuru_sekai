@@ -760,7 +760,9 @@
   "paywallError": "ایک خرابی پیش آ گئی: {error}",
   "@paywallError": {
     "placeholders": {
-      "error": { "type": "String" }
+      "error": {
+        "type": "String"
+      }
     }
   },
   "paywallRestoreSuccess": "خریداری کامیابی سے بحال ہو گئی!",
@@ -789,7 +791,9 @@
   "paywallJustPerMonth": "صرف {price}/ماہ",
   "@paywallJustPerMonth": {
     "placeholders": {
-      "price": { "type": "String" }
+      "price": {
+        "type": "String"
+      }
     }
   },
   "paywallPlanLifetime": "تاحیات",
@@ -877,13 +881,17 @@
   "initialSetupTimeTitle": "Time for {title}",
   "@initialSetupTimeTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "initialSetupTimeLabel": "Time: {time}",
   "@initialSetupTimeLabel": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
@@ -954,5 +962,80 @@
   "drawingCancel": "منسوخ کریں",
   "drawingButton": "ڈرائنگ",
   "stampSelectTitle": "ایک اسٹیمپ منتخب کریں!",
-  "tutorialTimerBubble": "جب ختم ہو جائے تو یہاں دبائیں✨"
+  "tutorialTimerBubble": "جب ختم ہو جائے تو یہاں دبائیں✨",
+  "trophyRoom": "ٹرافی روم",
+  "trophyNone": "ابھی تک کوئی ٹرافی نہیں",
+  "trophyCleared": "مکمل!",
+  "trophyNewTitle": "نئی ٹرافی!",
+  "trophyGotMessage": "آپ کو ایک ٹرافی ملی ہے!",
+  "trophyLater": "بعد میں",
+  "trophyGoSee": "جا کر دیکھیں!",
+  "trophyLogin": "لاگ ان",
+  "trophyShopping": "شاپنگ",
+  "trophyLevel": "لیول",
+  "trophyPoint": "پوائنٹ",
+  "trophyLoginTitle": "{target} دن\nلاگ ان",
+  "@trophyLoginTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLoginDesc": "ثبوت کہ آپ نے {target} دن تک ایپ استعمال کی",
+  "@trophyLoginDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopTitle": "شاپنگ\n{target} بار",
+  "@trophyShopTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyShopDesc": "ثبوت کہ آپ نے {target} بار شاپنگ کی",
+  "@trophyShopDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelTitle": "لیول {target} تک پہنچ گئے!",
+  "@trophyLevelTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyLevelDesc": "ثبوت کہ آپ لیول {target} تک پہنچ گئے",
+  "@trophyLevelDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointTitle": "{target} پوائنٹس",
+  "@trophyPointTitle": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "trophyPointDesc": "ثبوت کہ آپ نے {target} پوائنٹس جمع کیے",
+  "@trophyPointDesc": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  }
 }

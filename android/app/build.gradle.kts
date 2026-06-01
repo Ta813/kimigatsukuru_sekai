@@ -63,6 +63,14 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
+    // libflutter.so を非圧縮で格納し、一部デバイスでのロード失敗を防ぐ
+    // （android.bundle.enableUncompressedNativeLibs の後継設定）
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 dependencies {

@@ -389,7 +389,9 @@ PreferredSizeWidget buildSetupAppBar(
   int? currentStep,
   int? totalSteps,
 ) {
-  final progress = currentStep! / totalSteps!;
+  final safeStep = currentStep ?? 1;
+  final safeTotal = totalSteps ?? 1;
+  final progress = safeStep / safeTotal;
   return AppBar(
     backgroundColor: Colors.white,
     elevation: 0,
@@ -411,7 +413,7 @@ PreferredSizeWidget buildSetupAppBar(
               Text(
                 AppLocalizations.of(
                   context,
-                )!.setupStepProgress(currentStep, totalSteps),
+                )!.setupStepProgress(safeStep, safeTotal),
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.black54,
@@ -419,7 +421,7 @@ PreferredSizeWidget buildSetupAppBar(
                 ),
               ),
               Text(
-                "${(progress * 100).toInt()}%",
+                '${(progress * 100).toInt()}%',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Color(0xFFFF7043),
@@ -515,14 +517,14 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
     final accessory = await SharedPrefsHelper.loadEquippedAccessory();
     final characters = await SharedPrefsHelper.loadEquippedCharacters();
 
-    late double screenWidth;
-    late double screenHeight;
+    if (!mounted) return;
 
     // 画面サイズを取得
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
+    final size = MediaQuery.of(context).size;
+    final screenWidth = size.width;
+    final screenHeight = size.height;
 
-    final loadedPositions = {};
+    final Map<String, Offset> loadedPositions = {};
     final charactersToLoad = characters.isEmpty
         ? ['assets/images/character_usagi.gif']
         : characters;
@@ -534,6 +536,8 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
       loadedPositions[charPath] =
           loadedPos ?? Offset(screenWidth * 0.65, screenHeight * 0.45);
     }
+
+    if (!mounted) return;
 
     setState(() {
       _equippedFace = face ?? 'assets/images/face/face_default.png';
@@ -689,20 +693,27 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
               ),
 
             // 応援キャラクターの表示と操作
-            ..._equippedCharacters.map((charPath) {
-              return DraggableCharacter(
-                id: 'setup_$charPath',
-                imagePath: charPath,
-                position: _characterPositionsMap[charPath]!,
-                size: 90,
-                onPositionChanged: (delta) {
-                  setState(() {
-                    _characterPositionsMap[charPath] =
-                        _characterPositionsMap[charPath]! + delta;
-                  });
-                },
-              );
-            }).toList(),
+            ..._equippedCharacters
+                .where(
+                  (charPath) => _characterPositionsMap.containsKey(charPath),
+                )
+                .map((charPath) {
+                  return DraggableCharacter(
+                    id: 'setup_$charPath',
+                    imagePath: charPath,
+                    position: _characterPositionsMap[charPath]!,
+                    size: 90,
+                    onPositionChanged: (delta) {
+                      setState(() {
+                        final current = _characterPositionsMap[charPath];
+                        if (current != null) {
+                          _characterPositionsMap[charPath] = current + delta;
+                        }
+                      });
+                    },
+                  );
+                })
+                .toList(),
 
             if (_itemPos != null)
               DraggableCharacter(

@@ -2125,4 +2125,77 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialTimerBubble => 'عندما تنتهي، اضغط هنا✨';
+
+  @override
+  String get trophyRoom => 'غرفة الكؤوس';
+
+  @override
+  String get trophyNone => 'لا كؤوس بعد';
+
+  @override
+  String get trophyCleared => 'اكتمل!';
+
+  @override
+  String get trophyNewTitle => 'كأس جديد!';
+
+  @override
+  String get trophyGotMessage => 'لقد حصلت على كأس!';
+
+  @override
+  String get trophyLater => 'لاحقاً';
+
+  @override
+  String get trophyGoSee => 'اذهب لرؤيته!';
+
+  @override
+  String get trophyLogin => 'تسجيل الدخول';
+
+  @override
+  String get trophyShopping => 'التسوق';
+
+  @override
+  String get trophyLevel => 'المستوى';
+
+  @override
+  String get trophyPoint => 'نقطة';
+
+  @override
+  String trophyLoginTitle(int target) {
+    return '$target أيام\nتسجيل الدخول';
+  }
+
+  @override
+  String trophyLoginDesc(int target) {
+    return 'دليل على استخدام التطبيق لـ $target أيام';
+  }
+
+  @override
+  String trophyShopTitle(int target) {
+    return 'تسوق\n$target مرة';
+  }
+
+  @override
+  String trophyShopDesc(int target) {
+    return 'دليل على تسوقك $target مرة';
+  }
+
+  @override
+  String trophyLevelTitle(int target) {
+    return 'وصلت المستوى $target!';
+  }
+
+  @override
+  String trophyLevelDesc(int target) {
+    return 'دليل على وصولك المستوى $target';
+  }
+
+  @override
+  String trophyPointTitle(int target) {
+    return '$target نقطة';
+  }
+
+  @override
+  String trophyPointDesc(int target) {
+    return 'دليل على جمع $target نقطة';
+  }
 }
