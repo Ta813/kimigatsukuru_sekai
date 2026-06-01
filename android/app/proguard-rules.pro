@@ -56,3 +56,5 @@
     android.app.PendingIntent *;
     android.content.IntentSender *;
 }
+
+-dontwarn com.google.android.play.core.**
