@@ -657,7 +657,7 @@
   "tutorialResumeDesc": "आप ट्यूटोरियल के बीच में हैं।\nआइए फिर से शुरू करें!",
   "tutorialResumeBtn": "फिर से शुरू करें",
   "tutorialFirstPromiseCompleteTitle": "आप खेलना सीख गए!",
-  "tutorialFirstPromiseCompleteDesc": "खेलने के तरीके का अभ्यास यहीं समाप्त होता है!\nहर दिन 'वादे' पूरे करें,\nऔर अपनी खुद की दुनिया का विस्तार करें!",
+  "tutorialFirstPromiseCompleteDesc": "आपने **वादे का ट्रायल** पूरा कर लिया है!\nअपना इनाम पाने के लिए मिशन स्क्रीन पर जाएँ!",
   "missionHintBubble": "आप यहाँ से मिशन कर सकते हैं!",
   "helpMenuPromiseSettings": "वादे सेट करें",
   "missionTutorialBonusChance": "ट्यूटोरियल पूरा करके\n200 पॉइंट पाने का मौका!!",
@@ -759,8 +759,8 @@
   "setupAge8to12": "8 - 12 साल",
   "setupAge13to18": "13 - 18 साल",
   "setupAgeAdult": "18+ (अभिभावक)",
-  "setupIntroMessage": "आइए ऐप सेटअप करना शुरू करें!\nइसमें लगभग 3 मिनट लगेंगे।",
-  "setupIntroNext": "अगला",
+  "setupIntroMessage": "आइए आपकी अपनी दुनिया बनाएं!\nअपना अवतार और एक साथी चुनें!\n(*आप इन्हें बाद में बदल सकते हैं)",
+  "setupIntroNext": "चलिए बनाते हैं!",
   "setupFinishTitle100": "सेटअप 100% पूरा हुआ!",
   "setupFinishMessage": "सेटअप पूरा हो गया है!\nआइए तुरंत अनुभव करें कि कैसे खेलना है!",
   "setupProgressComplete": "सेटअप {progress}% पूरा हुआ!",
@@ -848,7 +848,7 @@
       }
     }
   },
-  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
+  "initialSetupGuidance": "अपने रोज़ के 'वादों' का समय सेट करें!\n(*आप इसे बाद में 'पेरेंट सेटिंग्स' से बदल सकते हैं)",
   "pointAdditionTitle": "पॉइंट्स जोड़ें",
   "pointAdditionAdTitle": "📺 दिन में 3 बार मुफ़्त पॉइंट्स पाएं!",
   "pointAdditionAdButton": "वीडियो देखकर {points}P पाएं!",
@@ -991,5 +991,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupSkipButton": "अभी के लिए छोड़ें\n(आप बाद में बदल सकते हैं)"
 }

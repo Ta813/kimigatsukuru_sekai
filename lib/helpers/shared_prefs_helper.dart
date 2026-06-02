@@ -815,7 +815,6 @@ class SharedPrefsHelper {
   static const String tutorialStepShopKey = 'tutorial_step_shop_shown';
   static const String tutorialStepCustomizeKey =
       'tutorial_step_customize_shown';
-  static const String tutorialStepMissionKey = 'tutorial_step_mission_shown';
   static const String tutorialStepMoveKey = 'tutorial_step_move_shown';
   static const String tutorialStepParentSetupShownKey =
       'tutorial_step_parent_setup_shown';

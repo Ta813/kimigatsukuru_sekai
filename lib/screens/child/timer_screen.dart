@@ -856,8 +856,6 @@ class _TimerScreenState extends State<TimerScreen>
 
     // やくそく回数を加算
     await SharedPrefsHelper.incrementPromiseCount();
-    // 累計ポイントを加算
-    await SharedPrefsHelper.addCumulativePoints(pointsAwarded);
 
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop<Map<String, dynamic>>({

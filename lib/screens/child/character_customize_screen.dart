@@ -45,7 +45,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   int _currentLevel = 1;
   int _currentPoints = 0;
 
-  int _setupStep = 0;
+  int _setupStep = 1;
   late PageController _setupPageController;
   String? _setupSelectedCharacter;
 
@@ -518,13 +518,9 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       valueListenable: PurchaseManager.instance.isPremium,
       builder: (context, isPremium, child) {
         return PopScope(
-          canPop: !widget.isInitialSetup && _currentView == CustomizeView.menu,
+          canPop: !widget.isInitialSetup,
           onPopInvoked: (didPop) {
-            if (!didPop && !widget.isInitialSetup) {
-              setState(() {
-                _currentView = CustomizeView.menu;
-              });
-            }
+            // 中間のメニューに戻る処理を削除し、そのままホームへ戻るようにしました
           },
           child: _buildCurrentView(),
         );
@@ -564,150 +560,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   // 初回起動時のセットアップ
   Widget _buildInitialSetupScreen() {
     final localizations = AppLocalizations.of(context)!;
-
-    if (_setupStep == 0) {
-      final progress = widget.currentStep! / widget.totalSteps!;
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          toolbarHeight: 48,
-          leading: BackButton(
-            color: Colors.black54,
-            onPressed: () =>
-                Navigator.pop(context, false), // 戻る時は false(null扱い) を返す
-          ),
-          titleSpacing: 0,
-          title: Padding(
-            padding: const EdgeInsets.only(right: 24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)!.setupStepProgress(
-                        widget.currentStep!,
-                        widget.totalSteps!,
-                      ),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54,
-                        fontSize: 12,
-                      ),
-                    ),
-                    Text(
-                      "${(progress * 100).toInt()}%",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFFF7043),
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    backgroundColor: const Color(0xFFFF7043).withOpacity(0.2),
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      Color(0xFFFF7043),
-                    ),
-                    minHeight: 4,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        backgroundColor: const Color(0xFFFFF3E0),
-        body: SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    AvatarDisplay(
-                      face: _equippedFace,
-                      hair: _equippedHair,
-                      clothes: _equippedClothes,
-                      size: 100,
-                    ),
-                    const SizedBox(width: 20),
-                    Image.asset(
-                      'assets/images/character_usagi.gif',
-                      height: 100,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  localizations.setupWelcomeMessage,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    height: 1.5,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Stack(
-                  clipBehavior: Clip.none,
-                  alignment: Alignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {}
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'setup_child_1_start',
-                        );
-                        setState(() {
-                          _setupStep++;
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF7043),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 48,
-                          vertical: 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        elevation: 4,
-                      ),
-                      child: Text(
-                        localizations.chooseButton,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: AnimatedTapFinger(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
 
     String title = '';
 
@@ -829,22 +681,33 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
 
                         if (step == 1) {
                           pageItems = shopItems
-                              .where((i) => i.type == 'hair')
+                              .where(
+                                (i) => i.type == 'hair' && i.requiredLevel == 1,
+                              )
                               .toList();
                           pageEquippedPath = _equippedHair;
                         } else if (step == 2) {
                           pageItems = shopItems
-                              .where((i) => i.type == 'face')
+                              .where(
+                                (i) => i.type == 'face' && i.requiredLevel == 1,
+                              )
                               .toList();
                           pageEquippedPath = _equippedFace;
                         } else if (step == 3) {
                           pageItems = shopItems
-                              .where((i) => i.type == 'clothes')
+                              .where(
+                                (i) =>
+                                    i.type == 'clothes' && i.requiredLevel == 1,
+                              )
                               .toList();
                           pageEquippedPath = _equippedClothes;
                         } else if (step == 4) {
                           pageItems = shopItems
-                              .where((i) => i.type == 'character')
+                              .where(
+                                (i) =>
+                                    i.type == 'character' &&
+                                    i.requiredLevel == 1,
+                              )
                               .toList();
                           pageEquippedPath = _setupSelectedCharacter;
                         }
@@ -1009,84 +872,145 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             ),
           ],
         ),
-        child: ElevatedButton(
-          onPressed: () async {
-            try {
-              SfxManager.instance.playTapSound();
-            } catch (e) {}
-
-            if (_setupStep < 4) {
-              if (_setupStep == 1) {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'setup_child_2_start',
-                );
-              } else if (_setupStep == 2) {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'setup_child_3_start',
-                );
-              } else if (_setupStep == 3) {
-                FirebaseAnalytics.instance.logEvent(
-                  name: 'setup_child_4_start',
-                );
-              }
-              _setupPageController.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            } else {
-              FirebaseAnalytics.instance.logEvent(name: 'setup_child_finish');
-
-              Future<void> saveItem(
-                String? path,
-                Future<void> Function(String) saveFunc,
-              ) async {
-                if (path != null) {
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center, // 中央寄せ
+          children: [
+            // 🌟 追加：スキップボタン（ステップ1〜3の時だけ表示）
+            if (_setupStep < 4) ...[
+              TextButton(
+                onPressed: () async {
                   try {
-                    final item = shopItems.firstWhere(
-                      (i) => i.imagePath == path,
-                    );
-                    await saveFunc(path);
-                    if (!_purchasedItemNames.contains(item.name)) {
-                      await SharedPrefsHelper.addPurchasedItem(item.name);
-                      _purchasedItemNames.add(item.name);
-                    }
+                    SfxManager.instance.playTapSound();
                   } catch (e) {}
+
+                  // スキップのログを送信
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'setup_child_skipped',
+                  );
+
+                  await SharedPrefsHelper.saveEquippedCharacters([
+                    'assets/images/character_usagi.gif',
+                  ]);
+
+                  await SharedPrefsHelper.addPurchasedItem('ウサギ');
+
+                  // 完了処理へ（ステップ4を飛ばすのと同じ処理）
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'setup_child_finish',
+                  );
+                  if (!mounted) return;
+                  Navigator.pop(context, true); // trueで完了（次の親設定へ）
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ), // 押しやすく
+                ),
+                child: Text(
+                  localizations.setupSkipButton,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12, // 🌟 小さくして2行に収める
+                    color: Colors.grey,
+                    decoration: TextDecoration.underline,
+                    height: 1.2, // 行間を詰める
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16), // ボタン間の隙間
+            ],
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (e) {}
+
+                if (_setupStep < 4) {
+                  if (_setupStep == 1) {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'setup_child_2_start',
+                    );
+                  } else if (_setupStep == 2) {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'setup_child_3_start',
+                    );
+                  } else if (_setupStep == 3) {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'setup_child_4_start',
+                    );
+                  }
+                  _setupPageController.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                } else {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: 'setup_child_finish',
+                  );
+
+                  Future<void> saveItem(
+                    String? path,
+                    Future<void> Function(String) saveFunc,
+                  ) async {
+                    if (path != null) {
+                      try {
+                        final item = shopItems.firstWhere(
+                          (i) => i.imagePath == path,
+                        );
+                        await saveFunc(path);
+                        if (!_purchasedItemNames.contains(item.name)) {
+                          await SharedPrefsHelper.addPurchasedItem(item.name);
+                          _purchasedItemNames.add(item.name);
+                        }
+                      } catch (e) {}
+                    }
+                  }
+
+                  await saveItem(
+                    _equippedHair,
+                    SharedPrefsHelper.saveEquippedHairstyle,
+                  );
+                  await saveItem(
+                    _equippedFace,
+                    SharedPrefsHelper.saveEquippedFace,
+                  );
+                  await saveItem(
+                    _equippedClothes,
+                    SharedPrefsHelper.saveEquippedClothes,
+                  );
+                  await saveItem(
+                    _setupSelectedCharacter,
+                    (p) => SharedPrefsHelper.saveEquippedCharacters([p]),
+                  );
+
+                  if (!mounted) return;
+                  Navigator.pop(context, true);
                 }
-              }
-
-              await saveItem(
-                _equippedHair,
-                SharedPrefsHelper.saveEquippedHairstyle,
-              );
-              await saveItem(_equippedFace, SharedPrefsHelper.saveEquippedFace);
-              await saveItem(
-                _equippedClothes,
-                SharedPrefsHelper.saveEquippedClothes,
-              );
-              await saveItem(
-                _setupSelectedCharacter,
-                (p) => SharedPrefsHelper.saveEquippedCharacters([p]),
-              );
-
-              if (!mounted) return;
-              Navigator.pop(context, true);
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFF7043),
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF7043),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 48,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                elevation: 4,
+              ),
+              child: Text(
+                _setupStep == 4
+                    ? localizations.startWithThis
+                    : localizations.nextButton,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            elevation: 4,
-          ),
-          child: Text(
-            _setupStep == 4
-                ? localizations.startWithThis
-                : localizations.nextButton,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+          ],
         ),
       ),
     );
@@ -1310,9 +1234,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               try {
                 SfxManager.instance.playTapSound();
               } catch (e) {}
-              setState(() {
-                _currentView = CustomizeView.menu;
-              });
+              // 🌟 変更: メニューに戻るのではなく、画面自体を閉じてホームへ帰る！
+              Navigator.pop(context);
             },
           ),
           if (_showBackButtonBlinking)

@@ -1616,7 +1616,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'খেলার নিয়ম শিখে গেছো!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'কীভাবে খেলতে হয় তার অনুশীলন এখানেই শেষ!\nপ্রতিদিন \'প্রতিশ্রুতি\' পূরণ করো,\nএবং তোমার নিজের জগতকে প্রসারিত করো!';
+  String get tutorialFirstPromiseCompleteDesc => 'আপনি **প্রতিশ্রুতির ট্রায়াল** সম্পন্ন করেছেন!\nআপনার পুরস্কার সংগ্রহ করতে মিশন স্ক্রিনে যান!';
 
   @override
   String get missionHintBubble => 'আপনি এখান থেকে মিশন করতে পারেন!';
@@ -1846,10 +1846,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get setupAgeAdult => '১৮+ (অভিভাবক)';
 
   @override
-  String get setupIntroMessage => 'চলুন অ্যাপটি সেট আপ করা শুরু করি!\nএতে প্রায় ৩ মিনিট সময় লাগবে।';
+  String get setupIntroMessage => 'চলো তোমার নিজস্ব পৃথিবী তৈরি করি!\nতোমার অ্যাভাটার এবং একজন সঙ্গী বেছে নাও!\n(*তুমি এগুলো পরে পরিবর্তন করতে পারবে)';
 
   @override
-  String get setupIntroNext => 'পরবর্তী';
+  String get setupIntroNext => 'চলো তৈরি করি!';
 
   @override
   String get setupFinishTitle100 => 'সেটআপ ১০০% সম্পন্ন!';
@@ -1971,7 +1971,7 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
+  String get initialSetupGuidance => 'আপনার প্রতিদিনের \'প্রতিশ্রুতি\'-এর সময় সেট করুন!\n(*আপনি পরে \'প্যারেন্ট সেটিংস\' থেকে এটি পরিবর্তন করতে পারবেন)';
 
   @override
   String get pointAdditionTitle => 'পয়েন্ট যোগ করুন';
@@ -2198,4 +2198,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String trophyPointDesc(int target) {
     return 'প্রমাণ যে আপনি $target পয়েন্ট সংগ্রহ করেছেন';
   }
+
+  @override
+  String get setupSkipButton => 'আপাতত এড়িয়ে যান\n(আপনি পরে পরিবর্তন করতে পারবেন)';
 }

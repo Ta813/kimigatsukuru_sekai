@@ -1616,7 +1616,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'あそびかた マスター！';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'これで あそびかたの れんしゅうは おわりだよ！\nまいにち「やくそく」を クリアして、\nきみだけの せかいを ひろげていこう！';
+  String get tutorialFirstPromiseCompleteDesc => 'これで**やくそくの体験**は完了です！\nミッション画面でごほうびを受け取ろう!';
 
   @override
   String get missionHintBubble => 'ここからミッションができるよ！';
@@ -1846,10 +1846,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get setupAgeAdult => '18さい 〜 (ほごしゃ)';
 
   @override
-  String get setupIntroMessage => 'アプリの せってい を はじめます！\nおよそ 3分 ていどで おわります。';
+  String get setupIntroMessage => 'きみだけの『せかい』をつくろう！\nじぶんの すがた と なかま を えらぼう！\n（※あとから かえられるよ）';
 
   @override
-  String get setupIntroNext => 'つぎへ';
+  String get setupIntroNext => 'さっそく つくる！';
 
   @override
   String get setupFinishTitle100 => 'セットアップ 100% かんりょう！';
@@ -1971,7 +1971,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get initialSetupGuidance => 'ご家庭の せいかつリズムに あわせて\n毎日おこなう 「やくそく」の じかんを 設定してね！';
+  String get initialSetupGuidance => '毎日おこなう 「やくそく」の 時間を 設定してね！\n※あとで 「おやの設定」から 変更 できます';
 
   @override
   String get pointAdditionTitle => 'ポイントをふやす';
@@ -2198,4 +2198,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String trophyPointDesc(int target) {
     return 'ポイントを $target 集めた証';
   }
+
+  @override
+  String get setupSkipButton => '今はスキップ\n(あとでおきがえできます)';
 }

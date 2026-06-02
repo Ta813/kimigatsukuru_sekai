@@ -703,7 +703,7 @@
   "tutorialResumeDesc": "أنت في منتصف البرنامج التعليمي.\nدعنا نستأنف!",
   "tutorialResumeBtn": "استئناف",
   "tutorialFirstPromiseCompleteTitle": "لقد أتقنت طريقة اللعب!",
-  "tutorialFirstPromiseCompleteDesc": "هنا ينتهي التدريب على كيفية اللعب!\nأكمل 'وعودك' كل يوم،\nووسع عالمك الخاص بك!",
+  "tutorialFirstPromiseCompleteDesc": "لقد أكملت **تجربة الوعد**!\nانتقل إلى شاشة المهام للحصول على مكافأتك!",
   "missionHintBubble": "يمكنك أداء المهام من هنا!",
   "helpMenuPromiseSettings": "إعداد المهام",
   "missionTutorialBonusChance": "فرصة للحصول على\n200 نقطة بإكمال البرنامج التعليمي!!",
@@ -805,8 +805,8 @@
   "setupAge8to12": "8 - 12 سنة",
   "setupAge13to18": "13 - 18 سنة",
   "setupAgeAdult": "18+ (ولي الأمر)",
-  "setupIntroMessage": "لنبدأ إعداد التطبيق!\nسيستغرق الأمر حوالي 3 دقائق.",
-  "setupIntroNext": "التالي",
+  "setupIntroMessage": "لنصنع عالمك الخاص!\nاختر شخصيتك ورفيقك!\n(*يمكنك تغييرها لاحقًا)",
+  "setupIntroNext": "لنبدأ الصنع!",
   "setupFinishTitle100": "اكتمل الإعداد بنسبة 100%!",
   "setupFinishMessage": "اكتمل الإعداد!\nدعنا نجرب طريقة اللعب على الفور!",
   "setupProgressComplete": "اكتمل الإعداد بنسبة {progress}%!",
@@ -894,7 +894,7 @@
       }
     }
   },
-  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
+  "initialSetupGuidance": "حدد وقت 'الوعود' اليومية!\n(*يمكنك تغييره لاحقًا من 'إعدادات الوالدين')",
   "pointAdditionTitle": "إضافة نقاط",
   "pointAdditionAdTitle": "📺 احصل على نقاط مجانًا 3 مرات يوميًا!",
   "pointAdditionAdButton": "شاهد فيديو واحصل على {points}P!",
@@ -1037,5 +1037,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupSkipButton": "تخطي الآن\n(يمكنك التغيير لاحقًا)"
 }

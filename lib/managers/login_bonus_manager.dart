@@ -125,7 +125,7 @@ class LoginBonusManager {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // 左側の衣装画像
-                Image.asset('assets/images/character_panda.gif', height: 60),
+                Image.asset('assets/images/character_hime.gif', height: 60),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {

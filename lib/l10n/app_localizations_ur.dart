@@ -1616,7 +1616,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'آپ کھیلنا سیکھ گئے!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'کھیلنے کے طریقے کی مشق یہیں ختم ہوتی ہے!\nہر دن \'وعدے\' پورے کریں،\nاور اپنی خود کی دنیا کو وسیع کریں!';
+  String get tutorialFirstPromiseCompleteDesc => 'آپ نے **وعدے کا ٹرائل** مکمل کر لیا ہے!\nاپنا انعام حاصل کرنے کے لیے مشن اسکرین پر جائیں!';
 
   @override
   String get missionHintBubble => 'آپ یہاں سے مشن کر سکتے ہیں!';
@@ -1846,10 +1846,10 @@ class AppLocalizationsUr extends AppLocalizations {
   String get setupAgeAdult => '18+ (والدین/سرپرست)';
 
   @override
-  String get setupIntroMessage => 'آئیے ایپ سیٹ اپ کرنا شروع کریں!\nاس میں تقریباً 3 منٹ لگیں گے۔';
+  String get setupIntroMessage => 'آئیے آپ کی اپنی دنیا بنائیں!\nاپنا اوتار اور ایک ساتھی منتخب کریں!\n(*آپ انہیں بعد میں تبدیل کر سکتے ہیں)';
 
   @override
-  String get setupIntroNext => 'اگلا';
+  String get setupIntroNext => 'آئیے بناتے ہیں!';
 
   @override
   String get setupFinishTitle100 => 'سیٹ اپ 100% مکمل ہو گیا!';
@@ -1971,7 +1971,7 @@ class AppLocalizationsUr extends AppLocalizations {
   }
 
   @override
-  String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
+  String get initialSetupGuidance => 'اپنے روزمرہ کے \'وعدوں\' کا وقت سیٹ کریں!\n(*آپ اسے بعد میں \'پیرنٹ سیٹنگز\' سے تبدیل کر سکتے ہیں)';
 
   @override
   String get pointAdditionTitle => 'پوائنٹس شامل کریں';
@@ -2198,4 +2198,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String trophyPointDesc(int target) {
     return 'ثبوت کہ آپ نے $target پوائنٹس جمع کیے';
   }
+
+  @override
+  String get setupSkipButton => 'ابھی کے لیے چھوڑیں\n(آپ بعد میں تبدیل کر سکتے ہیں)';
 }

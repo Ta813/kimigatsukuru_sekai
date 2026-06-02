@@ -703,7 +703,7 @@
   "tutorialResumeDesc": "チュートリアルの とちゅうだったね。\nつづきから はじめるよ！",
   "tutorialResumeBtn": "つづきから",
   "tutorialFirstPromiseCompleteTitle": "あそびかた マスター！",
-  "tutorialFirstPromiseCompleteDesc": "これで あそびかたの れんしゅうは おわりだよ！\nまいにち「やくそく」を クリアして、\nきみだけの せかいを ひろげていこう！",
+  "tutorialFirstPromiseCompleteDesc": "これで**やくそくの体験**は完了です！\nミッション画面でごほうびを受け取ろう!",
   "missionHintBubble": "ここからミッションができるよ！",
   "helpMenuPromiseSettings": "やくそくの設定",
   "missionTutorialBonusChance": "チュートリアル完了で\n200ポイントゲットのチャンス！！",
@@ -805,8 +805,8 @@
   "setupAge8to12": "8 〜 12さい",
   "setupAge13to18": "13 〜 18さい",
   "setupAgeAdult": "18さい 〜 (ほごしゃ)",
-  "setupIntroMessage": "アプリの せってい を はじめます！\nおよそ 3分 ていどで おわります。",
-  "setupIntroNext": "つぎへ",
+  "setupIntroMessage": "きみだけの『せかい』をつくろう！\nじぶんの すがた と なかま を えらぼう！\n（※あとから かえられるよ）",
+  "setupIntroNext": "さっそく つくる！",
   "setupFinishTitle100": "セットアップ 100% かんりょう！",
   "setupFinishMessage": "せってい が おわったよ！\nさっそく あそびかたを たいけんしよう！",
   "setupProgressComplete": "セットアップ {progress}% かんりょう！",
@@ -894,7 +894,7 @@
       }
     }
   },
-  "initialSetupGuidance": "ご家庭の せいかつリズムに あわせて\n毎日おこなう 「やくそく」の じかんを 設定してね！",
+  "initialSetupGuidance": "毎日おこなう 「やくそく」の 時間を 設定してね！\n※あとで 「おやの設定」から 変更 できます",
   "pointAdditionTitle": "ポイントをふやす",
   "pointAdditionAdTitle": "📺 1日3回！無料でポイントゲット",
   "pointAdditionAdButton": "動画を見て {points}P ゲット！",
@@ -1038,5 +1038,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupSkipButton": "今はスキップ\n(あとでおきがえできます)"
 }

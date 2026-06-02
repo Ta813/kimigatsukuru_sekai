@@ -1616,7 +1616,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'आप खेलना सीख गए!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'खेलने के तरीके का अभ्यास यहीं समाप्त होता है!\nहर दिन \'वादे\' पूरे करें,\nऔर अपनी खुद की दुनिया का विस्तार करें!';
+  String get tutorialFirstPromiseCompleteDesc => 'आपने **वादे का ट्रायल** पूरा कर लिया है!\nअपना इनाम पाने के लिए मिशन स्क्रीन पर जाएँ!';
 
   @override
   String get missionHintBubble => 'आप यहाँ से मिशन कर सकते हैं!';
@@ -1846,10 +1846,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get setupAgeAdult => '18+ (अभिभावक)';
 
   @override
-  String get setupIntroMessage => 'आइए ऐप सेटअप करना शुरू करें!\nइसमें लगभग 3 मिनट लगेंगे।';
+  String get setupIntroMessage => 'आइए आपकी अपनी दुनिया बनाएं!\nअपना अवतार और एक साथी चुनें!\n(*आप इन्हें बाद में बदल सकते हैं)';
 
   @override
-  String get setupIntroNext => 'अगला';
+  String get setupIntroNext => 'चलिए बनाते हैं!';
 
   @override
   String get setupFinishTitle100 => 'सेटअप 100% पूरा हुआ!';
@@ -1971,7 +1971,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
+  String get initialSetupGuidance => 'अपने रोज़ के \'वादों\' का समय सेट करें!\n(*आप इसे बाद में \'पेरेंट सेटिंग्स\' से बदल सकते हैं)';
 
   @override
   String get pointAdditionTitle => 'पॉइंट्स जोड़ें';
@@ -2198,4 +2198,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String trophyPointDesc(int target) {
     return 'सबूत कि आपने $target अंक एकत्र किए हैं';
   }
+
+  @override
+  String get setupSkipButton => 'अभी के लिए छोड़ें\n(आप बाद में बदल सकते हैं)';
 }

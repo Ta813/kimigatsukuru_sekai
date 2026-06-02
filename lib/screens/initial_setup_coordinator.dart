@@ -126,12 +126,12 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Image.asset('assets/images/character_panda.gif', height: 100),
+                  Image.asset('assets/images/character_hime.gif', height: 100),
                   const SizedBox(width: 20),
                   Image.asset('assets/images/character_kuma.gif', height: 100),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
               Text(
                 l10n.setupIntroMessage,
                 textAlign: TextAlign.center,
@@ -142,7 +142,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                   height: 1.5,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
               Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.center,
@@ -200,7 +200,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     bool isBack = false,
   }) async {
     // パターンごとに全ステップ数を決定（Paywallを除外した数）
-    int totalSteps = (pattern == 'C') ? 5 : 6;
+    int totalSteps = (pattern == 'C') ? 3 : 6;
 
     // 全ステップ完了した場合、ホーム画面へ遷移
     if (step > totalSteps) {
@@ -210,9 +210,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (_) => const ChildHomeScreen(isInitialSetup: true),
-        ),
+        MaterialPageRoute(builder: (_) => const ChildHomeScreen()),
       );
       return;
     }
@@ -322,20 +320,8 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
           );
           break;
         case 3:
-          screen = AppRulesInstructionScreen(
-            currentStep: step,
-            totalSteps: totalSteps,
-          );
-          break;
-        case 4:
           screen = RegularPromiseSettingsScreen(
             isInitialSetup: true,
-            currentStep: step,
-            totalSteps: totalSteps,
-          );
-          break;
-        case 5:
-          screen = SetupCompleteScreen(
             currentStep: step,
             totalSteps: totalSteps,
           );
@@ -573,7 +559,7 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
       _fingerAnimation =
           Tween<Offset>(
             begin: Offset(w * 0.25, h * 0.50),
-            end: Offset(w * 0.55, h * 0.38),
+            end: Offset(w * 0.55, h * 0.08),
           ).animate(
             CurvedAnimation(
               parent: _fingerController,

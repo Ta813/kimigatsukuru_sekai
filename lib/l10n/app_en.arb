@@ -703,7 +703,7 @@
   "tutorialResumeDesc": "You are in the middle of the tutorial.\nLet's resume!",
   "tutorialResumeBtn": "Resume",
   "tutorialFirstPromiseCompleteTitle": "You Mastered How to Play!",
-  "tutorialFirstPromiseCompleteDesc": "This is the end of the tutorial!\nClear your 'promises' every day\nand expand your very own world!",
+  "tutorialFirstPromiseCompleteDesc": "You've completed the **promise trial**!\nHead to the Mission screen to claim your reward!",
   "missionHintBubble": "You can do missions from here!",
   "helpMenuPromiseSettings": "Set Promises",
   "missionTutorialBonusChance": "Chance to get\n200 points by completing the tutorial!!",
@@ -805,8 +805,8 @@
   "setupAge8to12": "8 - 12",
   "setupAge13to18": "13 - 18",
   "setupAgeAdult": "18+ (Parent/Guardian)",
-  "setupIntroMessage": "Let's start setting up the app!\nIt will take about 3 minutes.",
-  "setupIntroNext": "Next",
+  "setupIntroMessage": "Let's create your very own world!\nChoose your avatar and a companion!\n(*You can change them later)",
+  "setupIntroNext": "Start creating!",
   "setupFinishTitle100": "Setup 100% Complete!",
   "setupFinishMessage": "Setup is complete!\nLet's try out how to play right away!",
   "setupProgressComplete": "Setup {progress}% complete!",
@@ -894,7 +894,7 @@
       }
     }
   },
-  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
+  "initialSetupGuidance": "Set the time for your daily 'promises'!\n(*You can change this later from 'Parent Settings')",
   "pointAdditionTitle": "Add Points",
   "pointAdditionAdTitle": "📺 Get points for free 3 times a day!",
   "pointAdditionAdButton": "Watch a video to get {points}P!",
@@ -1037,5 +1037,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupSkipButton": "Skip for now\n(You can change later)"
 }

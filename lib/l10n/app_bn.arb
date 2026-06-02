@@ -703,7 +703,7 @@
   "tutorialResumeDesc": "আপনি টিউটোরিয়ালের মাঝখানে আছেন।\nচলুন আবার শুরু করি!",
   "tutorialResumeBtn": "চালিয়ে যান",
   "tutorialFirstPromiseCompleteTitle": "খেলার নিয়ম শিখে গেছো!",
-  "tutorialFirstPromiseCompleteDesc": "কীভাবে খেলতে হয় তার অনুশীলন এখানেই শেষ!\nপ্রতিদিন 'প্রতিশ্রুতি' পূরণ করো,\nএবং তোমার নিজের জগতকে প্রসারিত করো!",
+  "tutorialFirstPromiseCompleteDesc": "আপনি **প্রতিশ্রুতির ট্রায়াল** সম্পন্ন করেছেন!\nআপনার পুরস্কার সংগ্রহ করতে মিশন স্ক্রিনে যান!",
   "missionHintBubble": "আপনি এখান থেকে মিশন করতে পারেন!",
   "helpMenuPromiseSettings": "প্রতিশ্রুতি সেট",
   "missionTutorialBonusChance": "টিউটোরিয়াল সম্পন্ন করে\n২০০ পয়েন্ট পাওয়ার সুযোগ!!",
@@ -805,8 +805,8 @@
   "setupAge8to12": "৮ - ১২ বছর",
   "setupAge13to18": "১৩ - ১৮ বছর",
   "setupAgeAdult": "১৮+ (অভিভাবক)",
-  "setupIntroMessage": "চলুন অ্যাপটি সেট আপ করা শুরু করি!\nএতে প্রায় ৩ মিনিট সময় লাগবে।",
-  "setupIntroNext": "পরবর্তী",
+  "setupIntroMessage": "চলো তোমার নিজস্ব পৃথিবী তৈরি করি!\nতোমার অ্যাভাটার এবং একজন সঙ্গী বেছে নাও!\n(*তুমি এগুলো পরে পরিবর্তন করতে পারবে)",
+  "setupIntroNext": "চলো তৈরি করি!",
   "setupFinishTitle100": "সেটআপ ১০০% সম্পন্ন!",
   "setupFinishMessage": "সেটআপ সম্পন্ন হয়েছে!\nচলো এক্ষুনি কীভাবে খেলতে হয় তা দেখে নিই!",
   "setupProgressComplete": "সেটআপ {progress}% সম্পন্ন!",
@@ -894,7 +894,7 @@
       }
     }
   },
-  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
+  "initialSetupGuidance": "আপনার প্রতিদিনের 'প্রতিশ্রুতি'-এর সময় সেট করুন!\n(*আপনি পরে 'প্যারেন্ট সেটিংস' থেকে এটি পরিবর্তন করতে পারবেন)",
   "pointAdditionTitle": "পয়েন্ট যোগ করুন",
   "pointAdditionAdTitle": "📺 দিনে 3 বার বিনামূল্যে পয়েন্ট পান!",
   "pointAdditionAdButton": "ভিডিও দেখে {points}P নিন!",
@@ -1037,5 +1037,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupSkipButton": "আপাতত এড়িয়ে যান\n(আপনি পরে পরিবর্তন করতে পারবেন)"
 }

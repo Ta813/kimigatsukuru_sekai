@@ -103,7 +103,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   bool _showCustomizeBlinking = false;
   late AnimationController _hintAnimationController;
   bool _hasUnclaimedMissions = true;
-  bool _showMissionBlinking = false;
   bool _hasVisitedPointAddition = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -341,6 +340,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         int earnedPoints = 0;
         if (!widget.isInitialSetup) {
           earnedPoints = await LoginBonusManager().checkLoginBonus(context);
+          TrophyManager.checkAndShowTrophies(context);
         }
 
         await _loadAndDetermineDisplayPromise();
@@ -603,22 +603,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   }
 
   void _checkTutorial() async {
-    String childTutorialState = await SharedPrefsHelper.getChildTutorial();
-    bool hasFinishedChildTutorial = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepMissionKey,
-    );
-
-    if (childTutorialState == SharedPrefsHelper.tutorialPhaseRegular &&
-        !hasFinishedChildTutorial) {
-      await SharedPrefsHelper.setChildTutorial(
-        SharedPrefsHelper.tutorialPhaseStart,
-      );
-      _showChildTutorial();
-      return;
-    }
-
     bool isChildGuideShown =
-        childTutorialState == SharedPrefsHelper.tutorialPhaseStart;
+        await SharedPrefsHelper.getChildTutorial() ==
+        SharedPrefsHelper.tutorialPhaseStart;
     if (isChildGuideShown) {
       await _showContinueTutorialDialog();
       _showChildTutorial();
@@ -663,7 +650,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/character_panda.gif', height: 60),
+              Image.asset('assets/images/character_hime.gif', height: 60),
               const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () {
@@ -717,12 +704,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           _showStartBlinking = true;
         });
       }
-
-      // await _showTutorialDialog(
-      //   title: AppLocalizations.of(context)!.guideWelcomeTitle,
-      //   content: AppLocalizations.of(context)!.guideWelcomeDesc,
-      //   buttonText: AppLocalizations.of(context)!.tutorialBtnStart,
-      // );
       FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_promise');
       return;
     }
@@ -737,24 +718,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       setState(() {
         _showCustomizeBlinking = true;
       });
-      // WidgetsBinding.instance.addPostFrameCallback((_) async {
-      //   await _showTutorialDialog(
-      //     title: AppLocalizations.of(context)!.tutorialCustomizeTitle,
-      //     content: AppLocalizations.of(context)!.tutorialCustomizeDesc,
-      //     buttonText: AppLocalizations.of(context)!.tutorialBtnCustomize,
-      //   );
-      // });
-      return;
-    }
-
-    bool wasMissionStepShown = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepMissionKey,
-    );
-    if (!wasMissionStepShown && mounted) {
-      setState(() {
-        _showMissionBlinking = true;
-      });
-      return;
     }
   }
 
@@ -844,7 +807,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Image.asset('assets/images/character_panda.gif', height: 90),
+                  Image.asset('assets/images/character_hime.gif', height: 90),
                   const SizedBox(width: 16),
                   Image.asset('assets/images/character_kuma.gif', height: 90),
                 ],
@@ -936,7 +899,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Image.asset('assets/images/character_panda.gif', height: 90),
+                  Image.asset('assets/images/character_hime.gif', height: 90),
                   const SizedBox(width: 8),
                   Image.asset('assets/images/character_kuma.gif', height: 90),
                 ],
@@ -1578,7 +1541,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/images/character_panda.gif', height: 60),
+                Image.asset('assets/images/character_hime.gif', height: 60),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
@@ -2169,15 +2132,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final bool isAnyTutorialBlinking =
         _showCustomizeBlinking ||
         _showParentSettingsBlinking ||
-        _showEmergencyStartBlinking ||
-        _showMissionBlinking;
+        _showEmergencyStartBlinking;
 
     final bool isAnyTutorialActive =
         _showCustomizeBlinking ||
         _showParentSettingsBlinking ||
         _showStartBlinking ||
-        _showEmergencyStartBlinking ||
-        _showMissionBlinking;
+        _showEmergencyStartBlinking;
 
     return DefaultTabController(
       length: 1, // タブ数は適切に調整してください
@@ -2854,162 +2815,63 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               alignment: Alignment.topRight,
                               children: [
                                 IgnorePointer(
-                                  ignoring:
-                                      isAnyTutorialBlinking &&
-                                      !_showMissionBlinking,
+                                  ignoring: isAnyTutorialBlinking,
                                   child: Opacity(
-                                    opacity:
-                                        (isAnyTutorialBlinking &&
-                                            !_showMissionBlinking)
+                                    opacity: (isAnyTutorialBlinking)
                                         ? 0.6
                                         : 1.0,
-                                    child: BlinkingEffect(
-                                      // 🌟 追加: ミッションボタンの点滅
-                                      isBlinking: _showMissionBlinking,
-                                      child: _buildRoundMenuButton(
-                                        icon: Icons.assignment_turned_in,
-                                        label: AppLocalizations.of(
+                                    child: _buildRoundMenuButton(
+                                      icon: Icons.assignment_turned_in,
+                                      label: AppLocalizations.of(
+                                        context,
+                                      )!.missionScreenTitle,
+                                      iconColor: Colors.black,
+                                      backgroundColor: Colors.purple.shade100,
+                                      isMain: true, // 🌟 メイン機能なので大きく！
+                                      onTap: () async {
+                                        try {
+                                          SfxManager.instance.playTapSound();
+                                        } catch (e) {}
+                                        FirebaseAnalytics.instance.logEvent(
+                                          name: 'start_child_home_mission',
+                                        );
+
+                                        if (!mounted) return;
+                                        Navigator.push(
                                           context,
-                                        )!.missionScreenTitle,
-                                        iconColor: Colors.black,
-                                        backgroundColor: Colors.purple.shade100,
-                                        isMain: true, // 🌟 メイン機能なので大きく！
-                                        onTap: () async {
-                                          try {
-                                            SfxManager.instance.playTapSound();
-                                          } catch (e) {}
-                                          FirebaseAnalytics.instance.logEvent(
-                                            name: 'start_child_home_mission',
-                                          );
-
-                                          if (!mounted) return;
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MissionScreen(
-                                                    isTutorialMode:
-                                                        _showMissionBlinking,
-                                                  ),
+                                          MaterialPageRoute(
+                                            builder: (context) => MissionScreen(
+                                              isTutorialMode: false,
                                             ),
-                                          ).then((result) async {
-                                            _loadAndDetermineDisplayPromise();
-                                            _checkUnclaimedMissions();
-                                            //チュートリアル中だったら
-                                            if (_showMissionBlinking) {
-                                              setState(() {
-                                                _showMissionBlinking = false;
-                                              });
-                                              await SharedPrefsHelper.setChildTutorial(
+                                          ),
+                                        ).then((result) async {
+                                          _loadAndDetermineDisplayPromise();
+                                          _checkUnclaimedMissions();
+
+                                          if (result != null &&
+                                              result is String) {
+                                            if (result ==
+                                                'mission_parent_setup') {
+                                              SharedPrefsHelper.setParentTutorial(
                                                 SharedPrefsHelper
-                                                    .tutorialPhaseFinish,
+                                                    .tutorialPhaseStart,
                                               );
-                                              await SharedPrefsHelper.setTutorialStepShown(
+                                              _showParentTutorial();
+                                            } else if (result ==
+                                                'mission_first_promise') {
+                                              SharedPrefsHelper.setChildTutorial(
                                                 SharedPrefsHelper
-                                                    .tutorialStepMissionKey,
+                                                    .tutorialPhaseStart,
                                               );
-                                              FirebaseAnalytics.instance.logEvent(
-                                                name: 'tutorial_child_complete',
-                                              );
-                                              if (!mounted) return;
-                                              await _showTutorialDialog(
-                                                title: AppLocalizations.of(
-                                                  context,
-                                                )!.tutorialFirstPromiseCompleteTitle,
-                                                content: AppLocalizations.of(
-                                                  context,
-                                                )!.tutorialFirstPromiseCompleteDesc,
-                                                buttonText: AppLocalizations.of(
-                                                  context,
-                                                )!.gotIt,
-                                              );
-
-                                              // チュートリアル完了後にログインボーナス
-                                              int earnedPoints =
-                                                  await LoginBonusManager()
-                                                      .checkLoginBonus(context);
-
-                                              if (earnedPoints > 0 && mounted) {
-                                                try {
-                                                  SfxManager.instance
-                                                      .playSuccessSound();
-                                                } catch (e) {
-                                                  print('再生エラー: $e');
-                                                }
-                                                setState(() {
-                                                  _pointsAdded = earnedPoints;
-                                                });
-                                                _animationController.forward(
-                                                  from: 0.0,
-                                                );
-                                                _pointsAddedAnimationController
-                                                    .forward(from: 0.0);
-                                              }
-                                              // ログインボーナス後にトロフィーチェック
-                                              if (mounted) {
-                                                await TrophyManager.checkAndShowTrophies(
-                                                  context,
-                                                );
-                                              }
+                                              _showChildTutorial();
                                             }
-
-                                            if (result != null &&
-                                                result is String) {
-                                              if (result ==
-                                                  'mission_parent_setup') {
-                                                SharedPrefsHelper.setParentTutorial(
-                                                  SharedPrefsHelper
-                                                      .tutorialPhaseStart,
-                                                );
-                                                _showParentTutorial();
-                                              } else if (result ==
-                                                  'mission_first_promise') {
-                                                SharedPrefsHelper.setChildTutorial(
-                                                  SharedPrefsHelper
-                                                      .tutorialPhaseStart,
-                                                );
-                                                _showChildTutorial();
-                                              }
-                                            }
-                                          });
-                                        },
-                                      ),
+                                          }
+                                        });
+                                      },
                                     ),
                                   ),
                                 ),
 
-                                // ミッションチュートリアルが残っている場合のタップアニメーション
-                                if (_showMissionBlinking)
-                                  Positioned(
-                                    bottom: 30,
-                                    right: 20,
-                                    child: IgnorePointer(
-                                      child: ScaleTransition(
-                                        scale:
-                                            Tween<double>(
-                                              begin: 1.0,
-                                              end: 1.3,
-                                            ).animate(
-                                              CurvedAnimation(
-                                                parent:
-                                                    _hintAnimationController,
-                                                curve: Curves.easeInOut,
-                                              ),
-                                            ),
-                                        child: const Icon(
-                                          Icons.touch_app,
-                                          color: Colors.orange,
-                                          size: 40,
-                                          shadows: [
-                                            Shadow(
-                                              blurRadius: 4,
-                                              color: Colors.black26,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
                                 // 「！」バッジの表示
                                 if (_hasUnclaimedMissions)
                                   Positioned(
@@ -3118,12 +2980,26 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                 name:
                                                     'tutorial_tap_customize_back',
                                               );
-                                              setState(() {
-                                                _showMissionBlinking = true;
-                                              });
+
                                               await SharedPrefsHelper.setTutorialStepShown(
                                                 SharedPrefsHelper
                                                     .tutorialStepCustomizeKey,
+                                              );
+                                              await SharedPrefsHelper.setChildTutorial(
+                                                SharedPrefsHelper
+                                                    .tutorialPhaseFinish,
+                                              );
+                                              if (!mounted) return;
+                                              await _showTutorialDialog(
+                                                title: AppLocalizations.of(
+                                                  context,
+                                                )!.tutorialFirstPromiseCompleteTitle,
+                                                content: AppLocalizations.of(
+                                                  context,
+                                                )!.tutorialFirstPromiseCompleteDesc,
+                                                buttonText: AppLocalizations.of(
+                                                  context,
+                                                )!.gotIt,
                                               );
                                             }
                                             await _loadAndDetermineDisplayPromise();
@@ -3713,7 +3589,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       !_showCustomizeBlinking &&
                       !_showParentSettingsBlinking &&
                       !_showStartBlinking &&
-                      !_showMissionBlinking &&
                       !_isDrawingMode)
                     Positioned(
                       top: MediaQuery.of(context).size.height * 0.45,
@@ -3993,37 +3868,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   ),
                 ),
               ),
-            // ミッションチュートリアルが残っている場合の吹き出し
-            if (_showMissionBlinking)
-              Positioned(
-                top: 130,
-                right: 110, // ボタンの左側に配置
-                child: Material(
-                  color: Colors.transparent,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF9C4),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.orange, width: 2),
-                      boxShadow: const [
-                        BoxShadow(blurRadius: 4, color: Colors.black26),
-                      ],
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.tutorialMissionBubble,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
             // 🎨 おえかきモード中のボタン群
             if (!_showWatermarkForCapture)
               if (_isDrawingMode)

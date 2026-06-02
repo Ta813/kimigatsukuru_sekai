@@ -3208,7 +3208,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialFirstPromiseCompleteDesc.
   ///
   /// In en, this message translates to:
-  /// **'This is the end of the tutorial!\nClear your \'promises\' every day\nand expand your very own world!'**
+  /// **'You\'ve completed the **promise trial**!\nHead to the Mission screen to claim your reward!'**
   String get tutorialFirstPromiseCompleteDesc;
 
   /// No description provided for @missionHintBubble.
@@ -3652,13 +3652,13 @@ abstract class AppLocalizations {
   /// No description provided for @setupIntroMessage.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s start setting up the app!\nIt will take about 3 minutes.'**
+  /// **'Let\'s create your very own world!\nChoose your avatar and a companion!\n(*You can change them later)'**
   String get setupIntroMessage;
 
   /// No description provided for @setupIntroNext.
   ///
   /// In en, this message translates to:
-  /// **'Next'**
+  /// **'Start creating!'**
   String get setupIntroNext;
 
   /// No description provided for @setupFinishTitle100.
@@ -3874,7 +3874,7 @@ abstract class AppLocalizations {
   /// No description provided for @initialSetupGuidance.
   ///
   /// In en, this message translates to:
-  /// **'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!'**
+  /// **'Set the time for your daily \'promises\'!\n(*You can change this later from \'Parent Settings\')'**
   String get initialSetupGuidance;
 
   /// No description provided for @pointAdditionTitle.
@@ -4272,6 +4272,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Proof you collected {target} points'**
   String trophyPointDesc(int target);
+
+  /// No description provided for @setupSkipButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now\n(You can change later)'**
+  String get setupSkipButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

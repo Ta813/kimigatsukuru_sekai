@@ -703,7 +703,7 @@
   "tutorialResumeDesc": "آپ ٹیوٹوریل کے بیچ میں ہیں۔\nآئیے دوبارہ شروع کریں!",
   "tutorialResumeBtn": "جاری رکھیں",
   "tutorialFirstPromiseCompleteTitle": "آپ کھیلنا سیکھ گئے!",
-  "tutorialFirstPromiseCompleteDesc": "کھیلنے کے طریقے کی مشق یہیں ختم ہوتی ہے!\nہر دن 'وعدے' پورے کریں،\nاور اپنی خود کی دنیا کو وسیع کریں!",
+  "tutorialFirstPromiseCompleteDesc": "آپ نے **وعدے کا ٹرائل** مکمل کر لیا ہے!\nاپنا انعام حاصل کرنے کے لیے مشن اسکرین پر جائیں!",
   "missionHintBubble": "آپ یہاں سے مشن کر سکتے ہیں!",
   "helpMenuPromiseSettings": "وعدے سیٹ کریں",
   "missionTutorialBonusChance": "ٹیوٹوریل مکمل کرکے\n200 پوائنٹس حاصل کرنے کا موقع!!",
@@ -805,8 +805,8 @@
   "setupAge8to12": "8 - 12 سال",
   "setupAge13to18": "13 - 18 سال",
   "setupAgeAdult": "18+ (والدین/سرپرست)",
-  "setupIntroMessage": "آئیے ایپ سیٹ اپ کرنا شروع کریں!\nاس میں تقریباً 3 منٹ لگیں گے۔",
-  "setupIntroNext": "اگلا",
+  "setupIntroMessage": "آئیے آپ کی اپنی دنیا بنائیں!\nاپنا اوتار اور ایک ساتھی منتخب کریں!\n(*آپ انہیں بعد میں تبدیل کر سکتے ہیں)",
+  "setupIntroNext": "آئیے بناتے ہیں!",
   "setupFinishTitle100": "سیٹ اپ 100% مکمل ہو گیا!",
   "setupFinishMessage": "سیٹ اپ مکمل ہو گیا ہے!\nآئیے فوراً سیکھیں کہ کیسے کھیلنا ہے!",
   "setupProgressComplete": "سیٹ اپ {progress}% مکمل ہو گیا!",
@@ -894,7 +894,7 @@
       }
     }
   },
-  "initialSetupGuidance": "Set the time for your daily 'promises'\nto match your family's daily rhythm!",
+  "initialSetupGuidance": "اپنے روزمرہ کے 'وعدوں' کا وقت سیٹ کریں!\n(*آپ اسے بعد میں 'پیرنٹ سیٹنگز' سے تبدیل کر سکتے ہیں)",
   "pointAdditionTitle": "پوائنٹس شامل کریں",
   "pointAdditionAdTitle": "📺 دن میں 3 بار مفت پوائنٹس حاصل کریں!",
   "pointAdditionAdButton": "ویڈیو دیکھیں اور {points}P حاصل کریں!",
@@ -1037,5 +1037,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "setupSkipButton": "ابھی کے لیے چھوڑیں\n(آپ بعد میں تبدیل کر سکتے ہیں)"
 }

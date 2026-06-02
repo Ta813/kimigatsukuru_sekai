@@ -1616,7 +1616,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'You Mastered How to Play!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'This is the end of the tutorial!\nClear your \'promises\' every day\nand expand your very own world!';
+  String get tutorialFirstPromiseCompleteDesc => 'You\'ve completed the **promise trial**!\nHead to the Mission screen to claim your reward!';
 
   @override
   String get missionHintBubble => 'You can do missions from here!';
@@ -1846,10 +1846,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupAgeAdult => '18+ (Parent/Guardian)';
 
   @override
-  String get setupIntroMessage => 'Let\'s start setting up the app!\nIt will take about 3 minutes.';
+  String get setupIntroMessage => 'Let\'s create your very own world!\nChoose your avatar and a companion!\n(*You can change them later)';
 
   @override
-  String get setupIntroNext => 'Next';
+  String get setupIntroNext => 'Start creating!';
 
   @override
   String get setupFinishTitle100 => 'Setup 100% Complete!';
@@ -1971,7 +1971,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get initialSetupGuidance => 'Set the time for your daily \'promises\'\nto match your family\'s daily rhythm!';
+  String get initialSetupGuidance => 'Set the time for your daily \'promises\'!\n(*You can change this later from \'Parent Settings\')';
 
   @override
   String get pointAdditionTitle => 'Add Points';
@@ -2198,4 +2198,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String trophyPointDesc(int target) {
     return 'Proof you collected $target points';
   }
+
+  @override
+  String get setupSkipButton => 'Skip for now\n(You can change later)';
 }
