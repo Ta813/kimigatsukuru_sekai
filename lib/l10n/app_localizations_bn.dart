@@ -1878,6 +1878,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get initialSetupCompleteButton => 'সেটআপ সম্পন্ন';
 
   @override
+  String get initialSetupSkipButton => 'এখনকার মতো এড়িয়ে যান\n(পরে সেট করা যেতে পারে)';
+
+  @override
   String get todaysPromise => 'আজকের প্রতিশ্রুতি';
 
   @override
@@ -2201,4 +2204,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get setupSkipButton => 'আপাতত এড়িয়ে যান\n(আপনি পরে পরিবর্তন করতে পারবেন)';
+
+  @override
+  String get homeMissionTutorialBubble => 'প্রথমে, কীভাবে খেলতে হয়\nতা শিখতে টিউটোরিয়ালটি খেলুন!';
 }

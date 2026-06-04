@@ -822,6 +822,7 @@
   "setupReceivedButton": "مل گیا!",
   "initialSetupSettingsMessage": "وعدے سیٹ کریں۔\nآپ انہیں بعد میں تبدیل کر سکتے ہیں، لہذا اگر آپ نے ابھی تک فیصلہ نہیں کیا ہے، تو بس 'سیٹ اپ مکمل' دبائیں!",
   "initialSetupCompleteButton": "سیٹ اپ مکمل",
+  "initialSetupSkipButton": "ابھی چھوڑیں\n(بعد میں سیٹ کیا جا سکتا ہے)",
   "todaysPromise": "آج کا وعدہ",
   "nextWorld": "اگلی دنیا",
   "underConstruction": "جلد آرہا ہے",
@@ -1038,5 +1039,6 @@
       }
     }
   },
-  "setupSkipButton": "ابھی کے لیے چھوڑیں\n(آپ بعد میں تبدیل کر سکتے ہیں)"
+  "setupSkipButton": "ابھی کے لیے چھوڑیں\n(آپ بعد میں تبدیل کر سکتے ہیں)",
+  "homeMissionTutorialBubble": "پہلے، یہ سیکھنے کے لیے کہ کیسے کھیلنا ہے\nٹیوٹوریل کھیلیں!"
 }

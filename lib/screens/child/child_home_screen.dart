@@ -103,6 +103,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   bool _showCustomizeBlinking = false;
   late AnimationController _hintAnimationController;
   bool _hasUnclaimedMissions = true;
+  bool _showMissionBubble = false; // 🌟 追加：吹き出しを出すかどうかのフラグ
   bool _hasVisitedPointAddition = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -270,6 +271,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   void initState() {
     super.initState();
 
+    _checkMissionTutorial(); // 🌟 起動時に追加
+
     _hintAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -365,6 +368,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     _checkTutorial();
     _scheduleMidnightRefresh();
+  }
+
+  // 🌟 追加：フラグを確認して吹き出しの表示をオンにする
+  Future<void> _checkMissionTutorial() async {
+    final isCompleted = await SharedPrefsHelper.isMissionTutorialCompleted();
+    if (mounted && !isCompleted) {
+      setState(() {
+        _showMissionBubble = true;
+      });
+    }
   }
 
   @override
@@ -2836,6 +2849,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                           name: 'start_child_home_mission',
                                         );
 
+                                        // 🌟 追加：初めてタップされたら吹き出しを消し、フラグを保存する
+                                        if (_showMissionBubble) {
+                                          await SharedPrefsHelper.setMissionTutorialCompleted();
+                                          if (mounted) {
+                                            setState(() {
+                                              _showMissionBubble = false;
+                                            });
+                                          }
+                                        }
+
                                         if (!mounted) return;
                                         Navigator.push(
                                           context,
@@ -3661,6 +3684,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         ),
                       ),
                     ),
+                  // 🌟 追加：吹き出しUI（_showMissionBubble が true の時だけ表示）
+                  if (_showMissionBubble)
+                    Positioned(
+                      top: 130, // ボタンの縦位置に合わせて微調整
+                      right: 70, // ボタンの左側に配置
+                      child: _buildMissionBubble(context),
+                    ),
 
                   // アバターの表示と操作
                   DraggableCharacter(
@@ -4188,6 +4218,50 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           },
         ),
       ),
+    );
+  }
+
+  // 🌟 追加：吹き出しのUIを作るメソッド
+  Widget _buildMissionBubble(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFF7043), // 吹き出しの色（オレンジ）
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Text(
+            l10n.homeMissionTutorialBubble,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              height: 1.3,
+            ),
+          ),
+        ),
+        // 吹き出しの「しっぽ（右向きの三角）」をアイコンで代用
+        Transform.translate(
+          offset: const Offset(-8, 0),
+          child: const Icon(
+            Icons.arrow_right,
+            color: Color(0xFFFF7043),
+            size: 40,
+          ),
+        ),
+      ],
     );
   }
 }

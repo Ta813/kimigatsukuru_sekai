@@ -776,6 +776,7 @@
   "setupReceivedButton": "मिल गया!",
   "initialSetupSettingsMessage": "वादे सेट करें。\nआप उन्हें बाद में बदल सकते हैं, इसलिए यदि आपने अभी तक निर्णय नहीं लिया है, तो बस 'सेटअप पूरा करें' दबाएं!",
   "initialSetupCompleteButton": "सेटअप पूरा करें",
+  "initialSetupSkipButton": "अभी छोड़ें\n(बाद में सेट किया जा सकता है)",
   "todaysPromise": "आज का वादा",
   "nextWorld": "अगली दुनिया",
   "underConstruction": "जल्द आ रहा है",
@@ -992,5 +993,6 @@
       }
     }
   },
-  "setupSkipButton": "अभी के लिए छोड़ें\n(आप बाद में बदल सकते हैं)"
+  "setupSkipButton": "अभी के लिए छोड़ें\n(आप बाद में बदल सकते हैं)",
+  "homeMissionTutorialBubble": "सबसे पहले, कैसे खेलें यह सीखने के लिए\nट्यूटोरियल खेलें!"
 }

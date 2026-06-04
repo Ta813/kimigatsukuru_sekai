@@ -822,6 +822,7 @@
   "setupReceivedButton": "استلمت!",
   "initialSetupSettingsMessage": "قم بإعداد الوعود.\nيمكنك تغييرها لاحقاً، لذا إذا لم تقرر بعد، فقط اضغط على 'إكمال الإعداد'!",
   "initialSetupCompleteButton": "إكمال الإعداد",
+  "initialSetupSkipButton": "تخطي الآن\n(يمكن ضبطه لاحقًا)",
   "todaysPromise": "وعود اليوم",
   "nextWorld": "العالم التالي",
   "underConstruction": "قريباً",
@@ -1038,5 +1039,6 @@
       }
     }
   },
-  "setupSkipButton": "تخطي الآن\n(يمكنك التغيير لاحقًا)"
+  "setupSkipButton": "تخطي الآن\n(يمكنك التغيير لاحقًا)",
+  "homeMissionTutorialBubble": "أولاً، العب البرنامج التعليمي\nلإتقان كيفية اللعب!"
 }

@@ -3709,6 +3709,12 @@ abstract class AppLocalizations {
   /// **'Complete'**
   String get initialSetupCompleteButton;
 
+  /// No description provided for @initialSetupSkipButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now\n(Can be set later)'**
+  String get initialSetupSkipButton;
+
   /// No description provided for @todaysPromise.
   ///
   /// In en, this message translates to:
@@ -4278,6 +4284,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip for now\n(You can change later)'**
   String get setupSkipButton;
+
+  /// No description provided for @homeMissionTutorialBubble.
+  ///
+  /// In en, this message translates to:
+  /// **'First, play the tutorial\nto master how to play!'**
+  String get homeMissionTutorialBubble;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

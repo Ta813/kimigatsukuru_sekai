@@ -1878,6 +1878,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get initialSetupCompleteButton => 'Complete';
 
   @override
+  String get initialSetupSkipButton => 'Skip for now\n(Can be set later)';
+
+  @override
   String get todaysPromise => 'Today\'s Promise';
 
   @override
@@ -2201,4 +2204,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setupSkipButton => 'Skip for now\n(You can change later)';
+
+  @override
+  String get homeMissionTutorialBubble => 'First, play the tutorial\nto master how to play!';
 }

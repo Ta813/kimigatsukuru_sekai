@@ -151,37 +151,40 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
 
   // 広告を再生して報酬を付与する
   void _showRewardedAd() async {
-    // 🌟 追加: デバッグモード時は広告をスキップして即報酬付与
-    if (kDebugMode) {
-      final slot = _getCurrentSlot();
-      await SharedPrefsHelper.setRewardClaimed(slot); // 状態を視聴済みにする
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('【DEBUG】広告をスキップしました（報酬なし）'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-        _loadData(); // 画面を「つぎの じかんまで」に更新
-      }
-      return;
-    }
-
-    // 広告ロードエラーがある場合は再読み込みを試みる
-    if (RewardAdManager.instance.hasLoadError) {
-      RewardAdManager.instance.loadAd();
-      return;
-    }
-
     if (!RewardAdManager.instance.isAdAvailable) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.pointAdditionNotReadyMsg),
+      // 画面にローディングを出して「準備中」であることを伝える
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(color: Color(0xFFFF7043)),
         ),
       );
+
+      // ロードを試みつつ、最大5秒間（100ms × 50回）だけ準備ができるのを待つ
       RewardAdManager.instance.loadAd();
-      return;
+      int waitCount = 0;
+      while (!RewardAdManager.instance.isAdAvailable && waitCount < 50) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        waitCount++;
+      }
+
+      // ローディングを閉じる
+      if (mounted) Navigator.of(context).pop();
+
+      // それでもダメなら諦めてスナックバーを出す
+      if (!RewardAdManager.instance.isAdAvailable) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context)!.pointAdditionNotReadyMsg,
+              ),
+            ),
+          );
+        }
+        return;
+      }
     }
 
     try {
@@ -191,13 +194,13 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
     // 🌟 マネージャー経由で広告を表示
     RewardAdManager.instance.showAd(
       onRewardEarned: () async {
-        // --- 🌟 報酬付与ロジック (既存のものをそのまま保持) ---
+        // --- 🌟 報酬付与ロジック ---
         try {
           SfxManager.instance.playSuccessSound();
         } catch (_) {}
         final slot = _getCurrentSlot();
         await SharedPrefsHelper.setRewardClaimed(slot);
-        // 🌟 追加: 現在のブースト倍率を取得（期限切れなら自動で1倍になります）
+
         final int multiplier =
             await SharedPrefsHelper.getCurrentBoostMultiplier();
         final newPoints = _currentPoints + (50 * multiplier);
@@ -324,13 +327,8 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
       buttonText = AppLocalizations.of(
         context,
       )!.pointAdditionNextSlot(_timeUntilNextSlot);
-    } else if (RewardAdManager.instance.hasLoadError) {
-      buttonText = AppLocalizations.of(context)!.pointAdditionAdError;
-      isButtonEnabled = true;
-    } else if (RewardAdManager.instance.isLoading ||
-        !RewardAdManager.instance.isAdAvailable) {
-      buttonText = AppLocalizations.of(context)!.pointAdditionAdLoading;
     } else {
+      // まだ視聴していないなら、ロード状態に関わらず常に「ボタン活性」にする
       buttonText = AppLocalizations.of(
         context,
       )!.pointAdditionAdButton(50 * _multiplier);

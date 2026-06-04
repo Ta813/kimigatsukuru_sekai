@@ -1683,24 +1683,71 @@ class _RegularPromiseSettingsScreenState
                         ),
                       ],
                     ),
-                    child: ElevatedButton(
-                      onPressed: _completeInitialSetup,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF7043),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // 横並びの中央寄せ
+                      children: [
+                        TextButton(
+                          onPressed: () async {
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (_) {}
+
+                            // 分析用にログを送信（親がスキップしたことが追えるようになります）
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'setup_parent_promise_skipped',
+                            );
+
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'setup_parent_finish',
+                            );
+
+                            // 通知許可ダイアログを呼び出す
+                            await _requestNotificationPermission(context);
+
+                            if (!mounted) return;
+                            Navigator.pop(context, true);
+                          },
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                          ),
+                          child: Text(
+                            l10n.initialSetupSkipButton,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 12, // 横向き画面を圧迫しないよう小さめに
+                              color: Colors.grey,
+                              decoration: TextDecoration.underline,
+                              height: 1.2,
+                            ),
+                          ),
                         ),
-                        elevation: 4,
-                      ),
-                      child: Text(
-                        l10n.initialSetupCompleteButton,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(width: 24),
+                        ElevatedButton(
+                          onPressed: _completeInitialSetup,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF7043),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 30,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            elevation: 4,
+                          ),
+                          child: Text(
+                            l10n.initialSetupCompleteButton,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 )

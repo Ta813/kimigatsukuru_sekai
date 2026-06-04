@@ -822,6 +822,7 @@
   "setupReceivedButton": "Received!",
   "initialSetupSettingsMessage": "Set up the promises.\nYou can change them later, so if you haven't decided yet, just press 'Complete'!",
   "initialSetupCompleteButton": "Complete",
+  "initialSetupSkipButton": "Skip for now\n(Can be set later)",
   "todaysPromise": "Today's Promise",
   "nextWorld": "Next World",
   "underConstruction": "Coming Soon",
@@ -1038,5 +1039,6 @@
       }
     }
   },
-  "setupSkipButton": "Skip for now\n(You can change later)"
+  "setupSkipButton": "Skip for now\n(You can change later)",
+  "homeMissionTutorialBubble": "First, play the tutorial\nto master how to play!"
 }

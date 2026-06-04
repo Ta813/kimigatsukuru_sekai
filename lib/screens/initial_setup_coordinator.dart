@@ -4,9 +4,11 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
+import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import 'package:kimigatsukuru_sekai/widgets/draggable_character.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../helpers/shared_prefs_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../managers/sfx_manager.dart';
@@ -143,44 +145,101 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 ),
               ),
               const SizedBox(height: 20),
-              Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
+                  // 🌟 追加: 今はスキップボタン
+                  TextButton(
+                    onPressed: () async {
                       try {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'setup_start',
-                        );
                         SfxManager.instance.playTapSound();
-                      } catch (e) {}
-                      _runSetupLoop('C', 1);
+                      } catch (_) {}
+
+                      // ログ送信
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'setup_intro_skipped',
+                      );
+
+                      await SharedPrefsHelper.saveEquippedCharacters([
+                        'assets/images/character_usagi.gif',
+                      ]);
+
+                      await SharedPrefsHelper.addPurchasedItem('ウサギ');
+
+                      // 通知許可ダイアログを呼び出す
+                      await _requestNotificationPermission(context);
+
+                      // セットアップ完了フラグを立てて、ホーム画面へ直行！
+                      FirebaseAnalytics.instance.logEvent(name: 'setup_finish');
+                      await SharedPrefsHelper.setFirstLaunchCompleted();
+                      await SharedPrefsHelper.clearSetupProgress();
+
+                      if (!mounted) return;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ChildHomeScreen(),
+                        ),
+                      );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF7043),
-                      foregroundColor: Colors.white,
+                    style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 48,
-                        vertical: 16,
+                        horizontal: 16,
+                        vertical: 12,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      elevation: 4,
                     ),
                     child: Text(
-                      l10n.setupIntroNext,
+                      l10n.setupSkipButton, // 先ほど追加したローカライズキー
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        color: Colors.grey,
+                        decoration: TextDecoration.underline,
+                        height: 1.2,
                       ),
                     ),
                   ),
-                  const Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: AnimatedTapFinger(),
+                  const SizedBox(width: 16),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          try {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'setup_start',
+                            );
+                            SfxManager.instance.playTapSound();
+                          } catch (e) {}
+                          _runSetupLoop('C', 1);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF7043),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 48,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 4,
+                        ),
+                        child: Text(
+                          l10n.setupIntroNext,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: AnimatedTapFinger(),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -189,6 +248,98 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
         ),
       ),
     );
+  }
+
+  // 🌟 追加: 通知の許可を求める処理（ChildHomeScreenから移植）
+  Future<bool> _requestNotificationPermission(BuildContext context) async {
+    PermissionStatus status = await Permission.notification.status;
+
+    // すでに許可されている場合は何もしない
+    if (status.isGranted) return false;
+
+    // プレダイアログを出す
+    bool? shouldRequest = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogCtx) => AlertDialog(
+        title: Text(
+          AppLocalizations.of(dialogCtx)!.notificationRequestTitle,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF3E0),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFFFF7043).withOpacity(0.5),
+              width: 2,
+            ),
+          ),
+          child: Text(
+            AppLocalizations.of(dialogCtx)!.notificationRequestMessage,
+            style: const TextStyle(fontSize: 15, height: 1.5),
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        actions: [
+          TextButton(
+            onPressed: () {
+              FirebaseAnalytics.instance.logEvent(
+                name: 'setup_notification_later',
+              );
+              Navigator.pop(dialogCtx, false);
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.grey),
+            child: Text(
+              AppLocalizations.of(dialogCtx)!.notificationLater,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              FirebaseAnalytics.instance.logEvent(
+                name: 'setup_notification_force',
+              );
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (_) {}
+              Navigator.pop(dialogCtx, true);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043),
+              foregroundColor: Colors.white,
+              side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
+            ),
+            child: Text(
+              AppLocalizations.of(dialogCtx)!.notificationAccept,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // ユーザーが「うけとる！」を選んだ時だけOS標準のダイアログを出す
+    if (shouldRequest == true) {
+      final bool granted = await NotificationManager.instance
+          .requestPermission();
+      if (granted) {
+        FirebaseAnalytics.instance.logEvent(
+          name: 'notification_permission_granted',
+        );
+      } else {
+        FirebaseAnalytics.instance.logEvent(
+          name: 'notification_permission_denied',
+        );
+      }
+    }
+    return true;
   }
 
   // ==============================================================

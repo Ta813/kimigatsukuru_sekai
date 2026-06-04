@@ -929,15 +929,15 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 if (_setupStep < 4) {
                   if (_setupStep == 1) {
                     FirebaseAnalytics.instance.logEvent(
-                      name: 'setup_child_2_start',
+                      name: 'setup_child_1_end',
                     );
                   } else if (_setupStep == 2) {
                     FirebaseAnalytics.instance.logEvent(
-                      name: 'setup_child_3_start',
+                      name: 'setup_child_2_end',
                     );
                   } else if (_setupStep == 3) {
                     FirebaseAnalytics.instance.logEvent(
-                      name: 'setup_child_4_start',
+                      name: 'setup_child_3_end',
                     );
                   }
                   _setupPageController.nextPage(

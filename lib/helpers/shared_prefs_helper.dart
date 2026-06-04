@@ -1572,4 +1572,18 @@ class SharedPrefsHelper {
       await prefs.setStringList(unlockedTrophiesKey, list);
     }
   }
+  // 🌟 追加：ミッションチュートリアルの完了キー
+  static const String missionTutorialKey = 'is_mission_tutorial_completed';
+
+  // 🌟 追加：ミッションチュートリアルが終わっているか確認
+  static Future<bool> isMissionTutorialCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(missionTutorialKey) ?? false;
+  }
+
+  // 🌟 追加：ミッションチュートリアルを完了済みにする
+  static Future<void> setMissionTutorialCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(missionTutorialKey, true);
+  }
 }

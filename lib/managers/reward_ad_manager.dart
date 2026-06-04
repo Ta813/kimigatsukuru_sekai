@@ -1,5 +1,6 @@
 // lib/managers/reward_ad_manager.dart
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -16,9 +17,19 @@ class RewardAdManager {
   bool get isLoading => _isLoading;
   bool get hasLoadError => _hasLoadError;
 
-  final String _adUnitId = Platform.isAndroid
-      ? 'ca-app-pub-2333753292729105/1101792271'
-      : 'ca-app-pub-2333753292729105/5014099664';
+  String get _adUnitId {
+    if (kDebugMode) {
+      // 🐛 デバッグモード時（Google公式のテスト用リワード広告ID）
+      return Platform.isAndroid
+          ? 'ca-app-pub-3940256099942544/5224354917'
+          : 'ca-app-pub-3940256099942544/1712485313';
+    } else {
+      // 🚀 リリース時（本番用の広告ID）
+      return Platform.isAndroid
+          ? 'ca-app-pub-2333753292729105/1101792271'
+          : 'ca-app-pub-2333753292729105/5014099664';
+    }
+  }
 
   // 🌟 広告を裏側で読み込む（プリロード）
   void loadAd() {

@@ -1878,6 +1878,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get initialSetupCompleteButton => '設定完了';
 
   @override
+  String get initialSetupSkipButton => '今はスキップ\n(あとで設定できます)';
+
+  @override
   String get todaysPromise => 'きょうのやくそく';
 
   @override
@@ -2201,4 +2204,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get setupSkipButton => '今はスキップ\n(あとでおきがえできます)';
+
+  @override
+  String get homeMissionTutorialBubble => 'まずは チュートリアルで\nあそびかた を マスターしよう！';
 }
