@@ -566,6 +566,22 @@
       }
     }
   },
+  "promiseNotificationSoonTitle": "لقد حان تقريبًا وقت \"{title}\"!",
+  "@promiseNotificationSoonTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseNotificationSoonBody": "{icon} سيبدأ خلال 5 دقائق!",
+  "@promiseNotificationSoonBody": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
   "weeklyNotificationTitle": "كيف حال وعود هذا الأسبوع؟ 🌟",
   "weeklyNotificationBody": "تأخذ استراحة سريعة؟ ☕️ دعنا نتحقق من تقدم طفلك في التطبيق!",
   "alreadyAddedPromise": "\"{title}\" تمت إضافته بالفعل",
@@ -1040,5 +1056,6 @@
     }
   },
   "setupSkipButton": "تخطي الآن\n(يمكنك التغيير لاحقًا)",
-  "homeMissionTutorialBubble": "أولاً، العب البرنامج التعليمي\nلإتقان كيفية اللعب!"
+  "homeMissionTutorialBubble": "أولاً، العب البرنامج التعليمي\nلإتقان كيفية اللعب!",
+  "pointAdditionMotivationMsg": "الاستمرار هو الأهم!\nاجعل هذا دافعًا للبدء بـ 'وعودك'✨"
 }

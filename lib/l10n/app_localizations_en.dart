@@ -1338,6 +1338,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String promiseNotificationSoonTitle(String title) {
+    return 'Starting soon: \"$title\"!';
+  }
+
+  @override
+  String promiseNotificationSoonBody(String icon) {
+    return '$icon Starts in 5 minutes!';
+  }
+
+  @override
   String get weeklyNotificationTitle => 'How are this week\'s Promises? 🌟';
 
   @override
@@ -2207,4 +2217,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeMissionTutorialBubble => 'First, play the tutorial\nto master how to play!';
+
+  @override
+  String get pointAdditionMotivationMsg => 'Consistency is key!\nLet this be the motivation to start your \'promises\'✨';
 }

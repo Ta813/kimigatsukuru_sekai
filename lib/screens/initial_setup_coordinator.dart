@@ -7,6 +7,7 @@ import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
+import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import 'package:kimigatsukuru_sekai/widgets/draggable_character.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../helpers/shared_prefs_helper.dart';
@@ -814,13 +815,15 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
             if (_avatarPos != null)
               DraggableCharacter(
                 id: 'avatar_on_setup',
-                customWidget: AvatarDisplay(
-                  face: _equippedFace,
-                  clothes: _equippedClothes,
-                  hair: _equippedHair,
-                  headgear: _equippedHeadgear,
-                  accessory: _equippedAccessory,
-                  size: 90,
+                customWidget: AnimatedAvatar(
+                  child: AvatarDisplay(
+                    face: _equippedFace,
+                    clothes: _equippedClothes,
+                    hair: _equippedHair,
+                    headgear: _equippedHeadgear,
+                    accessory: _equippedAccessory,
+                    size: 90,
+                  ),
                 ),
                 position: _avatarPos!,
                 size: 90,
@@ -1168,13 +1171,15 @@ class _SetupCompleteScreenState extends State<SetupCompleteScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                AvatarDisplay(
-                  face: _equippedFace,
-                  clothes: _equippedClothes,
-                  hair: _equippedHair,
-                  headgear: _equippedHeadgear,
-                  accessory: _equippedAccessory,
-                  size: 100,
+                AnimatedAvatar(
+                  child: AvatarDisplay(
+                    face: _equippedFace,
+                    clothes: _equippedClothes,
+                    hair: _equippedHair,
+                    headgear: _equippedHeadgear,
+                    accessory: _equippedAccessory,
+                    size: 100,
+                  ),
                 ),
                 const SizedBox(width: 20),
                 if (_equippedCharacters.isNotEmpty)

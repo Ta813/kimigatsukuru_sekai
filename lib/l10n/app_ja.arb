@@ -566,6 +566,22 @@
       }
     }
   },
+  "promiseNotificationSoonTitle": "もうすぐ「{title}」のじかんだよ！",
+  "@promiseNotificationSoonTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseNotificationSoonBody": "{icon} あと5ふんで はじまるよ！",
+  "@promiseNotificationSoonBody": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
   "weeklyNotificationTitle": "今週の「やくそく」はいかがですか？🌟",
   "weeklyNotificationBody": "毎日の育児お疲れ様です☕️ お子様の習慣づくりをアプリでチェックしてみましょう！",
   "alreadyAddedPromise": "「{title}」は既に追加されています",
@@ -1041,5 +1057,6 @@
     }
   },
   "setupSkipButton": "今はスキップ\n(あとでおきがえできます)",
-  "homeMissionTutorialBubble": "まずは チュートリアルで\nあそびかた を マスターしよう！"
+  "homeMissionTutorialBubble": "まずは チュートリアルで\nあそびかた を マスターしよう！",
+  "pointAdditionMotivationMsg": "まずは つづける ことが だいじ！\n「やくそく」を はじめる キッカケに してね✨"
 }

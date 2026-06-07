@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
+import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'roulette_dialog.dart';
@@ -73,10 +74,10 @@ class _TimerScreenState extends State<TimerScreen>
   int _boostMultiplier = 1;
 
   // 広告を表示するかどうかのフラグ（最初は絶対にfalseにしておく）
-  bool _showAd = false;
+  //bool _showAd = false;
 
   // 広告表示用の遅延タイマー
-  Timer? _adDelayTimer;
+  // Timer? _adDelayTimer;
 
   // この画面が表示された瞬間に、一度だけ呼ばれる初期化処理
   @override
@@ -111,14 +112,14 @@ class _TimerScreenState extends State<TimerScreen>
     _loadAndSetRandomCharacter();
 
     // 🌟 画面が開いてから10秒後にフラグを true にする
-    _adDelayTimer = Timer(const Duration(seconds: 10), () {
-      if (mounted) {
-        setState(() {
-          _showAd = true;
-        });
-        print("10秒経過！AdBannerを表示します");
-      }
-    });
+    // _adDelayTimer = Timer(const Duration(seconds: 10), () {
+    //   if (mounted) {
+    //     setState(() {
+    //       _showAd = true;
+    //     });
+    //     print("10秒経過！AdBannerを表示します");
+    //   }
+    // });
     _playFocusBgm();
   }
 
@@ -192,7 +193,7 @@ class _TimerScreenState extends State<TimerScreen>
     // ★画面が閉じられたら、スリープを有効に戻す（非常に重要！）
     WakelockPlus.disable();
     _timer?.cancel(); // タイマーが動いていたら、必ず停止する
-    _adDelayTimer?.cancel();
+    // _adDelayTimer?.cancel();
     super.dispose();
   }
 
@@ -1066,13 +1067,15 @@ class _TimerScreenState extends State<TimerScreen>
             Positioned(
               left: 50,
               bottom: 50,
-              child: AvatarDisplay(
-                face: _equippedFace,
-                clothes: _equippedClothes,
-                hair: _equippedHair,
-                headgear: _equippedHeadgear,
-                accessory: _equippedAccessory,
-                size: 170,
+              child: AnimatedAvatar(
+                child: AvatarDisplay(
+                  face: _equippedFace,
+                  clothes: _equippedClothes,
+                  hair: _equippedHair,
+                  headgear: _equippedHeadgear,
+                  accessory: _equippedAccessory,
+                  size: 170,
+                ),
               ),
             ),
             Center(
@@ -1484,7 +1487,7 @@ class _TimerScreenState extends State<TimerScreen>
           ],
         ),
         // 画面下部にバナーを設置
-        bottomNavigationBar: _isTutorial || !_showAd ? null : const AdBanner(),
+        bottomNavigationBar: _isTutorial ? null : const AdBanner(),
       ),
     );
   }

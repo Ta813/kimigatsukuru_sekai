@@ -2677,6 +2677,18 @@ abstract class AppLocalizations {
   /// **'{icon} Let\'s start your promise!'**
   String promiseNotificationBody(String icon);
 
+  /// No description provided for @promiseNotificationSoonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting soon: \"{title}\"!'**
+  String promiseNotificationSoonTitle(String title);
+
+  /// No description provided for @promiseNotificationSoonBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{icon} Starts in 5 minutes!'**
+  String promiseNotificationSoonBody(String icon);
+
   /// No description provided for @weeklyNotificationTitle.
   ///
   /// In en, this message translates to:
@@ -4290,6 +4302,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'First, play the tutorial\nto master how to play!'**
   String get homeMissionTutorialBubble;
+
+  /// No description provided for @pointAdditionMotivationMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Consistency is key!\nLet this be the motivation to start your \'promises\'✨'**
+  String get pointAdditionMotivationMsg;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

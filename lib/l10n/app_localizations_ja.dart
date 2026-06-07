@@ -1338,6 +1338,16 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String promiseNotificationSoonTitle(String title) {
+    return 'もうすぐ「$title」のじかんだよ！';
+  }
+
+  @override
+  String promiseNotificationSoonBody(String icon) {
+    return '$icon あと5ふんで はじまるよ！';
+  }
+
+  @override
   String get weeklyNotificationTitle => '今週の「やくそく」はいかがですか？🌟';
 
   @override
@@ -2207,4 +2217,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get homeMissionTutorialBubble => 'まずは チュートリアルで\nあそびかた を マスターしよう！';
+
+  @override
+  String get pointAdditionMotivationMsg => 'まずは つづける ことが だいじ！\n「やくそく」を はじめる キッカケに してね✨';
 }

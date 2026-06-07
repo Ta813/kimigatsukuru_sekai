@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 🌟 追加: デイリーミッションの状態取得用
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
@@ -241,30 +242,6 @@ class _MissionScreenState extends State<MissionScreen>
     // 🌟 レベル制限のないものは、未クリアなら常に目立たせる
     loadedMissions.add(
       MissionItem(
-        id: 'mission_x_follow',
-        title: l10n.missionXFollowTitle, // 🌟 先ほど追加したローカライズキー
-        rewardPoints: 200,
-        isCompleted: hasFollowedX, // Xを開いて戻ってきていれば true になる
-        isClaimed: claimedIds.contains('mission_x_follow'),
-        category: MissionCategory.firstTime,
-        isHighlight: !claimedIds.contains('mission_x_follow'), // 未受け取りなら目立たせる
-      ),
-    );
-
-    loadedMissions.add(
-      MissionItem(
-        id: 'mission_x_share',
-        title: l10n.missionXShareTitle, // 「X(Twitter)でシェアしよう！」
-        rewardPoints: 200,
-        isCompleted: hasSharedX,
-        isClaimed: claimedIds.contains('mission_x_share'),
-        category: MissionCategory.firstTime, // 1回きりなので「はじめて」タブへ
-        isHighlight: !claimedIds.contains('mission_x_share'),
-      ),
-    );
-
-    loadedMissions.add(
-      MissionItem(
         id: 'mission_enter_house',
         title: l10n.missionTitleEnterHouse,
         rewardPoints: 50,
@@ -359,6 +336,30 @@ class _MissionScreenState extends State<MissionScreen>
         category: MissionCategory.firstTime,
         isHighlight:
             !claimedIds.contains('mission_space') && currentLevel >= 20,
+      ),
+    );
+
+    loadedMissions.add(
+      MissionItem(
+        id: 'mission_x_follow',
+        title: l10n.missionXFollowTitle, // 🌟 先ほど追加したローカライズキー
+        rewardPoints: 200,
+        isCompleted: hasFollowedX, // Xを開いて戻ってきていれば true になる
+        isClaimed: claimedIds.contains('mission_x_follow'),
+        category: MissionCategory.firstTime,
+        isHighlight: !claimedIds.contains('mission_x_follow'), // 未受け取りなら目立たせる
+      ),
+    );
+
+    loadedMissions.add(
+      MissionItem(
+        id: 'mission_x_share',
+        title: l10n.missionXShareTitle, // 「X(Twitter)でシェアしよう！」
+        rewardPoints: 200,
+        isCompleted: hasSharedX,
+        isClaimed: claimedIds.contains('mission_x_share'),
+        category: MissionCategory.firstTime, // 1回きりなので「はじめて」タブへ
+        isHighlight: !claimedIds.contains('mission_x_share'),
       ),
     );
 
@@ -853,6 +854,8 @@ class _MissionScreenState extends State<MissionScreen>
             ),
           ],
         ),
+        // 画面下部にバナーを設置
+        bottomNavigationBar: const AdBanner(),
       ),
     );
   }
@@ -872,6 +875,12 @@ class _MissionScreenState extends State<MissionScreen>
         widget.isTutorialMode! &&
         mission.id == 'mission_first_promise' &&
         mission.isCompleted &&
+        !mission.isClaimed;
+
+    // 🌟 追加: 「やくそくをたいけんしよう」の「やってみる」ボタンかどうか
+    final bool isTryItBlinking =
+        mission.id == 'mission_first_promise' &&
+        !mission.isCompleted &&
         !mission.isClaimed;
 
     if (mission.isClaimed) {
@@ -977,8 +986,8 @@ class _MissionScreenState extends State<MissionScreen>
                   ),
                 ),
                 BlinkingEffect(
-                  // チュートリアル中なら対象ボタンだけを点滅
-                  isBlinking: isTutorialTargetBtn,
+                  // チュートリアル中なら対象ボタン、または「やってみる」ボタンを点滅
+                  isBlinking: isTutorialTargetBtn || isTryItBlinking,
                   // 紫色の点滅を表現したい場合は、BlinkingEffectの内部実装によりますが、
                   // 今回はCard自体ではなくボタンを覆うようにIgnorePointer等と組み合わせます
                   child: Stack(
@@ -987,10 +996,14 @@ class _MissionScreenState extends State<MissionScreen>
                       // 🌟 追加: チュートリアル中かつ対象以外のボタンは非活性にする
                       IgnorePointer(
                         ignoring:
-                            widget.isTutorialMode! && !isTutorialTargetBtn,
+                            widget.isTutorialMode! &&
+                            !isTutorialTargetBtn &&
+                            !isTryItBlinking,
                         child: Opacity(
                           opacity:
-                              (widget.isTutorialMode! && !isTutorialTargetBtn)
+                              (widget.isTutorialMode! &&
+                                  !isTutorialTargetBtn &&
+                                  !isTryItBlinking)
                               ? 0.3
                               : 1.0,
                           child: ElevatedButton(
@@ -1016,7 +1029,7 @@ class _MissionScreenState extends State<MissionScreen>
                           ),
                         ),
                       ),
-                      if (isTutorialTargetBtn)
+                      if (isTutorialTargetBtn || isTryItBlinking)
                         const Positioned(
                           right: -10,
                           bottom: -10,

@@ -520,6 +520,22 @@
       }
     }
   },
+  "promiseNotificationSoonTitle": "जल्द शुरू होगा: \"{title}\"!",
+  "@promiseNotificationSoonTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseNotificationSoonBody": "{icon} 5 मिनट में शुरू होता है!",
+  "@promiseNotificationSoonBody": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
   "weeklyNotificationTitle": "इस हफ़्ते के वादे कैसे चल रहे हैं? 🌟",
   "weeklyNotificationBody": "थोड़ा ब्रेक ले रहे हैं? ☕️ आइए ऐप में अपने बच्चे की प्रगति देखें!",
   "alreadyAddedPromise": "\"{title}\" पहले से ही जोड़ा गया है",
@@ -994,5 +1010,6 @@
     }
   },
   "setupSkipButton": "अभी के लिए छोड़ें\n(आप बाद में बदल सकते हैं)",
-  "homeMissionTutorialBubble": "सबसे पहले, कैसे खेलें यह सीखने के लिए\nट्यूटोरियल खेलें!"
+  "homeMissionTutorialBubble": "सबसे पहले, कैसे खेलें यह सीखने के लिए\nट्यूटोरियल खेलें!",
+  "pointAdditionMotivationMsg": "लगातार प्रयास करना सबसे ज़रूरी है!\nइसे अपने 'वादों' को शुरू करने की प्रेरणा बनाएं✨"
 }

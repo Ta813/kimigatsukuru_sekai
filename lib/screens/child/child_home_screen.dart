@@ -20,6 +20,7 @@ import 'package:kimigatsukuru_sekai/screens/initial_setup_coordinator.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/settings_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/point_addition_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
+import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
@@ -343,11 +344,12 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         int earnedPoints = 0;
         if (!widget.isInitialSetup) {
           earnedPoints = await LoginBonusManager().checkLoginBonus(context);
-          TrophyManager.checkAndShowTrophies(context);
         }
 
         await _loadAndDetermineDisplayPromise();
         await SharedPrefsHelper.recordLoginDay();
+
+        TrophyManager.checkAndShowTrophies(context);
 
         if (earnedPoints > 0 && mounted) {
           try {
@@ -1807,6 +1809,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       return 120.0;
     } else if (itemPath.contains('assets/images/item_sky_niji.png')) {
       return 120.0;
+    } else if (itemPath.contains('assets/images/item_space_kuruma.png')) {
+      return 120.0;
+    } else if (itemPath.contains('assets/images/item_space_roketto.png')) {
+      return 120.0;
+    } else if (itemPath.contains('assets/images/item_space_antena.png')) {
+      return 100.0;
+    } else if (itemPath.contains('assets/images/item_space_kousenjuu.png')) {
+      return 30.0;
     } else if (itemPath.contains('assets/images/item_jitensya.png')) {
       return 70.0;
     } else if (itemPath.contains('assets/images/item_jouro.png')) {
@@ -3687,21 +3697,24 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   // 🌟 追加：吹き出しUI（_showMissionBubble が true の時だけ表示）
                   if (_showMissionBubble)
                     Positioned(
-                      top: 130, // ボタンの縦位置に合わせて微調整
-                      right: 70, // ボタンの左側に配置
+                      top: 0, // ボタンの縦位置に合わせて微調整
+                      bottom: 60,
+                      right: 55, // ボタンの左側に配置
                       child: _buildMissionBubble(context),
                     ),
 
                   // アバターの表示と操作
                   DraggableCharacter(
                     id: 'avatar',
-                    customWidget: AvatarDisplay(
-                      face: _equippedFace,
-                      clothes: _equippedClothes,
-                      hair: _equippedHair,
-                      headgear: _equippedHeadgear,
-                      accessory: _equippedAccessory,
-                      size: 80,
+                    customWidget: AnimatedAvatar(
+                      child: AvatarDisplay(
+                        face: _equippedFace,
+                        clothes: _equippedClothes,
+                        hair: _equippedHair,
+                        headgear: _equippedHeadgear,
+                        accessory: _equippedAccessory,
+                        size: 80,
+                      ),
                     ),
                     position: _avatarPosition,
                     size: 80,
@@ -4224,44 +4237,52 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   // 🌟 追加：吹き出しのUIを作るメソッド
   Widget _buildMissionBubble(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFF7043), // 吹き出しの色（オレンジ）
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 4,
-                offset: Offset(0, 2),
+    return ScaleTransition(
+      scale: Tween<double>(begin: 0.95, end: 1.05).animate(
+        CurvedAnimation(
+          parent: _hintAnimationController,
+          curve: Curves.easeInOut,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF7043), // 吹き出しの色（オレンジ）
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Text(
+              l10n.homeMissionTutorialBubble,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                height: 1.3,
               ),
-            ],
-          ),
-          child: Text(
-            l10n.homeMissionTutorialBubble,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              height: 1.3,
             ),
           ),
-        ),
-        // 吹き出しの「しっぽ（右向きの三角）」をアイコンで代用
-        Transform.translate(
-          offset: const Offset(-8, 0),
-          child: const Icon(
-            Icons.arrow_right,
-            color: Color(0xFFFF7043),
-            size: 40,
+          // 吹き出しの「しっぽ（右向きの三角）」をアイコンで代用
+          Transform.translate(
+            offset: const Offset(-18, 0),
+            child: const Icon(
+              Icons.arrow_right,
+              color: Color(0xFFFF7043),
+              size: 40,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

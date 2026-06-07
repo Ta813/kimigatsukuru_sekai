@@ -566,6 +566,22 @@
       }
     }
   },
+  "promiseNotificationSoonTitle": "جلد شروع ہوگا: \"{title}\"!",
+  "@promiseNotificationSoonTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseNotificationSoonBody": "{icon} 5 منٹ میں شروع ہوتا ہے!",
+  "@promiseNotificationSoonBody": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
   "weeklyNotificationTitle": "اس ہفتے کے وعدے کیسے چل رہے ہیں؟ 🌟",
   "weeklyNotificationBody": "تھوڑا وقفہ لے رہے ہیں؟ ☕️ آئیے ایپ میں اپنے بچے کی پیشرفت چیک کریں!",
   "alreadyAddedPromise": "\"{title}\" پہلے ہی شامل کیا جا چکا ہے",
@@ -1040,5 +1056,6 @@
     }
   },
   "setupSkipButton": "ابھی کے لیے چھوڑیں\n(آپ بعد میں تبدیل کر سکتے ہیں)",
-  "homeMissionTutorialBubble": "پہلے، یہ سیکھنے کے لیے کہ کیسے کھیلنا ہے\nٹیوٹوریل کھیلیں!"
+  "homeMissionTutorialBubble": "پہلے، یہ سیکھنے کے لیے کہ کیسے کھیلنا ہے\nٹیوٹوریل کھیلیں!",
+  "pointAdditionMotivationMsg": "مستقل مزاجی سب سے اہم ہے!\nاسے اپنے 'وعدوں' کو شروع کرنے کا محرک بنائیں✨"
 }

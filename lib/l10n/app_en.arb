@@ -566,6 +566,22 @@
       }
     }
   },
+  "promiseNotificationSoonTitle": "Starting soon: \"{title}\"!",
+  "@promiseNotificationSoonTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "promiseNotificationSoonBody": "{icon} Starts in 5 minutes!",
+  "@promiseNotificationSoonBody": {
+    "placeholders": {
+      "icon": {
+        "type": "String"
+      }
+    }
+  },
   "weeklyNotificationTitle": "How are this week's Promises? 🌟",
   "weeklyNotificationBody": "Taking a quick break? ☕️ Let's check your child's progress in the app!",
   "alreadyAddedPromise": "\"{title}\" is already added",
@@ -1040,5 +1056,6 @@
     }
   },
   "setupSkipButton": "Skip for now\n(You can change later)",
-  "homeMissionTutorialBubble": "First, play the tutorial\nto master how to play!"
+  "homeMissionTutorialBubble": "First, play the tutorial\nto master how to play!",
+  "pointAdditionMotivationMsg": "Consistency is key!\nLet this be the motivation to start your 'promises'✨"
 }

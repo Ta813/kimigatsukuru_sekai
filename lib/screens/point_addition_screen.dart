@@ -387,7 +387,7 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
                 ),
                 elevation: 4,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(4.0),
                   child: Column(
                     children: [
                       Row(
@@ -419,7 +419,21 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.pointAdditionMotivationMsg,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color:
+                              Colors.black54, // 少し控えめなグレーにして広告ボタンより目立ちすぎないように
+                          height: 1.3,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
                       PulsingEffect(
                         isPulsing: isButtonEnabled, // 🌟 引数名変更
                         child: ElevatedButton(
@@ -638,12 +652,13 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: isCurrent ? const Color(0xFFFF7043) : Colors.black54,
+            fontSize: 10,
           ),
         ),
         const SizedBox(height: 4),
         Container(
-          width: 50,
-          height: 50,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             color: isClaimed
                 ? Colors.grey[200]
@@ -657,7 +672,7 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
           child: Center(
             child: isClaimed
                 ? const Icon(Icons.check_circle, color: Colors.green, size: 32)
-                : Text(emoji, style: const TextStyle(fontSize: 28)),
+                : Text(emoji, style: const TextStyle(fontSize: 20)),
           ),
         ),
       ],

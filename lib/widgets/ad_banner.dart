@@ -1,9 +1,9 @@
 // lib/widgets/ad_banner.dart
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:flutter/foundation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../managers/purchase_manager.dart';
 
@@ -24,13 +24,17 @@ class _AdBannerState extends State<AdBanner> {
     _loadAd();
   }
 
-  static String get bannerAdUnitId {
-    if (Platform.isAndroid) {
-      return 'ca-app-pub-2333753292729105/1224734484'; // ← AndroidのバナーID
-    } else if (Platform.isIOS) {
-      return 'ca-app-pub-2333753292729105/2061719105'; // ← iOSのバナーID
+  String get bannerAdUnitId {
+    if (kDebugMode) {
+      // Google公式のテスト用バナーID
+      return Platform.isAndroid
+          ? 'ca-app-pub-3940256099942544/6300978111'
+          : 'ca-app-pub-3940256099942544/2934735716';
     } else {
-      throw UnsupportedError('Unsupported platform');
+      // 🚀 ここにご自身の本番用バナー広告IDを入れてください
+      return Platform.isAndroid
+          ? 'ca-app-pub-2333753292729105/1224734484' // Android本番用
+          : 'ca-app-pub-2333753292729105/2061719105'; // iOS本番用
     }
   }
 
@@ -44,10 +48,6 @@ class _AdBannerState extends State<AdBanner> {
       // オフラインなら何もしない
       return;
     }
-
-    // if (!Platform.isAndroid) {
-    //   return;
-    // }
 
     _bannerAd = BannerAd(
       adUnitId: bannerAdUnitId,
@@ -83,10 +83,7 @@ class _AdBannerState extends State<AdBanner> {
         }
 
         if (kDebugMode) {
-          return const Padding(
-            padding: EdgeInsets.only(top: 16.0),
-            child: SizedBox(height: 50),
-          );
+          return const SizedBox(height: 50);
         }
 
         return Padding(

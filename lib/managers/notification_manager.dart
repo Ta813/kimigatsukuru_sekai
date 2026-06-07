@@ -155,9 +155,9 @@ class NotificationManager {
 
       if (timeStr.isEmpty) continue;
 
-      // ★ ローカライズされた文字列を適用
-      final notificationTitle = l10n.promiseNotificationTitle(title);
-      final notificationBody = l10n.promiseNotificationBody(icon);
+      // ★ ローカライズされた文字列を適用（5分前通知）
+      final notificationTitle = l10n.promiseNotificationSoonTitle(title);
+      final notificationBody = l10n.promiseNotificationSoonBody(icon);
 
       try {
         // ★追加: 初期化されていない場合はスキップ（または待機）
@@ -172,7 +172,7 @@ class NotificationManager {
           id: 100 + i, // IDを100, 101...とする
           title: notificationTitle,
           body: notificationBody,
-          scheduledDate: _nextInstanceOfTime(timeStr),
+          scheduledDate: _nextInstanceOfTimeMinus5(timeStr),
           notificationDetails: NotificationDetails(
             android: AndroidNotificationDetails(
               'promise_reminder_channel',
@@ -195,13 +195,15 @@ class NotificationManager {
     print("✅ ${promises.length}件のやくそく通知を再設定しました");
   }
 
-  // 指定された時刻（HH:mm）の「次の発生タイミング」を計算する
-  tz.TZDateTime _nextInstanceOfTime(String timeStr) {
+  // 指定された時刻（HH:mm）の5分前の「次の発生タイミング」を計算する
+  tz.TZDateTime _nextInstanceOfTimeMinus5(String timeStr) {
     final parts = timeStr.split(':');
     final hour = int.parse(parts[0]);
     final minute = int.parse(parts[1]);
 
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+
+    // やくそくの開始時刻から5分前を計算
     tz.TZDateTime scheduledDate = tz.TZDateTime(
       tz.local,
       now.year,
@@ -209,7 +211,7 @@ class NotificationManager {
       now.day,
       hour,
       minute,
-    );
+    ).subtract(const Duration(minutes: 5));
 
     // すでにその時間を過ぎている場合は翌日に設定
     if (scheduledDate.isBefore(now)) {

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/helpers/shared_prefs_helper.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
+import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/draggable_character.dart';
 import 'furniture_customize_screen.dart';
@@ -112,6 +113,10 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
         return 'assets/images/house_interior/sky_interior.png';
       case 'assets/images/house_sky_kumo.png': // そらのおうち（くも）
         return 'assets/images/house_interior/sky_interior.png';
+      case 'assets/images/house_space_domu.png': // うちゅうのおうち（ドーム）
+        return 'assets/images/house_interior/space_interior.png';
+      case 'assets/images/house_space_roketto.png': // うちゅうのおうち（ロケット）
+        return 'assets/images/house_interior/space_interior.png';
       default:
         return 'assets/images/house_interior/default_interior.png';
     }
@@ -535,13 +540,15 @@ class _HouseInteriorScreenState extends State<HouseInteriorScreen> {
 
                 DraggableCharacter(
                   id: 'avatar_in_house', // ★ 家の中専用のユニークID
-                  customWidget: AvatarDisplay(
-                    face: _equippedFace,
-                    clothes: _equippedClothes,
-                    hair: _equippedHair,
-                    headgear: _equippedHeadgear,
-                    accessory: _equippedAccessory,
-                    size: 80,
+                  customWidget: AnimatedAvatar(
+                    child: AvatarDisplay(
+                      face: _equippedFace,
+                      clothes: _equippedClothes,
+                      hair: _equippedHair,
+                      headgear: _equippedHeadgear,
+                      accessory: _equippedAccessory,
+                      size: 80,
+                    ),
                   ),
                   position: _avatarPosition,
                   size: 80.0, // ホーム画面と同じサイズ感

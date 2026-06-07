@@ -3,6 +3,7 @@ import 'dart:ui' as import_ui;
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/helpers/image_share_helper.dart';
+import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/draggable_character.dart';
@@ -521,13 +522,15 @@ class _SkyScreenState extends State<SkyScreen> {
                     // --- アバターの表示 ---
                     DraggableCharacter(
                       id: 'avatar_on_sky',
-                      customWidget: AvatarDisplay(
-                        face: _equippedFace,
-                        clothes: _equippedClothes,
-                        hair: _equippedHair,
-                        headgear: _equippedHeadgear,
-                        accessory: _equippedAccessory,
-                        size: _getItemSize(_equippedClothes),
+                      customWidget: AnimatedAvatar(
+                        child: AvatarDisplay(
+                          face: _equippedFace,
+                          clothes: _equippedClothes,
+                          hair: _equippedHair,
+                          headgear: _equippedHeadgear,
+                          accessory: _equippedAccessory,
+                          size: _getItemSize(_equippedClothes),
+                        ),
                       ),
                       position: _avatarPosition,
                       size: _getItemSize(_equippedClothes),
