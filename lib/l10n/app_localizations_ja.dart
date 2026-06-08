@@ -2220,4 +2220,37 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get pointAdditionMotivationMsg => 'まずは つづける ことが だいじ！\n「やくそく」を はじめる キッカケに してね✨';
+
+  @override
+  String get setupNewIntroTitle => 'このアプリで育つ「４つのチカラ」 🌍✨';
+
+  @override
+  String get setupNewIntroSubtitle => 'このアプリは、お子様が自ら進んで「やくそく」を守りたくなる仕組みが詰まっています。';
+
+  @override
+  String get setupNewIntroPower1Title => '小さな「できた！」が自信になる';
+
+  @override
+  String get setupNewIntroPower1Desc => '約束を守れた達成感と、世界が広がる喜びを同時に味わうことで、お子様の確かな成功体験になります。';
+
+  @override
+  String get setupNewIntroPower2Title => '「やりなさい」から「やりたい！」へ';
+
+  @override
+  String get setupNewIntroPower2Desc => '「ご褒美があるからやってみよう」というワクワク感が、最初の重い腰を上げるための強力な原動力になります。';
+
+  @override
+  String get setupNewIntroPower3Title => '「約束を守る」ことの大切さを学ぶ';
+
+  @override
+  String get setupNewIntroPower3Desc => '「約束を守ると、自分にとっても良いことがある」というポジティブな経験を通して、自らルールを守る心を育てます。';
+
+  @override
+  String get setupNewIntroPower4Title => '毎日の積み重ねが「一生の習慣」に';
+
+  @override
+  String get setupNewIntroPower4Desc => '最初は「あさごはん」や「おふろ」など、毎日必ずすることから始めてみましょう。当たり前のことが楽しくできるようになったら、少しずつ「やくそく」を増やしていくのが長続きのコツです！';
+
+  @override
+  String get setupNewIntroStartButton => 'さっそく「やくそく」を作ってみる';
 }

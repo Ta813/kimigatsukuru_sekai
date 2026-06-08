@@ -4,12 +4,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/bgm_manager.dart';
-import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/regular_promise_settings_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import 'package:kimigatsukuru_sekai/widgets/draggable_character.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../helpers/shared_prefs_helper.dart';
 import '../l10n/app_localizations.dart';
 import '../managers/sfx_manager.dart';
@@ -112,247 +110,185 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
       );
     }
 
-    return _buildIntroScreen();
+    // 🌟 変更: 最初に見せる画面を「新しいイントロ（4つのチカラ）」に変更
+    return _buildNewIntroScreen();
   }
 
-  // 年齢を聞く前のイントロ画面
-  Widget _buildIntroScreen() {
+  // ==============================================================
+  // 🌟 新しいイントロ画面（アプリの目的・効果を伝える）
+  // ==============================================================
+  Widget _buildNewIntroScreen() {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Image.asset('assets/images/character_hime.gif', height: 100),
-                  const SizedBox(width: 20),
-                  Image.asset('assets/images/character_kuma.gif', height: 100),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Text(
-                l10n.setupIntroMessage,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                  height: 1.5,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 0.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      l10n.setupNewIntroTitle,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.setupNewIntroSubtitle,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildPowerItem(
+                      icon: '🌟',
+                      title: l10n.setupNewIntroPower1Title,
+                      desc: l10n.setupNewIntroPower1Desc,
+                    ),
+                    _buildPowerItem(
+                      icon: '🚀',
+                      title: l10n.setupNewIntroPower2Title,
+                      desc: l10n.setupNewIntroPower2Desc,
+                    ),
+                    _buildPowerItem(
+                      icon: '🤝',
+                      title: l10n.setupNewIntroPower3Title,
+                      desc: l10n.setupNewIntroPower3Desc,
+                    ),
+                    _buildPowerItem(
+                      icon: '🌱',
+                      title: l10n.setupNewIntroPower4Title,
+                      desc: l10n.setupNewIntroPower4Desc,
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // 🌟 追加: 今はスキップボタン
-                  TextButton(
-                    onPressed: () async {
-                      try {
-                        SfxManager.instance.playTapSound();
-                      } catch (_) {}
-
-                      // ログ送信
-                      FirebaseAnalytics.instance.logEvent(
-                        name: 'setup_intro_skipped',
-                      );
-
-                      await SharedPrefsHelper.saveEquippedCharacters([
-                        'assets/images/character_usagi.gif',
-                      ]);
-
-                      await SharedPrefsHelper.addPurchasedItem('ウサギ');
-
-                      // 通知許可ダイアログを呼び出す
-                      await _requestNotificationPermission(context);
-
-                      // セットアップ完了フラグを立てて、ホーム画面へ直行！
-                      FirebaseAnalytics.instance.logEvent(name: 'setup_finish');
-                      await SharedPrefsHelper.setFirstLaunchCompleted();
-                      await SharedPrefsHelper.clearSetupProgress();
-
-                      if (!mounted) return;
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ChildHomeScreen(),
-                        ),
-                      );
-                    },
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                    child: Text(
-                      l10n.setupSkipButton, // 先ほど追加したローカライズキー
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                        decoration: TextDecoration.underline,
-                        height: 1.2,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          try {
-                            FirebaseAnalytics.instance.logEvent(
-                              name: 'setup_start',
-                            );
-                            SfxManager.instance.playTapSound();
-                          } catch (e) {}
-                          _runSetupLoop('C', 1);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF7043),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 48,
-                            vertical: 16,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          elevation: 4,
-                        ),
-                        child: Text(
-                          l10n.setupIntroNext,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: AnimatedTapFinger(),
-                      ),
-                    ],
+            ),
+            // ボトムエリア（ボタン）
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0, -2),
                   ),
                 ],
               ),
-            ],
-          ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      try {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'setup_start',
+                        );
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {}
+                      // 🌟 Pattern C のステップ1（やくそく設定）を開始！
+                      _runSetupLoop('C', 1);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF7043),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      minimumSize: const Size(double.infinity, 60),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: Text(
+                      l10n.setupNewIntroStartButton,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const Positioned(
+                    right: 10,
+                    bottom: -10,
+                    child: AnimatedTapFinger(),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  // 🌟 追加: 通知の許可を求める処理（ChildHomeScreenから移植）
-  Future<bool> _requestNotificationPermission(BuildContext context) async {
-    PermissionStatus status = await Permission.notification.status;
-
-    // すでに許可されている場合は何もしない
-    if (status.isGranted) return false;
-
-    // プレダイアログを出す
-    bool? shouldRequest = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogCtx) => AlertDialog(
-        title: Text(
-          AppLocalizations.of(dialogCtx)!.notificationRequestTitle,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF3E0),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0xFFFF7043).withOpacity(0.5),
-              width: 2,
-            ),
-          ),
-          child: Text(
-            AppLocalizations.of(dialogCtx)!.notificationRequestMessage,
-            style: const TextStyle(fontSize: 15, height: 1.5),
-          ),
-        ),
-        actionsAlignment: MainAxisAlignment.spaceEvenly,
-        actions: [
-          TextButton(
-            onPressed: () {
-              FirebaseAnalytics.instance.logEvent(
-                name: 'setup_notification_later',
-              );
-              Navigator.pop(dialogCtx, false);
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.grey),
-            child: Text(
-              AppLocalizations.of(dialogCtx)!.notificationLater,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              FirebaseAnalytics.instance.logEvent(
-                name: 'setup_notification_force',
-              );
-              try {
-                SfxManager.instance.playTapSound();
-              } catch (_) {}
-              Navigator.pop(dialogCtx, true);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFF7043),
-              foregroundColor: Colors.white,
-              side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              elevation: 4,
-            ),
-            child: Text(
-              AppLocalizations.of(dialogCtx)!.notificationAccept,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+  Widget _buildPowerItem({
+    required String icon,
+    required String title,
+    required String desc,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(icon, style: const TextStyle(fontSize: 28)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                Text(
+                  desc,
+                  style: const TextStyle(fontSize: 10, color: Colors.black54),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
-
-    // ユーザーが「うけとる！」を選んだ時だけOS標準のダイアログを出す
-    if (shouldRequest == true) {
-      final bool granted = await NotificationManager.instance
-          .requestPermission();
-      if (granted) {
-        FirebaseAnalytics.instance.logEvent(
-          name: 'notification_permission_granted',
-        );
-      } else {
-        FirebaseAnalytics.instance.logEvent(
-          name: 'notification_permission_denied',
-        );
-      }
-    }
-    return true;
   }
 
   // ==============================================================
-  // 🌟 自由な「戻る/進む」を可能にする、新しいセットアップの管理ループ
+  // 🌟 セットアップの管理ループ
   // ==============================================================
   Future<void> _runSetupLoop(
     String pattern,
     int step, {
     bool isBack = false,
   }) async {
-    // パターンごとに全ステップ数を決定（Paywallを除外した数）
-    int totalSteps = (pattern == 'C') ? 3 : 6;
+    // 🌟 変更: Pattern C のステップ数を 5 に変更（やくそく→旧イントロ→着せ替え→ドラッグ→完了）
+    int totalSteps = (pattern == 'C') ? 5 : 6;
 
     // 全ステップ完了した場合、ホーム画面へ遷移
     if (step > totalSteps) {
@@ -367,12 +303,47 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
       return;
     }
 
-    // 進行状況を保存
     await SharedPrefsHelper.saveSetupProgress(pattern, step);
     Widget? screen;
 
     // ステップ番号に応じた画面を取得
-    if (pattern == 'A') {
+    if (pattern == 'C') {
+      switch (step) {
+        case 1:
+          screen = RegularPromiseSettingsScreen(
+            isInitialSetup: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 2:
+          // 🌟 ここに「旧イントロ画面（アバターの説明など）」を差し込む
+          screen = AppIntroExplanationScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 3:
+          screen = CharacterCustomizeScreen(
+            isInitialSetup: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 4:
+          screen = DraggableInstructionScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 5:
+          screen = SetupCompleteScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+      }
+    } else if (pattern == 'A') {
       switch (step) {
         case 1:
           screen = RegularPromiseSettingsScreen(
@@ -456,39 +427,16 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
           );
           break;
       }
-    } else if (pattern == 'C') {
-      switch (step) {
-        case 1:
-          screen = CharacterCustomizeScreen(
-            isInitialSetup: true,
-            currentStep: step,
-            totalSteps: totalSteps,
-          );
-          break;
-        case 2:
-          screen = DraggableInstructionScreen(
-            currentStep: step,
-            totalSteps: totalSteps,
-          );
-          break;
-        case 3:
-          screen = RegularPromiseSettingsScreen(
-            isInitialSetup: true,
-            currentStep: step,
-            totalSteps: totalSteps,
-          );
-          break;
-      }
     }
 
     if (screen == null) return;
 
-    bool? proceed;
+    dynamic proceed;
 
     // 通常の画面遷移（戻るか進むかのアニメーションを適用）
-    proceed = await Navigator.push<bool>(
+    proceed = await Navigator.push<dynamic>(
       context,
-      PageRouteBuilder(
+      PageRouteBuilder<dynamic>(
         pageBuilder: (c, a, sa) => screen!,
         transitionsBuilder: (c, a, sa, child) {
           final offset = isBack
@@ -504,14 +452,17 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
 
     if (!mounted) return;
 
-    // 画面から返ってきた結果（戻るボタン=null、次へ=true）によって処理を分岐
+    // 画面から返ってきた結果によって処理を分岐
     if (proceed == true) {
       _runSetupLoop(pattern, step + 1, isBack: false); // 次のステップへ
     } else {
       // 戻るボタンが押された場合
       if (step == 1) {
-        // ステップ1で戻った場合は、年齢選択画面（Intro）に戻る
+        // ステップ1で戻った場合は、最初の新イントロ画面に戻る
         await SharedPrefsHelper.clearSetupProgress();
+      } else if (proceed == 'skip_to_drag') {
+        // 🌟 追加: スキップの合図を受け取ったら、Step 4（ドラッグ画面）にワープする
+        _runSetupLoop(pattern, 4, isBack: false);
       } else {
         _runSetupLoop(pattern, step - 1, isBack: true); // 前のステップへ
       }
@@ -536,7 +487,7 @@ PreferredSizeWidget buildSetupAppBar(
     toolbarHeight: 48,
     leading: BackButton(
       color: Colors.black54,
-      onPressed: () => Navigator.pop(context, false), // 戻る時は false(null扱い) を返す
+      onPressed: () => Navigator.pop(context, false),
     ),
     titleSpacing: 0,
     title: Padding(
@@ -587,7 +538,155 @@ PreferredSizeWidget buildSetupAppBar(
 }
 
 // ==============================================================
-// 🌟 ドラッグ操作の説明画面
+// 🌟 旧イントロ画面（アプリの機能・世界観の説明画面として独立）
+// ==============================================================
+class AppIntroExplanationScreen extends StatefulWidget {
+  final int currentStep;
+  final int totalSteps;
+
+  const AppIntroExplanationScreen({
+    super.key,
+    required this.currentStep,
+    required this.totalSteps,
+  });
+
+  @override
+  State<AppIntroExplanationScreen> createState() =>
+      _AppIntroExplanationScreenState();
+}
+
+class _AppIntroExplanationScreenState extends State<AppIntroExplanationScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      appBar: buildSetupAppBar(context, widget.currentStep, widget.totalSteps),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Image.asset('assets/images/character_hime.gif', height: 100),
+                  const SizedBox(width: 20),
+                  Image.asset('assets/images/character_kuma.gif', height: 100),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                l10n.setupIntroMessage,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // スキップボタン
+                  TextButton(
+                    onPressed: () async {
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (_) {}
+                      FirebaseAnalytics.instance.logEvent(
+                        name: 'setup_intro_skipped',
+                      );
+
+                      // スキップした場合はデフォルトアバターを保存してホームへ直行
+                      await SharedPrefsHelper.saveEquippedCharacters([
+                        'assets/images/character_usagi.gif',
+                      ]);
+                      await SharedPrefsHelper.addPurchasedItem('ウサギ');
+
+                      FirebaseAnalytics.instance.logEvent(name: 'setup_finish');
+                      await SharedPrefsHelper.setFirstLaunchCompleted();
+                      await SharedPrefsHelper.clearSetupProgress();
+
+                      if (!mounted) return;
+                      // 🌟 変更: ホーム画面へ直行せず、合図を返してループ管理側でStep 4へ飛ばす
+                      Navigator.pop(context, 'skip_to_drag');
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    child: Text(
+                      l10n.setupSkipButton,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                        decoration: TextDecoration.underline,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  // 次へボタン
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          try {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'setup_explanation_next',
+                            );
+                            SfxManager.instance.playTapSound();
+                          } catch (e) {}
+                          Navigator.pop(context, true); // 🌟 trueを返して次のステップへ！
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF7043),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 48,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 4,
+                        ),
+                        child: Text(
+                          l10n.setupIntroNext,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: AnimatedTapFinger(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ==============================================================
+// 🌟 以下、既存の画面ウィジェット（変更なし）
 // ==============================================================
 class DraggableInstructionScreen extends StatefulWidget {
   final int currentStep;

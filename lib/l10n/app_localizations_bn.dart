@@ -2220,4 +2220,37 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get pointAdditionMotivationMsg => 'ধারাবাহিকতাই আসল!\nএটিকে আপনার \'প্রতিশ্রুতি\' শুরু করার প্রেরণা হিসেবে নিন✨';
+
+  @override
+  String get setupNewIntroTitle => 'এই অ্যাপের মাধ্যমে গড়ে ওঠা ৪টি শক্তি 🌍✨';
+
+  @override
+  String get setupNewIntroSubtitle => 'এই অ্যাপটি এমন সব বৈশিষ্ট্যে ভরপুর যা আপনার সন্তানকে স্বেচ্ছায় \"প্রতিশ্রুতি\" রক্ষা করতে উৎসাহিত করবে।';
+
+  @override
+  String get setupNewIntroPower1Title => 'ছোট ছোট \"আমি পেরেছি!\" মুহূর্তগুলো আত্মবিশ্বাস বাড়ায়';
+
+  @override
+  String get setupNewIntroPower1Desc => 'কথা রাখার সাফল্যের অনুভূতি এবং একই সাথে নিজেদের পৃথিবী প্রসারিত হওয়ার আনন্দ একসাথে উপভোগ করা আপনার সন্তানের জন্য একটি নিশ্চিত সাফল্যের অভিজ্ঞতা হবে।';
+
+  @override
+  String get setupNewIntroPower2Title => '\"করো\" থেকে \"আমি করতে চাই!\"-তে পরিবর্তন';
+
+  @override
+  String get setupNewIntroPower2Desc => '\"পুরস্কার আছে বলে চলো এটা করি\" এই উত্তেজনা কাজ শুরু করার জন্য একটি শক্তিশালী চালিকা শক্তি হয়ে দাঁড়ায়।';
+
+  @override
+  String get setupNewIntroPower3Title => 'কথা রাখার গুরুত্ব শেখা';
+
+  @override
+  String get setupNewIntroPower3Desc => '\"কথা রাখলে নিজেরও ভালো কিছু হয়\" এই ইতিবাচক অভিজ্ঞতার মাধ্যমে, নিজের ইচ্ছেতেই নিয়ম মানার মানসিকতা তৈরি হয়।';
+
+  @override
+  String get setupNewIntroPower4Title => 'প্রতিদিনের অভ্যাস আজীবন অভ্যাসে পরিণত হয়';
+
+  @override
+  String get setupNewIntroPower4Desc => 'প্রথমে \"সকালের নাস্তা\" বা \"গোসলের\" মতো প্রতিদিনের কাজ দিয়ে শুরু করুন। দৈনন্দিন কাজগুলো যখন মজাদার হয়ে উঠবে, তখন ধীরে ধীরে \"প্রতিশ্রুতি\" বাড়ানোই হলো দীর্ঘস্থায়ী অভ্যাসের গোপন রহস্য!';
+
+  @override
+  String get setupNewIntroStartButton => 'চলুন এখনই একটি \"প্রতিশ্রুতি\" তৈরি করি';
 }

@@ -2220,4 +2220,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pointAdditionMotivationMsg => 'الاستمرار هو الأهم!\nاجعل هذا دافعًا للبدء بـ \'وعودك\'✨';
+
+  @override
+  String get setupNewIntroTitle => '٤ قوى ينميها هذا التطبيق 🌍✨';
+
+  @override
+  String get setupNewIntroSubtitle => 'هذا التطبيق مليء بالميزات التي تجعل طفلك يرغب في الوفاء بـ \"وعوده\" طواعية.';
+
+  @override
+  String get setupNewIntroPower1Title => 'لحظات \"نجحت!\" الصغيرة تبني الثقة';
+
+  @override
+  String get setupNewIntroPower1Desc => 'إن تجربة الشعور بالإنجاز عند الوفاء بوعد وفرحة توسيع عالمهم في نفس الوقت ستكون تجربة نجاح قوية لطفلك.';
+
+  @override
+  String get setupNewIntroPower2Title => 'من \"افعلها\" إلى \"أريد أن أفعلها!\"';
+
+  @override
+  String get setupNewIntroPower2Desc => 'الحماس بـ \"دعنا نفعل ذلك لأن هناك مكافأة\" يصبح قوة دافعة قوية للبدء.';
+
+  @override
+  String get setupNewIntroPower3Title => 'تعلم أهمية الوفاء بالوعود';
+
+  @override
+  String get setupNewIntroPower3Desc => 'من خلال التجربة الإيجابية لـ \"أشياء جيدة تحدث لي عندما أفي بوعد\"، فإنه ينمي قلبًا يتبع القواعد طواعية.';
+
+  @override
+  String get setupNewIntroPower4Title => 'التراكم اليومي يصبح عادة مدى الحياة';
+
+  @override
+  String get setupNewIntroPower4Desc => 'ابدأ بالأشياء التي تفعلها كل يوم، مثل \"الإفطار\" أو \"الاستحمام\". بمجرد أن تصبح المهام اليومية ممتعة، فإن إضافة المزيد من \"الوعود\" تدريجيًا هو سر النجاح الدائم!';
+
+  @override
+  String get setupNewIntroStartButton => 'دعنا نقطع \"وعدًا\" على الفور';
 }

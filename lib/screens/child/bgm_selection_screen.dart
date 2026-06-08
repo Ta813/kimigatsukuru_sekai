@@ -198,8 +198,6 @@ class _BgmSelectionScreenState extends State<BgmSelectionScreen> {
             ],
           ),
         ),
-        // 画面下部にバナーを設置
-        bottomNavigationBar: const AdBanner(),
       ),
     );
   }

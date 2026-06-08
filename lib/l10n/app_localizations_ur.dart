@@ -2220,4 +2220,37 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get pointAdditionMotivationMsg => 'مستقل مزاجی سب سے اہم ہے!\nاسے اپنے \'وعدوں\' کو شروع کرنے کا محرک بنائیں✨';
+
+  @override
+  String get setupNewIntroTitle => 'اس ایپ کے ذریعے پروان چڑھنے والی 4 طاقتیں 🌍✨';
+
+  @override
+  String get setupNewIntroSubtitle => 'یہ ایپ ایسی خصوصیات سے بھری ہے جو آپ کے بچے کو خوشی سے اپنے \"وعدے\" پورے کرنے پر مجبور کرے گی۔';
+
+  @override
+  String get setupNewIntroPower1Title => 'چھوٹے \"میں نے کر لیا!\" کے لمحات اعتماد پیدا کرتے ہیں';
+
+  @override
+  String get setupNewIntroPower1Desc => 'وعدہ پورا کرنے کی کامیابی کا احساس اور دنیا کو وسعت دینے کی خوشی ایک ساتھ محسوس کرنا آپ کے بچے کے لیے ایک یقینی کامیابی کا تجربہ ہوگا۔';
+
+  @override
+  String get setupNewIntroPower2Title => '\"کرو\" سے \"میں کرنا چاہتا ہوں!\" کا سفر';
+
+  @override
+  String get setupNewIntroPower2Desc => '\"انعام ہے اس لیے چلو اسے کرتے ہیں\" کا جوش شروعات کرنے کے لیے ایک مضبوط محرک بن جاتا ہے۔';
+
+  @override
+  String get setupNewIntroPower3Title => 'وعدے پورے کرنے کی اہمیت سیکھنا';
+
+  @override
+  String get setupNewIntroPower3Desc => '\"وعدہ پورا کرنے سے میرے ساتھ بھی کچھ اچھا ہوتا ہے\" کے مثبت تجربے کے ذریعے، یہ اپنی مرضی سے اصولوں پر عمل کرنے کا جذبہ پیدا کرتا ہے۔';
+
+  @override
+  String get setupNewIntroPower4Title => 'روزمرہ کا عمل ایک عمر بھر کی عادت بن جاتا ہے';
+
+  @override
+  String get setupNewIntroPower4Desc => 'شروعات ان کاموں سے کریں جو آپ روز کرتے ہیں، جیسے \"ناشتہ\" یا \"نہانا\"۔ جب روزمرہ کے کام مزیدار ہو جائیں، تو آہستہ آہستہ مزید \"وعدے\" شامل کرنا ہی دیرپا کامیابی کا راز ہے!';
+
+  @override
+  String get setupNewIntroStartButton => 'آئیے فوراً ایک \"وعدہ\" بنائیں';
 }

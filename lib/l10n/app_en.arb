@@ -1057,5 +1057,16 @@
   },
   "setupSkipButton": "Skip for now\n(You can change later)",
   "homeMissionTutorialBubble": "First, play the tutorial\nto master how to play!",
-  "pointAdditionMotivationMsg": "Consistency is key!\nLet this be the motivation to start your 'promises'✨"
+  "pointAdditionMotivationMsg": "Consistency is key!\nLet this be the motivation to start your 'promises'✨",
+  "setupNewIntroTitle": "4 Powers Nurtured by This App 🌍✨",
+  "setupNewIntroSubtitle": "This app is packed with features that make your child want to keep their \"Promises\" willingly.",
+  "setupNewIntroPower1Title": "Small \"I did it!\" moments build confidence",
+  "setupNewIntroPower1Desc": "Experiencing the sense of accomplishment of keeping a promise and the joy of expanding their world simultaneously will be a solid success experience for your child.",
+  "setupNewIntroPower2Title": "From \"Do it\" to \"I want to do it!\"",
+  "setupNewIntroPower2Desc": "The excitement of \"Let's do it because there's a reward\" becomes a powerful driving force to get started.",
+  "setupNewIntroPower3Title": "Learning the importance of keeping promises",
+  "setupNewIntroPower3Desc": "Through the positive experience of \"Good things happen to me when I keep a promise,\" it nurtures a heart that willingly follows rules.",
+  "setupNewIntroPower4Title": "Daily accumulation becomes a lifelong habit",
+  "setupNewIntroPower4Desc": "Start with things you do every day, like \"Breakfast\" or \"Bath\". Once everyday tasks become fun, gradually adding more \"Promises\" is the secret to long-lasting success!",
+  "setupNewIntroStartButton": "Let's make a \"Promise\" right away"
 }

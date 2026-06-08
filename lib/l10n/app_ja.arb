@@ -1058,5 +1058,16 @@
   },
   "setupSkipButton": "今はスキップ\n(あとでおきがえできます)",
   "homeMissionTutorialBubble": "まずは チュートリアルで\nあそびかた を マスターしよう！",
-  "pointAdditionMotivationMsg": "まずは つづける ことが だいじ！\n「やくそく」を はじめる キッカケに してね✨"
+  "pointAdditionMotivationMsg": "まずは つづける ことが だいじ！\n「やくそく」を はじめる キッカケに してね✨",
+  "setupNewIntroTitle": "このアプリで育つ「４つのチカラ」 🌍✨",
+  "setupNewIntroSubtitle": "このアプリは、お子様が自ら進んで「やくそく」を守りたくなる仕組みが詰まっています。",
+  "setupNewIntroPower1Title": "小さな「できた！」が自信になる",
+  "setupNewIntroPower1Desc": "約束を守れた達成感と、世界が広がる喜びを同時に味わうことで、お子様の確かな成功体験になります。",
+  "setupNewIntroPower2Title": "「やりなさい」から「やりたい！」へ",
+  "setupNewIntroPower2Desc": "「ご褒美があるからやってみよう」というワクワク感が、最初の重い腰を上げるための強力な原動力になります。",
+  "setupNewIntroPower3Title": "「約束を守る」ことの大切さを学ぶ",
+  "setupNewIntroPower3Desc": "「約束を守ると、自分にとっても良いことがある」というポジティブな経験を通して、自らルールを守る心を育てます。",
+  "setupNewIntroPower4Title": "毎日の積み重ねが「一生の習慣」に",
+  "setupNewIntroPower4Desc": "最初は「あさごはん」や「おふろ」など、毎日必ずすることから始めてみましょう。当たり前のことが楽しくできるようになったら、少しずつ「やくそく」を増やしていくのが長続きのコツです！",
+  "setupNewIntroStartButton": "さっそく「やくそく」を作ってみる"
 }

@@ -1,7 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
-import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 🌟 追加: デイリーミッションの状態取得用
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
@@ -854,8 +853,6 @@ class _MissionScreenState extends State<MissionScreen>
             ),
           ],
         ),
-        // 画面下部にバナーを設置
-        bottomNavigationBar: const AdBanner(),
       ),
     );
   }

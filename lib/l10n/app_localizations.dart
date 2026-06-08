@@ -4308,6 +4308,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Consistency is key!\nLet this be the motivation to start your \'promises\'✨'**
   String get pointAdditionMotivationMsg;
+
+  /// No description provided for @setupNewIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'4 Powers Nurtured by This App 🌍✨'**
+  String get setupNewIntroTitle;
+
+  /// No description provided for @setupNewIntroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This app is packed with features that make your child want to keep their \"Promises\" willingly.'**
+  String get setupNewIntroSubtitle;
+
+  /// No description provided for @setupNewIntroPower1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Small \"I did it!\" moments build confidence'**
+  String get setupNewIntroPower1Title;
+
+  /// No description provided for @setupNewIntroPower1Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Experiencing the sense of accomplishment of keeping a promise and the joy of expanding their world simultaneously will be a solid success experience for your child.'**
+  String get setupNewIntroPower1Desc;
+
+  /// No description provided for @setupNewIntroPower2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'From \"Do it\" to \"I want to do it!\"'**
+  String get setupNewIntroPower2Title;
+
+  /// No description provided for @setupNewIntroPower2Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'The excitement of \"Let\'s do it because there\'s a reward\" becomes a powerful driving force to get started.'**
+  String get setupNewIntroPower2Desc;
+
+  /// No description provided for @setupNewIntroPower3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning the importance of keeping promises'**
+  String get setupNewIntroPower3Title;
+
+  /// No description provided for @setupNewIntroPower3Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Through the positive experience of \"Good things happen to me when I keep a promise,\" it nurtures a heart that willingly follows rules.'**
+  String get setupNewIntroPower3Desc;
+
+  /// No description provided for @setupNewIntroPower4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily accumulation becomes a lifelong habit'**
+  String get setupNewIntroPower4Title;
+
+  /// No description provided for @setupNewIntroPower4Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with things you do every day, like \"Breakfast\" or \"Bath\". Once everyday tasks become fun, gradually adding more \"Promises\" is the secret to long-lasting success!'**
+  String get setupNewIntroPower4Desc;
+
+  /// No description provided for @setupNewIntroStartButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s make a \"Promise\" right away'**
+  String get setupNewIntroStartButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -2220,4 +2220,37 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get pointAdditionMotivationMsg => 'लगातार प्रयास करना सबसे ज़रूरी है!\nइसे अपने \'वादों\' को शुरू करने की प्रेरणा बनाएं✨';
+
+  @override
+  String get setupNewIntroTitle => 'इस ऐप द्वारा विकसित ४ शक्तियां 🌍✨';
+
+  @override
+  String get setupNewIntroSubtitle => 'यह ऐप ऐसी सुविधाओं से भरा है जो आपके बच्चे को स्वेच्छा से अपने \"वादे\" निभाने के लिए प्रेरित करेगा।';
+
+  @override
+  String get setupNewIntroPower1Title => 'छोटे \"मैंने कर दिखाया!\" पल आत्मविश्वास बढ़ाते हैं';
+
+  @override
+  String get setupNewIntroPower1Desc => 'वादा निभाने की उपलब्धि का एहसास और दुनिया के विस्तार की खुशी एक साथ अनुभव करना आपके बच्चे के लिए एक ठोस सफलता का अनुभव होगा।';
+
+  @override
+  String get setupNewIntroPower2Title => '\"करो\" से \"मैं करना चाहता हूँ!\" की ओर';
+
+  @override
+  String get setupNewIntroPower2Desc => '\"इनाम है इसलिए चलो इसे करते हैं\" का उत्साह शुरुआत करने के लिए एक मजबूत प्रेरक शक्ति बन जाता है।';
+
+  @override
+  String get setupNewIntroPower3Title => 'वादे निभाने का महत्व सीखना';
+
+  @override
+  String get setupNewIntroPower3Desc => '\"वादा निभाने से मेरे साथ भी कुछ अच्छा होता है\" के सकारात्मक अनुभव के माध्यम से, यह अपनी इच्छा से नियमों का पालन करने की भावना को पोषित करता है।';
+
+  @override
+  String get setupNewIntroPower4Title => 'हर दिन का संचय एक आजीवन आदत बन जाता है';
+
+  @override
+  String get setupNewIntroPower4Desc => 'शुरुआत उन कामों से करें जो आप रोज़ करते हैं, जैसे \"नाश्ता\" या \"नहाना\"। जब रोज़मर्रा के काम मज़ेदार हो जाएं, तो धीरे-धीरे और \"वादे\" बढ़ाना ही लंबे समय तक चलने वाली सफलता का रहस्य है!';
+
+  @override
+  String get setupNewIntroStartButton => 'चलिए तुरंत एक \"वादा\" बनाते हैं';
 }

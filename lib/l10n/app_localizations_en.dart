@@ -2220,4 +2220,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pointAdditionMotivationMsg => 'Consistency is key!\nLet this be the motivation to start your \'promises\'✨';
+
+  @override
+  String get setupNewIntroTitle => '4 Powers Nurtured by This App 🌍✨';
+
+  @override
+  String get setupNewIntroSubtitle => 'This app is packed with features that make your child want to keep their \"Promises\" willingly.';
+
+  @override
+  String get setupNewIntroPower1Title => 'Small \"I did it!\" moments build confidence';
+
+  @override
+  String get setupNewIntroPower1Desc => 'Experiencing the sense of accomplishment of keeping a promise and the joy of expanding their world simultaneously will be a solid success experience for your child.';
+
+  @override
+  String get setupNewIntroPower2Title => 'From \"Do it\" to \"I want to do it!\"';
+
+  @override
+  String get setupNewIntroPower2Desc => 'The excitement of \"Let\'s do it because there\'s a reward\" becomes a powerful driving force to get started.';
+
+  @override
+  String get setupNewIntroPower3Title => 'Learning the importance of keeping promises';
+
+  @override
+  String get setupNewIntroPower3Desc => 'Through the positive experience of \"Good things happen to me when I keep a promise,\" it nurtures a heart that willingly follows rules.';
+
+  @override
+  String get setupNewIntroPower4Title => 'Daily accumulation becomes a lifelong habit';
+
+  @override
+  String get setupNewIntroPower4Desc => 'Start with things you do every day, like \"Breakfast\" or \"Bath\". Once everyday tasks become fun, gradually adding more \"Promises\" is the secret to long-lasting success!';
+
+  @override
+  String get setupNewIntroStartButton => 'Let\'s make a \"Promise\" right away';
 }
