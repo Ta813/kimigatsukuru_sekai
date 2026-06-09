@@ -1,3 +1,5 @@
+// lib/screens/mission_screen.dart
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
@@ -72,6 +74,11 @@ class _MissionScreenState extends State<MissionScreen>
 
   int _multiplier = 1;
 
+  // 🌟 追加: チュートリアルの進行度を管理
+  int _tutorialStep = 0;
+  TabController? _tabController;
+  int _previousTabIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -118,6 +125,7 @@ class _MissionScreenState extends State<MissionScreen>
 
   @override
   void dispose() {
+    _tabController?.dispose(); // 🌟 追加
     _currentPointOverlay?.remove();
     _confettiController.dispose();
     _badgeAnimationController.dispose(); // 🌟 追加
@@ -125,9 +133,42 @@ class _MissionScreenState extends State<MissionScreen>
     super.dispose();
   }
 
-  // ==========================================
-  // 🌟 追加: 最前面にアニメーションを表示するメソッド
-  // ==========================================
+  // 🌟 追加: タブの切り替えを監視してチュートリアルを制御
+  void _handleTabSelection() {
+    if (_tabController!.indexIsChanging) return;
+
+    if (widget.isTutorialMode == true) {
+      final targetIndex = _tabController!.index;
+
+      if (_tutorialStep == 1 && targetIndex == 1) {
+        try {
+          SfxManager.instance.playTapSound();
+        } catch (_) {}
+        setState(() => _tutorialStep = 2);
+        _previousTabIndex = 1;
+      } else if (_tutorialStep == 2 && targetIndex == 2) {
+        try {
+          SfxManager.instance.playTapSound();
+        } catch (_) {}
+        setState(() => _tutorialStep = 3);
+        _previousTabIndex = 2;
+      } else if (_tutorialStep == 3 && targetIndex == 3) {
+        try {
+          SfxManager.instance.playTapSound();
+        } catch (_) {}
+        setState(() => _tutorialStep = 4);
+        _previousTabIndex = 3;
+      } else {
+        // 許可されていないタブへ移動しようとしたら引き戻す
+        if (targetIndex != _previousTabIndex) {
+          _tabController!.index = _previousTabIndex;
+        }
+      }
+    } else {
+      _previousTabIndex = _tabController!.index;
+    }
+  }
+
   void _showHugePointAnimation(int points) {
     // すでに表示中のものがあれば一旦消す（連打対策）
     _currentPointOverlay?.remove();
@@ -333,8 +374,6 @@ class _MissionScreenState extends State<MissionScreen>
         isHighlight: !claimedIds.contains('mission_first_promise'),
       ),
     );
-
-    // --- チュートリアル系ミッション ---
     loadedMissions.add(
       MissionItem(
         id: 'mission_parent_setup',
@@ -478,13 +517,13 @@ class _MissionScreenState extends State<MissionScreen>
       loadedMissions,
       SharedPrefsHelper.loginTargets
           .map(
-            (target) => MissionItem(
-              id: 'mission_login_$target',
-              title: l10n.missionTitleLoginDays(target.toString()),
+            (t) => MissionItem(
+              id: 'mission_login_$t',
+              title: l10n.missionTitleLoginDays(t.toString()),
               rewardPoints: 50,
-              isCompleted: cumulativeLoginDays >= target,
-              isClaimed: claimedIds.contains('mission_login_$target'),
-              progressText: '($cumulativeLoginDays/$target)',
+              isCompleted: cumulativeLoginDays >= t,
+              isClaimed: claimedIds.contains('mission_login_$t'),
+              progressText: '($cumulativeLoginDays/$t)',
               category: MissionCategory.cumulative,
             ),
           )
@@ -495,47 +534,45 @@ class _MissionScreenState extends State<MissionScreen>
       loadedMissions,
       SharedPrefsHelper.shopTargets
           .map(
-            (target) => MissionItem(
-              id: 'mission_shop_$target',
-              title: l10n.missionTitleShopCount(target.toString()),
+            (t) => MissionItem(
+              id: 'mission_shop_$t',
+              title: l10n.missionTitleShopCount(t.toString()),
               rewardPoints: 50,
-              isCompleted: cumulativeShop >= target,
-              isClaimed: claimedIds.contains('mission_shop_$target'),
-              progressText: '($cumulativeShop/$target)',
+              isCompleted: cumulativeShop >= t,
+              isClaimed: claimedIds.contains('mission_shop_$t'),
+              progressText: '($cumulativeShop/$t)',
               category: MissionCategory.cumulative,
             ),
           )
           .toList(),
     );
-
     _addNearestFromGroup(
       loadedMissions,
       SharedPrefsHelper.levelTargets
           .map(
-            (target) => MissionItem(
-              id: 'mission_level_$target',
-              title: l10n.missionTitleLevel(target.toString()),
+            (t) => MissionItem(
+              id: 'mission_level_$t',
+              title: l10n.missionTitleLevel(t.toString()),
               rewardPoints: 50,
-              isCompleted: currentLevel >= target,
-              isClaimed: claimedIds.contains('mission_level_$target'),
-              progressText: '(Lv.$currentLevel/Lv.$target)',
+              isCompleted: currentLevel >= t,
+              isClaimed: claimedIds.contains('mission_level_$t'),
+              progressText: '(Lv.$currentLevel/Lv.$t)',
               category: MissionCategory.cumulative,
             ),
           )
           .toList(),
     );
-
     _addNearestFromGroup(
       loadedMissions,
       SharedPrefsHelper.pointTargets
           .map(
-            (target) => MissionItem(
-              id: 'mission_points_$target',
-              title: l10n.missionTitlePoints(target.toString()),
+            (t) => MissionItem(
+              id: 'mission_points_$t',
+              title: l10n.missionTitlePoints(t.toString()),
               rewardPoints: 50,
-              isCompleted: cumulativePoints >= target,
-              isClaimed: claimedIds.contains('mission_points_$target'),
-              progressText: '($cumulativePoints/$target)',
+              isCompleted: cumulativePoints >= t,
+              isClaimed: claimedIds.contains('mission_points_$t'),
+              progressText: '($cumulativePoints/$t)',
               category: MissionCategory.cumulative,
             ),
           )
@@ -560,28 +597,23 @@ class _MissionScreenState extends State<MissionScreen>
 
     // 🌟 追加: 各タブに「受け取り可能（うけとる！）」なミッションがあるかチェック
     bool checkTabBadge(MissionCategory cat) {
-      if (cat == MissionCategory.tutorial) {
-        // チュートリアル: 未受け取り（未クリア含む）があれば常に「！」を出す
+      if (cat == MissionCategory.tutorial)
         return loadedMissions.any((m) => m.category == cat && !m.isClaimed);
-      } else if (cat == MissionCategory.daily) {
-        // 🌟 追加: デイリー
+      else if (cat == MissionCategory.daily)
         return loadedMissions.any(
           (m) => m.category == cat && m.isCompleted && !m.isClaimed,
         );
-      } else if (cat == MissionCategory.firstTime) {
-        // はじめて系: 「受け取り可能」または「今のレベルで挑戦可能（ハイライト中）」なら「！」を出す
+      else if (cat == MissionCategory.firstTime)
         return loadedMissions.any(
           (m) =>
               m.category == cat &&
               ((m.isCompleted && !m.isClaimed) ||
                   (m.isHighlight && !m.isClaimed)),
         );
-      } else {
-        // 累計系: 「受け取り可能（達成済み）」の時だけ「！」を出す
+      else
         return loadedMissions.any(
           (m) => m.category == cat && m.isCompleted && !m.isClaimed,
         );
-      }
     }
 
     if (mounted) {
@@ -596,6 +628,21 @@ class _MissionScreenState extends State<MissionScreen>
         _hasUnclaimedCumulative = checkTabBadge(MissionCategory.cumulative);
         _isLoading = false;
         _multiplier = multiplier;
+
+        // 🌟 追加: チュートリアル中かつ「最初のやくそく」が受け取り済みなら、ステップ1（デイリータブ誘導）にスキップ・復帰する
+        if (widget.isTutorialMode == true && _tutorialStep == 0) {
+          if (claimedIds.contains('mission_first_promise')) {
+            _tutorialStep = 1;
+          }
+        }
+
+        // 🌟 TabController の動的生成
+        int tabsCount = _showTutorialTab ? 4 : 3;
+        if (_tabController == null || _tabController!.length != tabsCount) {
+          _tabController?.dispose();
+          _tabController = TabController(length: tabsCount, vsync: this);
+          _tabController!.addListener(_handleTabSelection);
+        }
       });
     }
   }
@@ -618,6 +665,14 @@ class _MissionScreenState extends State<MissionScreen>
     await SharedPrefsHelper.addCumulativePoints(earnedPoints);
 
     await SharedPrefsHelper.claimMission(mission.id);
+
+    // 🌟 チュートリアル中のステップ進行
+    if (widget.isTutorialMode == true &&
+        mission.id == 'mission_first_promise') {
+      setState(() {
+        _tutorialStep = 1; // ポイント獲得後、デイリータブへ誘導
+      });
+    }
 
     await _loadMissions();
 
@@ -674,7 +729,7 @@ class _MissionScreenState extends State<MissionScreen>
                 color: Colors.red,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2.0),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 2,
@@ -698,38 +753,159 @@ class _MissionScreenState extends State<MissionScreen>
     );
   }
 
-  Tab _buildCompactTab(String text, IconData icon, bool hasBadge) {
-    return Tab(
-      height: 46, // 🌟 ここがポイント！標準の72pxから大幅に薄くする
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildTabIcon(icon, hasBadge),
-          const SizedBox(height: 2), // アイコンと文字の隙間を最小限に
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 10, // 文字も少し小さくしてスッキリと
-              fontWeight: FontWeight.bold,
-            ),
-            softWrap: false,
-            overflow: TextOverflow.visible,
+  // 🌟 追加: チュートリアルステップに応じて、各タブの点滅と非活性をコントロール
+  Tab _buildCompactTab(
+    String text,
+    IconData icon,
+    bool hasBadge,
+    int tabIndex,
+  ) {
+    bool isEnabled = true;
+    bool isBlinking = false;
+    bool isOpacity = false;
+
+    if (widget.isTutorialMode == true) {
+      if (_tutorialStep == 0) {
+        if (tabIndex != 0) {
+          isEnabled = false;
+          isOpacity = true;
+        }
+      } else if (_tutorialStep == 1) {
+        if (tabIndex == 1) {
+          isEnabled = true;
+          isBlinking = true;
+        } else {
+          isEnabled = false;
+          isOpacity = true;
+        }
+      } else if (_tutorialStep == 2) {
+        if (tabIndex == 2) {
+          isEnabled = true;
+          isBlinking = true;
+        } else {
+          isEnabled = false;
+          isOpacity = true;
+        }
+      } else if (_tutorialStep == 3) {
+        if (tabIndex == 3) {
+          isEnabled = true;
+          isBlinking = true;
+        } else {
+          isEnabled = false;
+          isOpacity = true;
+        }
+      } else if (_tutorialStep == 4) {
+        isEnabled = false;
+        isOpacity = true;
+      }
+    }
+
+    Widget tabChild = Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildTabIcon(icon, hasBadge),
+        const SizedBox(height: 2), // アイコンと文字の隙間を最小限に
+        Text(
+          text,
+          style: const TextStyle(
+            fontSize: 10, // 文字も少し小さくしてスッキリと
+            fontWeight: FontWeight.bold,
           ),
-        ],
+          softWrap: false,
+          overflow: TextOverflow.visible,
+        ),
+      ],
+    );
+
+    if (isOpacity) {
+      tabChild = Opacity(opacity: 0.3, child: tabChild);
+    }
+    if (isBlinking) {
+      tabChild = BlinkingEffect(
+        isBlinking: true,
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            tabChild,
+            const Positioned(
+              right: -15,
+              bottom: -15,
+              child: AnimatedTapFinger(),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Tab(
+      height: 46,
+      child: IgnorePointer(ignoring: !isEnabled, child: tabChild),
+    );
+  }
+
+  // 🌟 追加: チュートリアル用の吹き出しUI
+  Widget _buildTutorialBubble() {
+    if (widget.isTutorialMode != true) return const SizedBox.shrink();
+
+    final l10n = AppLocalizations.of(context)!; // 🌟 ローカライズ用の変数を取得
+    String text = '';
+
+    if (_tutorialStep == 0) {
+      text = l10n.tutorialMissionStep0;
+    } else if (_tutorialStep == 1) {
+      text = l10n.tutorialMissionStep1;
+    } else if (_tutorialStep == 2) {
+      text = l10n.tutorialMissionStep2;
+    } else if (_tutorialStep == 3) {
+      text = l10n.tutorialMissionStep3;
+    } else if (_tutorialStep == 4) {
+      text = l10n.tutorialMissionStep4;
+    }
+
+    if (text.isEmpty) return const SizedBox.shrink();
+
+    return Positioned(
+      bottom: 10,
+      left: 16,
+      right: 16,
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.orange, width: 2),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+              height: 1.4,
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  // シェア（投稿）ボタンを押した時の処理
   Future<void> _executeXShare() async {
     try {
       SfxManager.instance.playTapSound();
     } catch (_) {}
-
     final String shareText = AppLocalizations.of(context)!.missionXShareText;
-
-    // 🌟 変更: OSでの分岐をやめ、両方のストアURLを改行して並べる
     final String iosUrl = "https://apps.apple.com/app/id6761637868";
     final String androidUrl =
         "https://play.google.com/store/apps/details?id=com.kotoapp.kimigatsukuru_sekai";
@@ -765,13 +941,12 @@ class _MissionScreenState extends State<MissionScreen>
         _loadMissions();
       }
     } else {
-      if (mounted) {
+      if (mounted)
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.missionXOpenError),
           ),
         );
-      }
     }
   }
 
@@ -822,7 +997,7 @@ class _MissionScreenState extends State<MissionScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
+    if (_isLoading || _tabController == null) {
       return const Scaffold(
         backgroundColor: Color(0xFFFFF3E0),
         body: Center(child: CircularProgressIndicator()),
@@ -832,6 +1007,7 @@ class _MissionScreenState extends State<MissionScreen>
     final l10n = AppLocalizations.of(context)!;
     final List<Widget> tabs = [];
     final List<Widget> tabViews = [];
+    int tabIndex = 0; // タブのインデックスを自動で振る
 
     // フラグが true の時だけ「チュートリアル」タブを追加
     if (_showTutorialTab) {
@@ -840,6 +1016,7 @@ class _MissionScreenState extends State<MissionScreen>
           l10n.missionTabTutorial,
           Icons.school,
           _hasUnclaimedTutorial,
+          tabIndex++,
         ),
       );
       tabViews.add(_buildMissionList(MissionCategory.tutorial));
@@ -851,6 +1028,7 @@ class _MissionScreenState extends State<MissionScreen>
         l10n.missionTabDaily,
         Icons.event_available,
         _hasUnclaimedDaily,
+        tabIndex++,
       ),
     );
     tabViews.add(_buildMissionList(MissionCategory.daily));
@@ -861,6 +1039,7 @@ class _MissionScreenState extends State<MissionScreen>
         l10n.missionTabFirstTime,
         Icons.star,
         _hasUnclaimedFirstTime,
+        tabIndex++,
       ),
     );
     tabViews.add(_buildMissionList(MissionCategory.firstTime));
@@ -870,101 +1049,99 @@ class _MissionScreenState extends State<MissionScreen>
         l10n.missionTabCumulative,
         Icons.bar_chart,
         _hasUnclaimedCumulative,
+        tabIndex++,
       ),
     );
     tabViews.add(_buildMissionList(MissionCategory.cumulative));
 
-    bool isTutorialBackBtnBlinking = _missions.any(
-      (m) =>
-          m.category == MissionCategory.tutorial &&
-          m.id == 'mission_first_promise' &&
-          m.isCompleted &&
-          m.isClaimed,
-    );
-
-    return DefaultTabController(
-      key: ValueKey(tabs.length),
-      length: tabs.length,
-      child: Scaffold(
-        backgroundColor: const Color(0xFFFFF3E0),
-        appBar: AppBar(
-          title: Text(
-            l10n.missionScreenTitle,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: const Color(0xFFFF7043),
-          foregroundColor: Colors.white,
-          leading: BlinkingEffect(
-            // チュートリアルモードだけど未受け取りがない（＝受け取り完了した）時に戻るボタンを点滅させる
-            isBlinking: widget.isTutorialMode! && isTutorialBackBtnBlinking,
-            child: Stack(
-              children: [
-                IgnorePointer(
-                  ignoring:
-                      widget.isTutorialMode! && !isTutorialBackBtnBlinking,
-                  child: Opacity(
-                    opacity:
-                        (widget.isTutorialMode! && !isTutorialBackBtnBlinking)
-                        ? 0.3
-                        : 1.0,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {}
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      appBar: AppBar(
+        title: Text(
+          l10n.missionScreenTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color(0xFFFF7043),
+        foregroundColor: Colors.white,
+        leading: BlinkingEffect(
+          // 🌟 Step 4 で戻るボタンを点滅
+          isBlinking: widget.isTutorialMode! && _tutorialStep == 4,
+          child: Stack(
+            children: [
+              IgnorePointer(
+                // 🌟 Step 4 以外ではチュートリアル中に戻れないようにする
+                ignoring: widget.isTutorialMode! && _tutorialStep != 4,
+                child: Opacity(
+                  opacity: (widget.isTutorialMode! && _tutorialStep != 4)
+                      ? 0.3
+                      : 1.0,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {}
+                      if (widget.isTutorialMode == true && _tutorialStep == 4) {
+                        Navigator.of(
+                          context,
+                        ).pop('mission_first_promise'); // 全完了の合図を返す
+                      } else {
                         Navigator.of(context).pop();
-                      },
-                    ),
-                  ),
-                ),
-                if (widget.isTutorialMode! && isTutorialBackBtnBlinking)
-                  const Positioned(
-                    right: -10,
-                    bottom: -10,
-                    child: AnimatedTapFinger(),
-                  ),
-              ],
-            ),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: Center(
-                child: Text(
-                  '$_currentPoints ${AppLocalizations.of(context)!.points}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                      }
+                    },
                   ),
                 ),
               ),
-            ),
-          ],
-          bottom: TabBar(
-            indicatorColor: Colors.white,
-            indicatorWeight: 3,
-            labelPadding: EdgeInsets.zero,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            tabs: tabs,
+              if (widget.isTutorialMode! && _tutorialStep == 4)
+                const Positioned(
+                  right: -10,
+                  bottom: -10,
+                  child: AnimatedTapFinger(),
+                ),
+            ],
           ),
         ),
-        body: Stack(
-          children: [
-            SafeArea(child: TabBarView(children: tabViews)),
-            Align(
-              alignment: Alignment.topCenter,
-              child: ConfettiWidget(
-                confettiController: _confettiController,
-                blastDirectionality: BlastDirectionality.explosive,
-                emissionFrequency: 0.05,
-                numberOfParticles: 20,
-                gravity: 0.3,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: Center(
+              child: Text(
+                '$_currentPoints ${AppLocalizations.of(context)!.points}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ],
+          ),
+        ],
+        bottom: TabBar(
+          controller: _tabController, // 🌟 追加
+          indicatorColor: Colors.white,
+          indicatorWeight: 3,
+          labelPadding: EdgeInsets.zero,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          tabs: tabs,
         ),
+      ),
+      body: Stack(
+        children: [
+          SafeArea(
+            child: TabBarView(controller: _tabController, children: tabViews),
+          ), // 🌟 追加
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              emissionFrequency: 0.05,
+              numberOfParticles: 20,
+              gravity: 0.3,
+            ),
+          ),
+          _buildTutorialBubble(), // 🌟 追加: チュートリアル用の吹き出し
+        ],
       ),
     );
   }
@@ -979,12 +1156,13 @@ class _MissionScreenState extends State<MissionScreen>
     // クリア済みでなく、かつ isHighlight が true の場合
     final bool isHighlightedCard = mission.isHighlight && !mission.isClaimed;
 
-    // 🌟 追加: このカードがチュートリアル対象の「うけとる」ボタンかどうか
+    // 🌟 修正: チュートリアルの最初のボタン。Step0の時のみ活性＆点滅
     final bool isTutorialTargetBtn =
         widget.isTutorialMode! &&
         mission.id == 'mission_first_promise' &&
         mission.isCompleted &&
-        !mission.isClaimed;
+        !mission.isClaimed &&
+        _tutorialStep == 0;
 
     // 🌟 追加: 「やくそくをたいけんしよう」の「やってみる」ボタンかどうか
     final bool isTryItBlinking =
@@ -1107,12 +1285,14 @@ class _MissionScreenState extends State<MissionScreen>
                         ignoring:
                             widget.isTutorialMode! &&
                             !isTutorialTargetBtn &&
-                            !isTryItBlinking,
+                            !isTryItBlinking &&
+                            !(mission.isCompleted && !mission.isClaimed),
                         child: Opacity(
                           opacity:
                               (widget.isTutorialMode! &&
                                   !isTutorialTargetBtn &&
-                                  !isTryItBlinking)
+                                  !isTryItBlinking &&
+                                  !(mission.isCompleted && !mission.isClaimed))
                               ? 0.3
                               : 1.0,
                           child: ElevatedButton(

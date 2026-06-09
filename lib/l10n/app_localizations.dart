@@ -3220,7 +3220,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialFirstPromiseCompleteDesc.
   ///
   /// In en, this message translates to:
-  /// **'You\'ve completed the **promise trial**!\nHead to the Mission screen to claim your reward!'**
+  /// **'The **Promise Experience** is now complete!\nKeep your promises to collect points,\nand watch your very own world expand!'**
   String get tutorialFirstPromiseCompleteDesc;
 
   /// No description provided for @missionHintBubble.
@@ -4374,6 +4374,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Let\'s make a \"Promise\" right away'**
   String get setupNewIntroStartButton;
+
+  /// No description provided for @tutorialMissionStep0.
+  ///
+  /// In en, this message translates to:
+  /// **'You can collect points\nwith this button!'**
+  String get tutorialMissionStep0;
+
+  /// No description provided for @tutorialMissionStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'In the \'Daily\' tab,\nyou can get points by doing\nmissions once a day!'**
+  String get tutorialMissionStep1;
+
+  /// No description provided for @tutorialMissionStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'In the \'First Time\' tab,\nyou get points for doing\nsomething for the first time!'**
+  String get tutorialMissionStep2;
+
+  /// No description provided for @tutorialMissionStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'In the \'Total\' tab,\nyou get points every time\nyou reach a milestone!'**
+  String get tutorialMissionStep3;
+
+  /// No description provided for @tutorialMissionStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Finally, tap the back button\nto return home!'**
+  String get tutorialMissionStep4;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

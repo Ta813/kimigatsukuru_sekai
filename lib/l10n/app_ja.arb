@@ -719,7 +719,7 @@
   "tutorialResumeDesc": "チュートリアルの とちゅうだったね。\nつづきから はじめるよ！",
   "tutorialResumeBtn": "つづきから",
   "tutorialFirstPromiseCompleteTitle": "あそびかた マスター！",
-  "tutorialFirstPromiseCompleteDesc": "これで**やくそくの体験**は完了です！\nミッション画面でごほうびを受け取ろう!",
+  "tutorialFirstPromiseCompleteDesc": "これで**やくそくの体験**は完了だよ！\nやくそくをまもってポイントをためると、\nどんどんキミだけのせかいがひろがるよ！",
   "missionHintBubble": "ここからミッションができるよ！",
   "helpMenuPromiseSettings": "やくそくの設定",
   "missionTutorialBonusChance": "チュートリアル完了で\n200ポイントゲットのチャンス！！",
@@ -1069,5 +1069,10 @@
   "setupNewIntroPower3Desc": "「約束を守ると、自分にとっても良いことがある」というポジティブな経験を通して、自らルールを守る心を育てます。",
   "setupNewIntroPower4Title": "毎日の積み重ねが「一生の習慣」に",
   "setupNewIntroPower4Desc": "最初は「あさごはん」や「おふろ」など、毎日必ずすることから始めてみましょう。当たり前のことが楽しくできるようになったら、少しずつ「やくそく」を増やしていくのが長続きのコツです！",
-  "setupNewIntroStartButton": "さっそく「やくそく」を作ってみる"
+  "setupNewIntroStartButton": "さっそく「やくそく」を作ってみる",
+  "tutorialMissionStep0": "このボタンでポイントが\nうけとれるよ！",
+  "tutorialMissionStep1": "「デイリー」のタブでは\n１にち１かいミッションをしたら\nポイントがもらえるよ！",
+  "tutorialMissionStep2": "「はじめて」のタブでは\nはじめてなにかをすると\nポイントがもらえるよ！",
+  "tutorialMissionStep3": "「累計」のタブでは\nたっせいするごとに\nポイントがもらえるよ！",
+  "tutorialMissionStep4": "さいごに、もどるボタンで\nおうちへかえろう！"
 }

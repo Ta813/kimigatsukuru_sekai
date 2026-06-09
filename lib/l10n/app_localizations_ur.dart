@@ -1626,7 +1626,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'آپ کھیلنا سیکھ گئے!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'آپ نے **وعدے کا ٹرائل** مکمل کر لیا ہے!\nاپنا انعام حاصل کرنے کے لیے مشن اسکرین پر جائیں!';
+  String get tutorialFirstPromiseCompleteDesc => '**وعدے کا تجربہ** اب مکمل ہو گیا ہے!\nپوائنٹس جمع کرنے کے لیے اپنے وعدے پورے کریں،\nاور اپنی خود کی دنیا کو وسیع ہوتے دیکھیں!';
 
   @override
   String get missionHintBubble => 'آپ یہاں سے مشن کر سکتے ہیں!';
@@ -2253,4 +2253,19 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get setupNewIntroStartButton => 'آئیے فوراً ایک \"وعدہ\" بنائیں';
+
+  @override
+  String get tutorialMissionStep0 => 'آپ اس بٹن سے\nپوائنٹس جمع کر سکتے ہیں!';
+
+  @override
+  String get tutorialMissionStep1 => '\'روزانہ\' کے ٹیب میں، دن میں ایک بار\nمشن مکمل کرنے پر\nآپ کو پوائنٹس ملیں گے!';
+
+  @override
+  String get tutorialMissionStep2 => '\'پہلی بار\' کے ٹیب میں، پہلی بار\nکچھ کرنے پر\nآپ کو پوائنٹس ملیں گے!';
+
+  @override
+  String get tutorialMissionStep3 => '\'مجموعی\' کے ٹیب میں، ہر بار ہدف\nعبور کرنے پر\nآپ کو پوائنٹس ملیں گے!';
+
+  @override
+  String get tutorialMissionStep4 => 'آخر میں، گھر واپس جانے کے لیے\nبیک بٹن دبائیں!';
 }

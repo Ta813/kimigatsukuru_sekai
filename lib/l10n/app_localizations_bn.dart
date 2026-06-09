@@ -1626,7 +1626,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'খেলার নিয়ম শিখে গেছো!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'আপনি **প্রতিশ্রুতির ট্রায়াল** সম্পন্ন করেছেন!\nআপনার পুরস্কার সংগ্রহ করতে মিশন স্ক্রিনে যান!';
+  String get tutorialFirstPromiseCompleteDesc => '**প্রতিশ্রুতির অভিজ্ঞতা** এখন শেষ!\nপয়েন্ট সংগ্রহ করতে নিজের প্রতিশ্রুতিগুলো পালন করো,\nআর দেখো তোমার নিজস্ব পৃথিবী কীভাবে বড় হয়!';
 
   @override
   String get missionHintBubble => 'আপনি এখান থেকে মিশন করতে পারেন!';
@@ -2253,4 +2253,19 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get setupNewIntroStartButton => 'চলুন এখনই একটি \"প্রতিশ্রুতি\" তৈরি করি';
+
+  @override
+  String get tutorialMissionStep0 => 'এই বোতাম দিয়ে তুমি\nপয়েন্ট সংগ্রহ করতে পারবে!';
+
+  @override
+  String get tutorialMissionStep1 => '\'ডেইলি\' ট্যাবে, দিনে একবার\nমিশন সম্পন্ন করলে\nতুমি পয়েন্ট পাবে!';
+
+  @override
+  String get tutorialMissionStep2 => '\'প্রথমবার\' ট্যাবে, প্রথমবারের মতো\nকিছু করলে তুমি\nপয়েন্ট পাবে!';
+
+  @override
+  String get tutorialMissionStep3 => '\'মোট\' ট্যাবে, প্রতিটি মাইলফলক\nঅতিক্রম করলে তুমি\nপয়েন্ট পাবে!';
+
+  @override
+  String get tutorialMissionStep4 => 'সবশেষে, বাড়ি ফিরে যেতে\nব্যাক বোতামে চাপ দাও!';
 }

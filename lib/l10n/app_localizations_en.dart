@@ -1626,7 +1626,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'You Mastered How to Play!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'You\'ve completed the **promise trial**!\nHead to the Mission screen to claim your reward!';
+  String get tutorialFirstPromiseCompleteDesc => 'The **Promise Experience** is now complete!\nKeep your promises to collect points,\nand watch your very own world expand!';
 
   @override
   String get missionHintBubble => 'You can do missions from here!';
@@ -2253,4 +2253,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setupNewIntroStartButton => 'Let\'s make a \"Promise\" right away';
+
+  @override
+  String get tutorialMissionStep0 => 'You can collect points\nwith this button!';
+
+  @override
+  String get tutorialMissionStep1 => 'In the \'Daily\' tab,\nyou can get points by doing\nmissions once a day!';
+
+  @override
+  String get tutorialMissionStep2 => 'In the \'First Time\' tab,\nyou get points for doing\nsomething for the first time!';
+
+  @override
+  String get tutorialMissionStep3 => 'In the \'Total\' tab,\nyou get points every time\nyou reach a milestone!';
+
+  @override
+  String get tutorialMissionStep4 => 'Finally, tap the back button\nto return home!';
 }

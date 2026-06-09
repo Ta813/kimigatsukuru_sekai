@@ -1626,7 +1626,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'لقد أتقنت طريقة اللعب!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'لقد أكملت **تجربة الوعد**!\nانتقل إلى شاشة المهام للحصول على مكافأتك!';
+  String get tutorialFirstPromiseCompleteDesc => 'لقد اكتملت **تجربة الوعد** الآن!\nحافظ على وعودك لجمع النقاط،\nوشاهد عالمك الخاص وهو يتسع!';
 
   @override
   String get missionHintBubble => 'يمكنك أداء المهام من هنا!';
@@ -2253,4 +2253,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get setupNewIntroStartButton => 'دعنا نقطع \"وعدًا\" على الفور';
+
+  @override
+  String get tutorialMissionStep0 => 'يمكنك جمع النقاط\nبهذا الزر!';
+
+  @override
+  String get tutorialMissionStep1 => 'في علامة التبويب \'يوميًا\'،\nيمكنك الحصول على نقاط من خلال\nإنجاز المهام مرة واحدة يوميًا!';
+
+  @override
+  String get tutorialMissionStep2 => 'في علامة التبويب \'لأول مرة\'،\nتحصل على نقاط عند القيام\nبشيء للمرة الأولى!';
+
+  @override
+  String get tutorialMissionStep3 => 'في علامة التبويب \'تراكمي\'،\nتحصل على نقاط في كل مرة\nتصل فيها إلى إنجاز!';
+
+  @override
+  String get tutorialMissionStep4 => 'أخيرًا، اضغط على زر الرجوع\nللعودة إلى المنزل!';
 }

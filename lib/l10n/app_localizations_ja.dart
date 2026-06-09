@@ -1626,7 +1626,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'あそびかた マスター！';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'これで**やくそくの体験**は完了です！\nミッション画面でごほうびを受け取ろう!';
+  String get tutorialFirstPromiseCompleteDesc => 'これで**やくそくの体験**は完了だよ！\nやくそくをまもってポイントをためると、\nどんどんキミだけのせかいがひろがるよ！';
 
   @override
   String get missionHintBubble => 'ここからミッションができるよ！';
@@ -2253,4 +2253,19 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get setupNewIntroStartButton => 'さっそく「やくそく」を作ってみる';
+
+  @override
+  String get tutorialMissionStep0 => 'このボタンでポイントが\nうけとれるよ！';
+
+  @override
+  String get tutorialMissionStep1 => '「デイリー」のタブでは\n１にち１かいミッションをしたら\nポイントがもらえるよ！';
+
+  @override
+  String get tutorialMissionStep2 => '「はじめて」のタブでは\nはじめてなにかをすると\nポイントがもらえるよ！';
+
+  @override
+  String get tutorialMissionStep3 => '「累計」のタブでは\nたっせいするごとに\nポイントがもらえるよ！';
+
+  @override
+  String get tutorialMissionStep4 => 'さいごに、もどるボタンで\nおうちへかえろう！';
 }

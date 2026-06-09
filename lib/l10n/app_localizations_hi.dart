@@ -1626,7 +1626,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tutorialFirstPromiseCompleteTitle => 'आप खेलना सीख गए!';
 
   @override
-  String get tutorialFirstPromiseCompleteDesc => 'आपने **वादे का ट्रायल** पूरा कर लिया है!\nअपना इनाम पाने के लिए मिशन स्क्रीन पर जाएँ!';
+  String get tutorialFirstPromiseCompleteDesc => '**वादे का अनुभव** अब पूरा हो गया है!\nपॉइंट्स इकट्ठा करने के लिए अपने वादे निभाएं,\nऔर अपनी खुद की दुनिया को बढ़ते हुए देखें!';
 
   @override
   String get missionHintBubble => 'आप यहाँ से मिशन कर सकते हैं!';
@@ -2253,4 +2253,19 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get setupNewIntroStartButton => 'चलिए तुरंत एक \"वादा\" बनाते हैं';
+
+  @override
+  String get tutorialMissionStep0 => 'आप इस बटन से\nपॉइंट्स इकट्ठा कर सकते हैं!';
+
+  @override
+  String get tutorialMissionStep1 => '\'दैनिक\' टैब में, दिन में एक बार\nमिशन पूरा करने पर\nआपको पॉइंट्स मिलेंगे!';
+
+  @override
+  String get tutorialMissionStep2 => '\'पहली बार\' टैब में, पहली बार\nकुछ करने पर\nआपको पॉइंट्स मिलेंगे!';
+
+  @override
+  String get tutorialMissionStep3 => '\'कुल\' टैब में, हर बार मील का पत्थर\nपार करने पर\nआपको पॉइंट्स मिलेंगे!';
+
+  @override
+  String get tutorialMissionStep4 => 'अंत में, घर वापस जाने के लिए\nबैक बटन दबाएं!';
 }

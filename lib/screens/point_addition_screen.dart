@@ -80,10 +80,14 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
 
   @override
   void dispose() {
-    _currentPointOverlay?.remove();
-    WidgetsBinding.instance.removeObserver(this);
-    _countdownTimer?.cancel(); // 🌟 追加: 画面を閉じる時にタイマーを破棄
+    if (_currentPointOverlay != null) {
+      _currentPointOverlay?.remove();
+      _currentPointOverlay = null;
+    }
     _pointsAddedAnimationController.dispose();
+
+    WidgetsBinding.instance.removeObserver(this);
+    _countdownTimer?.cancel();
     super.dispose();
   }
 
@@ -163,8 +167,8 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
     overlay.insert(overlayEntry); // 最前面のガラス（Overlay）に貼り付け！
 
     // アニメーションを最初から再生し、終わったらガラスから剥がす
-    _pointsAddedAnimationController.forward(from: 0.0).then((_) {
-      if (_currentPointOverlay == overlayEntry && mounted) {
+    _pointsAddedAnimationController.forward(from: 0.0).whenComplete(() {
+      if (_currentPointOverlay != null) {
         _currentPointOverlay?.remove();
         _currentPointOverlay = null;
       }
@@ -319,9 +323,14 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
 
         // 🌟 追加: アニメーションを発動しつつポイントを即時反映
         if (mounted) {
-          _showHugePointAnimation(earnedPoints);
           setState(() {
             _currentPoints = newPoints;
+          });
+          // 広告が閉じるのをほんの少し待ってからド派手な演出を出す
+          Future.delayed(const Duration(milliseconds: 1000), () {
+            if (mounted) {
+              _showHugePointAnimation(earnedPoints);
+            }
           });
         }
 

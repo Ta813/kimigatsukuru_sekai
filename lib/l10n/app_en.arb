@@ -719,7 +719,7 @@
   "tutorialResumeDesc": "You are in the middle of the tutorial.\nLet's resume!",
   "tutorialResumeBtn": "Resume",
   "tutorialFirstPromiseCompleteTitle": "You Mastered How to Play!",
-  "tutorialFirstPromiseCompleteDesc": "You've completed the **promise trial**!\nHead to the Mission screen to claim your reward!",
+  "tutorialFirstPromiseCompleteDesc": "The **Promise Experience** is now complete!\nKeep your promises to collect points,\nand watch your very own world expand!",
   "missionHintBubble": "You can do missions from here!",
   "helpMenuPromiseSettings": "Set Promises",
   "missionTutorialBonusChance": "Chance to get\n200 points by completing the tutorial!!",
@@ -1068,5 +1068,10 @@
   "setupNewIntroPower3Desc": "Through the positive experience of \"Good things happen to me when I keep a promise,\" it nurtures a heart that willingly follows rules.",
   "setupNewIntroPower4Title": "Daily accumulation becomes a lifelong habit",
   "setupNewIntroPower4Desc": "Start with things you do every day, like \"Breakfast\" or \"Bath\". Once everyday tasks become fun, gradually adding more \"Promises\" is the secret to long-lasting success!",
-  "setupNewIntroStartButton": "Let's make a \"Promise\" right away"
+  "setupNewIntroStartButton": "Let's make a \"Promise\" right away",
+  "tutorialMissionStep0": "You can collect points\nwith this button!",
+  "tutorialMissionStep1": "In the 'Daily' tab,\nyou can get points by doing\nmissions once a day!",
+  "tutorialMissionStep2": "In the 'First Time' tab,\nyou get points for doing\nsomething for the first time!",
+  "tutorialMissionStep3": "In the 'Total' tab,\nyou get points every time\nyou reach a milestone!",
+  "tutorialMissionStep4": "Finally, tap the back button\nto return home!"
 }

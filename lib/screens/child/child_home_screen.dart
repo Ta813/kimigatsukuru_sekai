@@ -2981,13 +2981,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                       .tutorialPhaseStart,
                                                 );
                                                 _showParentTutorial();
-                                              } else if (result ==
-                                                  'mission_first_promise') {
-                                                SharedPrefsHelper.setChildTutorial(
-                                                  SharedPrefsHelper
-                                                      .tutorialPhaseStart,
-                                                );
-                                                _showChildTutorial();
                                               }
                                             }
                                           });
