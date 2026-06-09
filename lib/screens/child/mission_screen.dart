@@ -53,6 +53,14 @@ class _MissionScreenState extends State<MissionScreen>
   // 🌟 追加: バッジをポヨポヨンさせるためのコントローラー
   late AnimationController _badgeAnimationController;
 
+  // ==========================================
+  // 🌟 追加: ポイント獲得時のどデカいアニメーション用
+  // ==========================================
+  late AnimationController _pointsAddedAnimationController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+  OverlayEntry? _currentPointOverlay;
+
   bool _showTutorialTab = true;
   int _currentPoints = 0;
 
@@ -76,6 +84,30 @@ class _MissionScreenState extends State<MissionScreen>
       vsync: this,
       duration: const Duration(milliseconds: 700),
     )..repeat(reverse: true); // 縮む・膨らむを繰り返す
+
+    // ==========================================
+    // 🌟 追加: ポイント獲得アニメーションの設定
+    // ==========================================
+    _pointsAddedAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000), // 2秒かけて上にフワッと消える
+    );
+    _slideAnimation =
+        Tween<Offset>(
+          begin: const Offset(0, 0),
+          end: const Offset(0, -0.8), // 上方向への移動距離
+        ).animate(
+          CurvedAnimation(
+            parent: _pointsAddedAnimationController,
+            curve: Curves.easeOut,
+          ),
+        );
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _pointsAddedAnimationController,
+        curve: const Interval(0.5, 1.0), // 後半の1秒で透明になる
+      ),
+    );
   }
 
   @override
@@ -86,9 +118,87 @@ class _MissionScreenState extends State<MissionScreen>
 
   @override
   void dispose() {
+    _currentPointOverlay?.remove();
     _confettiController.dispose();
     _badgeAnimationController.dispose(); // 🌟 追加
+    _pointsAddedAnimationController.dispose();
     super.dispose();
+  }
+
+  // ==========================================
+  // 🌟 追加: 最前面にアニメーションを表示するメソッド
+  // ==========================================
+  void _showHugePointAnimation(int points) {
+    // すでに表示中のものがあれば一旦消す（連打対策）
+    _currentPointOverlay?.remove();
+
+    final overlay = Overlay.of(context);
+    late OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned.fill(
+        child: IgnorePointer(
+          child: Center(
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 60),
+                      const SizedBox(width: 12),
+                      Text(
+                        '+$points', // 引数で受け取ったポイントを表示
+                        style: const TextStyle(
+                          fontSize: 60,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFF7043),
+                          shadows: [
+                            Shadow(
+                              blurRadius: 4,
+                              color: Colors.white,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    _currentPointOverlay = overlayEntry;
+    overlay.insert(overlayEntry); // 最前面のガラス（Overlay）に貼り付け！
+
+    // アニメーションを最初から再生し、終わったらガラスから剥がす
+    _pointsAddedAnimationController.forward(from: 0.0).then((_) {
+      if (_currentPointOverlay == overlayEntry && mounted) {
+        _currentPointOverlay?.remove();
+        _currentPointOverlay = null;
+      }
+    });
   }
 
   // 累計系ミッション用：グループ内で「直近のもの」だけを追加するヘルパー
@@ -498,12 +608,14 @@ class _MissionScreenState extends State<MissionScreen>
     FirebaseAnalytics.instance.logEvent(name: '${mission.id}_reward');
 
     final currentPoints = await SharedPrefsHelper.loadPoints();
-    await SharedPrefsHelper.savePoints(
-      currentPoints + (mission.rewardPoints * _multiplier),
-    );
-    await SharedPrefsHelper.addCumulativePoints(
-      mission.rewardPoints * _multiplier,
-    );
+    final earnedPoints = mission.rewardPoints * _multiplier;
+
+    setState(() {
+      _currentPoints = currentPoints + earnedPoints;
+    });
+    _showHugePointAnimation(earnedPoints);
+    await SharedPrefsHelper.savePoints(currentPoints + earnedPoints);
+    await SharedPrefsHelper.addCumulativePoints(earnedPoints);
 
     await SharedPrefsHelper.claimMission(mission.id);
 

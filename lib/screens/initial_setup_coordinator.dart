@@ -298,7 +298,9 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const ChildHomeScreen()),
+        MaterialPageRoute(
+          builder: (_) => const ChildHomeScreen(isInitialSetup: true),
+        ),
       );
       return;
     }
@@ -607,7 +609,6 @@ class _AppIntroExplanationScreenState extends State<AppIntroExplanationScreen> {
                       ]);
                       await SharedPrefsHelper.addPurchasedItem('ウサギ');
 
-                      FirebaseAnalytics.instance.logEvent(name: 'setup_finish');
                       await SharedPrefsHelper.setFirstLaunchCompleted();
                       await SharedPrefsHelper.clearSetupProgress();
 

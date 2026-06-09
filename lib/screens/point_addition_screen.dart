@@ -21,7 +21,7 @@ class PointAdditionScreen extends StatefulWidget {
 }
 
 class _PointAdditionScreenState extends State<PointAdditionScreen>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, TickerProviderStateMixin {
   int _currentPoints = 0;
   bool _isMorningClaimed = false;
   bool _isAfternoonClaimed = false;
@@ -36,19 +36,54 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
   int _multiplier = 1;
   bool _isBoost2xTrialUsed = false;
 
+  // ==========================================
+  // 🌟 追加: ポイント獲得時のどデカいアニメーション用
+  // ==========================================
+  late AnimationController _pointsAddedAnimationController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+  OverlayEntry? _currentPointOverlay;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     FirebaseAnalytics.instance.logEvent(name: 'point_addition_screen_show');
+
+    // ==========================================
+    // 🌟 追加: ポイント獲得アニメーションの設定
+    // ==========================================
+    _pointsAddedAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+    _slideAnimation =
+        Tween<Offset>(
+          begin: const Offset(0, 0),
+          end: const Offset(0, -0.8), // 上に少しフワッと浮く
+        ).animate(
+          CurvedAnimation(
+            parent: _pointsAddedAnimationController,
+            curve: Curves.easeOut,
+          ),
+        );
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _pointsAddedAnimationController,
+        curve: const Interval(0.5, 1.0),
+      ),
+    );
+
     _loadData();
     _startCountdown(); // 🌟 追加: カウントダウン開始
   }
 
   @override
   void dispose() {
+    _currentPointOverlay?.remove();
     WidgetsBinding.instance.removeObserver(this);
     _countdownTimer?.cancel(); // 🌟 追加: 画面を閉じる時にタイマーを破棄
+    _pointsAddedAnimationController.dispose();
     super.dispose();
   }
 
@@ -58,6 +93,82 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
       // App has come to the foreground, reload data to refresh state
       _loadData();
     }
+  }
+
+  // ==========================================
+  // 🌟 追加: 最前面にアニメーションを表示するメソッド
+  // ==========================================
+  void _showHugePointAnimation(int points) {
+    // すでに表示中のものがあれば一旦消す（連打対策）
+    _currentPointOverlay?.remove();
+
+    final overlay = Overlay.of(context);
+    late OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned.fill(
+        child: IgnorePointer(
+          child: Center(
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 60),
+                      const SizedBox(width: 12),
+                      Text(
+                        '+$points', // 引数で受け取ったポイントを表示
+                        style: const TextStyle(
+                          fontSize: 60,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFF7043),
+                          shadows: [
+                            Shadow(
+                              blurRadius: 4,
+                              color: Colors.white,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    _currentPointOverlay = overlayEntry;
+    overlay.insert(overlayEntry); // 最前面のガラス（Overlay）に貼り付け！
+
+    // アニメーションを最初から再生し、終わったらガラスから剥がす
+    _pointsAddedAnimationController.forward(from: 0.0).then((_) {
+      if (_currentPointOverlay == overlayEntry && mounted) {
+        _currentPointOverlay?.remove();
+        _currentPointOverlay = null;
+      }
+    });
   }
 
   // 🌟 追加: 1秒ごとに残り時間を計算するメソッド
@@ -203,9 +314,19 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
 
         final int multiplier =
             await SharedPrefsHelper.getCurrentBoostMultiplier();
-        final newPoints = _currentPoints + (50 * multiplier);
+        final earnedPoints = 50 * multiplier;
+        final newPoints = _currentPoints + earnedPoints;
+
+        // 🌟 追加: アニメーションを発動しつつポイントを即時反映
+        if (mounted) {
+          _showHugePointAnimation(earnedPoints);
+          setState(() {
+            _currentPoints = newPoints;
+          });
+        }
+
         await SharedPrefsHelper.savePoints(newPoints);
-        await SharedPrefsHelper.addCumulativePoints(50 * multiplier);
+        await SharedPrefsHelper.addCumulativePoints(earnedPoints);
 
         FirebaseAnalytics.instance.logEvent(name: 'reward_ad_claimed_$slot');
 
