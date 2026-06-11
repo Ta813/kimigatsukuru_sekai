@@ -2268,4 +2268,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialMissionStep4 => 'さいごに、もどるボタンで\nおうちへかえろう！';
+
+  @override
+  String get tutorialShopSuccess => 'おかいもの だいせいこう！\n「もどる」ボタンで おうちへかえろう！';
+
+  @override
+  String get tutorialShopDressUp => '「きせかえ」ボタンをおして\nアバターを かえてみよう！';
+
+  @override
+  String get tutorialShopBuyFace => 'ポイントをつかって\nあたらしい「かお」を かってみよう！';
 }

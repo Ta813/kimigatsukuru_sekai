@@ -62,6 +62,15 @@
             android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.facebook.sdk.ClientToken" 
             android:value="@string/facebook_client_token"/>
+
+        <!-- OnePlusなど一部端末でProxyBillingActivityが再生成された際にNPE(PendingIntent)が
+             発生するのを防ぐため、あらゆる構成変更(configChanges)でActivityが破棄されないよう上書きする -->
+        <activity
+            android:name="com.android.billingclient.api.ProxyBillingActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|density|uiMode"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:exported="false"
+            tools:replace="android:configChanges" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

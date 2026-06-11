@@ -18,6 +18,7 @@ import '../../widgets/custom_back_button.dart';
 import '../../widgets/avatar_display.dart';
 import '../../managers/purchase_manager.dart';
 import '../point_addition_screen.dart'; // 🌟 追加: ポイント追加画面をインポート
+import '../../widgets/tutorial_character_bubble.dart';
 
 enum CustomizeView { menu, avatar, support, world, initialSetup }
 
@@ -513,6 +514,24 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     );
   }
 
+  // ==========================================
+  // 🌟 追加: チュートリアルの進行状況に合わせて吹き出しのテキストを変更
+  // ==========================================
+  String _getTutorialText() {
+    // 🌟 AppLocalizations を取得
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return "";
+
+    if (_showBackButtonBlinking) {
+      return l10n.tutorialShopSuccess;
+    } else if (_currentView == CustomizeView.menu) {
+      return l10n.tutorialShopDressUp;
+    } else if (_currentView == CustomizeView.avatar && _showItemBlinking) {
+      return l10n.tutorialShopBuyFace;
+    }
+    return "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
@@ -523,7 +542,25 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
           onPopInvoked: (didPop) {
             // 中間のメニューに戻る処理を削除し、そのままホームへ戻るようにしました
           },
-          child: _buildCurrentView(),
+          child: Stack(
+            children: [
+              _buildCurrentView(), // 元の画面
+              // 🌟 チュートリアル中のみ吹き出しを表示
+              if (!_isTutorialStepCustomizeShown)
+                Positioned(
+                  bottom: 0, // 画面の下の方に配置（上の戻るボタンやタブに被らないように）
+                  right: 0,
+                  child: IgnorePointer(
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child:
+                          // 🌟 吹き出しの下にあるアイテム等も触れるように透過する
+                          TutorialCharacterBubble(text: _getTutorialText()),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         );
       },
     );

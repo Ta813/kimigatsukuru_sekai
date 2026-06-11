@@ -195,6 +195,19 @@ class NotificationManager {
     print("✅ ${promises.length}件のやくそく通知を再設定しました");
   }
 
+  // --- 既存の通知を再スケジュールする（アプリ起動時用） ---
+  Future<void> rescheduleAllExistingPromises() async {
+    try {
+      final promises =
+          await SharedPrefsHelper.loadRegularPromisesWithoutContext();
+      if (promises.isNotEmpty) {
+        await scheduleAllRegularPromises(promises);
+      }
+    } catch (e) {
+      print("❌ 既存の通知の再スケジュールに失敗しました: $e");
+    }
+  }
+
   // 指定された時刻（HH:mm）の5分前の「次の発生タイミング」を計算する
   tz.TZDateTime _nextInstanceOfTimeMinus5(String timeStr) {
     final parts = timeStr.split(':');

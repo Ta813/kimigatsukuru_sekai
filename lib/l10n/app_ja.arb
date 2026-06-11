@@ -1074,5 +1074,8 @@
   "tutorialMissionStep1": "「デイリー」のタブでは\n１にち１かいミッションをしたら\nポイントがもらえるよ！",
   "tutorialMissionStep2": "「はじめて」のタブでは\nはじめてなにかをすると\nポイントがもらえるよ！",
   "tutorialMissionStep3": "「累計」のタブでは\nたっせいするごとに\nポイントがもらえるよ！",
-  "tutorialMissionStep4": "さいごに、もどるボタンで\nおうちへかえろう！"
+  "tutorialMissionStep4": "さいごに、もどるボタンで\nおうちへかえろう！",
+  "tutorialShopSuccess": "おかいもの だいせいこう！\n「もどる」ボタンで おうちへかえろう！",
+  "tutorialShopDressUp": "「きせかえ」ボタンをおして\nアバターを かえてみよう！",
+  "tutorialShopBuyFace": "ポイントをつかって\nあたらしい「かお」を かってみよう！"
 }

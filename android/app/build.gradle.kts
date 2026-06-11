@@ -68,7 +68,7 @@ android {
     // （android.bundle.enableUncompressedNativeLibs の後継設定）
     packaging {
         jniLibs {
-            useLegacyPackaging = true
+            useLegacyPackaging = false // 🌟 true だと「圧縮する」設定になってしまうため、非圧縮にするには false にする必要があります
         }
     }
 }

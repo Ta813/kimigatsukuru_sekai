@@ -4404,6 +4404,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finally, tap the back button\nto return home!'**
   String get tutorialMissionStep4;
+
+  /// No description provided for @tutorialShopSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Great shopping!\nTap the \'Back\' button to go home!'**
+  String get tutorialShopSuccess;
+
+  /// No description provided for @tutorialShopDressUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the \'Dress-up\' button\nto change your avatar!'**
+  String get tutorialShopDressUp;
+
+  /// No description provided for @tutorialShopBuyFace.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your points to\nbuy a new Face!'**
+  String get tutorialShopBuyFace;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

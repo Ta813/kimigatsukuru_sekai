@@ -95,13 +95,17 @@ class BgmManager with WidgetsBindingObserver {
       final isPlaying = _bgmPlayer?.playing ?? false;
       _wasPlayingBeforeBackground = isPlaying;
       if (isPlaying) {
-        _bgmPlayer?.pause();
+        _bgmPlayer?.pause().catchError((e) {
+          print('BgmManager pause error: $e');
+        });
         print('BgmManager: バックグラウンド移行 → BGM一時停止');
       }
     } else if (state == AppLifecycleState.resumed) {
       // フォアグラウンド復帰時: バックグラウンド前に再生中だった場合のみ再開
       if (_wasPlayingBeforeBackground) {
-        _bgmPlayer?.play();
+        _bgmPlayer?.play().catchError((e) {
+          print('BgmManager play error: $e');
+        });
         print('BgmManager: フォアグラウンド復帰 → BGM再開');
       }
       _wasPlayingBeforeBackground = false;

@@ -51,6 +51,14 @@
 -keep class com.google.android.gms.common.** { *; }
 -keep class com.google.android.gms.tasks.** { *; }
 
+# -------------------------------------------------------
+# Google Sign-In
+# SignInHubActivity がバックグラウンドキルからの復帰時に
+# NPE (getClass() on null) を起こすのを防ぐためのルール
+# -------------------------------------------------------
+-keep class com.google.android.gms.auth.** { *; }
+-keep class com.google.firebase.auth.** { *; }
+
 # PendingIntent / IntentSender はリフレクション経由で参照される場合がある
 -keepclassmembers class * {
     android.app.PendingIntent *;

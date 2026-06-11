@@ -3,6 +3,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
+import 'package:kimigatsukuru_sekai/widgets/tutorial_character_bubble.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 🌟 追加: デイリーミッションの状態取得用
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
@@ -867,37 +868,9 @@ class _MissionScreenState extends State<MissionScreen>
     if (text.isEmpty) return const SizedBox.shrink();
 
     return Positioned(
-      bottom: 10,
-      left: 16,
-      right: 16,
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.orange, width: 2),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-              height: 1.4,
-            ),
-          ),
-        ),
-      ),
+      bottom: 0,
+      right: 0,
+      child: TutorialCharacterBubble(text: text),
     );
   }
 

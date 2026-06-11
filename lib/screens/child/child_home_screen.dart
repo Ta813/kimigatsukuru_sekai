@@ -21,6 +21,7 @@ import 'package:kimigatsukuru_sekai/screens/parent/settings_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/point_addition_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
+import 'package:kimigatsukuru_sekai/widgets/tutorial_character_bubble.dart';
 import '../../models/lock_mode.dart';
 import '../../widgets/draggable_character.dart';
 import 'bgm_selection_screen.dart';
@@ -44,7 +45,6 @@ import 'package:in_app_review/in_app_review.dart';
 import 'help_menu_dialog.dart';
 import '../../managers/login_bonus_manager.dart';
 import '../../widgets/blinking_effect.dart';
-import '../../widgets/speech_bubble.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../widgets/avatar_display.dart';
 import '../../widgets/animated_tap_finger.dart';
@@ -2742,8 +2742,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                   if (!isAnyTutorialBlinking &&
                                                       !_showStartBlinking) ...[
                                                     const SizedBox(width: 8),
-                                                    if (_isCurrentRewardAvailable &&
-                                                        !_hasVisitedPointAddition)
+                                                    if (_isCurrentRewardAvailable)
                                                       ScaleTransition(
                                                         scale:
                                                             Tween<double>(
@@ -2787,37 +2786,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                             ),
                                                           ],
                                                         ),
-                                                      )
-                                                    else if (_isCurrentRewardAvailable &&
-                                                        _hasVisitedPointAddition)
-                                                      Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          const Icon(
-                                                            Icons
-                                                                .play_circle_fill,
-                                                            color: Colors.black,
-                                                            size: 16,
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 2,
-                                                          ),
-                                                          Text(
-                                                            AppLocalizations.of(
-                                                              context,
-                                                            )!.homeRewardAvailable,
-                                                            style:
-                                                                const TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                          ),
-                                                        ],
                                                       )
                                                     else
                                                       Text(
@@ -2968,6 +2936,29 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                   setState(() {
                                                     _showMissionBubble = false;
                                                   });
+                                                }
+                                              }
+                                              int earnedPoints =
+                                                  await LoginBonusManager()
+                                                      .checkLoginBonus(context);
+                                              await TrophyManager.checkAndShowTrophies(
+                                                context,
+                                              );
+
+                                              if (earnedPoints > 0 && mounted) {
+                                                try {
+                                                  SfxManager.instance
+                                                      .playSuccessSound();
+                                                } catch (e) {
+                                                  print('再生エラー: $e');
+                                                }
+                                                _showHugePointAnimation(
+                                                  earnedPoints,
+                                                );
+                                                if (!_hasVisitedPointAddition) {
+                                                  _animationController.forward(
+                                                    from: 0.0,
+                                                  );
                                                 }
                                               }
                                             }
@@ -3542,57 +3533,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       bottom: 0,
                                       child: AnimatedTapFinger(),
                                     ),
-                                  if (_showStartBlinking)
-                                    Positioned(
-                                      top: -80,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                              vertical: 8,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              boxShadow: const [
-                                                BoxShadow(
-                                                  color: Colors.black26,
-                                                  blurRadius: 4,
-                                                  offset: Offset(0, 2),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Text(
-                                              _showEmergencyStartBlinking
-                                                  ? AppLocalizations.of(
-                                                      context,
-                                                    )!.tutorialEmergencyStartBubble
-                                                  : AppLocalizations.of(
-                                                      context,
-                                                    )!.tutorialStartBubble,
-                                              style: const TextStyle(
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                          ClipPath(
-                                            clipper:
-                                                SpeechBubbleTailDownClipper(),
-                                            child: Container(
-                                              width: 16,
-                                              height: 8,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
                                 ],
                               ),
                             ],
@@ -3648,52 +3588,59 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     ),
 
                   // 真ん中のエリア（アバターと家）
-                  Align(
-                    alignment: Alignment.center,
-                    child: GestureDetector(
-                      onTap: () {
-                        _hintTimer?.cancel();
-                        setState(() {
-                          _showHouseHint = true;
-                        });
-                        _hintTimer = Timer(const Duration(seconds: 3), () {
-                          setState(() {
-                            _showHouseHint = false;
-                          });
-                        });
-                      },
-                      onLongPress: () async {
-                        try {
-                          SfxManager.instance.playSuccessSound();
-                        } catch (e) {}
+                  IgnorePointer(
+                    ignoring: isAnyTutorialActive,
+                    child: Opacity(
+                      opacity: isAnyTutorialActive ? 0.6 : 1.0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: GestureDetector(
+                          onTap: () {
+                            _hintTimer?.cancel();
+                            setState(() {
+                              _showHouseHint = true;
+                            });
+                            _hintTimer = Timer(const Duration(seconds: 3), () {
+                              setState(() {
+                                _showHouseHint = false;
+                              });
+                            });
+                          },
+                          onLongPress: () async {
+                            try {
+                              SfxManager.instance.playSuccessSound();
+                            } catch (e) {}
 
-                        if (!_hasEnteredHouse) {
-                          await SharedPrefsHelper.setHasEnteredHouse(true);
-                          setState(() {
-                            _hasEnteredHouse = true;
-                          });
-                        }
+                            if (!_hasEnteredHouse) {
+                              await SharedPrefsHelper.setHasEnteredHouse(true);
+                              setState(() {
+                                _hasEnteredHouse = true;
+                              });
+                            }
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HouseInteriorScreen(
-                              equippedHousePath: _equippedHousePath,
-                              requiredExpForNextLevel: _requiredExpForNextLevel,
-                              experience: _experience,
-                              experienceFraction: _experienceFraction,
-                            ),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HouseInteriorScreen(
+                                  equippedHousePath: _equippedHousePath,
+                                  requiredExpForNextLevel:
+                                      _requiredExpForNextLevel,
+                                  experience: _experience,
+                                  experienceFraction: _experienceFraction,
+                                ),
+                              ),
+                            ).then((_) {
+                              _loadAndDetermineDisplayPromise();
+                            });
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Image.asset(_equippedHousePath, height: 200),
+                            ],
                           ),
-                        ).then((_) {
-                          _loadAndDetermineDisplayPromise();
-                        });
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Image.asset(_equippedHousePath, height: 200),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -3702,6 +3649,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       !_showCustomizeBlinking &&
                       !_showParentSettingsBlinking &&
                       !_showStartBlinking &&
+                      !_showMissionBubble &&
                       !_isDrawingMode)
                     Positioned(
                       top: MediaQuery.of(context).size.height * 0.45,
@@ -3799,25 +3747,27 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   ),
 
                   // 応援キャラクターの表示と操作
-                  ..._equippedCharacters.map((charPath) {
-                    return DraggableCharacter(
-                      id: charPath,
-                      imagePath: charPath,
-                      position:
-                          _characterPositionsMap[charPath] ??
-                          Offset(safeAreaWidth - 240, 190),
-                      size: 80,
-                      isInteractive: !isAnyTutorialActive,
-                      onPositionChanged: (delta) {
-                        setState(() {
-                          _characterPositionsMap[charPath] =
-                              (_characterPositionsMap[charPath] ??
-                                  Offset(safeAreaWidth - 240, 190)) +
-                              delta;
-                        });
-                      },
-                    );
-                  }).toList(),
+                  // チュートリアル中は表示しない
+                  if (!isAnyTutorialActive)
+                    ..._equippedCharacters.map((charPath) {
+                      return DraggableCharacter(
+                        id: charPath,
+                        imagePath: charPath,
+                        position:
+                            _characterPositionsMap[charPath] ??
+                            Offset(safeAreaWidth - 240, 190),
+                        size: 80,
+                        isInteractive: !isAnyTutorialActive,
+                        onPositionChanged: (delta) {
+                          setState(() {
+                            _characterPositionsMap[charPath] =
+                                (_characterPositionsMap[charPath] ??
+                                    Offset(safeAreaWidth - 240, 190)) +
+                                delta;
+                          });
+                        },
+                      );
+                    }).toList(),
 
                   // アイテムの表示と操作
                   ..._equippedItems.map((itemPath) {
@@ -3967,36 +3917,30 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
             if (_showCustomizeBlinking)
               Positioned(
-                bottom: 130, // サイズが大きくなったので位置を調整
-                right: 70,
-                child: SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SpeechBubble(
-                        text: AppLocalizations.of(
+                bottom: 80,
+                right: 90,
+                child: TutorialCharacterBubble(
+                  text: AppLocalizations.of(context)!.tutorialCustomizeBubble,
+                ),
+              ),
+            if (_showStartBlinking)
+              Positioned(
+                bottom: 50,
+                right: 0,
+                child: TutorialCharacterBubble(
+                  text: _showEmergencyStartBlinking
+                      ? AppLocalizations.of(
                           context,
-                        )!.tutorialCustomizeBubble,
-                        tailDirection: TailDirection.right,
-                      ),
-                    ],
-                  ),
+                        )!.tutorialEmergencyStartBubble
+                      : AppLocalizations.of(context)!.tutorialStartBubble,
                 ),
               ),
             if (_showMissionBubble)
               Positioned(
-                top: 120, // サイズが大きくなったので位置を調整
+                bottom: 120,
                 right: 80,
-                child: SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SpeechBubble(
-                        text: AppLocalizations.of(context)!.missionHintBubble,
-                        tailDirection: TailDirection.right,
-                      ),
-                    ],
-                  ),
+                child: TutorialCharacterBubble(
+                  text: AppLocalizations.of(context)!.missionHintBubble,
                 ),
               ),
 

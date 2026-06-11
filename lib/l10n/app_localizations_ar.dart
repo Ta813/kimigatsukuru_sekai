@@ -2268,4 +2268,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialMissionStep4 => 'أخيرًا، اضغط على زر الرجوع\nللعودة إلى المنزل!';
+
+  @override
+  String get tutorialShopSuccess => 'تسوق رائع!\nاضغط على زر \'رجوع\' للعودة إلى المنزل!';
+
+  @override
+  String get tutorialShopDressUp => 'اضغط على زر \'تغيير الملابس\'\nلتغيير شخصيتك!';
+
+  @override
+  String get tutorialShopBuyFace => 'استخدم نقاطك\nلشراء \'وجه\' جديد!';
 }

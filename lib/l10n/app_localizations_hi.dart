@@ -2268,4 +2268,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tutorialMissionStep4 => 'अंत में, घर वापस जाने के लिए\nबैक बटन दबाएं!';
+
+  @override
+  String get tutorialShopSuccess => 'शानदार खरीदारी!\nघर वापस जाने के लिए \'वापस\' बटन दबाएं!';
+
+  @override
+  String get tutorialShopDressUp => 'अपना अवतार बदलने के लिए\n\'ड्रेस-अप\' बटन दबाएं!';
+
+  @override
+  String get tutorialShopBuyFace => 'एक नया \'चेहरा\' खरीदने के लिए\nअपने पॉइंट्स का उपयोग करें!';
 }

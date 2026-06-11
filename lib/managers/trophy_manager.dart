@@ -42,8 +42,8 @@ class TrophyManager {
     final loc = AppLocalizations.of(context)!;
     final List<TrophyItem> trophies = [];
     TrophyRank determineRank(double progress) {
-      if (progress < 0.3) return TrophyRank.normal;
-      if (progress < 0.5) return TrophyRank.bronze;
+      if (progress < 0.1) return TrophyRank.normal;
+      if (progress < 0.4) return TrophyRank.bronze;
       if (progress < 0.75) return TrophyRank.silver;
       if (progress < 0.9) return TrophyRank.gold;
       return TrophyRank.diamond;
@@ -165,7 +165,9 @@ class TrophyManager {
       }
 
       // 絞り込んだ「一番すごいトロフィー」を1つだけダイアログ表示する
-      await _showSingleTrophyDialog(context, bestTrophyToShow);
+      if (bestTrophyToShow.rank != TrophyRank.normal) {
+        await _showSingleTrophyDialog(context, bestTrophyToShow);
+      }
     }
   }
 

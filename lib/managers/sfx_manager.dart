@@ -48,8 +48,9 @@ class SfxManager {
         );
       }
 
-      await _player.setAsset('assets/$assetPath');
-      await _player.play();
+      final player = _player;
+      await player.setAsset('assets/$assetPath');
+      await player.play();
     } on PlayerInterruptedException catch (e) {
       print("効果音の loading interrupted ($assetPath): ${e.message}");
     } on PlayerException catch (e) {
@@ -80,9 +81,10 @@ class SfxManager {
             .toList(),
       );
 
-      await _player.setAudioSource(playlist);
-      await _player.setSpeed(speed);
-      await _player.play();
+      final player = _player;
+      await player.setAudioSource(playlist);
+      await player.setSpeed(speed);
+      await player.play();
     } on PlayerInterruptedException catch (e) {
       print("連続再生の loading interrupted: ${e.message}");
     } on PlayerException catch (e) {

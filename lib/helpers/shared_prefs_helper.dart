@@ -99,6 +99,21 @@ class SharedPrefsHelper {
     return promises;
   }
 
+  // やくそくリストを読み込む (Contextなし)
+  static Future<List<Map<String, dynamic>>> loadRegularPromisesWithoutContext() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? stringList = prefs.getStringList(_regularPromisesKey);
+
+    if (stringList == null || stringList.isEmpty) {
+      return [];
+    }
+
+    final List<Map<String, dynamic>> promises = stringList
+        .map((string) => json.decode(string) as Map<String, dynamic>)
+        .toList();
+    return promises;
+  }
+
   // --- ここから緊急のやくそく関連 ---
   static const String _emergencyPromiseKey = 'emergency_promise';
 

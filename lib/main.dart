@@ -97,6 +97,7 @@ Future<void> _initializeBackgroundServices() async {
   try {
     await NotificationManager.instance.init();
     await NotificationManager.instance.scheduleWeeklyMonday11AM();
+    await NotificationManager.instance.rescheduleAllExistingPromises(); // ★追加: 古い通知の不具合を解消するため再スケジュール
   } catch (e) {
     print("通知マネージャーの初期化エラー: $e");
   }

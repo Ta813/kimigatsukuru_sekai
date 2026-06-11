@@ -1073,5 +1073,8 @@
   "tutorialMissionStep1": "In the 'Daily' tab,\nyou can get points by doing\nmissions once a day!",
   "tutorialMissionStep2": "In the 'First Time' tab,\nyou get points for doing\nsomething for the first time!",
   "tutorialMissionStep3": "In the 'Total' tab,\nyou get points every time\nyou reach a milestone!",
-  "tutorialMissionStep4": "Finally, tap the back button\nto return home!"
+  "tutorialMissionStep4": "Finally, tap the back button\nto return home!",
+  "tutorialShopSuccess": "Great shopping!\nTap the 'Back' button to go home!",
+  "tutorialShopDressUp": "Tap the 'Dress-up' button\nto change your avatar!",
+  "tutorialShopBuyFace": "Use your points to\nbuy a new Face!"
 }

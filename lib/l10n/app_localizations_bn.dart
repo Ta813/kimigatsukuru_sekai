@@ -2268,4 +2268,13 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get tutorialMissionStep4 => 'সবশেষে, বাড়ি ফিরে যেতে\nব্যাক বোতামে চাপ দাও!';
+
+  @override
+  String get tutorialShopSuccess => 'দারুণ কেনাকাটা!\nবাড়ি ফিরতে \'ব্যাক\' বোতামে চাপ দিন!';
+
+  @override
+  String get tutorialShopDressUp => 'আপনার অবতার পরিবর্তন করতে\n\'ড্রেস-আপ\' বোতামে চাপ দিন!';
+
+  @override
+  String get tutorialShopBuyFace => 'আপনার পয়েন্ট ব্যবহার করে\nনতুন একটি \'মুখ\' কিনুন!';
 }
