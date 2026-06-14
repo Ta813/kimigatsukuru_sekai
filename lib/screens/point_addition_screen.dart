@@ -564,47 +564,44 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
                       ),
                       const SizedBox(height: 8),
 
-                      PulsingEffect(
-                        isPulsing: isButtonEnabled, // 🌟 引数名変更
-                        child: ElevatedButton(
-                          onPressed: isButtonEnabled ? _showRewardedAd : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF7043),
-                            disabledBackgroundColor: Colors.grey[300],
-                            foregroundColor: Colors.white,
-                            disabledForegroundColor: Colors.grey[600],
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 24,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            elevation: isButtonEnabled ? 4 : 0,
+                      ElevatedButton(
+                        onPressed: isButtonEnabled ? _showRewardedAd : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF7043),
+                          disabledBackgroundColor: Colors.grey[300],
+                          foregroundColor: Colors.white,
+                          disabledForegroundColor: Colors.grey[600],
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 48,
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (isButtonEnabled) ...[
-                                const Icon(Icons.play_circle_fill, size: 24),
-                                const SizedBox(width: 8),
-                              ],
-                              // 🌟 変更: カウントダウンが長いのでテキストがはみ出さないように FittedBox で囲む
-                              Flexible(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    buttonText,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: isButtonEnabled ? 4 : 0,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (isButtonEnabled) ...[
+                              const Icon(Icons.play_circle_fill, size: 24),
+                              const SizedBox(width: 8),
+                            ],
+                            // 🌟 変更: カウントダウンが長いのでテキストがはみ出さないように FittedBox で囲む
+                            Flexible(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  buttonText,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

@@ -73,6 +73,16 @@
 				<string>fb2210361479492024</string>
 			</array>
 		</dict>
+		<dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>kimiapp</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>kimiapp</string>
+            </array>
+        </dict>
     </array>
 	<key>FacebookAppID</key>
 	<string>2210361479492024</string>

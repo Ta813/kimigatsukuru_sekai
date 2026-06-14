@@ -17,6 +17,7 @@ import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/child/trophy_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/initial_setup_coordinator.dart';
+import 'package:kimigatsukuru_sekai/screens/parent/emergency_promise_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/settings_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/point_addition_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
@@ -49,6 +50,9 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../widgets/avatar_display.dart';
 import '../../widgets/animated_tap_finger.dart';
 import 'package:kimigatsukuru_sekai/managers/reward_ad_manager.dart';
+import 'package:home_widget/home_widget.dart'; // 🌟 追加
+import '../../widgets/widget_action_selection_dialog.dart'; // 🌟 追加
+import '../../helpers/widget_capture_helper.dart';
 
 class ChildHomeScreen extends StatefulWidget {
   final bool isInitialSetup;
@@ -213,12 +217,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   Timer? _midnightTimer;
 
-  bool _isCurrentRewardAvailable = false;
-  String _timeUntilNextReward = '';
-  Timer? _rewardCountdownTimer;
-  // 🌟 追加: リワード「ゲット！」用のパルスアニメーションコントローラー
-  late AnimationController _rewardPulseController;
-
   int _homeBoostMultiplier = 1;
   int _boostRemainingDays = 0;
   String _boostRemainingHms = '';
@@ -229,6 +227,36 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   final GlobalKey _shareKey = GlobalKey();
 
   bool _showWatermarkForCapture = false;
+
+  // 🌟 iOS専用: ウィジェットからのURIを初期化完了まで保留するための変数
+  Uri? _pendingWidgetUri;
+
+  // 🔒 重複処理防止: 同じURIを短時間に何度も処理しないためのガード変数
+  String? _lastHandledWidgetUri;
+  DateTime? _lastHandledWidgetTime;
+
+  // 🌟 追加: 現在誘導中のミッションIDを保持する変数
+  String? _activeMissionTarget;
+
+  // 🌟 追加: 誘導中のキャラクターのセリフ
+  String _getMissionTargetBubbleText(String target) {
+    // 🌟 AppLocalizations の取得
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return "";
+
+    switch (target) {
+      case 'mission_enter_house':
+        return l10n.missionTryEnterHouse;
+      case 'mission_promise_board':
+        return l10n.missionTryPromiseBoard;
+      case 'mission_world_map':
+        return l10n.missionTryWorldMap;
+      case 'mission_bgm':
+        return l10n.missionTryBgm;
+      default:
+        return l10n.missionTryDefault;
+    }
+  }
 
   bool _isDrawingMode = false; // おえかきモードかどうか
   List<DrawingPoint?> _drawingPoints = []; // 描いた線のデータ
@@ -323,12 +351,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       ),
     );
 
-    // 🌟 追加: パルスアニメーションの設定（0.6秒かけて大きくなって戻る、を繰り返す）
-    _rewardPulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    )..repeat(reverse: true);
-
     _playSavedBgm();
 
     _loadAndDetermineDisplayPromise();
@@ -370,6 +392,23 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
     _checkTutorial();
     _scheduleMidnightRefresh();
+
+    // 🌟 追加: ウィジェットからの起動を監視
+    HomeWidget.setAppGroupId('group.com.kotoapp.kimigatsukurusekai');
+    // Android / iOS 共通: widgetClicked ストリームで受け取り（ウォームスタート）
+    HomeWidget.widgetClicked.listen(_handleWidgetAction);
+    // コールドスタート: WidgetTree 構築後に確認
+    // iOS はホーム画面の初期化完了後（_loadAndDetermineDisplayPromise内）に処理するため
+    // ここでは Android のみ initiallyLaunchedFromHomeWidget を使用する
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!Platform.isIOS) {
+        HomeWidget.initiallyLaunchedFromHomeWidget().then(_handleWidgetAction);
+      } else {
+        // iOS: UserDefaults に保存済みの URL を読み取り、pending に積む
+        // （実際の処理は _loadAndDetermineDisplayPromise 完了後に行う）
+        await _checkIosWidgetAction();
+      }
+    });
   }
 
   @override
@@ -381,8 +420,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     _animationController.dispose();
     _pointsAddedAnimationController.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    _rewardCountdownTimer?.cancel();
-    _rewardPulseController.dispose();
     _boostCountdownTimer?.cancel();
     super.dispose();
   }
@@ -396,6 +433,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       if (ModalRoute.of(context)?.isCurrent ?? false) {
         _handleAppResumed();
       }
+      // 注意: iOSのウォームスタートは AppDelegate が super を呼ぶことで
+      // home_widget の widgetClicked ストリームが処理する。
+      // ここで _checkIosWidgetAction を呼ぶと重複ダイアログになるため呼ばない。
     }
   }
 
@@ -1245,41 +1285,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         await SharedPrefsHelper.loadTodaysSkippedPromiseTitles();
     final int multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
 
-    final now = DateTime.now();
-    bool hasAutoSkipped = false;
-
-    for (var promise in regular) {
-      if (!todaysCompletedTitles.contains(promise['title']) &&
-          !todaysSkippedTitles.contains(promise['title'])) {
-        final timeStr = promise['time'] as String?;
-        if (timeStr != null && timeStr.contains(':')) {
-          final parts = timeStr.split(':');
-          final hour = int.tryParse(parts[0]) ?? 0;
-          final minute = int.tryParse(parts[1]) ?? 0;
-          final promiseTime = DateTime(
-            now.year,
-            now.month,
-            now.day,
-            hour,
-            minute,
-          );
-
-          if (now.difference(promiseTime).inMinutes >= 60) {
-            await SharedPrefsHelper.addSkippedRecord(promise['title']);
-            hasAutoSkipped = true;
-          }
-        }
-      }
-    }
-
     _checkUnclaimedMissions();
-
-    if (hasAutoSkipped) {
-      todaysCompletedTitles =
-          await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
-      todaysSkippedTitles =
-          await SharedPrefsHelper.loadTodaysSkippedPromiseTitles();
-    }
 
     Offset? loadedAvatarPos = await SharedPrefsHelper.loadCharacterPosition(
       'avatar',
@@ -1454,9 +1460,17 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _experienceFraction = 1.0;
       }
     });
-
-    _checkRewardStatus(); // 🌟 追加: ロード時にリワードの状況も確認する
     _checkHomeBoostStatus();
+
+    // 🌟 iOS: _loadAndDetermineDisplayPromise 完了後に pending URI を処理
+    // （ホーム画面が完全に安定してからダイアログを表示するため）
+    if (Platform.isIOS && _pendingWidgetUri != null) {
+      final uri = _pendingWidgetUri;
+      _pendingWidgetUri = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _handleWidgetAction(uri);
+      });
+    }
   }
 
   void _startPromise() async {
@@ -1571,6 +1585,102 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           _showStartBlinking = true;
         });
       }
+    }
+  }
+
+  // 🌟 iOS専用: AppDelegate が App Group UserDefaults に保存した URL を読み取る
+  // コールドスタート時は _pendingWidgetUri に積んで、ホーム画面安定後に処理する
+  // ウォームスタート（resumed）時は直接 _handleWidgetAction を呼ぶ
+  Future<void> _checkIosWidgetAction({bool immediate = false}) async {
+    try {
+      final urlStr = await HomeWidget.getWidgetData<String>(
+        'ios_widget_action_url',
+      );
+      print('🍎 iOS widget URL check: $urlStr (immediate: $immediate)');
+      if (urlStr != null && urlStr.isNotEmpty) {
+        // 読み取り済みとして空にする（二重処理防止）
+        await HomeWidget.saveWidgetData<String>('ios_widget_action_url', '');
+        if (!mounted) return;
+        final uri = Uri.tryParse(urlStr);
+        if (immediate) {
+          // ウォームスタート: ホーム画面はすでに安定しているので直接処理
+          _handleWidgetAction(uri);
+        } else {
+          // コールドスタート: _loadAndDetermineDisplayPromise 完了まで保留
+          _pendingWidgetUri = uri;
+        }
+      }
+    } catch (e) {
+      print('🍎 iOS widget URL check error: $e');
+    }
+  }
+
+  // 🌟 追加: ウィジェットから起動されたときのアクション処理
+  void _handleWidgetAction(Uri? uri) {
+    print('🔥 ウィジェットアクション発火: $uri');
+
+    if (uri == null) return;
+
+    // 🔒 重複処理防止: 同じURIを 5秒以内に再度処理しない
+    final now = DateTime.now();
+    final uriStr = uri.toString();
+    if (_lastHandledWidgetUri == uriStr &&
+        _lastHandledWidgetTime != null &&
+        now.difference(_lastHandledWidgetTime!).inSeconds < 5) {
+      print('🔥 ウィジェットアクション重複スキップ: $uri');
+      return;
+    }
+    _lastHandledWidgetUri = uriStr;
+    _lastHandledWidgetTime = now;
+
+    if (uri.host == 'open_action_dialog') {
+      FirebaseAnalytics.instance.logEvent(name: 'open_widget_action_dialog');
+
+      WidgetActionSelectionDialog.show(
+        context: context,
+        onGoHome: () {
+          Navigator.pop(context); // ダイアログを閉じてそのまま
+          FirebaseAnalytics.instance.logEvent(
+            name: 'widget_action_dialog_go_home',
+          );
+        },
+        onGoSettings: () async {
+          Navigator.pop(context); // ダイアログを閉じる
+          FirebaseAnalytics.instance.logEvent(
+            name: 'widget_action_dialog_go_settings',
+          );
+          // 親のロック画面などを経由する場合は _openParentMode() でもOKです
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const EmergencyPromiseScreen(isTutorial: false),
+            ),
+          );
+
+          // 🌟 戻ってきたら必ずここが実行されるので、画面を更新する
+          if (mounted) {
+            _loadAndDetermineDisplayPromise();
+          }
+        },
+        onGoPromise: () {
+          Navigator.pop(context); // ダイアログを閉じる
+          FirebaseAnalytics.instance.logEvent(
+            name: 'widget_action_dialog_go_promise',
+          );
+          // 🌟 既存のやくそく開始メソッドをそのまま流用！
+          if (_displayPromise != null) {
+            _startPromise();
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  AppLocalizations.of(context)!.nothingToDoRightNow,
+                ),
+              ),
+            );
+          }
+        },
+      );
     }
   }
 
@@ -2047,10 +2157,10 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     bool isMain = false, // 🌟 新しいパラメータ: これが true だと目立つデザインになります
   }) {
     // isMain の値によってサイズを変える
-    final double buttonSize = isMain ? 78.0 : 46.0;
-    final double iconSize = isMain ? 48.0 : 24.0;
-    final double fontSize = isMain ? 12.0 : 9.0;
-    final double borderWidth = isMain ? 4.0 : 2.0;
+    final double buttonSize = isMain ? 58.0 : 46.0;
+    final double iconSize = isMain ? 38.0 : 24.0;
+    final double fontSize = isMain ? 10.0 : 9.0;
+    final double borderWidth = isMain ? 3.0 : 2.0;
 
     return GestureDetector(
       onTap: onTap,
@@ -2077,7 +2187,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           Transform.translate(
             offset: const Offset(0, -8),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
@@ -2102,70 +2212,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         ],
       ),
     );
-  }
-
-  // =========================================
-  // 🌟 追加: リワード広告関連のロジック
-  // =========================================
-  String _getCurrentSlot() {
-    final hour = DateTime.now().hour;
-    if (hour >= 0 && hour < 12) return 'morning';
-    if (hour >= 12 && hour < 18) return 'afternoon';
-    return 'night';
-  }
-
-  Future<void> _checkRewardStatus() async {
-    final slot = _getCurrentSlot();
-    final isClaimed = await SharedPrefsHelper.isRewardClaimed(slot);
-
-    if (mounted) {
-      setState(() {
-        _isCurrentRewardAvailable = !isClaimed;
-      });
-    }
-
-    // 受け取り済みの場合はカウントダウンを開始
-    if (isClaimed) {
-      _startRewardCountdown();
-    } else {
-      _rewardCountdownTimer?.cancel();
-    }
-  }
-
-  void _startRewardCountdown() {
-    _updateRewardCountdown();
-    _rewardCountdownTimer?.cancel();
-    _rewardCountdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      _updateRewardCountdown();
-    });
-  }
-
-  void _updateRewardCountdown() {
-    final now = DateTime.now();
-    DateTime nextTarget;
-
-    if (now.hour >= 0 && now.hour < 12) {
-      nextTarget = DateTime(now.year, now.month, now.day, 12, 0, 0);
-    } else if (now.hour >= 12 && now.hour < 18) {
-      nextTarget = DateTime(now.year, now.month, now.day, 18, 0, 0);
-    } else {
-      nextTarget = DateTime(now.year, now.month, now.day + 1, 0, 0, 0);
-    }
-
-    final diff = nextTarget.difference(now);
-    final hours = diff.inHours.toString().padLeft(2, '0');
-    final minutes = (diff.inMinutes % 60).toString().padLeft(2, '0');
-    final seconds = (diff.inSeconds % 60).toString().padLeft(2, '0');
-
-    if (mounted) {
-      setState(() {
-        _timeUntilNextReward = '$hours:$minutes:$seconds';
-      });
-      // ちょうど時間が切り替わった時に状態を再確認
-      if (diff.inSeconds <= 0) {
-        _checkRewardStatus();
-      }
-    }
   }
 
   // =========================================
@@ -2235,14 +2281,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _showCustomizeBlinking ||
         _showParentSettingsBlinking ||
         _showEmergencyStartBlinking ||
-        _showMissionBubble;
+        _showMissionBubble ||
+        _activeMissionTarget != null;
 
     final bool isAnyTutorialActive =
         _showCustomizeBlinking ||
         _showParentSettingsBlinking ||
         _showStartBlinking ||
         _showEmergencyStartBlinking ||
-        _showMissionBubble;
+        _showMissionBubble ||
+        _activeMissionTarget != null;
 
     return DefaultTabController(
       length: 1, // タブ数は適切に調整してください
@@ -2284,63 +2332,16 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 ),
               ),
 
-              // 👇 ① やくそくボードメニュー
-              _buildDrawerItem(
-                context: context,
-                icon: Icons.article_rounded,
-                iconColor: Colors.blue,
-                text: AppLocalizations.of(context)!.navPromiseBoard,
-                isTutorialBlinking: isAnyTutorialBlinking,
-                onTap: () async {
-                  FirebaseAnalytics.instance.logEvent(
-                    name: 'start_child_home_promise_board',
-                  );
-                  try {
-                    SfxManager.instance.playTapSound();
-                  } catch (e) {}
-                  final result = await Navigator.push<Map<String, int?>>(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PromiseBoardScreen(),
-                    ),
-                  );
-                  // ...（元の遷移後のポイント処理等は変更なし）...
-                  final pointsFromBoard = result != null
-                      ? result['points']
-                      : null;
-                  final expFromBoard = result != null ? result['exp'] : null;
-
-                  if (pointsFromBoard != null) {
-                    try {
-                      SfxManager.instance.playSuccessSound();
-                    } catch (e) {}
-                    setState(() {
-                      _points += pointsFromBoard;
-                      _experience += expFromBoard ?? 0;
-                    });
-                    if (!_hasVisitedPointAddition) {
-                      _animationController.forward(from: 0.0);
-                    }
-                    _showHugePointAnimation(pointsFromBoard);
-                    await SharedPrefsHelper.addCumulativePoints(
-                      pointsFromBoard,
-                    );
-                  }
-                  _checkLevelUp();
-                  await SharedPrefsHelper.savePoints(_points);
-                  _loadAndDetermineDisplayPromise();
-                },
-              ),
-
-              const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
-
-              // 👇 ② おんがくメニュー
+              // 👇 ① おんがくメニュー
               _buildDrawerItem(
                 context: context,
                 icon: Icons.music_note,
                 iconColor: Colors.purple,
                 text: AppLocalizations.of(context)!.navMusic,
-                isTutorialBlinking: isAnyTutorialBlinking,
+                isTutorialBlinking:
+                    isAnyTutorialBlinking &&
+                    _activeMissionTarget != 'mission_bgm',
+                isBlinking: _activeMissionTarget == 'mission_bgm',
                 onTap: () async {
                   try {
                     SfxManager.instance.playTapSound();
@@ -2353,46 +2354,18 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     MaterialPageRoute(
                       builder: (context) => const BgmSelectionScreen(),
                     ),
-                  );
-                },
-              ),
-
-              const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
-
-              // 👇 ③ せかいメニュー
-              _buildDrawerItem(
-                context: context,
-                icon: Icons.public,
-                iconColor: Colors.green,
-                text: AppLocalizations.of(context)!.navWorldMap,
-                isTutorialBlinking: isAnyTutorialBlinking,
-                onTap: () async {
-                  try {
-                    SfxManager.instance.playTapSound();
-                  } catch (e) {}
-                  FirebaseAnalytics.instance.logEvent(
-                    name: 'start_child_home_world_map',
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WorldMapScreen(
-                        currentLevel: _level,
-                        currentPoints: _points,
-                        requiredExpForNextLevel: _requiredExpForNextLevel,
-                        experience: _experience,
-                        experienceFraction: _experienceFraction,
-                      ),
-                    ),
                   ).then((_) {
-                    _loadAndDetermineDisplayPromise();
+                    // 🌟 追加: 戻ってきたらリセット
+                    if (_activeMissionTarget == 'mission_bgm') {
+                      setState(() => _activeMissionTarget = null);
+                    }
                   });
                 },
               ),
 
               const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
 
-              // ④トロフィールーム メニュー
+              // ②トロフィールーム メニュー
               _buildDrawerItem(
                 context: context,
                 icon: Icons.emoji_events, // トロフィーのアイコン
@@ -2424,27 +2397,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
               const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
 
-              // 👇 ⑤ あそびかた（ヘルプ）メニュー
-              _buildDrawerItem(
-                context: context,
-                icon: Icons.help_outline,
-                iconColor: Colors.orange,
-                text: AppLocalizations.of(context)!.help,
-                isTutorialBlinking: isAnyTutorialBlinking,
-                onTap: () async {
-                  FirebaseAnalytics.instance.logEvent(
-                    name: 'start_child_home_help',
-                  );
-                  try {
-                    SfxManager.instance.playTapSound();
-                  } catch (e) {}
-                  _onHelpButtonPressed();
-                },
-              ),
-
-              const Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
-
-              // ⑥ 設定メニュー
+              // ③ 設定メニュー
               _buildDrawerItem(
                 context: context,
                 icon: Icons.settings_outlined,
@@ -2511,11 +2464,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                width: 430,
+                                width: 420,
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      flex: 2,
+                                      flex: 3,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -2555,7 +2508,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       color: Colors.grey.withOpacity(0.3),
                                     ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: 3,
                                       child: GestureDetector(
                                         behavior: HitTestBehavior.opaque,
                                         child: Column(
@@ -2665,7 +2618,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       color: Colors.grey.withOpacity(0.3),
                                     ),
                                     Expanded(
-                                      flex: 4,
+                                      flex: 3,
                                       child: Stack(
                                         alignment: Alignment.centerLeft,
                                         clipBehavior: Clip.none,
@@ -2739,66 +2692,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                       size: 20,
                                                     ),
                                                   ),
-                                                  if (!isAnyTutorialBlinking &&
-                                                      !_showStartBlinking) ...[
-                                                    const SizedBox(width: 8),
-                                                    if (_isCurrentRewardAvailable)
-                                                      ScaleTransition(
-                                                        scale:
-                                                            Tween<double>(
-                                                              begin: 1.0,
-                                                              end: 1.4,
-                                                            ).animate(
-                                                              // 1.0倍から1.4倍の間で動かす
-                                                              CurvedAnimation(
-                                                                parent:
-                                                                    _rewardPulseController,
-                                                                curve: Curves
-                                                                    .easeInOut, // なめらかな動き
-                                                              ),
-                                                            ),
-                                                        child: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            const Icon(
-                                                              Icons
-                                                                  .play_circle_fill,
-                                                              color:
-                                                                  Colors.black,
-                                                              size: 16,
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 2,
-                                                            ),
-                                                            Text(
-                                                              AppLocalizations.of(
-                                                                context,
-                                                              )!.homeRewardAvailable,
-                                                              style: const TextStyle(
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    else
-                                                      Text(
-                                                        _timeUntilNextReward,
-                                                        style: const TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors
-                                                              .black, // 待機中は少し暗めの白
-                                                        ),
-                                                      ),
-                                                  ],
                                                 ],
                                               ),
                                             ),
@@ -2821,25 +2714,52 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       top: 0, // 上部バーの高さに合わせて調整してください
                       right: 10,
                       child: SafeArea(
-                        child: IgnorePointer(
-                          ignoring: isAnyTutorialBlinking,
-                          child: Opacity(
-                            opacity: isAnyTutorialBlinking ? 0.6 : 1.0,
-                            child: FloatingActionButton.small(
-                              // 小さめのFABを使って浮かせる
-                              onPressed: () {
-                                try {
-                                  SfxManager.instance.playTapSound();
-                                } catch (_) {}
-                                // 🌟 keyを使って右側のドロワーを開く
-                                _scaffoldKey.currentState?.openEndDrawer();
-                              },
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black54,
-                              elevation: 4,
-                              child: const Icon(Icons.menu), // ハンバーガーメニューアイコン
+                        child: Stack(
+                          // 🌟 Stackを追加して指マークを重ねる
+                          clipBehavior: Clip.none,
+                          children: [
+                            IgnorePointer(
+                              ignoring:
+                                  isAnyTutorialBlinking &&
+                                  _activeMissionTarget != 'mission_bgm',
+                              child: Opacity(
+                                opacity:
+                                    isAnyTutorialBlinking &&
+                                        _activeMissionTarget != 'mission_bgm'
+                                    ? 0.6
+                                    : 1.0,
+                                child: BlinkingEffect(
+                                  // 🌟 変更
+                                  isBlinking:
+                                      _activeMissionTarget == 'mission_bgm',
+                                  child: FloatingActionButton.small(
+                                    // 小さめのFABを使って浮かせる
+                                    onPressed: () {
+                                      try {
+                                        SfxManager.instance.playTapSound();
+                                      } catch (_) {}
+                                      // 🌟 keyを使って右側のドロワーを開く
+                                      _scaffoldKey.currentState
+                                          ?.openEndDrawer();
+                                    },
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.black54,
+                                    elevation: 4,
+                                    child: const Icon(
+                                      Icons.menu,
+                                    ), // ハンバーガーメニューアイコン
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                            if (_activeMissionTarget ==
+                                'mission_bgm') // 🌟 指マーク
+                              const Positioned(
+                                right: -10,
+                                bottom: -10,
+                                child: AnimatedTapFinger(),
+                              ),
+                          ],
                         ),
                       ),
                     ),
@@ -2854,7 +2774,205 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // ミッション（メイン機能として大きく目立たせる！）
+                            // ① やくそくボード
+                            Builder(
+                              builder: (context) {
+                                final isPromiseTarget =
+                                    _activeMissionTarget ==
+                                    'mission_promise_board'; // 🌟 追加
+                                return Stack(
+                                  // 🌟 Stackで囲む
+                                  clipBehavior: Clip.none,
+                                  alignment: Alignment.center,
+                                  children: [
+                                    IgnorePointer(
+                                      ignoring:
+                                          isAnyTutorialBlinking &&
+                                          !isPromiseTarget,
+                                      child: Opacity(
+                                        opacity:
+                                            isAnyTutorialBlinking &&
+                                                !isPromiseTarget
+                                            ? 0.6
+                                            : 1.0,
+                                        child: BlinkingEffect(
+                                          // 🌟 追加
+                                          isBlinking: isPromiseTarget,
+                                          child: _buildRoundMenuButton(
+                                            icon: Icons.article_rounded,
+                                            label: AppLocalizations.of(
+                                              context,
+                                            )!.navPromiseBoard,
+                                            iconColor: Colors.black,
+                                            backgroundColor:
+                                                Colors.blue.shade100, // 青系の可愛い色
+                                            isMain: false,
+                                            onTap: () async {
+                                              FirebaseAnalytics.instance.logEvent(
+                                                name:
+                                                    'start_child_home_promise_board',
+                                              );
+                                              try {
+                                                SfxManager.instance
+                                                    .playTapSound();
+                                              } catch (e) {}
+                                              final result =
+                                                  await Navigator.push<
+                                                    Map<String, int?>
+                                                  >(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const PromiseBoardScreen(),
+                                                    ),
+                                                  );
+                                              final pointsFromBoard =
+                                                  result != null
+                                                  ? result['points']
+                                                  : null;
+                                              final expFromBoard =
+                                                  result != null
+                                                  ? result['exp']
+                                                  : null;
+
+                                              if (pointsFromBoard != null) {
+                                                try {
+                                                  SfxManager.instance
+                                                      .playSuccessSound();
+                                                } catch (e) {}
+                                                setState(() {
+                                                  _points += pointsFromBoard;
+                                                  _experience +=
+                                                      expFromBoard ?? 0;
+                                                });
+                                                if (!_hasVisitedPointAddition) {
+                                                  _animationController.forward(
+                                                    from: 0.0,
+                                                  );
+                                                }
+                                                _showHugePointAnimation(
+                                                  pointsFromBoard,
+                                                );
+                                                await SharedPrefsHelper.addCumulativePoints(
+                                                  pointsFromBoard,
+                                                );
+                                              }
+                                              _checkLevelUp();
+                                              await SharedPrefsHelper.savePoints(
+                                                _points,
+                                              );
+                                              _loadAndDetermineDisplayPromise();
+                                              // 🌟 追加: 戻ってきたらリセット
+                                              if (_activeMissionTarget ==
+                                                  'mission_promise_board') {
+                                                setState(
+                                                  () => _activeMissionTarget =
+                                                      null,
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    if (isPromiseTarget) // 🌟 指マーク
+                                      const Positioned(
+                                        right: -10,
+                                        bottom: -10,
+                                        child: AnimatedTapFinger(),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 4),
+
+                            // ② せかい
+                            Builder(
+                              builder: (context) {
+                                final isWorldTarget =
+                                    _activeMissionTarget ==
+                                    'mission_world_map'; // 🌟 追加
+                                return Stack(
+                                  // 🌟 Stackで囲む
+                                  clipBehavior: Clip.none,
+                                  alignment: Alignment.center,
+                                  children: [
+                                    IgnorePointer(
+                                      ignoring:
+                                          isAnyTutorialBlinking &&
+                                          !isWorldTarget,
+                                      child: Opacity(
+                                        opacity:
+                                            isAnyTutorialBlinking &&
+                                                !isWorldTarget
+                                            ? 0.6
+                                            : 1.0,
+                                        child: BlinkingEffect(
+                                          // 🌟 追加
+                                          isBlinking: isWorldTarget,
+                                          child: _buildRoundMenuButton(
+                                            icon: Icons.public,
+                                            label: AppLocalizations.of(
+                                              context,
+                                            )!.navWorldMap,
+                                            iconColor: Colors.black,
+                                            backgroundColor: Colors
+                                                .green
+                                                .shade100, // 緑系の可愛い色
+                                            isMain: false,
+                                            onTap: () async {
+                                              try {
+                                                SfxManager.instance
+                                                    .playTapSound();
+                                              } catch (e) {}
+                                              FirebaseAnalytics.instance.logEvent(
+                                                name:
+                                                    'start_child_home_world_map',
+                                              );
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      WorldMapScreen(
+                                                        currentLevel: _level,
+                                                        currentPoints: _points,
+                                                        requiredExpForNextLevel:
+                                                            _requiredExpForNextLevel,
+                                                        experience: _experience,
+                                                        experienceFraction:
+                                                            _experienceFraction,
+                                                      ),
+                                                ),
+                                              ).then((_) {
+                                                _loadAndDetermineDisplayPromise();
+                                                // 🌟 追加: 戻ってきたらリセット
+                                                if (_activeMissionTarget ==
+                                                    'mission_world_map') {
+                                                  setState(
+                                                    () => _activeMissionTarget =
+                                                        null,
+                                                  );
+                                                }
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    if (isWorldTarget) // 🌟 指マーク
+                                      const Positioned(
+                                        right: -10,
+                                        bottom: -10,
+                                        child: AnimatedTapFinger(),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 4),
+
+                            // ③ ミッション
                             Stack(
                               clipBehavior: Clip.none,
                               alignment: Alignment.topRight,
@@ -2870,7 +2988,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                         ? 0.6
                                         : 1.0,
                                     child: BlinkingEffect(
-                                      // 🌟 チュートリアル用の点滅エフェクト
                                       isBlinking: _showMissionBubble,
                                       child: _buildRoundMenuButton(
                                         icon: Icons.assignment_turned_in,
@@ -2878,37 +2995,41 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                           context,
                                         )!.missionScreenTitle,
                                         iconColor: Colors.black,
-                                        backgroundColor: Colors.purple.shade100,
-                                        isMain: true, // 🌟 メイン機能なので大きく！
+                                        backgroundColor:
+                                            Colors.purple.shade100, // 紫系の可愛い色
+                                        isMain: false,
                                         onTap: () async {
                                           try {
                                             SfxManager.instance.playTapSound();
                                           } catch (e) {}
-                                          FirebaseAnalytics.instance.logEvent(
-                                            name: 'start_child_home_mission',
-                                          );
-
+                                          if (_showMissionBubble) {
+                                            FirebaseAnalytics.instance.logEvent(
+                                              name:
+                                                  'start_child_home_mission_tutorial',
+                                            );
+                                          } else {
+                                            FirebaseAnalytics.instance.logEvent(
+                                              name: 'start_child_home_mission',
+                                            );
+                                          }
                                           final bool isTutorial =
-                                              _showMissionBubble; // 現在チュートリアル中かどうかを保持
-
+                                              _showMissionBubble;
                                           if (!mounted) return;
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => MissionScreen(
-                                                isTutorialMode:
-                                                    isTutorial, // 🌟 チュートリアル中であることをミッション画面に伝える
-                                              ),
+                                              builder: (context) =>
+                                                  MissionScreen(
+                                                    isTutorialMode: isTutorial,
+                                                  ),
                                             ),
                                           ).then((result) async {
                                             _loadAndDetermineDisplayPromise();
                                             _checkUnclaimedMissions();
 
-                                            // 🌟 チュートリアルでミッション画面から戻ってきた時の処理
                                             if (isTutorial) {
                                               final claimedIds =
                                                   await SharedPrefsHelper.loadClaimedMissionIds();
-                                              // 最初のおやくそく報酬を受け取って戻ってきたらチュートリアル完了！
                                               if (claimedIds.contains(
                                                 'mission_first_promise',
                                               )) {
@@ -2938,40 +3059,46 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                   });
                                                 }
                                               }
-                                              int earnedPoints =
-                                                  await LoginBonusManager()
-                                                      .checkLoginBonus(context);
-                                              await TrophyManager.checkAndShowTrophies(
-                                                context,
-                                              );
-
-                                              if (earnedPoints > 0 && mounted) {
-                                                try {
-                                                  SfxManager.instance
-                                                      .playSuccessSound();
-                                                } catch (e) {
-                                                  print('再生エラー: $e');
-                                                }
-                                                _showHugePointAnimation(
-                                                  earnedPoints,
-                                                );
-                                                if (!_hasVisitedPointAddition) {
-                                                  _animationController.forward(
-                                                    from: 0.0,
+                                            } else {
+                                              // 🌟 追加: 「やってみる」でIDが返ってきたらターゲットにセットする！
+                                              if (result is String &&
+                                                  result.startsWith(
+                                                    'mission_',
+                                                  )) {
+                                                if (result ==
+                                                    'mission_parent_setup') {
+                                                  SharedPrefsHelper.setParentTutorial(
+                                                    SharedPrefsHelper
+                                                        .tutorialPhaseStart,
                                                   );
+                                                  _showParentTutorial();
+                                                } else {
+                                                  setState(() {
+                                                    _activeMissionTarget =
+                                                        result;
+                                                  });
                                                 }
                                               }
                                             }
+                                            int earnedPoints =
+                                                await LoginBonusManager()
+                                                    .checkLoginBonus(context);
+                                            await TrophyManager.checkAndShowTrophies(
+                                              context,
+                                            );
+                                            if (earnedPoints > 0 && mounted) {
+                                              try {
+                                                SfxManager.instance
+                                                    .playSuccessSound();
+                                              } catch (e) {}
+                                              _showHugePointAnimation(
+                                                earnedPoints,
+                                              );
 
-                                            if (result != null &&
-                                                result is String) {
-                                              if (result ==
-                                                  'mission_parent_setup') {
-                                                SharedPrefsHelper.setParentTutorial(
-                                                  SharedPrefsHelper
-                                                      .tutorialPhaseStart,
+                                              if (!_hasVisitedPointAddition) {
+                                                _animationController.forward(
+                                                  from: 0.0,
                                                 );
-                                                _showParentTutorial();
                                               }
                                             }
                                           });
@@ -2980,18 +3107,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                     ),
                                   ),
                                 ),
-
-                                // 🌟 チュートリアル中の指マーク
                                 if (_showMissionBubble)
                                   const Positioned(
                                     right: -10,
                                     bottom: -10,
                                     child: AnimatedTapFinger(),
                                   )
-                                // 「！」バッジの表示
                                 else if (_hasUnclaimedMissions)
                                   Positioned(
-                                    top: -4, // バッジの位置を微調整
+                                    top: -4,
                                     right: 0,
                                     child: ScaleTransition(
                                       scale: Tween<double>(begin: 1.0, end: 1.3)
@@ -3031,8 +3155,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   ),
                               ],
                             ),
-                            const SizedBox(height: 8),
-                            // きせかえ（メイン機能として大きく目立たせる！）
+                            const SizedBox(height: 4),
+
+                            // ④ きせかえ
                             Stack(
                               clipBehavior: Clip.none,
                               alignment: Alignment.center,
@@ -3050,13 +3175,15 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                     child: BlinkingEffect(
                                       isBlinking: _showCustomizeBlinking,
                                       child: _buildRoundMenuButton(
-                                        icon: Icons.checkroom, // 服のアイコンでわかりやすく
+                                        icon: Icons.checkroom,
                                         label: AppLocalizations.of(
                                           context,
                                         )!.navDressUp,
                                         iconColor: Colors.black,
-                                        backgroundColor: Colors.green.shade100,
-                                        isMain: true, // 🌟 メイン機能なので大きく！
+                                        backgroundColor: Colors
+                                            .orange
+                                            .shade100, // オレンジ系の可愛い色
+                                        isMain: false,
                                         onTap: () async {
                                           bool isShown =
                                               await SharedPrefsHelper.getChildTutorial() ==
@@ -3072,11 +3199,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                               name: 'start_child_home_dress_up',
                                             );
                                           }
-
                                           try {
                                             SfxManager.instance.playTapSound();
                                           } catch (e) {}
-
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -3087,16 +3212,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             setState(() {
                                               _showCustomizeBlinking = false;
                                             });
-                                            bool isShown =
-                                                await SharedPrefsHelper.getChildTutorial() ==
-                                                SharedPrefsHelper
-                                                    .tutorialPhaseStart;
                                             if (isShown) {
                                               FirebaseAnalytics.instance.logEvent(
                                                 name:
                                                     'tutorial_tap_customize_back',
                                               );
-
                                               await SharedPrefsHelper.setTutorialStepShown(
                                                 SharedPrefsHelper
                                                     .tutorialStepCustomizeKey,
@@ -3126,7 +3246,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       ),
                     ),
 
-                  // 🌟 左側のボタン（おやのせってい、きせかえ）
+                  // 🌟 左側のボタン群
                   if (!_isDrawingMode)
                     Positioned(
                       top: 0,
@@ -3136,7 +3256,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // おやのせってい（サブ機能として小さく）
+                              // ① おやのせってい（サブ機能として小さく）
                               Stack(
                                 clipBehavior: Clip.none,
                                 children: [
@@ -3184,7 +3304,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   if (_isTutorialParentSettingsFocus)
                                     Positioned(
                                       top: 10,
-                                      left: 60, // サイズが小さくなったので吹き出しの位置を少し左に調整
+                                      left: 60,
                                       child: Material(
                                         color: Colors.transparent,
                                         child: Container(
@@ -3231,6 +3351,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               ),
                               const SizedBox(height: 12),
 
+                              // ② おえかき
                               IgnorePointer(
                                 ignoring: isAnyTutorialBlinking,
                                 child: Opacity(
@@ -3241,18 +3362,43 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       context,
                                     )!.drawingButton,
                                     iconColor: Colors.white,
-                                    backgroundColor: Colors.pinkAccent, // 目立つ黄色
+                                    backgroundColor: Colors.pinkAccent,
                                     isMain: false, // 🌟 サブ機能なので小さく
                                     onTap: () async {
                                       FirebaseAnalytics.instance.logEvent(
                                         name: 'start_home_drawing',
                                       );
                                       setState(() {
-                                        _isDrawingMode = true; // おえかきモードON
+                                        _isDrawingMode = true;
                                       });
                                       try {
                                         SfxManager.instance.playTapSound();
                                       } catch (_) {}
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+
+                              // ③ あそびかた（ヘルプ）
+                              IgnorePointer(
+                                ignoring: isAnyTutorialBlinking,
+                                child: Opacity(
+                                  opacity: (isAnyTutorialBlinking) ? 0.6 : 1.0,
+                                  child: _buildRoundMenuButton(
+                                    icon: Icons.help_outline,
+                                    label: AppLocalizations.of(context)!.help,
+                                    iconColor: Colors.white,
+                                    backgroundColor: Colors.orangeAccent,
+                                    isMain: false, // 🌟 サブ機能なので小さく
+                                    onTap: () async {
+                                      FirebaseAnalytics.instance.logEvent(
+                                        name: 'start_child_home_help',
+                                      );
+                                      try {
+                                        SfxManager.instance.playTapSound();
+                                      } catch (e) {}
+                                      _onHelpButtonPressed();
                                     },
                                   ),
                                 ),
@@ -3588,61 +3734,98 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     ),
 
                   // 真ん中のエリア（アバターと家）
-                  IgnorePointer(
-                    ignoring: isAnyTutorialActive,
-                    child: Opacity(
-                      opacity: isAnyTutorialActive ? 0.6 : 1.0,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          onTap: () {
-                            _hintTimer?.cancel();
-                            setState(() {
-                              _showHouseHint = true;
-                            });
-                            _hintTimer = Timer(const Duration(seconds: 3), () {
-                              setState(() {
-                                _showHouseHint = false;
-                              });
-                            });
-                          },
-                          onLongPress: () async {
-                            try {
-                              SfxManager.instance.playSuccessSound();
-                            } catch (e) {}
+                  Builder(
+                    builder: (context) {
+                      final isHouseTarget =
+                          _activeMissionTarget ==
+                          'mission_enter_house'; // 🌟 追加
+                      return IgnorePointer(
+                        ignoring: isAnyTutorialActive && !isHouseTarget,
+                        child: Opacity(
+                          opacity: isAnyTutorialActive && !isHouseTarget
+                              ? 0.6
+                              : 1.0,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: GestureDetector(
+                              onTap: () {
+                                _hintTimer?.cancel();
+                                setState(() {
+                                  _showHouseHint = true;
+                                });
+                                _hintTimer = Timer(
+                                  const Duration(seconds: 3),
+                                  () {
+                                    setState(() {
+                                      _showHouseHint = false;
+                                    });
+                                  },
+                                );
+                              },
+                              onLongPress: () async {
+                                try {
+                                  SfxManager.instance.playSuccessSound();
+                                } catch (e) {}
 
-                            if (!_hasEnteredHouse) {
-                              await SharedPrefsHelper.setHasEnteredHouse(true);
-                              setState(() {
-                                _hasEnteredHouse = true;
-                              });
-                            }
+                                if (!_hasEnteredHouse) {
+                                  await SharedPrefsHelper.setHasEnteredHouse(
+                                    true,
+                                  );
+                                  setState(() {
+                                    _hasEnteredHouse = true;
+                                  });
+                                }
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HouseInteriorScreen(
-                                  equippedHousePath: _equippedHousePath,
-                                  requiredExpForNextLevel:
-                                      _requiredExpForNextLevel,
-                                  experience: _experience,
-                                  experienceFraction: _experienceFraction,
-                                ),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HouseInteriorScreen(
+                                      equippedHousePath: _equippedHousePath,
+                                      requiredExpForNextLevel:
+                                          _requiredExpForNextLevel,
+                                      experience: _experience,
+                                      experienceFraction: _experienceFraction,
+                                    ),
+                                  ),
+                                ).then((_) {
+                                  _loadAndDetermineDisplayPromise();
+                                  // 🌟 追加: 戻ってきたら誘導リセット
+                                  if (_activeMissionTarget ==
+                                      'mission_enter_house') {
+                                    setState(() => _activeMissionTarget = null);
+                                  }
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  // 🌟 変更: 家を点滅させて指マークをつける
+                                  Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      BlinkingEffect(
+                                        isBlinking: isHouseTarget,
+                                        child: Image.asset(
+                                          _equippedHousePath,
+                                          height: 200,
+                                        ),
+                                      ),
+                                      if (isHouseTarget)
+                                        const Positioned(
+                                          right: 50,
+                                          bottom: 50,
+                                          child: AnimatedTapFinger(),
+                                        ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ).then((_) {
-                              _loadAndDetermineDisplayPromise();
-                            });
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Image.asset(_equippedHousePath, height: 200),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
 
                   if (!_hasEnteredHouse &&
@@ -3650,7 +3833,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       !_showParentSettingsBlinking &&
                       !_showStartBlinking &&
                       !_showMissionBubble &&
-                      !_isDrawingMode)
+                      !_isDrawingMode &&
+                      !_showWatermarkForCapture)
                     Positioned(
                       top: MediaQuery.of(context).size.height * 0.45,
                       left: 0,
@@ -3917,10 +4101,25 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
             if (_showCustomizeBlinking)
               Positioned(
-                bottom: 80,
+                bottom: 20,
                 right: 90,
                 child: TutorialCharacterBubble(
                   text: AppLocalizations.of(context)!.tutorialCustomizeBubble,
+                  currentStep: 2,
+                  totalSteps: 3,
+                ),
+              ),
+            // 🌟 追加: やってみる！の誘導中の吹き出し
+            if (_activeMissionTarget != null)
+              Positioned(
+                bottom: _activeMissionTarget == 'mission_enter_house'
+                    ? 0
+                    : 120, // ミッションボタンより少し上の見やすい位置
+                right: 80,
+                child: TutorialCharacterBubble(
+                  text: _getMissionTargetBubbleText(_activeMissionTarget!),
+                  currentStep: 3,
+                  totalSteps: 3,
                 ),
               ),
             if (_showStartBlinking)
@@ -3933,11 +4132,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           context,
                         )!.tutorialEmergencyStartBubble
                       : AppLocalizations.of(context)!.tutorialStartBubble,
+                  currentStep: 1,
+                  totalSteps: 3,
                 ),
               ),
             if (_showMissionBubble)
               Positioned(
-                bottom: 120,
+                bottom: 80,
                 right: 80,
                 child: TutorialCharacterBubble(
                   text: AppLocalizations.of(context)!.missionHintBubble,
@@ -4024,6 +4225,57 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             }
 
                             // 6. フラグを false に戻して build メソッドでロゴを非表示にする
+                            if (mounted) {
+                              setState(() {
+                                _showWatermarkForCapture = false;
+                              });
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        // 👇 🌟 ここから追加：ウィジェットにするボタン
+                        _buildRoundMenuButton(
+                          icon: Icons.widgets_rounded,
+                          label: AppLocalizations.of(context)!.widget,
+                          iconColor: Colors.white,
+                          backgroundColor: Colors.teal,
+                          isMain: true,
+                          onTap: () async {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'widget_home_screen_button_tap',
+                            );
+                            // おえかきモードのUIを消すために一旦falseにする
+                            setState(() {
+                              _isDrawingMode = false;
+                            });
+
+                            // ロード画面を表示
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+
+                            if (mounted) {
+                              setState(() {
+                                _showWatermarkForCapture = true;
+                              });
+                            }
+
+                            // 描画が終わるのを待ってからキャプチャ実行！
+                            await WidgetsBinding.instance.endOfFrame;
+
+                            // 🌟 さっき作ったヘルパーを呼び出す（_shareKeyは既存のものを使います）
+                            if (mounted) {
+                              await WidgetCaptureHelper.captureAndSetWidget(
+                                context,
+                                _shareKey,
+                              );
+                            }
+
+                            // フラグを false に戻して build メソッドでロゴを非表示にする
                             if (mounted) {
                               setState(() {
                                 _showWatermarkForCapture = false;
@@ -4235,32 +4487,37 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     required Color iconColor,
     required String text,
     required bool isTutorialBlinking,
+    bool isBlinking = false,
     required VoidCallback onTap,
   }) {
     return IgnorePointer(
       ignoring: isTutorialBlinking,
       child: Opacity(
         opacity: isTutorialBlinking ? 0.6 : 1.0,
-        child: ListTile(
-          dense: true,
-          visualDensity: const VisualDensity(vertical: 0),
-          leading: Icon(icon, color: iconColor, size: 26),
-          title: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+        child: BlinkingEffect(
+          // 🌟 追加: 対象の項目を点滅させる
+          isBlinking: isBlinking,
+          child: ListTile(
+            dense: true,
+            visualDensity: const VisualDensity(vertical: 0),
+            leading: Icon(icon, color: iconColor, size: 26),
+            title: Text(
+              text,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
+            ),
+            onTap: () {
+              Navigator.pop(context); // 🌟 タップしたらまずドロワーを閉じる
+              onTap(); // その後に遷移処理を実行
+            },
           ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 0,
-          ),
-          onTap: () {
-            Navigator.pop(context); // 🌟 タップしたらまずドロワーを閉じる
-            onTap(); // その後に遷移処理を実行
-          },
         ),
       ),
     );

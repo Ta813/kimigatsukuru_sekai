@@ -1170,6 +1170,26 @@ class _MissionScreenState extends State<MissionScreen>
           Navigator.of(context).pop(mission.id);
           FirebaseAnalytics.instance.logEvent(name: '${mission.id}_start');
         };
+      } else if (mission.id == 'mission_world_map' ||
+          mission.id == 'mission_bgm' ||
+          mission.id == 'mission_promise_board' ||
+          mission.id == 'mission_enter_house') {
+        // 🌟 追加: 特定のミッションに「やってみる」フェーズを追加
+        buttonColor = Colors.blue;
+        buttonText = l10n.missionButtonTry; // 「やってみる」
+        onPressed = () {
+          try {
+            SfxManager.instance.playTapSound();
+          } catch (e) {}
+          FirebaseAnalytics.instance.logEvent(name: '${mission.id}_try');
+
+          // ===============================================
+          // 【遷移のさせ方】
+          // チュートリアルと同じように、ホーム画面（呼び出し元）で画面遷移を
+          // 制御している場合は、以下の1行でIDを返して閉じるのが一番安全です。
+          // ===============================================
+          Navigator.of(context).pop(mission.id);
+        };
       } else {
         buttonColor = Colors.orange;
         buttonText = l10n.missionButtonChallenging;

@@ -44,6 +44,22 @@ class HelpMenuDialog extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
+            // 選択肢1（2段目）
+            Row(
+              children: [
+                Expanded(
+                  child: _buildMenuButton(
+                    context: context,
+                    title: l10n.helpMenuPromiseSettings,
+                    icon: Icons.settings,
+                    color: const Color(0xFFBA68C8), // パープル系
+                    resultKey: 'promise_settings',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
             // 選択肢1・2（2段目）
             Row(
               children: [
@@ -68,32 +84,7 @@ class HelpMenuDialog extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
 
-            // 選択肢3・4（3段目）
-            Row(
-              children: [
-                Expanded(
-                  child: _buildMenuButton(
-                    context: context,
-                    title: l10n.helpMenuPromiseSettings,
-                    icon: Icons.settings,
-                    color: const Color(0xFFBA68C8), // パープル系
-                    resultKey: 'promise_settings',
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildMenuButton(
-                    context: context,
-                    title: l10n.helpMenuOthers,
-                    icon: Icons.more_horiz,
-                    color: const Color(0xFF81C784), // グリーン系
-                    resultKey: 'others',
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(height: 6),
 
             // 閉じるボタン

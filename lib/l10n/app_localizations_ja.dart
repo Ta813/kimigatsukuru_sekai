@@ -2277,4 +2277,58 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialShopBuyFace => 'ポイントをつかって\nあたらしい「かお」を かってみよう！';
+
+  @override
+  String get missionTryEnterHouse => 'おうちをタップして\nなかに入ってみよう！';
+
+  @override
+  String get missionTryPromiseBoard => '「やくそく」ボタンをおして\nボードをかくにんしよう！';
+
+  @override
+  String get missionTryWorldMap => '「せかい」ボタンをおして\nマップにでかけよう！';
+
+  @override
+  String get missionTryBgm => '右上のメニューをひらいて\n「おんがく」をかえてみよう！';
+
+  @override
+  String get missionTryDefault => '光っているボタンを\nタップしてみよう！';
+
+  @override
+  String get widgetCreatedWorld => 'きみがつくったせかい';
+
+  @override
+  String get widgetTapToPlay => 'タップしてあそぶ';
+
+  @override
+  String get widgetReadyTitle => 'ウィジェットの じゅんびOK！';
+
+  @override
+  String get widgetReadyDescription => 'ホーム画面にもどって、画面をながおししてね。\nウィジェットのメニューから追加できるよ！';
+
+  @override
+  String get widgetGotIt => 'わかった！';
+
+  @override
+  String get widgetCreateFailed => 'ウィジェットのさくせいにしっぱいしました';
+
+  @override
+  String get widgetActionWhatToDo => 'なにをする？';
+
+  @override
+  String get widgetActionGoHome => 'ホーム画面へいく';
+
+  @override
+  String get widgetActionSettings => 'いますぐ やくそく設定';
+
+  @override
+  String get widgetActionStartPromise => 'いますぐ やくそくをはじめる';
+
+  @override
+  String get drawerMenuCreateWidget => 'ウィジェットをつくる';
+
+  @override
+  String get widget => 'ウィジェット';
+
+  @override
+  String get nothingToDoRightNow => '今はやることがないみたい！';
 }

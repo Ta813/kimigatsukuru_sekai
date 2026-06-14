@@ -24,8 +24,8 @@ class RoundMenuButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 70,
-            height: 70,
+            width: 55,
+            height: 55,
             decoration: BoxDecoration(
               color: backgroundColor,
               shape: BoxShape.circle,
@@ -38,7 +38,7 @@ class RoundMenuButton extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(icon, size: 36, color: iconColor),
+            child: Icon(icon, size: 24, color: iconColor),
           ),
           Transform.translate(
             offset: const Offset(0, -14),
@@ -58,7 +58,7 @@ class RoundMenuButton extends StatelessWidget {
               child: Text(
                 label,
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: 10,
                   color: Color(0xFF5D4037),
                   fontWeight: FontWeight.bold,
                 ),

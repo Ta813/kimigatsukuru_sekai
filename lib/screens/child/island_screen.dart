@@ -3,6 +3,7 @@ import 'dart:ui' as import_ui;
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/helpers/image_share_helper.dart';
+import 'package:kimigatsukuru_sekai/helpers/widget_capture_helper.dart';
 import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import '../../widgets/draggable_character.dart';
@@ -815,6 +816,55 @@ class _IslandScreenState extends State<IslandScreen> {
                         }
 
                         // 6. フラグを false に戻して build メソッドでロゴを非表示にする
+                        if (mounted) {
+                          setState(() {
+                            _showWatermarkForCapture = false;
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    // 👇 🌟 ここから追加：ウィジェットにするボタン
+                    RoundMenuButton(
+                      icon: Icons.widgets_rounded,
+                      label: AppLocalizations.of(context)!.widget,
+                      iconColor: Colors.white,
+                      backgroundColor: Colors.teal,
+                      onTap: () async {
+                        FirebaseAnalytics.instance.logEvent(
+                          name: 'widget_island_button_tap',
+                        );
+                        // おえかきモードのUIを消すために一旦falseにする
+                        setState(() {
+                          _isDrawingMode = false;
+                        });
+
+                        // ロード画面を表示
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) =>
+                              const Center(child: CircularProgressIndicator()),
+                        );
+
+                        if (mounted) {
+                          setState(() {
+                            _showWatermarkForCapture = true;
+                          });
+                        }
+
+                        // 描画が終わるのを待ってからキャプチャ実行！
+                        await WidgetsBinding.instance.endOfFrame;
+
+                        // 🌟 さっき作ったヘルパーを呼び出す（_shareKeyは既存のものを使います）
+                        if (mounted) {
+                          await WidgetCaptureHelper.captureAndSetWidget(
+                            context,
+                            _shareKey,
+                          );
+                        }
+
+                        // フラグを false に戻して build メソッドでロゴを非表示にする
                         if (mounted) {
                           setState(() {
                             _showWatermarkForCapture = false;

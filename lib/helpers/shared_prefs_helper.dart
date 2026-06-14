@@ -100,7 +100,8 @@ class SharedPrefsHelper {
   }
 
   // やくそくリストを読み込む (Contextなし)
-  static Future<List<Map<String, dynamic>>> loadRegularPromisesWithoutContext() async {
+  static Future<List<Map<String, dynamic>>>
+  loadRegularPromisesWithoutContext() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String>? stringList = prefs.getStringList(_regularPromisesKey);
 
@@ -1587,6 +1588,7 @@ class SharedPrefsHelper {
       await prefs.setStringList(unlockedTrophiesKey, list);
     }
   }
+
   // 🌟 追加：ミッションチュートリアルの完了キー
   static const String missionTutorialKey = 'is_mission_tutorial_completed';
 
@@ -1600,5 +1602,22 @@ class SharedPrefsHelper {
   static Future<void> setMissionTutorialCompleted() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(missionTutorialKey, true);
+  }
+
+  // ==========================================
+  // 🌟 追加：スマホのウィジェット背景設定用キー
+  // ==========================================
+  static const String _keyWidgetBg = 'widget_background_path';
+
+  // 選択されたウィジェット背景のパスを保存
+  static Future<void> saveWidgetBackground(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyWidgetBg, path);
+  }
+
+  // 保存されたウィジェット背景のパスを読み込む
+  static Future<String?> loadWidgetBackground() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyWidgetBg);
   }
 }

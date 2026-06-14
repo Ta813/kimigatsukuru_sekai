@@ -4422,6 +4422,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use your points to\nbuy a new Face!'**
   String get tutorialShopBuyFace;
+
+  /// No description provided for @missionTryEnterHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the house\nto go inside!'**
+  String get missionTryEnterHouse;
+
+  /// No description provided for @missionTryPromiseBoard.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the \'Promise\' button\nto check the board!'**
+  String get missionTryPromiseBoard;
+
+  /// No description provided for @missionTryWorldMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the \'World\' button\nto check the map!'**
+  String get missionTryWorldMap;
+
+  /// No description provided for @missionTryBgm.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the top-right menu\nand change the music!'**
+  String get missionTryBgm;
+
+  /// No description provided for @missionTryDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the blinking button!'**
+  String get missionTryDefault;
+
+  /// No description provided for @widgetCreatedWorld.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Created World'**
+  String get widgetCreatedWorld;
+
+  /// No description provided for @widgetTapToPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to Play'**
+  String get widgetTapToPlay;
+
+  /// No description provided for @widgetReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Widget Ready!'**
+  String get widgetReadyTitle;
+
+  /// No description provided for @widgetReadyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to the home screen and long-press it.\nYou can add it from the widget menu!'**
+  String get widgetReadyDescription;
+
+  /// No description provided for @widgetGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it!'**
+  String get widgetGotIt;
+
+  /// No description provided for @widgetCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create widget.'**
+  String get widgetCreateFailed;
+
+  /// No description provided for @widgetActionWhatToDo.
+  ///
+  /// In en, this message translates to:
+  /// **'What will you do?'**
+  String get widgetActionWhatToDo;
+
+  /// No description provided for @widgetActionGoHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Home Screen'**
+  String get widgetActionGoHome;
+
+  /// No description provided for @widgetActionSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Promise Now'**
+  String get widgetActionSettings;
+
+  /// No description provided for @widgetActionStartPromise.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Promise Now'**
+  String get widgetActionStartPromise;
+
+  /// No description provided for @drawerMenuCreateWidget.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Widget'**
+  String get drawerMenuCreateWidget;
+
+  /// No description provided for @widget.
+  ///
+  /// In en, this message translates to:
+  /// **'Widget'**
+  String get widget;
+
+  /// No description provided for @nothingToDoRightNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks like there\'s nothing to do right now!'**
+  String get nothingToDoRightNow;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -2277,4 +2277,58 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get tutorialShopBuyFace => 'نیا \'چہرہ\' خریدنے کے لیے\nاپنے پوائنٹس کا استعمال کریں!';
+
+  @override
+  String get missionTryEnterHouse => 'اندر جانے کے لیے\nگھر پر ٹیپ کریں!';
+
+  @override
+  String get missionTryPromiseBoard => 'بورڈ چیک کرنے کے لیے\n\'عہد\' کا بٹن دبائیں!';
+
+  @override
+  String get missionTryWorldMap => 'نقشہ دیکھنے کے لیے\n\'دنیا\' کا... بٹن دبائیں!';
+
+  @override
+  String get missionTryBgm => 'اوپر دائیں طرف کا مینو کھولیں\nاور میوزک تبدیل کریں!';
+
+  @override
+  String get missionTryDefault => 'چمکتے ہوئے بٹن پر ٹیپ کریں!';
+
+  @override
+  String get widgetCreatedWorld => 'آپ کی بنائی ہوئی دنیا';
+
+  @override
+  String get widgetTapToPlay => 'کھیلنے کے لیے تھپتھپائیں';
+
+  @override
+  String get widgetReadyTitle => 'وجیٹ تیار ہے!';
+
+  @override
+  String get widgetReadyDescription => 'ہوم اسکرین پر واپس جائیں اور دیر تک دبائیں۔\nآپ اسے وجیٹ مینو سے شامل کر سکتے ہیں!';
+
+  @override
+  String get widgetGotIt => 'سمجھ گیا!';
+
+  @override
+  String get widgetCreateFailed => 'وجیٹ بنانے میں ناکام۔';
+
+  @override
+  String get widgetActionWhatToDo => 'آپ کیا کریں گے؟';
+
+  @override
+  String get widgetActionGoHome => 'ہوم اسکرین پر جائیں';
+
+  @override
+  String get widgetActionSettings => 'ابھی وعدہ سیٹ کریں';
+
+  @override
+  String get widgetActionStartPromise => 'ابھی وعدہ شروع کریں';
+
+  @override
+  String get drawerMenuCreateWidget => 'وجیٹ بنائیں';
+
+  @override
+  String get widget => 'وجیٹ';
+
+  @override
+  String get nothingToDoRightNow => 'ایسا لگتا ہے کہ ابھی کرنے کے لیے کچھ نہیں ہے!';
 }

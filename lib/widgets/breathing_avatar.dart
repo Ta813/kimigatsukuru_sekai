@@ -67,7 +67,7 @@ class _AnimatedAvatarState extends State<AnimatedAvatar>
     // ==========================================
     // 3. 4秒ごとにランダムな動きをさせるタイマー
     // ==========================================
-    _actionTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+    _actionTimer = Timer.periodic(const Duration(seconds: 8), (timer) {
       if (mounted) {
         setState(() {
           // 0, 1, 2, 3, 4, 5のどれかをランダムで選ぶ

@@ -2277,4 +2277,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialShopBuyFace => 'Use your points to\nbuy a new Face!';
+
+  @override
+  String get missionTryEnterHouse => 'Tap the house\nto go inside!';
+
+  @override
+  String get missionTryPromiseBoard => 'Tap the \'Promise\' button\nto check the board!';
+
+  @override
+  String get missionTryWorldMap => 'Tap the \'World\' button\nto check the map!';
+
+  @override
+  String get missionTryBgm => 'Open the top-right menu\nand change the music!';
+
+  @override
+  String get missionTryDefault => 'Tap the blinking button!';
+
+  @override
+  String get widgetCreatedWorld => 'Your Created World';
+
+  @override
+  String get widgetTapToPlay => 'Tap to Play';
+
+  @override
+  String get widgetReadyTitle => 'Widget Ready!';
+
+  @override
+  String get widgetReadyDescription => 'Return to the home screen and long-press it.\nYou can add it from the widget menu!';
+
+  @override
+  String get widgetGotIt => 'Got it!';
+
+  @override
+  String get widgetCreateFailed => 'Failed to create widget.';
+
+  @override
+  String get widgetActionWhatToDo => 'What will you do?';
+
+  @override
+  String get widgetActionGoHome => 'Go to Home Screen';
+
+  @override
+  String get widgetActionSettings => 'Set Promise Now';
+
+  @override
+  String get widgetActionStartPromise => 'Start Promise Now';
+
+  @override
+  String get drawerMenuCreateWidget => 'Create Widget';
+
+  @override
+  String get widget => 'Widget';
+
+  @override
+  String get nothingToDoRightNow => 'Looks like there\'s nothing to do right now!';
 }

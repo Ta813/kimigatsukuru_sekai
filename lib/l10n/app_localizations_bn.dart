@@ -2277,4 +2277,58 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get tutorialShopBuyFace => 'আপনার পয়েন্ট ব্যবহার করে\nনতুন একটি \'মুখ\' কিনুন!';
+
+  @override
+  String get missionTryEnterHouse => 'ভিতরে যেতে\nবাড়িতে চাপ দিন!';
+
+  @override
+  String get missionTryPromiseBoard => 'বোর্ডটি দেখতে\n\'প্রমিজ\' বোতামে চাপ দিন!';
+
+  @override
+  String get missionTryWorldMap => 'মানচিত্র দেখতে\n\'ওয়ার্ল্ড\' বোতামে চাপ দিন!';
+
+  @override
+  String get missionTryBgm => 'উপরের ডানদিকের মেনু খুলে\nমিউজিক পরিবর্তন করুন!';
+
+  @override
+  String get missionTryDefault => 'ঝলমল করা বোতামে চাপ দিন!';
+
+  @override
+  String get widgetCreatedWorld => 'আপনার তৈরি করা জগৎ';
+
+  @override
+  String get widgetTapToPlay => 'খেলতে ট্যাপ করুন';
+
+  @override
+  String get widgetReadyTitle => 'উইজেট প্রস্তুত!';
+
+  @override
+  String get widgetReadyDescription => 'হোম স্ক্রিনে ফিরে যান এবং দীর্ঘক্ষণ টিপে ধরুন।\nআপনি উইজেট মেনু থেকে এটি যোগ করতে পারেন!';
+
+  @override
+  String get widgetGotIt => 'বুঝেছি!';
+
+  @override
+  String get widgetCreateFailed => 'উইজেট তৈরি করতে ব্যর্থ হয়েছে।';
+
+  @override
+  String get widgetActionWhatToDo => 'তুমি কি করবে?';
+
+  @override
+  String get widgetActionGoHome => 'হোম স্ক্রিনে যান';
+
+  @override
+  String get widgetActionSettings => 'এখনই প্রমিস সেট করুন';
+
+  @override
+  String get widgetActionStartPromise => 'এখনই প্রমিস শুরু করুন';
+
+  @override
+  String get drawerMenuCreateWidget => 'উইজেট তৈরি করুন';
+
+  @override
+  String get widget => 'উইজেট';
+
+  @override
+  String get nothingToDoRightNow => 'মনে হচ্ছে এখন করার মতো কিছু নেই!';
 }

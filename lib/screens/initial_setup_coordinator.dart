@@ -148,32 +148,54 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                       l10n.setupNewIntroSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 12,
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
                         height: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    _buildPowerItem(
-                      icon: '🌟',
-                      title: l10n.setupNewIntroPower1Title,
-                      desc: l10n.setupNewIntroPower1Desc,
+                    const SizedBox(height: 16),
+                    Row(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start, // 高さが違っても上揃えにする
+                      children: [
+                        Expanded(
+                          child: _buildPowerItem(
+                            icon: '🌟',
+                            title: l10n.setupNewIntroPower1Title,
+                            desc: l10n.setupNewIntroPower1Desc,
+                          ),
+                        ),
+                        const SizedBox(width: 12), // 列の間の隙間
+                        Expanded(
+                          child: _buildPowerItem(
+                            icon: '🚀',
+                            title: l10n.setupNewIntroPower2Title,
+                            desc: l10n.setupNewIntroPower2Desc,
+                          ),
+                        ),
+                      ],
                     ),
-                    _buildPowerItem(
-                      icon: '🚀',
-                      title: l10n.setupNewIntroPower2Title,
-                      desc: l10n.setupNewIntroPower2Desc,
-                    ),
-                    _buildPowerItem(
-                      icon: '🤝',
-                      title: l10n.setupNewIntroPower3Title,
-                      desc: l10n.setupNewIntroPower3Desc,
-                    ),
-                    _buildPowerItem(
-                      icon: '🌱',
-                      title: l10n.setupNewIntroPower4Title,
-                      desc: l10n.setupNewIntroPower4Desc,
+                    const SizedBox(height: 12), // 段の間の隙間
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: _buildPowerItem(
+                            icon: '🤝',
+                            title: l10n.setupNewIntroPower3Title,
+                            desc: l10n.setupNewIntroPower3Desc,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildPowerItem(
+                            icon: '🌱',
+                            title: l10n.setupNewIntroPower4Title,
+                            desc: l10n.setupNewIntroPower4Desc,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -253,7 +275,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(icon, style: const TextStyle(fontSize: 28)),
+          Text(icon, style: const TextStyle(fontSize: 32)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -262,14 +284,15 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   desc,
-                  style: const TextStyle(fontSize: 10, color: Colors.black54),
+                  style: const TextStyle(fontSize: 12, color: Colors.black54),
                 ),
               ],
             ),

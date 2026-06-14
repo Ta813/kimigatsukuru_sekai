@@ -2277,4 +2277,58 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialShopBuyFace => 'استخدم نقاطك\nلشراء \'وجه\' جديد!';
+
+  @override
+  String get missionTryEnterHouse => 'اضغط على المنزل\nللدخول إلى الداخل!';
+
+  @override
+  String get missionTryPromiseBoard => 'اضغط على زر \'الوعد\'\nللتحقق من اللوحة!';
+
+  @override
+  String get missionTryWorldMap => 'اضغط على زر \'العالم\'\nللذهاب إلى الخريطة!';
+
+  @override
+  String get missionTryBgm => 'افتح القائمة العلوية اليمنى\nوقم بتغيير الموسيقى!';
+
+  @override
+  String get missionTryDefault => 'اضغط على الزر الوميض!';
+
+  @override
+  String get widgetCreatedWorld => 'عالمك الذي صنعته';
+
+  @override
+  String get widgetTapToPlay => 'انقر للعب';
+
+  @override
+  String get widgetReadyTitle => 'القطعة جاهزة!';
+
+  @override
+  String get widgetReadyDescription => 'ارجع إلى الشاشة الرئيسية واضغط مطولاً.\nيمكنك إضافتها من قائمة الويدجت!';
+
+  @override
+  String get widgetGotIt => 'فهمت!';
+
+  @override
+  String get widgetCreateFailed => 'فشل في إنشاء القطعة.';
+
+  @override
+  String get widgetActionWhatToDo => 'ماذا ستفعل؟';
+
+  @override
+  String get widgetActionGoHome => 'اذهب إلى الشاشة الرئيسية';
+
+  @override
+  String get widgetActionSettings => 'تعيين الوعد الآن';
+
+  @override
+  String get widgetActionStartPromise => 'ابدأ الوعد الآن';
+
+  @override
+  String get drawerMenuCreateWidget => 'إنشاء قطعة';
+
+  @override
+  String get widget => 'ويدجت';
+
+  @override
+  String get nothingToDoRightNow => 'يبدو أنه لا يوجد شيء لفعله الآن!';
 }

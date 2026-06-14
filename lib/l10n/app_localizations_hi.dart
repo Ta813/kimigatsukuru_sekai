@@ -2277,4 +2277,58 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tutorialShopBuyFace => 'एक नया \'चेहरा\' खरीदने के लिए\nअपने पॉइंट्स का उपयोग करें!';
+
+  @override
+  String get missionTryEnterHouse => 'अंदर जाने के लिए\nघर पर टैप करें!';
+
+  @override
+  String get missionTryPromiseBoard => 'बोर्ड देखने के लिए\n\'वादा\' बटन दबाएं!';
+
+  @override
+  String get missionTryWorldMap => 'मानचित्र देखने के लिए\n\'दुनिया\' बटन दबाएं!';
+
+  @override
+  String get missionTryBgm => 'ऊपर दाईं ओर का मेनू खोलें\nऔर संगीत बदलें!';
+
+  @override
+  String get missionTryDefault => 'चमकते हुए बटन पर टैप करें!';
+
+  @override
+  String get widgetCreatedWorld => 'आपकी बनाई गई दुनिया';
+
+  @override
+  String get widgetTapToPlay => 'खेलने के लिए टैप करें';
+
+  @override
+  String get widgetReadyTitle => 'विजेट तैयार है!';
+
+  @override
+  String get widgetReadyDescription => 'होम स्क्रीन पर वापस जाएं और देर तक दबाएं।\nआप इसे विजेट मेनू से जोड़ सकते हैं!';
+
+  @override
+  String get widgetGotIt => 'समझ गया!';
+
+  @override
+  String get widgetCreateFailed => 'विजेट बनाने में विफल।';
+
+  @override
+  String get widgetActionWhatToDo => 'आप क्या करेंगे?';
+
+  @override
+  String get widgetActionGoHome => 'होम स्क्रीन पर जाएं';
+
+  @override
+  String get widgetActionSettings => 'अभी प्रॉमिस सेट करें';
+
+  @override
+  String get widgetActionStartPromise => 'अभी प्रॉमिस शुरू करें';
+
+  @override
+  String get drawerMenuCreateWidget => 'विजेट बनाएं';
+
+  @override
+  String get widget => 'विजेट';
+
+  @override
+  String get nothingToDoRightNow => 'ऐसा लगता है अभी करने के लिए कुछ नहीं है!';
 }
