@@ -2331,4 +2331,13 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get nothingToDoRightNow => 'ایسا لگتا ہے کہ ابھی کرنے کے لیے کچھ نہیں ہے!';
+
+  @override
+  String get tutorialPromptTitle => 'کیا آپ ٹیوٹوریل شروع کرنا چاہتے ہیں؟';
+
+  @override
+  String get tutorialPromptDesc => 'ہم آپ کو کھیلنے کے بنیادی طریقے سکھائیں گے!✨';
+
+  @override
+  String get tutorialPromptNote => '* آپ \"مشن\" اسکرین سے کسی بھی وقت\nٹیوٹوریل شروع کر سکتے ہیں۔';
 }

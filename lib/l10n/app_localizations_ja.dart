@@ -2331,4 +2331,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get nothingToDoRightNow => '今はやることがないみたい！';
+
+  @override
+  String get tutorialPromptTitle => 'チュートリアルをはじめますか？';
+
+  @override
+  String get tutorialPromptDesc => '基本的なあそびかたをごあんないします✨';
+
+  @override
+  String get tutorialPromptNote => '※チュートリアルは「ミッション」画面から\nいつでもおこなうことができます。';
 }

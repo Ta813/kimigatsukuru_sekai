@@ -2331,4 +2331,13 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get nothingToDoRightNow => 'মনে হচ্ছে এখন করার মতো কিছু নেই!';
+
+  @override
+  String get tutorialPromptTitle => 'টিউটোরিয়াল শুরু করবেন?';
+
+  @override
+  String get tutorialPromptDesc => 'আমরা আপনাকে খেলার প্রাথমিক নিয়মগুলো শিখিয়ে দেব!✨';
+
+  @override
+  String get tutorialPromptNote => '* আপনি \"মিশন\" স্ক্রিন থেকে যে কোনো সময়\nটিউটোরিয়াল খেলতে পারবেন।';
 }

@@ -1094,5 +1094,8 @@
   "widgetActionStartPromise": "ابھی وعدہ شروع کریں",
   "drawerMenuCreateWidget": "وجیٹ بنائیں",
   "widget": "وجیٹ",
-  "nothingToDoRightNow": "ایسا لگتا ہے کہ ابھی کرنے کے لیے کچھ نہیں ہے!"
+  "nothingToDoRightNow": "ایسا لگتا ہے کہ ابھی کرنے کے لیے کچھ نہیں ہے!",
+  "tutorialPromptTitle": "کیا آپ ٹیوٹوریل شروع کرنا چاہتے ہیں؟",
+  "tutorialPromptDesc": "ہم آپ کو کھیلنے کے بنیادی طریقے سکھائیں گے!✨",
+  "tutorialPromptNote": "* آپ \"مشن\" اسکرین سے کسی بھی وقت\nٹیوٹوریل شروع کر سکتے ہیں۔"
 }

@@ -1094,5 +1094,8 @@
   "widgetActionStartPromise": "ابدأ الوعد الآن",
   "drawerMenuCreateWidget": "إنشاء قطعة",
   "widget": "ويدجت",
-  "nothingToDoRightNow": "يبدو أنه لا يوجد شيء لفعله الآن!"
+  "nothingToDoRightNow": "يبدو أنه لا يوجد شيء لفعله الآن!",
+  "tutorialPromptTitle": "هل تريد بدء البرنامج التعليمي؟",
+  "tutorialPromptDesc": "سنرشدك خلال أساسيات اللعب!✨",
+  "tutorialPromptNote": "* يمكنك بدء البرنامج التعليمي في أي وقت\nمن شاشة \"المهام\"."
 }

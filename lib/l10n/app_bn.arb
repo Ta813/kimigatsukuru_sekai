@@ -1094,5 +1094,8 @@
   "widgetActionStartPromise": "এখনই প্রমিস শুরু করুন",
   "drawerMenuCreateWidget": "উইজেট তৈরি করুন",
   "widget": "উইজেট",
-  "nothingToDoRightNow": "মনে হচ্ছে এখন করার মতো কিছু নেই!"
+  "nothingToDoRightNow": "মনে হচ্ছে এখন করার মতো কিছু নেই!",
+  "tutorialPromptTitle": "টিউটোরিয়াল শুরু করবেন?",
+  "tutorialPromptDesc": "আমরা আপনাকে খেলার প্রাথমিক নিয়মগুলো শিখিয়ে দেব!✨",
+  "tutorialPromptNote": "* আপনি \"মিশন\" স্ক্রিন থেকে যে কোনো সময়\nটিউটোরিয়াল খেলতে পারবেন।"
 }

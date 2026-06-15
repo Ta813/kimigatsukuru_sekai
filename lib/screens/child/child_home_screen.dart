@@ -366,11 +366,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           earnedPoints = await LoginBonusManager().checkLoginBonus(context);
           await TrophyManager.checkAndShowTrophies(context);
         } else {
-          // 初回起動時のみチュートリアルを再生
-          SharedPrefsHelper.setChildTutorial(
-            SharedPrefsHelper.tutorialPhaseStart,
-          );
-          _showChildTutorial();
+          _promptTutorialChoice();
         }
 
         await _loadAndDetermineDisplayPromise();
@@ -436,6 +432,163 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       // 注意: iOSのウォームスタートは AppDelegate が super を呼ぶことで
       // home_widget の widgetClicked ストリームが処理する。
       // ここで _checkIosWidgetAction を呼ぶと重複ダイアログになるため呼ばない。
+    }
+  }
+
+  // 🌟 追加: チュートリアルをやるかスキップするか選ばせるダイアログ
+  Future<void> _promptTutorialChoice() async {
+    final bool? startTutorial = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // 外側タップで閉じられないようにする
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Image.asset('assets/images/character_hime.gif', height: 90),
+                  const SizedBox(width: 8),
+                  Image.asset('assets/images/character_kuma.gif', height: 90),
+                ],
+              ),
+              ClipPath(
+                clipper: SpeechBubbleTailClipper(),
+                child: Container(
+                  width: 24,
+                  height: 16,
+                  color: const Color(0xFFFFF7E6),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF7E6),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildRichText(
+                      AppLocalizations.of(context)!.tutorialPromptTitle,
+                      isTitle: true,
+                    ),
+                    _buildRichText(
+                      AppLocalizations.of(context)!.tutorialPromptDesc,
+                      isTitle: false,
+                    ),
+
+                    Text(
+                      AppLocalizations.of(context)!.tutorialPromptNote,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                        height: 1.4,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (e) {}
+                            Navigator.of(context).pop(false); // スキップ
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.skip,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            try {
+                              SfxManager.instance.playTapSound();
+                            } catch (e) {}
+                            Navigator.of(context).pop(true); // 今からやる
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF7043),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            elevation: 4,
+                          ),
+                          child: Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.missionButtonTry, // 🌟 必要に応じて多言語化してください
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    int earnedPoints = 0;
+
+    // ダイアログの結果に応じた処理
+    if (startTutorial == true) {
+      // 「今からやる」を選んだ場合、本来のチュートリアル処理を開始
+      await SharedPrefsHelper.setChildTutorial(
+        SharedPrefsHelper.tutorialPhaseStart,
+      );
+      _showChildTutorial();
+    } else {
+      earnedPoints = await LoginBonusManager().checkLoginBonus(context);
+      await TrophyManager.checkAndShowTrophies(context);
+
+      if (earnedPoints > 0 && mounted) {
+        try {
+          SfxManager.instance.playSuccessSound();
+        } catch (e) {
+          print('再生エラー: $e');
+        }
+        _showHugePointAnimation(earnedPoints);
+        if (!_hasVisitedPointAddition) {
+          _animationController.forward(from: 0.0);
+        }
+      }
     }
   }
 
@@ -3066,6 +3219,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                     'mission_',
                                                   )) {
                                                 if (result ==
+                                                    'mission_first_promise') {
+                                                  SharedPrefsHelper.setChildTutorial(
+                                                    SharedPrefsHelper
+                                                        .tutorialPhaseStart,
+                                                  );
+                                                  _showChildTutorial();
+                                                } else if (result ==
                                                     'mission_parent_setup') {
                                                   SharedPrefsHelper.setParentTutorial(
                                                     SharedPrefsHelper

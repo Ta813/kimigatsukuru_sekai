@@ -4530,6 +4530,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Looks like there\'s nothing to do right now!'**
   String get nothingToDoRightNow;
+
+  /// No description provided for @tutorialPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the tutorial?'**
+  String get tutorialPromptTitle;
+
+  /// No description provided for @tutorialPromptDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll guide you through the basics!✨'**
+  String get tutorialPromptDesc;
+
+  /// No description provided for @tutorialPromptNote.
+  ///
+  /// In en, this message translates to:
+  /// **'* You can play the tutorial anytime\nfrom the \"Missions\" screen.'**
+  String get tutorialPromptNote;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

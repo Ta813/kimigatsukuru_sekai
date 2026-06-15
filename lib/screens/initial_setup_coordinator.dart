@@ -148,7 +148,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                       l10n.setupNewIntroSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 10,
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
                         height: 1.5,
@@ -284,7 +284,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
@@ -292,7 +292,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                 const SizedBox(height: 4),
                 Text(
                   desc,
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  style: const TextStyle(fontSize: 10, color: Colors.black54),
                 ),
               ],
             ),
