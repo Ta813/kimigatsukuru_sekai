@@ -518,6 +518,9 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                       ),
                     );
 
+                    // １秒待つ
+                    await Future.delayed(const Duration(seconds: 1));
+
                     final success = await PurchaseManager.instance
                         .restorePurchases();
 

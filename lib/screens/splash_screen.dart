@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../helpers/shared_prefs_helper.dart';
 import '../l10n/app_localizations.dart'; // 🌟 追加: ローカライズ用のインポート
 import 'child/child_home_screen.dart'; // ホーム画面のパスに合わせてください
-import 'initial_setup_coordinator.dart';
+//import 'initial_setup_coordinator.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,13 +33,28 @@ class _SplashScreenState extends State<SplashScreen> {
       // 🌟 修正: アバターを選択させる画面へ遷移する前に、タイマーをセット
       await SharedPrefsHelper.recordFirstLaunchTime();
 
-      // 🌟 初回起動：初期設定画面（アバターウィザード）へ
+      // スキップした場合はデフォルトアバターを保存してホームへ直行
+      await SharedPrefsHelper.saveEquippedCharacters([
+        'assets/images/character_usagi.gif',
+      ]);
+      await SharedPrefsHelper.addPurchasedItem('ウサギ');
+
+      await SharedPrefsHelper.setFirstLaunchCompleted();
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const InitialSetupCoordinator(),
+          builder: (context) => const ChildHomeScreen(isInitialSetup: true),
         ),
       );
+
+      // 🌟 初回起動：初期設定画面（アバターウィザード）へ
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => const InitialSetupCoordinator(),
+      //   ),
+      // );
     } else {
       // 🌟 2回目以降：いつものホーム画面へ
       Navigator.pushReplacement(

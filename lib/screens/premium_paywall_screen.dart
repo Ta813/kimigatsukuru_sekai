@@ -71,6 +71,10 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
   // 🌟 変更: セール中なら 'first_launch_sale' を取得し、通常価格も保持する
   Future<void> _fetchOfferings() async {
     setState(() => _isLoading = true);
+
+    // １秒待つ
+    await Future.delayed(const Duration(seconds: 1));
+
     try {
       final offerings = await Purchases.getOfferings();
 
@@ -117,6 +121,9 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     setState(() {
       _isPurchasing = true;
     });
+
+    // １秒待つ
+    await Future.delayed(const Duration(seconds: 1));
 
     try {
       if (Platform.isAndroid) {
@@ -174,6 +181,10 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
     setState(() {
       _isPurchasing = true;
     });
+
+    // １秒待つ
+    await Future.delayed(const Duration(seconds: 1));
+
     try {
       final result = await Purchases.restorePurchases();
       final customerInfo = result;

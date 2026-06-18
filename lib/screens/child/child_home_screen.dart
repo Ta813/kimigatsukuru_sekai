@@ -440,129 +440,74 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final bool? startTutorial = await showDialog<bool>(
       context: context,
       barrierDismissible: false, // 外側タップで閉じられないようにする
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            AppLocalizations.of(context)!.tutorialPromptTitle,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Image.asset('assets/images/character_hime.gif', height: 90),
-                  const SizedBox(width: 8),
-                  Image.asset('assets/images/character_kuma.gif', height: 90),
-                ],
-              ),
-              ClipPath(
-                clipper: SpeechBubbleTailClipper(),
-                child: Container(
-                  width: 24,
-                  height: 16,
-                  color: const Color(0xFFFFF7E6),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7E6),
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    _buildRichText(
-                      AppLocalizations.of(context)!.tutorialPromptTitle,
-                      isTitle: true,
-                    ),
-                    _buildRichText(
-                      AppLocalizations.of(context)!.tutorialPromptDesc,
-                      isTitle: false,
-                    ),
-
-                    Text(
-                      AppLocalizations.of(context)!.tutorialPromptNote,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold,
-                        height: 1.4,
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            try {
-                              SfxManager.instance.playTapSound();
-                            } catch (e) {}
-                            Navigator.of(context).pop(false); // スキップ
-                          },
-                          child: Text(
-                            AppLocalizations.of(context)!.skip,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            try {
-                              SfxManager.instance.playTapSound();
-                            } catch (e) {}
-                            Navigator.of(context).pop(true); // 今からやる
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF7043),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            elevation: 4,
-                          ),
-                          child: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!.missionButtonTry, // 🌟 必要に応じて多言語化してください
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              Text(AppLocalizations.of(context)!.tutorialPromptDesc),
+              Text(
+                AppLocalizations.of(context)!.tutorialPromptNote,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-        ),
-      ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (e) {}
+                FirebaseAnalytics.instance.logEvent(name: 'tutorial_skip');
+                Navigator.of(context).pop(false); // スキップ
+              },
+              child: Text(
+                AppLocalizations.of(context)!.skip,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            ElevatedButton(
+              onPressed: () {
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (e) {}
+                Navigator.of(context).pop(true); // 今からやる
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF7043),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 4,
+              ),
+              child: Text(
+                AppLocalizations.of(
+                  context,
+                )!.missionButtonTry, // 🌟 必要に応じて多言語化してください
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+          ],
+        );
+      },
     );
 
     int earnedPoints = 0;
@@ -908,56 +853,33 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           textAlign: TextAlign.center,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        content: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF3E0),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: const Color(0xFFFF7043).withOpacity(0.5),
-              width: 2,
-            ),
-          ),
-          child: Text(
-            AppLocalizations.of(context)!.tutorialResumeDesc,
-            style: const TextStyle(fontSize: 16, height: 1.5),
-          ),
+        content: Text(
+          AppLocalizations.of(context)!.tutorialResumeDesc,
+          style: const TextStyle(fontSize: 16, height: 1.5),
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/character_hime.gif', height: 60),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () {
-                  try {
-                    SfxManager.instance.playTapSound();
-                  } catch (e) {}
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF7043),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(200, 60),
-                  side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  elevation: 4,
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.tutorialResumeBtn,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+          ElevatedButton(
+            onPressed: () {
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (e) {}
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(200, 60),
+              side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              const SizedBox(width: 8),
-              Image.asset('assets/images/character_kuma.gif', height: 60),
-            ],
+              elevation: 4,
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.tutorialResumeBtn,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -1032,49 +954,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     }
   }
 
-  Widget _buildRichText(
-    String text, {
-    required bool isTitle,
-    TextAlign textAlign = TextAlign.center,
-  }) {
-    final List<TextSpan> spans = [];
-    final regex = RegExp(r'\*\*(.*?)\*\*');
-    int lastMatchEnd = 0;
-
-    for (final match in regex.allMatches(text)) {
-      if (match.start > lastMatchEnd) {
-        spans.add(TextSpan(text: text.substring(lastMatchEnd, match.start)));
-      }
-      spans.add(
-        TextSpan(
-          text: match.group(1),
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFFE64A19),
-            fontSize: isTitle ? 18 : 16,
-          ),
-        ),
-      );
-      lastMatchEnd = match.end;
-    }
-    if (lastMatchEnd < text.length) {
-      spans.add(TextSpan(text: text.substring(lastMatchEnd)));
-    }
-
-    return RichText(
-      textAlign: textAlign,
-      text: TextSpan(
-        style: TextStyle(
-          fontSize: isTitle ? 18 : 16,
-          fontWeight: isTitle ? FontWeight.bold : FontWeight.normal,
-          color: Colors.black87,
-          height: 1.5,
-        ),
-        children: spans,
-      ),
-    );
-  }
-
   Future<bool> _showTutorialDialog({
     required String title,
     required String content,
@@ -1083,86 +962,34 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final bool? result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Image.asset('assets/images/character_hime.gif', height: 90),
-                  const SizedBox(width: 16),
-                  Image.asset('assets/images/character_kuma.gif', height: 90),
-                ],
+      builder: (context) => AlertDialog(
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(content),
+        actions: <Widget>[
+          ElevatedButton(
+            onPressed: () {
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (e) {}
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(true);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043),
+              foregroundColor: Colors.white,
+              minimumSize: const Size(220, 64),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
               ),
-              ClipPath(
-                clipper: SpeechBubbleTailClipper(),
-                child: Container(
-                  width: 24,
-                  height: 16,
-                  color: const Color(0xFFFFF7E6),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 22,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7E6),
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    _buildRichText(title, isTitle: true),
-                    const SizedBox(height: 10),
-                    _buildRichText(content, isTitle: false),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        try {
-                          SfxManager.instance.playTapSound();
-                        } catch (e) {}
-                        if (Navigator.of(context).canPop()) {
-                          Navigator.of(context).pop(true);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF7043),
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(220, 64),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32),
-                        ),
-                        elevation: 8,
-                      ),
-                      child: Text(
-                        buttonText ?? AppLocalizations.of(context)!.okAction,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              elevation: 8,
+            ),
+            child: Text(
+              buttonText ?? AppLocalizations.of(context)!.okAction,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
-        ),
+        ],
       ),
     );
     return result ?? false;
@@ -1175,106 +1002,46 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final bool? result = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Image.asset('assets/images/character_hime.gif', height: 90),
-                  const SizedBox(width: 8),
-                  Image.asset('assets/images/character_kuma.gif', height: 90),
-                ],
-              ),
-              ClipPath(
-                clipper: SpeechBubbleTailClipper(),
-                child: Container(
-                  width: 24,
-                  height: 16,
-                  color: const Color(0xFFFFF7E6),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 14,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7E6),
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    _buildRichText(title, isTitle: true),
-                    const SizedBox(height: 10),
-                    _buildRichText(content, isTitle: false),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            if (Navigator.of(context).canPop()) {
-                              Navigator.of(context).pop(false);
-                            }
-                          },
-                          child: Text(
-                            AppLocalizations.of(context)!.skip,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            try {
-                              SfxManager.instance.playTapSound();
-                            } catch (e) {}
-                            if (Navigator.of(context).canPop()) {
-                              Navigator.of(context).pop(true);
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF7043),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            elevation: 4,
-                          ),
-                          child: Text(
-                            AppLocalizations.of(context)!.okAction,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(content),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(false);
+              }
+            },
+            child: Text(
+              AppLocalizations.of(context)!.skip,
+              style: const TextStyle(fontSize: 16),
+            ),
           ),
-        ),
+          const SizedBox(width: 16),
+          ElevatedButton(
+            onPressed: () {
+              try {
+                SfxManager.instance.playTapSound();
+              } catch (e) {}
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(true);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFF7043),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 4,
+            ),
+            child: Text(
+              AppLocalizations.of(context)!.okAction,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+          ),
+        ],
       ),
     );
     return result ?? false;
@@ -1877,57 +1644,37 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             textAlign: TextAlign.center,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          content: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF3E0),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFFFF7043).withOpacity(0.5),
-                width: 2,
-              ),
-            ),
-            child: Text(
-              // 🌟 ここはそのまま newLevel を渡すだけで「レベル〇〇になったよ！」と正しく表示されます
-              AppLocalizations.of(context)!.levelUpMessage(newLevel),
-              style: const TextStyle(fontSize: 16, height: 1.5),
-            ),
+          content: Text(
+            // 🌟 ここはそのまま newLevel を渡すだけで「レベル〇〇になったよ！」と正しく表示されます
+            AppLocalizations.of(context)!.levelUpMessage(newLevel),
+            style: const TextStyle(fontSize: 16, height: 1.5),
           ),
           actionsAlignment: MainAxisAlignment.center,
           actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/images/character_hime.gif', height: 60),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () {
-                    try {
-                      SfxManager.instance.playTapSound();
-                    } catch (e) {}
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF7043),
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(200, 60),
-                    side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    elevation: 4,
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.okAction,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+            ElevatedButton(
+              onPressed: () {
+                try {
+                  SfxManager.instance.playTapSound();
+                } catch (e) {}
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF7043),
+                foregroundColor: Colors.white,
+                minimumSize: const Size(200, 60),
+                side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const SizedBox(width: 8),
-                Image.asset('assets/images/character_kuma.gif', height: 60),
-              ],
+                elevation: 4,
+              ),
+              child: Text(
+                AppLocalizations.of(context)!.okAction,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
@@ -2957,8 +2704,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                               context,
                                             )!.navPromiseBoard,
                                             iconColor: Colors.black,
-                                            backgroundColor:
-                                                Colors.blue.shade100, // 青系の可愛い色
+                                            backgroundColor: Colors.white, // 白
                                             isMain: false,
                                             onTap: () async {
                                               FirebaseAnalytics.instance.logEvent(
@@ -3070,9 +2816,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                               context,
                                             )!.navWorldMap,
                                             iconColor: Colors.black,
-                                            backgroundColor: Colors
-                                                .green
-                                                .shade100, // 緑系の可愛い色
+                                            backgroundColor: Colors.white, // 白
                                             isMain: false,
                                             onTap: () async {
                                               try {
@@ -3148,8 +2892,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                           context,
                                         )!.missionScreenTitle,
                                         iconColor: Colors.black,
-                                        backgroundColor:
-                                            Colors.purple.shade100, // 紫系の可愛い色
+                                        backgroundColor: Colors.white, // 白
                                         isMain: false,
                                         onTap: () async {
                                           try {
@@ -3340,9 +3083,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                           context,
                                         )!.navDressUp,
                                         iconColor: Colors.black,
-                                        backgroundColor: Colors
-                                            .orange
-                                            .shade100, // オレンジ系の可愛い色
+                                        backgroundColor: Colors.white, // 白
                                         isMain: false,
                                         onTap: () async {
                                           bool isShown =
@@ -3438,7 +3179,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             context,
                                           )!.parentSettings,
                                           iconColor: Colors.black,
-                                          backgroundColor: Colors.grey.shade300,
+                                          backgroundColor: Colors.white, // 白
                                           isMain: false, // 🌟 サブ機能なので小さく
                                           onTap:
                                               (isAnyTutorialBlinking &&
@@ -3521,8 +3262,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                     label: AppLocalizations.of(
                                       context,
                                     )!.drawingButton,
-                                    iconColor: Colors.white,
-                                    backgroundColor: Colors.pinkAccent,
+                                    iconColor: Colors.black,
+                                    backgroundColor: Colors.white, // 白
                                     isMain: false, // 🌟 サブ機能なので小さく
                                     onTap: () async {
                                       FirebaseAnalytics.instance.logEvent(
@@ -3548,8 +3289,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                   child: _buildRoundMenuButton(
                                     icon: Icons.help_outline,
                                     label: AppLocalizations.of(context)!.help,
-                                    iconColor: Colors.white,
-                                    backgroundColor: Colors.orangeAccent,
+                                    iconColor: Colors.black,
+                                    backgroundColor: Colors.white, // オレンジ系の可愛い色
                                     isMain: false, // 🌟 サブ機能なので小さく
                                     onTap: () async {
                                       FirebaseAnalytics.instance.logEvent(
@@ -4067,28 +3808,25 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       ),
                     ),
 
-                  // アバターの表示と操作
-                  DraggableCharacter(
-                    id: 'avatar',
-                    customWidget: AnimatedAvatar(
-                      child: AvatarDisplay(
-                        face: _equippedFace,
-                        clothes: _equippedClothes,
-                        hair: _equippedHair,
-                        headgear: _equippedHeadgear,
-                        accessory: _equippedAccessory,
-                        size: 80,
-                      ),
-                    ),
-                    position: _avatarPosition,
-                    size: 80,
-                    isInteractive: !isAnyTutorialActive,
-                    onPositionChanged: (delta) {
-                      setState(() {
-                        _avatarPosition += delta;
-                      });
-                    },
-                  ),
+                  // アイテムの表示と操作
+                  ..._equippedItems.map((itemPath) {
+                    return DraggableCharacter(
+                      id: itemPath,
+                      imagePath: itemPath,
+                      position:
+                          _itemPositionsMap[itemPath] ?? const Offset(100, 190),
+                      size: _getItemSize(itemPath),
+                      isInteractive: !isAnyTutorialActive,
+                      onPositionChanged: (delta) {
+                        setState(() {
+                          _itemPositionsMap[itemPath] =
+                              (_itemPositionsMap[itemPath] ??
+                                  const Offset(100, 190)) +
+                              delta;
+                        });
+                      },
+                    );
+                  }).toList(),
 
                   // 応援キャラクターの表示と操作
                   // チュートリアル中は表示しない
@@ -4113,25 +3851,28 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       );
                     }).toList(),
 
-                  // アイテムの表示と操作
-                  ..._equippedItems.map((itemPath) {
-                    return DraggableCharacter(
-                      id: itemPath,
-                      imagePath: itemPath,
-                      position:
-                          _itemPositionsMap[itemPath] ?? const Offset(100, 190),
-                      size: _getItemSize(itemPath),
-                      isInteractive: !isAnyTutorialActive,
-                      onPositionChanged: (delta) {
-                        setState(() {
-                          _itemPositionsMap[itemPath] =
-                              (_itemPositionsMap[itemPath] ??
-                                  const Offset(100, 190)) +
-                              delta;
-                        });
-                      },
-                    );
-                  }).toList(),
+                  // アバターの表示と操作
+                  DraggableCharacter(
+                    id: 'avatar',
+                    customWidget: AnimatedAvatar(
+                      child: AvatarDisplay(
+                        face: _equippedFace,
+                        clothes: _equippedClothes,
+                        hair: _equippedHair,
+                        headgear: _equippedHeadgear,
+                        accessory: _equippedAccessory,
+                        size: 80,
+                      ),
+                    ),
+                    position: _avatarPosition,
+                    size: 80,
+                    isInteractive: !isAnyTutorialActive,
+                    onPositionChanged: (delta) {
+                      setState(() {
+                        _avatarPosition += delta;
+                      });
+                    },
+                  ),
 
                   // ==========================================
                   // 🎨 追加: おえかきキャンバスレイヤー
@@ -4286,15 +4027,17 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               Positioned(
                 bottom: 50,
                 right: 0,
-                child: TutorialCharacterBubble(
-                  text: _showEmergencyStartBlinking
-                      ? AppLocalizations.of(
+                child: _showEmergencyStartBlinking
+                    ? TutorialCharacterBubble(
+                        text: AppLocalizations.of(
                           context,
-                        )!.tutorialEmergencyStartBubble
-                      : AppLocalizations.of(context)!.tutorialStartBubble,
-                  currentStep: 1,
-                  totalSteps: 3,
-                ),
+                        )!.tutorialEmergencyStartBubble,
+                      )
+                    : TutorialCharacterBubble(
+                        text: AppLocalizations.of(context)!.tutorialStartBubble,
+                        currentStep: 1,
+                        totalSteps: 3,
+                      ),
               ),
             if (_showMissionBubble)
               Positioned(

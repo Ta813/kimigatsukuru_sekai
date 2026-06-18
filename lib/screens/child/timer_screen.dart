@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/managers/tts_manager.dart';
 import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import '../../helpers/shared_prefs_helper.dart';
@@ -20,7 +21,6 @@ import '../parent/child_name_settings_screen.dart'; // 名前設定画面
 import 'math_lock_dialog.dart'; // ロック画面
 import 'passcode_lock_dialog.dart';
 import '../../models/lock_mode.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
 class TimerScreen extends StatefulWidget {
   // StatefulWidgetに変更
@@ -60,7 +60,7 @@ class _TimerScreenState extends State<TimerScreen>
   bool _isInteractionBusy = false;
   //bool _isCompleting = false; // 終了処理中フラグ
 
-  final FlutterTts _flutterTts = FlutterTts();
+  final TtsManager _ttsManager = TtsManager();
   String? _childFullName; // 読み上げる名前（敬称付き）を保持
   bool _isTtsInitialized = false; // TTS初期化完了フラグ
   bool _isDisposed = false; // ★ 画面破棄フラグ
@@ -185,7 +185,7 @@ class _TimerScreenState extends State<TimerScreen>
   @override
   void dispose() {
     _isDisposed = true; // ★ 破棄フラグを立てる
-    _flutterTts.stop();
+    _ttsManager.stop();
     _confettiController.dispose();
     _hintAnimationController.dispose();
     // ★アプリの状態変化の監視を終了
@@ -298,29 +298,7 @@ class _TimerScreenState extends State<TimerScreen>
 
   // ★ TTSの初期化と名前読み込みを行うメソッド
   Future<void> _initializeTtsAndLoadNames() async {
-    // TTSの初期設定
-    final lang = AppLocalizations.of(context)!.localeName;
-    try {
-      if (lang == 'ja') {
-        await _flutterTts.setLanguage("ja-JP");
-        await _flutterTts.setSpeechRate(0.4);
-        await _flutterTts.setPitch(1.6);
-      } else if (lang == 'ur') {
-        await _flutterTts.setLanguage("ur-PK");
-        await _flutterTts.setSpeechRate(0.5);
-        await _flutterTts.setPitch(1.0);
-      } else {
-        await _flutterTts.setLanguage("en-US");
-        await _flutterTts.setSpeechRate(0.6);
-        await _flutterTts.setPitch(1.6);
-      }
-      await _flutterTts.setVolume(1.0);
-
-      _isTtsInitialized = true;
-    } catch (e) {
-      print("TTS Initialization Error: $e");
-      _isTtsInitialized = false; // 初期化失敗
-    }
+    _isTtsInitialized = _ttsManager.isInitialized;
 
     // 名前リストを読み込む
     final namesList = await SharedPrefsHelper.loadChildNames();
@@ -347,7 +325,7 @@ class _TimerScreenState extends State<TimerScreen>
       return; // TTSが初期化されていなければ何もしない
     }
     try {
-      await _flutterTts.speak(text);
+      await _ttsManager.speak(text);
     } catch (e) {
       print("TTS Speak Error: $e");
       // エラー発生時は通常の効果音にフォールバックするなどの処理も可能

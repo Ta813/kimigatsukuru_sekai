@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:kimigatsukuru_sekai/managers/tts_manager.dart';
 import 'firebase_options.dart'; // flutterfire configureで生成されたファイル
 import 'dart:async';
 import 'dart:ui';
@@ -60,7 +61,7 @@ Future<void> main() async {
   }
 
   // 3. その他裏側の処理（通知、音声、Facebook/AdMobの初期化）
-  _initializeBackgroundServices();
+  _initializeBackgroundServices(localeProvider);
 
   // 🌟 3. UIに最低限必要な準備が終わったら、まず爆速でアプリを起動(描画)します！
   runApp(
@@ -71,7 +72,17 @@ Future<void> main() async {
 // ----------------------------------------------------
 // 🌟 画面の裏側で走らせる重い初期化処理をまとめたメソッド
 // ----------------------------------------------------
-Future<void> _initializeBackgroundServices() async {
+Future<void> _initializeBackgroundServices(
+  LocaleProvider localeProvider,
+) async {
+  // ★ 追加: TTS（読み上げ機能）の初期化を先に行う！
+  try {
+    final lang = localeProvider.locale!.languageCode;
+    await TtsManager().initialize(lang);
+  } catch (e) {
+    print("TTS初期化エラー: $e");
+  }
+
   // ① 音声セッションの初期化
   try {
     final session = await AudioSession.instance;
@@ -97,7 +108,8 @@ Future<void> _initializeBackgroundServices() async {
   try {
     await NotificationManager.instance.init();
     await NotificationManager.instance.scheduleWeeklyMonday11AM();
-    await NotificationManager.instance.rescheduleAllExistingPromises(); // ★追加: 古い通知の不具合を解消するため再スケジュール
+    await NotificationManager.instance
+        .rescheduleAllExistingPromises(); // ★追加: 古い通知の不具合を解消するため再スケジュール
   } catch (e) {
     print("通知マネージャーの初期化エラー: $e");
   }

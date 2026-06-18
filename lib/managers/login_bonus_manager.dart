@@ -124,9 +124,6 @@ class LoginBonusManager {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 左側の衣装画像
-                Image.asset('assets/images/character_hime.gif', height: 60),
-                const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
                     FirebaseAnalytics.instance.logEvent(
@@ -156,9 +153,6 @@ class LoginBonusManager {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                // 右側のキャラクター画像
-                Image.asset('assets/images/character_kuma.gif', height: 60),
               ],
             ),
           ],

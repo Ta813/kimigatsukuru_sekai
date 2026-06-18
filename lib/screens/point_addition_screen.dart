@@ -372,6 +372,9 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
       builder: (context) => const Center(child: CircularProgressIndicator()),
     );
 
+    // １秒待つ
+    await Future.delayed(const Duration(seconds: 1));
+
     // RevenueCat を通じて購入！
     final success = await PurchaseManager.instance.purchaseBoostProduct(
       productId,
