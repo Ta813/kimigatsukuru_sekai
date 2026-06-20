@@ -151,7 +151,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 ),
                 // 設定するボタン
-                ElevatedButton(
+                FilledButton(
                   // 4桁入力されていない場合はボタンを無効化
                   onPressed: enteredPasscode.length == 4
                       ? () async {
@@ -709,8 +709,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(height: 10),
                     // チュートリアルリセットボタン
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
+                    FilledButton(
+                      style: FilledButton.styleFrom(
                         backgroundColor: Colors.redAccent,
                       ),
                       onPressed: () async {
@@ -774,7 +774,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    ElevatedButton(
+                    FilledButton(
                       onPressed: () async {
                         // デバッグ用関数を呼び出して期限切れにする
                         await SharedPrefsHelper.debugExpireSales();
@@ -788,7 +788,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           );
                         }
                       },
-                      style: ElevatedButton.styleFrom(
+                      style: FilledButton.styleFrom(
                         backgroundColor: Colors.redAccent, // デバッグとわかりやすい色に
                         foregroundColor: Colors.white,
                       ),

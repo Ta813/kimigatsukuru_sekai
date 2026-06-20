@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
 import 'package:audio_session/audio_session.dart';
 import 'managers/notification_manager.dart';
-import 'managers/purchase_manager.dart';
 import 'screens/splash_screen.dart';
 
 Future<void> main() async {
@@ -50,14 +49,6 @@ Future<void> main() async {
     }
   } catch (e) {
     print('Firebaseの初期化に失敗しました: $e');
-  }
-
-  // 🌟 【修正1】RevenueCatの初期化を先に行う！
-  // (この後のUMPダイアログ等で「プレミアムかどうか」を正しく判定するため)
-  try {
-    await PurchaseManager.instance.init();
-  } catch (e) {
-    print("RevenueCat初期化エラー: $e");
   }
 
   // 3. その他裏側の処理（通知、音声、Facebook/AdMobの初期化）

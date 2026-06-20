@@ -345,11 +345,11 @@ class _PromiseBoardScreenState extends State<PromiseBoardScreen> {
                                             },
                                           ),
                                           // 「はじめる」ボタン
-                                          ElevatedButton(
+                                          FilledButton(
                                             onPressed: () {
                                               _startPromise(promise);
                                             },
-                                            style: ElevatedButton.styleFrom(
+                                            style: FilledButton.styleFrom(
                                               backgroundColor: Theme.of(
                                                 context,
                                               ).colorScheme.secondary,

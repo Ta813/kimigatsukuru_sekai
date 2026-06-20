@@ -125,13 +125,6 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.9),
                     borderRadius: BorderRadius.circular(40),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -144,13 +137,6 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
                           fontSize: 60,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFFFF7043),
-                          shadows: [
-                            Shadow(
-                              blurRadius: 4,
-                              color: Colors.white,
-                              offset: Offset(2, 2),
-                            ),
-                          ],
                         ),
                       ),
                     ],
@@ -518,7 +504,6 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                elevation: 4,
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Column(
@@ -567,44 +552,46 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
                       ),
                       const SizedBox(height: 8),
 
-                      ElevatedButton(
-                        onPressed: isButtonEnabled ? _showRewardedAd : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF7043),
-                          disabledBackgroundColor: Colors.grey[300],
-                          foregroundColor: Colors.white,
-                          disabledForegroundColor: Colors.grey[600],
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 48,
+                      PulsingEffect(
+                        isPulsing: isButtonEnabled,
+                        child: FilledButton(
+                          onPressed: isButtonEnabled ? _showRewardedAd : null,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF7043),
+                            disabledBackgroundColor: Colors.grey[300],
+                            foregroundColor: Colors.white,
+                            disabledForegroundColor: Colors.grey[600],
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 48,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          elevation: isButtonEnabled ? 4 : 0,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (isButtonEnabled) ...[
-                              const Icon(Icons.play_circle_fill, size: 24),
-                              const SizedBox(width: 8),
-                            ],
-                            // 🌟 変更: カウントダウンが長いのでテキストがはみ出さないように FittedBox で囲む
-                            Flexible(
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  buttonText,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (isButtonEnabled) ...[
+                                const Icon(Icons.play_circle_fill, size: 24),
+                                const SizedBox(width: 8),
+                              ],
+                              // 🌟 変更: カウントダウンが長いのでテキストがはみ出さないように FittedBox で囲む
+                              Flexible(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    buttonText,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -674,13 +661,6 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
                       colors: [Colors.orangeAccent, Colors.deepOrangeAccent],
                     ),
                     borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: Center(
                     child: Text(
@@ -822,7 +802,6 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
   }) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Row(
@@ -858,9 +837,9 @@ class _PointAdditionScreenState extends State<PointAdditionScreen>
             ),
             PulsingEffect(
               isPulsing: isPulsing,
-              child: ElevatedButton(
+              child: FilledButton(
                 onPressed: isPurchasable ? onTap : null,
-                style: ElevatedButton.styleFrom(
+                style: FilledButton.styleFrom(
                   backgroundColor: color,
                   foregroundColor: Colors.white,
                   disabledBackgroundColor: Colors.grey[300],

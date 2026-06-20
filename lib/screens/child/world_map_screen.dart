@@ -113,7 +113,7 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               try {
                 SfxManager.instance.playTapSound();
@@ -124,7 +124,7 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                 Navigator.of(context).pop(true);
               }
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043), // オレンジ
               foregroundColor: Colors.white,
               side: const BorderSide(
@@ -134,7 +134,6 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
             ),
             child: Text(
               AppLocalizations.of(context)!.okAction,
@@ -196,7 +195,7 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () async {
               FirebaseAnalytics.instance.logEvent(
                 name: 'premium_open_world_map',
@@ -209,7 +208,7 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
                 ),
               );
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043), // オレンジ
               foregroundColor: Colors.white,
               side: const BorderSide(
@@ -219,7 +218,6 @@ class _WorldMapScreenState extends State<WorldMapScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
             ),
             child: Text(
               AppLocalizations.of(context)!.seeDetails,
@@ -625,13 +623,7 @@ class _AnimatedMapThumbnailState extends State<_AnimatedMapThumbnail>
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white, width: 4),
                     borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+
                     image: DecorationImage(
                       image: AssetImage(widget.imagePath),
                       fit: BoxFit.cover,

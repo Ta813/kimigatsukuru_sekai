@@ -30,13 +30,6 @@ class RoundMenuButton extends StatelessWidget {
               color: backgroundColor,
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 4),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
             ),
             child: Icon(icon, size: 24, color: iconColor),
           ),
@@ -47,13 +40,6 @@ class RoundMenuButton extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 2,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
               ),
               child: Text(
                 label,

@@ -34,7 +34,7 @@ class LoginBonusManager {
   Future<int> checkLoginBonus(BuildContext context) async {
     int pointsEarned = 0;
     final prefs = await SharedPreferences.getInstance();
-    final now = DateTime.now();
+    final now = await SharedPrefsHelper.getSimulatedDate();
 
     // 前回ログインした日時を取得
     final lastLoginStr = prefs.getString('last_login_date');
@@ -76,17 +76,24 @@ class LoginBonusManager {
       }
     }
 
-    // 最後に「今日」を保存
-    await prefs.setString('last_login_date', now.toIso8601String());
-    await prefs.setInt('weekly_login_count', loginCount);
+    // 最後に「今日」を保存 (実際にダイアログ表示＆付与に成功した場合のみ更新する)
+    if (pointsEarned > 0) {
+      await prefs.setString('last_login_date', now.toIso8601String());
+      await prefs.setInt('weekly_login_count', loginCount);
+    }
 
     return pointsEarned;
   }
 
   Future<int> _showBonusDialog(BuildContext context, int count) async {
+    if (!context.mounted) return 0;
+
     // ポイント付与
     int pointsToAdd = await _getPointsForDay(count);
     int currentPoints = await SharedPrefsHelper.loadPoints();
+
+    if (!context.mounted) return 0;
+
     await SharedPrefsHelper.savePoints(currentPoints + pointsToAdd);
     final int multiplier = await SharedPrefsHelper.getCurrentBoostMultiplier();
 
@@ -124,7 +131,7 @@ class LoginBonusManager {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
+                FilledButton(
                   onPressed: () {
                     FirebaseAnalytics.instance.logEvent(
                       name: 'login_bonus_received',
@@ -133,15 +140,13 @@ class LoginBonusManager {
                     Navigator.pop(context); // ダイアログを閉じる
                     // 受け取り処理などをここに書く
                   },
-                  style: ElevatedButton.styleFrom(
+                  style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFFFF7043),
                     foregroundColor: Colors.white,
                     minimumSize: const Size(200, 60),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    elevation: 8,
-                    shadowColor: const Color(0xFFFF7043).withOpacity(0.5),
                     side: const BorderSide(color: Colors.white, width: 2),
                   ),
                   child: Text(

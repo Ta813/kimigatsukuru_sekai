@@ -147,7 +147,7 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
                         },
                       ),
                     const SizedBox(width: 8),
-                    ElevatedButton.icon(
+                    FilledButton.icon(
                       icon: const Icon(Icons.add),
                       label: Text(
                         AppLocalizations.of(context)!.addAction,
@@ -158,7 +158,7 @@ class _ChildNameSettingsScreenState extends State<ChildNameSettingsScreen> {
                         );
                         _addChildName();
                       },
-                      style: ElevatedButton.styleFrom(
+                      style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 12,

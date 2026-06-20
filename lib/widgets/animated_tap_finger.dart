@@ -42,9 +42,6 @@ class _AnimatedTapFingerState extends State<AnimatedTapFinger>
           Icons.touch_app,
           size: 50,
           color: Colors.orangeAccent,
-          shadows: [
-            Shadow(color: Colors.black38, blurRadius: 4, offset: Offset(0, 2)),
-          ],
         ),
       ),
     );

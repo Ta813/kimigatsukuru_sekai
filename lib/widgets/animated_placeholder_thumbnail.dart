@@ -63,13 +63,7 @@ class _AnimatedPlaceholderThumbnailState
               color: widget.imagePath == null ? Colors.grey[400] : null,
               border: Border.all(color: Colors.white, width: 4),
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 6,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+
               image: widget.imagePath != null
                   ? DecorationImage(
                       image: AssetImage(widget.imagePath!),
@@ -94,11 +88,7 @@ class _AnimatedPlaceholderThumbnailState
                 if (widget.iconData != null)
                   Positioned(
                     right: 4,
-                    child: Icon(
-                      widget.iconData,
-                      color: Colors.white,
-                      size: 16,
-                    ),
+                    child: Icon(widget.iconData, color: Colors.white, size: 16),
                   ),
               ],
             ),

@@ -70,20 +70,10 @@ class _BlinkingEffectState extends State<BlinkingEffect>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-            boxShadow: [
-              BoxShadow(
-                // アニメーション値(0.0〜1.0)に合わせて影を変化させる
-                color: widget.color.withValues(alpha: _controller.value * 0.8),
-                spreadRadius: 20 * _controller.value,
-                blurRadius: 1,
-              ),
-            ],
-          ),
-          child: child,
-        );
+        // 🌟 修正: 影を完全にやめて、ウィジェット自体を少しだけ拡大縮小させる
+        // 1.0（元のサイズ） 〜 1.05（5%拡大） の間をループする
+        final scale = 1.0 + (_controller.value * 0.2);
+        return Transform.scale(scale: scale, child: child);
       },
       child: widget.child,
     );

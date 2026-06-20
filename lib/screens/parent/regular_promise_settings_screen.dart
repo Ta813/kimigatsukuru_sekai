@@ -674,7 +674,7 @@ class _RegularPromiseSettingsScreenState
                                   style: const TextStyle(color: Colors.grey),
                                 ),
                               ),
-                              ElevatedButton(
+                              FilledButton(
                                 onPressed: () {
                                   _playTapSound();
                                   if (formKey.currentState!.validate()) {
@@ -694,7 +694,7 @@ class _RegularPromiseSettingsScreenState
                                     Navigator.pop(dialogContext, newPromise);
                                   }
                                 },
-                                style: ElevatedButton.styleFrom(
+                                style: FilledButton.styleFrom(
                                   backgroundColor: Theme.of(
                                     context,
                                   ).primaryColor,
@@ -746,7 +746,7 @@ class _RegularPromiseSettingsScreenState
                 onPressed: () => Navigator.pop(ctx),
                 child: Text(l10n.cancel),
               ),
-              ElevatedButton(
+              FilledButton(
                 onPressed: () {
                   FirebaseAnalytics.instance.logEvent(
                     name: 'regular_limit_reached_open_paywall',
@@ -846,7 +846,7 @@ class _RegularPromiseSettingsScreenState
                 onPressed: () => Navigator.pop(ctx),
                 child: Text(l10n.cancel),
               ),
-              ElevatedButton(
+              FilledButton(
                 onPressed: () {
                   FirebaseAnalytics.instance.logEvent(
                     name: 'regular_limit_reached_open_paywall',
@@ -986,7 +986,7 @@ class _RegularPromiseSettingsScreenState
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               FirebaseAnalytics.instance.logEvent(
                 name: 'setup_notification_force',
@@ -996,14 +996,13 @@ class _RegularPromiseSettingsScreenState
               } catch (_) {}
               Navigator.pop(dialogCtx, true);
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
               foregroundColor: Colors.white,
               side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
             ),
             child: Text(
               AppLocalizations.of(dialogCtx)!.notificationAccept,
@@ -1057,7 +1056,6 @@ class _RegularPromiseSettingsScreenState
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
-      elevation: isDragging ? 8 : 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         dense: true,
@@ -1280,7 +1278,6 @@ class _RegularPromiseSettingsScreenState
           appBar: widget.isInitialSetup
               ? AppBar(
                   backgroundColor: Colors.white,
-                  elevation: 0,
                   toolbarHeight: 48,
                   leading: BackButton(
                     color: Colors.black54,
@@ -1673,16 +1670,7 @@ class _RegularPromiseSettingsScreenState
                       horizontal: 24,
                       vertical: 8,
                     ),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 8,
-                          offset: Offset(0, -4),
-                        ),
-                      ],
-                    ),
+                    decoration: const BoxDecoration(color: Colors.white),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center, // 横並びの中央寄せ
                       children: [
@@ -1725,9 +1713,9 @@ class _RegularPromiseSettingsScreenState
                           ),
                         ),
                         const SizedBox(width: 24),
-                        ElevatedButton(
+                        FilledButton(
                           onPressed: _completeInitialSetup,
-                          style: ElevatedButton.styleFrom(
+                          style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFFFF7043),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
@@ -1737,7 +1725,6 @@ class _RegularPromiseSettingsScreenState
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
-                            elevation: 4,
                           ),
                           child: Text(
                             l10n.initialSetupCompleteButton,

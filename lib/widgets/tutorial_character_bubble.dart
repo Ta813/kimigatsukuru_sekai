@@ -59,6 +59,7 @@ class _TutorialCharacterBubbleState extends State<TutorialCharacterBubble> {
               _charPath,
               width: 140,
               height: 140,
+              cacheWidth: 280,
               fit: BoxFit.contain, // 画像の比率を保つ
             ),
             // 🌟 吹き出しデザイン
@@ -78,13 +79,6 @@ class _TutorialCharacterBubbleState extends State<TutorialCharacterBubble> {
                       color: const Color(0xFFFFF9C4),
                       borderRadius: BorderRadius.circular(16), // 🌟 角は全部丸くする
                       border: Border.all(color: Colors.orange, width: 2),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,

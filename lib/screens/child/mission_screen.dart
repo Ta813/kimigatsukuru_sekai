@@ -1,6 +1,7 @@
 // lib/screens/mission_screen.dart
 
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
 import 'package:kimigatsukuru_sekai/widgets/tutorial_character_bubble.dart';
@@ -8,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart'; // 🌟 追加: デ
 import '../../helpers/shared_prefs_helper.dart';
 import '../../l10n/app_localizations.dart';
 import '../../managers/sfx_manager.dart';
-import 'package:confetti/confetti.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/animated_tap_finger.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,7 +51,6 @@ class _MissionScreenState extends State<MissionScreen>
     with TickerProviderStateMixin {
   List<MissionItem> _missions = [];
   bool _isLoading = true;
-  late ConfettiController _confettiController;
 
   // 🌟 追加: バッジをポヨポヨンさせるためのコントローラー
   late AnimationController _badgeAnimationController;
@@ -83,9 +82,6 @@ class _MissionScreenState extends State<MissionScreen>
   @override
   void initState() {
     super.initState();
-    _confettiController = ConfettiController(
-      duration: const Duration(seconds: 2),
-    );
 
     // 🌟 追加: バッジアニメーションの設定
     _badgeAnimationController = AnimationController(
@@ -128,7 +124,6 @@ class _MissionScreenState extends State<MissionScreen>
   void dispose() {
     _tabController?.dispose(); // 🌟 追加
     _currentPointOverlay?.remove();
-    _confettiController.dispose();
     _badgeAnimationController.dispose(); // 🌟 追加
     _pointsAddedAnimationController.dispose();
     super.dispose();
@@ -193,13 +188,6 @@ class _MissionScreenState extends State<MissionScreen>
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.9),
                     borderRadius: BorderRadius.circular(40),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -212,13 +200,6 @@ class _MissionScreenState extends State<MissionScreen>
                           fontSize: 60,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFFFF7043),
-                          shadows: [
-                            Shadow(
-                              blurRadius: 4,
-                              color: Colors.white,
-                              offset: Offset(2, 2),
-                            ),
-                          ],
                         ),
                       ),
                     ],
@@ -649,37 +630,50 @@ class _MissionScreenState extends State<MissionScreen>
   }
 
   Future<void> _claimReward(MissionItem mission) async {
+    // 1. トレース（ストップウォッチ）を用意して、名前をつける
+    final Trace trace = FirebasePerformance.instance.newTrace(
+      'mission_claim_trace',
+    );
+
+    // 2. 計測スタート！
+    await trace.start();
+
     try {
-      SfxManager.instance.playSuccessSound();
-    } catch (e) {}
-    _confettiController.play();
-    FirebaseAnalytics.instance.logEvent(name: '${mission.id}_reward');
+      try {
+        SfxManager.instance.playSuccessSound();
+      } catch (e) {}
+      FirebaseAnalytics.instance.logEvent(name: '${mission.id}_reward');
 
-    final currentPoints = await SharedPrefsHelper.loadPoints();
-    final earnedPoints = mission.rewardPoints * _multiplier;
+      final currentPoints = await SharedPrefsHelper.loadPoints();
+      final earnedPoints = mission.rewardPoints * _multiplier;
 
-    setState(() {
-      _currentPoints = currentPoints + earnedPoints;
-    });
-    _showHugePointAnimation(earnedPoints);
-    await SharedPrefsHelper.savePoints(currentPoints + earnedPoints);
-    await SharedPrefsHelper.addCumulativePoints(earnedPoints);
-
-    await SharedPrefsHelper.claimMission(mission.id);
-
-    // 🌟 チュートリアル中のステップ進行
-    if (widget.isTutorialMode == true &&
-        mission.id == 'mission_first_promise') {
       setState(() {
-        _tutorialStep = 1; // ポイント獲得後、デイリータブへ誘導
+        _currentPoints = currentPoints + earnedPoints;
       });
-    }
+      _showHugePointAnimation(earnedPoints);
+      await SharedPrefsHelper.savePoints(currentPoints + earnedPoints);
+      await SharedPrefsHelper.addCumulativePoints(earnedPoints);
 
-    await _loadMissions();
+      await SharedPrefsHelper.claimMission(mission.id);
 
-    if (widget.isTutorialMode == false) {
-      // 🌟 追加: ミッション報酬で累計ポイントが増えた後のトロフィーチェック
-      if (mounted) TrophyManager.checkAndShowTrophies(context);
+      // 🌟 チュートリアル中のステップ進行
+      if (widget.isTutorialMode == true &&
+          mission.id == 'mission_first_promise') {
+        setState(() {
+          _tutorialStep = 1; // ポイント獲得後、デイリータブへ誘導
+        });
+      }
+
+      await _loadMissions();
+
+      if (widget.isTutorialMode == false) {
+        // 🌟 追加: ミッション報酬で累計ポイントが増えた後のトロフィーチェック
+        if (mounted) TrophyManager.checkAndShowTrophies(context);
+      }
+    } finally {
+      // 3. 計測ストップ！（データがFirebaseに送信されます）
+      // ※ エラーが起きても確実に止まるように finally の中に入れるのが鉄則です
+      await trace.stop();
     }
   }
 
@@ -730,13 +724,6 @@ class _MissionScreenState extends State<MissionScreen>
                 color: Colors.red,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2.0),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 2,
-                    offset: Offset(0, 1), // 少し影をつけて立体的に
-                  ),
-                ],
               ),
               child: const Text(
                 '!',
@@ -1102,16 +1089,6 @@ class _MissionScreenState extends State<MissionScreen>
         children: [
           SafeArea(
             child: TabBarView(controller: _tabController, children: tabViews),
-          ), // 🌟 追加
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiController,
-              blastDirectionality: BlastDirectionality.explosive,
-              emissionFrequency: 0.05,
-              numberOfParticles: 20,
-              gravity: 0.3,
-            ),
           ),
           _buildTutorialBubble(), // 🌟 追加: チュートリアル用の吹き出し
         ],
@@ -1210,7 +1187,6 @@ class _MissionScreenState extends State<MissionScreen>
                 ? const BorderSide(color: Color(0xFFFFB300), width: 2)
                 : BorderSide.none,
           ),
-          elevation: isHighlightedCard ? 4 : 2, // ハイライト時は少し浮かせる
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
@@ -1288,19 +1264,15 @@ class _MissionScreenState extends State<MissionScreen>
                                   !(mission.isCompleted && !mission.isClaimed))
                               ? 0.3
                               : 1.0,
-                          child: ElevatedButton(
+                          child: FilledButton(
                             onPressed: onPressed,
-                            style: ElevatedButton.styleFrom(
+                            style: FilledButton.styleFrom(
                               // 紫色にしたい場合はここで色を上書き
                               backgroundColor: buttonColor,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              elevation:
-                                  mission.isCompleted && !mission.isClaimed
-                                  ? 4
-                                  : 0,
                             ),
                             child: Text(
                               buttonText,
@@ -1337,13 +1309,6 @@ class _MissionScreenState extends State<MissionScreen>
                   topLeft: Radius.circular(16),
                   bottomRight: Radius.circular(10),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 2,
-                    offset: Offset(1, 1),
-                  ),
-                ],
               ),
               child: Text(
                 l10n.missionBadgeAvailableNow,

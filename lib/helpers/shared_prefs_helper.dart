@@ -1193,7 +1193,7 @@ class SharedPrefsHelper {
   // 今日初めてのログインなら累計日数を +1 する（1日1回しかカウントしない）
   static Future<void> recordLoginDay() async {
     final prefs = await SharedPreferences.getInstance();
-    final now = DateTime.now();
+    final now = await getSimulatedDate();
     final todayStr = '${now.year}-${now.month}-${now.day}';
     final lastStr = prefs.getString(_keyLastLoginDateForCount);
     if (lastStr != todayStr) {

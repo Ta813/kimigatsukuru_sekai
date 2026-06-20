@@ -356,15 +356,6 @@ class _SeaScreenState extends State<SeaScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.9), // 少し半透明の白
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      // ポイント表示と同じような影をつける
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        spreadRadius: 1,
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -424,15 +415,6 @@ class _SeaScreenState extends State<SeaScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          // 少し影をつけて立体感を出す
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 1,
-                            blurRadius: 3,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
                       ),
                       child: Row(
                         children: [
@@ -663,13 +645,6 @@ class _SeaScreenState extends State<SeaScreen> {
                         color: Colors.white.withOpacity(0.8),
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        shadows: const [
-                          Shadow(
-                            color: Colors.black54,
-                            blurRadius: 4,
-                            offset: Offset(1, 1),
-                          ),
-                        ],
                       ),
                     ),
                   ),
@@ -908,13 +883,6 @@ class _SeaScreenState extends State<SeaScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(35),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

@@ -204,9 +204,6 @@ class TrophyManager {
                       : trophy.color,
                   width: 4,
                 ),
-                boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 8),
-                ],
               ),
               child: Icon(displayIcon, size: 40, color: trophy.color),
             ),
@@ -240,7 +237,7 @@ class TrophyManager {
               ),
             ),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () async {
               try {
                 SfxManager.instance.playTapSound();
@@ -252,7 +249,7 @@ class TrophyManager {
               if (!context.mounted) return;
               Navigator.pop(context);
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(

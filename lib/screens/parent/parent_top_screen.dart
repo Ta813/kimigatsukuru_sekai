@@ -399,14 +399,6 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: (isPremium ? Colors.teal : Colors.orange)
-                            .withOpacity(0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
                   ),
                   child: Material(
                     color: Colors.transparent,
@@ -464,13 +456,6 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
-                                      shadows: [
-                                        Shadow(
-                                          blurRadius: 4,
-                                          color: Colors.black26,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -574,7 +559,6 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
         color: const Color(0xFFFFF9C4),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.orange, width: 2),
-        boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black26)],
       ),
       child: Text(
         text,
@@ -601,13 +585,6 @@ class _ParentTopScreenState extends State<ParentTopScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: color.withOpacity(0.5), width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,

@@ -81,7 +81,11 @@ class _SplashScreenState extends State<SplashScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/images/character_hime.gif', height: 100),
+                Image.asset(
+                  'assets/images/character_hime.gif',
+                  height: 100,
+                  cacheWidth: 200,
+                ),
                 const SizedBox(width: 20),
                 Text(
                   AppLocalizations.of(context)!.splashLoadingMessage,
@@ -91,7 +95,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
                 const SizedBox(width: 20),
-                Image.asset('assets/images/character_kuma.gif', height: 100),
+                Image.asset(
+                  'assets/images/character_kuma.gif',
+                  height: 100,
+                  cacheWidth: 200,
+                ),
               ],
             ),
           ],

@@ -207,19 +207,12 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, -2),
-                  ),
-                ],
               ),
               child: Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.center,
                 children: [
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () {
                       try {
                         FirebaseAnalytics.instance.logEvent(
@@ -230,7 +223,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                       // 🌟 Pattern C のステップ1（やくそく設定）を開始！
                       _runSetupLoop('C', 1);
                     },
-                    style: ElevatedButton.styleFrom(
+                    style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFFFF7043),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
@@ -241,7 +234,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      elevation: 4,
                     ),
                     child: Text(
                       l10n.setupNewIntroStartButton,
@@ -508,7 +500,6 @@ PreferredSizeWidget buildSetupAppBar(
   final progress = safeStep / safeTotal;
   return AppBar(
     backgroundColor: Colors.white,
-    elevation: 0,
     toolbarHeight: 48,
     leading: BackButton(
       color: Colors.black54,
@@ -596,9 +587,17 @@ class _AppIntroExplanationScreenState extends State<AppIntroExplanationScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Image.asset('assets/images/character_hime.gif', height: 100),
+                  Image.asset(
+                    'assets/images/character_hime.gif',
+                    height: 100,
+                    cacheWidth: 200,
+                  ),
                   const SizedBox(width: 20),
-                  Image.asset('assets/images/character_kuma.gif', height: 100),
+                  Image.asset(
+                    'assets/images/character_kuma.gif',
+                    height: 100,
+                    cacheWidth: 200,
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -662,7 +661,7 @@ class _AppIntroExplanationScreenState extends State<AppIntroExplanationScreen> {
                     clipBehavior: Clip.none,
                     alignment: Alignment.center,
                     children: [
-                      ElevatedButton(
+                      FilledButton(
                         onPressed: () {
                           try {
                             FirebaseAnalytics.instance.logEvent(
@@ -672,7 +671,7 @@ class _AppIntroExplanationScreenState extends State<AppIntroExplanationScreen> {
                           } catch (e) {}
                           Navigator.pop(context, true); // 🌟 trueを返して次のステップへ！
                         },
-                        style: ElevatedButton.styleFrom(
+                        style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFFFF7043),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
@@ -682,7 +681,6 @@ class _AppIntroExplanationScreenState extends State<AppIntroExplanationScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          elevation: 4,
                         ),
                         child: Text(
                           l10n.setupIntroNext,
@@ -895,14 +893,14 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                     clipBehavior: Clip.none,
                     alignment: Alignment.center,
                     children: [
-                      ElevatedButton(
+                      FilledButton(
                         onPressed: () {
                           try {
                             SfxManager.instance.playTapSound();
                           } catch (e) {}
                           Navigator.pop(context, true); // 🌟 true を返すことで「次へ」進む
                         },
-                        style: ElevatedButton.styleFrom(
+                        style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFFFF7043),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
@@ -912,7 +910,6 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          elevation: 4,
                         ),
                         child: Text(
                           l10n.setupOkButton,
@@ -1125,14 +1122,14 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                   clipBehavior: Clip.none,
                   alignment: Alignment.center,
                   children: [
-                    ElevatedButton(
+                    FilledButton(
                       onPressed: () {
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (_) {}
                         Navigator.pop(context, true); // 🌟 true を返すことで「次へ」進む
                       },
-                      style: ElevatedButton.styleFrom(
+                      style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFFFF7043),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
@@ -1142,7 +1139,6 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        elevation: 4,
                       ),
                       child: Text(
                         l10n.setupOkButton,
@@ -1178,9 +1174,6 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
-        ],
       ),
       child: Row(
         children: [
@@ -1306,7 +1299,11 @@ class _SetupCompleteScreenState extends State<SetupCompleteScreen> {
                 ),
                 const SizedBox(width: 20),
                 if (_equippedCharacters.isNotEmpty)
-                  Image.asset(_equippedCharacters.first, height: 100),
+                  Image.asset(
+                    _equippedCharacters.first,
+                    height: 100,
+                    cacheWidth: 200,
+                  ),
               ],
             ),
             const SizedBox(height: 16),
@@ -1325,14 +1322,14 @@ class _SetupCompleteScreenState extends State<SetupCompleteScreen> {
               clipBehavior: Clip.none,
               alignment: Alignment.center,
               children: [
-                ElevatedButton(
+                FilledButton(
                   onPressed: () {
                     try {
                       SfxManager.instance.playTapSound();
                     } catch (_) {}
                     Navigator.pop(context, true); // 🌟 true を返すことで「完了」へ進む
                   },
-                  style: ElevatedButton.styleFrom(
+                  style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFFFF7043),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
@@ -1342,7 +1339,6 @@ class _SetupCompleteScreenState extends State<SetupCompleteScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    elevation: 4,
                   ),
                   child: Text(
                     l10n.setupFinishButton,
@@ -1412,14 +1408,14 @@ class PassDeviceScreen extends StatelessWidget {
               clipBehavior: Clip.none,
               alignment: Alignment.center,
               children: [
-                ElevatedButton(
+                FilledButton(
                   onPressed: () {
                     try {
                       SfxManager.instance.playTapSound();
                     } catch (e) {}
                     Navigator.pop(context, true); // 🌟 true を返すことで「次へ」進む
                   },
-                  style: ElevatedButton.styleFrom(
+                  style: FilledButton.styleFrom(
                     backgroundColor: isToChild
                         ? const Color(0xFFFF7043)
                         : Colors.blueAccent,

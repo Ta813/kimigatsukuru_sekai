@@ -138,9 +138,9 @@ class _MathLockDialogState extends State<MathLockDialog> {
                   if (buttonValue.isEmpty) {
                     return const SizedBox.shrink();
                   }
-                  return ElevatedButton(
+                  return FilledButton(
                     onPressed: () => _onNumpadTapped(buttonValue),
-                    style: ElevatedButton.styleFrom(
+                    style: FilledButton.styleFrom(
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(0),
                     ),
@@ -168,7 +168,7 @@ class _MathLockDialogState extends State<MathLockDialog> {
           },
           child: Text(AppLocalizations.of(context)!.cancel),
         ),
-        ElevatedButton(
+        FilledButton(
           onPressed: _checkAnswer,
           child: Text(AppLocalizations.of(context)!.okAction),
         ),

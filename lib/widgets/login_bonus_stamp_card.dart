@@ -146,15 +146,6 @@ class LoginBonusStampCard extends StatelessWidget {
                   ? (bgGradient == null ? baseColor : null)
                   : Colors.grey[300],
               gradient: isCleared ? bgGradient : null,
-              boxShadow: isCleared
-                  ? [
-                      BoxShadow(
-                        color: baseColor.withOpacity(0.4),
-                        blurRadius: 4,
-                        spreadRadius: 1,
-                      ),
-                    ]
-                  : [],
             ),
             child: Center(
               // 🌟 ここからがアニメーションの魔法です！

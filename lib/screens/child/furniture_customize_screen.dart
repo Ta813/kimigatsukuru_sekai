@@ -213,7 +213,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 style: TextStyle(color: Colors.grey[600]),
               ),
             ),
-            ElevatedButton(
+            FilledButton(
               onPressed: () async {
                 FirebaseAnalytics.instance.logEvent(
                   name: 'premium_open_furniture_customize',
@@ -226,14 +226,13 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                   ),
                 );
               },
-              style: ElevatedButton.styleFrom(
+              style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043),
                 foregroundColor: Colors.white,
                 side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                elevation: 4,
               ),
               child: Text(
                 l10n.seeDetails,
@@ -289,7 +288,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 style: const TextStyle(color: Colors.grey),
               ),
             ),
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 try {
                   SfxManager.instance.playTapSound();
@@ -308,7 +307,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                   _loadEquippedItems();
                 });
               },
-              style: ElevatedButton.styleFrom(
+              style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -365,7 +364,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () async {
               FirebaseAnalytics.instance.logEvent(
                 name: 'start_customize_buy_item',
@@ -409,14 +408,13 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                 _toggleEquip(item, selected, type); // 買ってすぐ装備！
               }
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
               foregroundColor: Colors.white,
               side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
             ),
             child: Text(
               l10n.exchange,
@@ -453,7 +451,6 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
             isLevelLocked && !PurchaseManager.instance.isPremium.value;
 
         return Card(
-          elevation: isSelected ? 4 : 2,
           color: isPurchased ? Colors.white : Colors.grey[200],
           shape: RoundedRectangleBorder(
             side: BorderSide(

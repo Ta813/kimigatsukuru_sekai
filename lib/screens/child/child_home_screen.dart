@@ -7,6 +7,7 @@ import 'dart:ui' as import_ui;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -357,7 +358,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     WidgetsBinding.instance.addObserver(this);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _initializeConsent();
       if (mounted) {
         await AppUpdateManager.instance.checkUpdateAndShowDialog(context);
 
@@ -382,7 +382,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           if (!_hasVisitedPointAddition) {
             _animationController.forward(from: 0.0);
           }
+          // 🌟 超重要: アニメーションが綺麗に終わるまで「2秒」待つ
+          // _pointsAddedAnimationController の duration が 2000ms なので、
+          // 星が飛び終わるのを待ってから重い処理に入ります。これによりカクつきを防ぎます！
+          await Future.delayed(const Duration(milliseconds: 2000));
         }
+
+        await _initializeConsent();
       }
     });
 
@@ -447,6 +453,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           content: Column(
+            mainAxisSize: MainAxisSize.min, // 👈 ダイアログが縦いっぱいに広がるのを防ぐ
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(AppLocalizations.of(context)!.tutorialPromptDesc),
               Text(
@@ -479,14 +487,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               ),
             ),
             const SizedBox(width: 16),
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 try {
                   SfxManager.instance.playTapSound();
                 } catch (e) {}
                 Navigator.of(context).pop(true); // 今からやる
               },
-              style: ElevatedButton.styleFrom(
+              style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
@@ -496,7 +504,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                elevation: 4,
               ),
               child: Text(
                 AppLocalizations.of(
@@ -563,13 +570,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.9),
                     borderRadius: BorderRadius.circular(40),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -582,13 +582,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           fontSize: 60,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFFFF7043),
-                          shadows: [
-                            Shadow(
-                              blurRadius: 4,
-                              color: Colors.white,
-                              offset: Offset(2, 2),
-                            ),
-                          ],
                         ),
                       ),
                     ],
@@ -614,6 +607,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   }
 
   Future<void> _initializeConsent() async {
+    // 🌟 【修正1】RevenueCatの初期化を先に行う！
+    // (この後のUMPダイアログ等で「プレミアムかどうか」を正しく判定するため)
+    try {
+      await PurchaseManager.instance.init();
+    } catch (e) {
+      print("RevenueCat初期化エラー: $e");
+    }
+
     if (PurchaseManager.instance.isPremium.value) {
       _initializeSDKs();
       return;
@@ -717,13 +718,27 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     PurchaseManager.instance.refreshCustomerInfo();
 
     final lastActiveDateStr = await SharedPrefsHelper.loadLastActiveDate();
-    final today = DateTime.now();
+    final today = await SharedPrefsHelper.getSimulatedDate();
     final todayStr = "${today.year}-${today.month}-${today.day}";
 
     if (lastActiveDateStr != todayStr) {
       await SharedPrefsHelper.clearTodaysCompletedPromises();
       await SharedPrefsHelper.recordLoginDay();
       _loadAndDetermineDisplayPromise();
+
+      // 🌟 Check login bonus on resume/warm start!
+      if (mounted) {
+        int earnedPoints = await LoginBonusManager().checkLoginBonus(context);
+        if (earnedPoints > 0 && mounted) {
+          try {
+            SfxManager.instance.playSuccessSound();
+          } catch (e) {}
+          _showHugePointAnimation(earnedPoints);
+          if (!_hasVisitedPointAddition) {
+            _animationController.forward(from: 0.0);
+          }
+        }
+      }
 
       // 🌟 追加: ログイントロフィーのチェック
       if (mounted) TrophyManager.checkAndShowTrophies(context);
@@ -859,14 +874,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               try {
                 SfxManager.instance.playTapSound();
               } catch (e) {}
               Navigator.pop(context);
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
               foregroundColor: Colors.white,
               minimumSize: const Size(200, 60),
@@ -874,7 +889,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
             ),
             child: Text(
               AppLocalizations.of(context)!.tutorialResumeBtn,
@@ -966,7 +980,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
         content: Text(content),
         actions: <Widget>[
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               try {
                 SfxManager.instance.playTapSound();
@@ -975,14 +989,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 Navigator.of(context).pop(true);
               }
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
               foregroundColor: Colors.white,
               minimumSize: const Size(220, 64),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(32),
               ),
-              elevation: 8,
             ),
             child: Text(
               buttonText ?? AppLocalizations.of(context)!.okAction,
@@ -1018,7 +1031,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
             ),
           ),
           const SizedBox(width: 16),
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               try {
                 SfxManager.instance.playTapSound();
@@ -1027,14 +1040,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 Navigator.of(context).pop(true);
               }
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
             ),
             child: Text(
               AppLocalizations.of(context)!.okAction,
@@ -1437,74 +1449,91 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       ),
     );
 
-    final pointsAwarded = result != null ? result['points'] as int? : null;
-    final exp = result != null ? result['exp'] as int? : null;
+    // 1. トレース（ストップウォッチ）を用意して、名前をつける
+    final Trace trace = FirebasePerformance.instance.newTrace(
+      'timer_end_trace',
+    );
 
-    _playSavedBgm();
+    // 2. 計測スタート！
+    await trace.start();
 
-    if (isEmergencyTutorial) {
-      if (pointsAwarded != null && mounted) {
-        await _onParentTutorialCompleted();
+    try {
+      final pointsAwarded = result != null ? result['points'] as int? : null;
+      final exp = result != null ? result['exp'] as int? : null;
+
+      _playSavedBgm();
+
+      if (isEmergencyTutorial) {
+        if (pointsAwarded != null && mounted) {
+          await _onParentTutorialCompleted();
+        } else {
+          setState(() {
+            _showEmergencyStartBlinking = true;
+            _showStartBlinking = true;
+          });
+        }
+      }
+
+      if (pointsAwarded != null && pointsAwarded > 0) {
+        if (!_isDisplayPromiseEmergency) {
+          await SharedPrefsHelper.addCompletionRecord(
+            _displayPromise!['title'],
+          );
+        }
+        final newTotalPoints = _points + pointsAwarded;
+
+        await SharedPrefsHelper.savePoints(newTotalPoints);
+        await SharedPrefsHelper.addCumulativePoints(pointsAwarded);
+
+        try {
+          SfxManager.instance.playSuccessSound();
+        } catch (e) {
+          print('再生エラー: $e');
+        }
+
+        setState(() {
+          _experience += exp ?? 0;
+        });
+        if (!_hasVisitedPointAddition) {
+          _animationController.forward(from: 0.0);
+        }
+        _showHugePointAnimation(pointsAwarded);
+        _loadAndDetermineDisplayPromise();
+
+        // チュートリアル中の場合はトロフィーチェック不要
+        if (!isInTutorial) {
+          _checkLevelUp();
+          // 🌟 追加: タイマー完了、レベルアップ後のトロフィーチェック
+          if (mounted) TrophyManager.checkAndShowTrophies(context);
+        }
+
+        bool wasCustomizeStepShown =
+            await SharedPrefsHelper.isTutorialStepShown(
+              SharedPrefsHelper.tutorialStepCustomizeKey,
+            );
+        bool isShown =
+            await SharedPrefsHelper.getChildTutorial() ==
+            SharedPrefsHelper.tutorialPhaseStart;
+        if (!wasCustomizeStepShown && isShown && mounted) {
+          await SharedPrefsHelper.setTutorialStepShown(
+            SharedPrefsHelper.tutorialStepPromiseKey,
+          );
+          setState(() {
+            _showCustomizeBlinking = true;
+          });
+          FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_dress_up');
+        }
       } else {
-        setState(() {
-          _showEmergencyStartBlinking = true;
-          _showStartBlinking = true;
-        });
+        if (isInTutorial && mounted) {
+          setState(() {
+            _showStartBlinking = true;
+          });
+        }
       }
-    }
-
-    if (pointsAwarded != null && pointsAwarded > 0) {
-      if (!_isDisplayPromiseEmergency) {
-        await SharedPrefsHelper.addCompletionRecord(_displayPromise!['title']);
-      }
-      final newTotalPoints = _points + pointsAwarded;
-
-      await SharedPrefsHelper.savePoints(newTotalPoints);
-      await SharedPrefsHelper.addCumulativePoints(pointsAwarded);
-
-      try {
-        SfxManager.instance.playSuccessSound();
-      } catch (e) {
-        print('再生エラー: $e');
-      }
-
-      setState(() {
-        _experience += exp ?? 0;
-      });
-      if (!_hasVisitedPointAddition) {
-        _animationController.forward(from: 0.0);
-      }
-      _showHugePointAnimation(pointsAwarded);
-      _loadAndDetermineDisplayPromise();
-
-      // チュートリアル中の場合はトロフィーチェック不要
-      if (!isInTutorial) {
-        _checkLevelUp();
-        // 🌟 追加: タイマー完了、レベルアップ後のトロフィーチェック
-        if (mounted) TrophyManager.checkAndShowTrophies(context);
-      }
-
-      bool wasCustomizeStepShown = await SharedPrefsHelper.isTutorialStepShown(
-        SharedPrefsHelper.tutorialStepCustomizeKey,
-      );
-      bool isShown =
-          await SharedPrefsHelper.getChildTutorial() ==
-          SharedPrefsHelper.tutorialPhaseStart;
-      if (!wasCustomizeStepShown && isShown && mounted) {
-        await SharedPrefsHelper.setTutorialStepShown(
-          SharedPrefsHelper.tutorialStepPromiseKey,
-        );
-        setState(() {
-          _showCustomizeBlinking = true;
-        });
-        FirebaseAnalytics.instance.logEvent(name: 'start_tutorial_dress_up');
-      }
-    } else {
-      if (isInTutorial && mounted) {
-        setState(() {
-          _showStartBlinking = true;
-        });
-      }
+    } finally {
+      // 3. 計測ストップ！（データがFirebaseに送信されます）
+      // ※ エラーが起きても確実に止まるように finally の中に入れるのが鉄則です
+      await trace.stop();
     }
   }
 
@@ -1651,14 +1680,14 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           ),
           actionsAlignment: MainAxisAlignment.center,
           actions: [
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 try {
                   SfxManager.instance.playTapSound();
                 } catch (e) {}
                 Navigator.pop(context);
               },
-              style: ElevatedButton.styleFrom(
+              style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043),
                 foregroundColor: Colors.white,
                 minimumSize: const Size(200, 60),
@@ -1666,7 +1695,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                elevation: 4,
               ),
               child: Text(
                 AppLocalizations.of(context)!.okAction,
@@ -1724,7 +1752,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                   ),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () async {
                       FirebaseAnalytics.instance.logEvent(
                         name: 'premium_open_levelup',
@@ -1737,7 +1765,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                         ),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
+                    style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFFFF7043),
                       foregroundColor: Colors.white,
                       side: const BorderSide(
@@ -1747,7 +1775,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      elevation: 4,
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.seeDetails,
@@ -1828,7 +1855,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               if (forceShow) {
                 FirebaseAnalytics.instance.logEvent(
@@ -1837,14 +1864,13 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               }
               Navigator.pop(context, true);
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
               foregroundColor: Colors.white,
               side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
             ),
             child: Text(
               AppLocalizations.of(context)!.notificationAccept,
@@ -2074,13 +2100,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               color: backgroundColor,
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: borderWidth),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
             ),
             child: Icon(icon, size: iconSize, color: iconColor),
           ),
@@ -2091,13 +2110,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 2,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
               ),
               child: Text(
                 label,
@@ -2351,14 +2363,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.9),
                             borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
-                                spreadRadius: 1,
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -2644,7 +2648,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                     },
                                     backgroundColor: Colors.white,
                                     foregroundColor: Colors.black54,
-                                    elevation: 4,
                                     child: const Icon(
                                       Icons.menu,
                                     ), // ハンバーガーメニューアイコン
@@ -2735,26 +2738,40 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                   : null;
 
                                               if (pointsFromBoard != null) {
+                                                // 1. トレース（ストップウォッチ）を用意して、名前をつける
+                                                final Trace trace =
+                                                    FirebasePerformance.instance
+                                                        .newTrace(
+                                                          'timer_end_trace',
+                                                        );
+                                                // 2. 計測スタート！
+                                                await trace.start();
+
                                                 try {
-                                                  SfxManager.instance
-                                                      .playSuccessSound();
-                                                } catch (e) {}
-                                                setState(() {
-                                                  _points += pointsFromBoard;
-                                                  _experience +=
-                                                      expFromBoard ?? 0;
-                                                });
-                                                if (!_hasVisitedPointAddition) {
-                                                  _animationController.forward(
-                                                    from: 0.0,
+                                                  try {
+                                                    SfxManager.instance
+                                                        .playSuccessSound();
+                                                  } catch (e) {}
+                                                  setState(() {
+                                                    _points += pointsFromBoard;
+                                                    _experience +=
+                                                        expFromBoard ?? 0;
+                                                  });
+                                                  if (!_hasVisitedPointAddition) {
+                                                    _animationController
+                                                        .forward(from: 0.0);
+                                                  }
+                                                  _showHugePointAnimation(
+                                                    pointsFromBoard,
                                                   );
+                                                  await SharedPrefsHelper.addCumulativePoints(
+                                                    pointsFromBoard,
+                                                  );
+                                                } finally {
+                                                  // 3. 計測ストップ！（データがFirebaseに送信されます）
+                                                  // ※ エラーが起きても確実に止まるように finally の中に入れるのが鉄則です
+                                                  await trace.stop();
                                                 }
-                                                _showHugePointAnimation(
-                                                  pointsFromBoard,
-                                                );
-                                                await SharedPrefsHelper.addCumulativePoints(
-                                                  pointsFromBoard,
-                                                );
                                               }
                                               _checkLevelUp();
                                               await SharedPrefsHelper.savePoints(
@@ -3037,13 +3054,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                             color: Colors.white,
                                             width: 2.0,
                                           ),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Colors.black26,
-                                              blurRadius: 2,
-                                              offset: Offset(0, 2),
-                                            ),
-                                          ],
                                         ),
                                         child: const Text(
                                           '!',
@@ -3222,12 +3232,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                               color: Colors.orange,
                                               width: 2,
                                             ),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                blurRadius: 4,
-                                                color: Colors.black26,
-                                              ),
-                                            ],
                                           ),
                                           child: Column(
                                             crossAxisAlignment:
@@ -3343,13 +3347,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -3430,16 +3427,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                       ? Colors.red[400]
                                       : Colors.white.withOpacity(0.85)),
                             borderRadius: BorderRadius.circular(15),
-                            boxShadow: _showStartBlinking
-                                ? []
-                                : [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.15),
-                                      spreadRadius: 2,
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
                           ),
                           child: Row(
                             children: [
@@ -3534,9 +3521,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                 !_showStartBlinking)
                                             ? 0.3
                                             : 1.0,
-                                        child: ElevatedButton(
+                                        child: FilledButton(
                                           onPressed: _startPromise,
-                                          style: ElevatedButton.styleFrom(
+                                          style: FilledButton.styleFrom(
                                             // 🌟 変更: はじめるボタンをより大きく・目立たせる！
                                             backgroundColor:
                                                 _isDisplayPromiseEmergency
@@ -3552,7 +3539,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                               borderRadius:
                                                   BorderRadius.circular(30),
                                             ),
-                                            elevation: 6,
                                           ),
                                           child: Text(
                                             _isDisplayPromiseEmergency
@@ -3773,9 +3759,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 Icons.touch_app,
                                 color: Colors.white,
                                 size: 40,
-                                shadows: [
-                                  Shadow(blurRadius: 8, color: Colors.black54),
-                                ],
                               ),
                             ),
                           ],
@@ -3987,13 +3970,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                           color: Colors.white.withOpacity(0.8),
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          shadows: const [
-                            Shadow(
-                              color: Colors.black54,
-                              blurRadius: 4,
-                              offset: Offset(1, 1),
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -4226,13 +4202,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(35),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

@@ -151,7 +151,7 @@ class AppUpdateManager {
               ),
             ),
             // 「アップデート！」ボタン
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 try {
                   SfxManager.instance.playSuccessSound();
@@ -159,13 +159,12 @@ class AppUpdateManager {
                 Navigator.pop(dialogContext);
                 _openStore();
               },
-              style: ElevatedButton.styleFrom(
+              style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043), // オレンジ
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                elevation: 4,
               ),
               child: Text(
                 l10n.updateDialogUpdate,

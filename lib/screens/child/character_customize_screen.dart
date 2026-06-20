@@ -19,6 +19,7 @@ import '../../widgets/avatar_display.dart';
 import '../../managers/purchase_manager.dart';
 import '../point_addition_screen.dart'; // 🌟 追加: ポイント追加画面をインポート
 import '../../widgets/tutorial_character_bubble.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 
 enum CustomizeView { menu, avatar, support, world, initialSetup }
 
@@ -67,10 +68,18 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
   bool _showItemBlinking = false;
   bool _showBackButtonBlinking = false;
   String? _tutorialFaceTarget;
+  Trace? _renderTrace;
 
   @override
   void initState() {
     super.initState();
+
+    // 🌟 1. 画面の準備が始まった瞬間に計測スタート！
+    _renderTrace = FirebasePerformance.instance.newTrace(
+      'customize_screen_trace',
+    );
+    _renderTrace?.start();
+
     _setupPageController = PageController(initialPage: 0);
     _currentView = widget.isInitialSetup
         ? CustomizeView.initialSetup
@@ -82,6 +91,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     } else {
       _playSavedBgm();
     }
+
+    // 🌟 2. 最初の画面が描画された直後にストップ！
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _renderTrace?.stop();
+    });
   }
 
   @override
@@ -297,7 +311,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 style: const TextStyle(color: Colors.grey),
               ),
             ),
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 try {
                   SfxManager.instance.playTapSound();
@@ -316,7 +330,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   _loadEquippedItems();
                 });
               },
-              style: ElevatedButton.styleFrom(
+              style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -373,7 +387,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () async {
               FirebaseAnalytics.instance.logEvent(
                 name: 'start_customize_buy_item',
@@ -416,14 +430,13 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 _equipItem(item);
               }
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
               foregroundColor: Colors.white,
               side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
             ),
             child: Text(
               l10n.exchange,
@@ -482,7 +495,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(l10n.cancel, style: TextStyle(color: Colors.grey[600])),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () async {
               FirebaseAnalytics.instance.logEvent(
                 name: 'premium_open_character_customize',
@@ -495,14 +508,13 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 ),
               );
             },
-            style: ElevatedButton.styleFrom(
+            style: FilledButton.styleFrom(
               backgroundColor: const Color(0xFFFF7043),
               foregroundColor: Colors.white,
               side: const BorderSide(color: Color(0xFFFFCA28), width: 2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
             ),
             child: Text(
               l10n.seeDetails,
@@ -616,7 +628,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       backgroundColor: const Color(0xFFFFF3E0),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
         toolbarHeight: 48,
         leading: BackButton(
           color: Colors.black54,
@@ -769,7 +780,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                                 !PurchaseManager.instance.isPremium.value;
 
                             return Card(
-                              elevation: isSelected ? 6 : 2,
                               color: isSelected
                                   ? const Color(0xFFFFF9C4)
                                   : Colors.white,
@@ -892,7 +902,11 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Image.asset(_setupSelectedCharacter!, height: 100),
+                    Image.asset(
+                      _setupSelectedCharacter!,
+                      height: 100,
+                      cacheWidth: 200,
+                    ),
                   ],
                 ],
               ),
@@ -902,16 +916,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 4,
-              offset: Offset(0, -2),
-            ),
-          ],
-        ),
+        decoration: const BoxDecoration(color: Colors.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center, // 中央寄せ
           children: [
@@ -960,7 +965,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
               ),
               const SizedBox(width: 16), // ボタン間の隙間
             ],
-            ElevatedButton(
+            FilledButton(
               onPressed: () async {
                 try {
                   SfxManager.instance.playTapSound();
@@ -1028,7 +1033,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   Navigator.pop(context, true);
                 }
               },
-              style: ElevatedButton.styleFrom(
+              style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFFFF7043),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
@@ -1038,7 +1043,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                elevation: 4,
               ),
               child: Text(
                 _setupStep == 4
@@ -1070,7 +1074,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             child: Align(
               alignment: Alignment.topCenter,
               heightFactor: 0.5,
-              child: Image.asset(item.imagePath),
+              child: Image.asset(item.imagePath, cacheWidth: 200),
             ),
           ),
         ),
@@ -1083,7 +1087,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             child: Align(
               alignment: Alignment.topCenter,
               heightFactor: 0.7,
-              child: Image.asset(item.imagePath),
+              child: Image.asset(item.imagePath, cacheWidth: 200),
             ),
           ),
         ),
@@ -1096,7 +1100,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             child: Align(
               alignment: Alignment.bottomCenter,
               heightFactor: 0.5,
-              child: Image.asset(item.imagePath),
+              child: Image.asset(item.imagePath, cacheWidth: 200),
             ),
           ),
         ),
@@ -1115,7 +1119,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     heightFactor: 0.5,
-                    child: Image.asset(item.imagePath),
+                    child: Image.asset(item.imagePath, cacheWidth: 200),
                   ),
                 ),
               ),
@@ -1127,10 +1131,10 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
       // 🌟 追加: 背景画像のサムネイル表示
       return ClipRRect(
         borderRadius: BorderRadius.circular(4),
-        child: Image.asset(item.imagePath, fit: BoxFit.cover),
+        child: Image.asset(item.imagePath, fit: BoxFit.cover, cacheWidth: 200),
       );
     }
-    return Image.asset(item.imagePath);
+    return Image.asset(item.imagePath, cacheWidth: 200);
   }
 
   // ==========================================
@@ -1206,14 +1210,13 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
         SizedBox(
           width: 180,
           height: 180,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
+          child: FilledButton(
+            style: FilledButton.styleFrom(
               backgroundColor: color,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              elevation: 4,
               padding: const EdgeInsets.all(12),
             ),
             onPressed: () {
@@ -1518,7 +1521,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
             !PurchaseManager.instance.isPremium.value;
 
         Widget card = Card(
-          elevation: isEquipped ? 4 : 2,
           color: isPurchased ? Colors.white : Colors.grey[200],
           shape: RoundedRectangleBorder(
             side: BorderSide(
@@ -1705,15 +1707,6 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
                 color: isSelected ? Colors.blueAccent : Colors.transparent,
                 width: isSelected ? 3 : 0,
               ),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: Colors.blueAccent.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                      ),
-                    ]
-                  : [const BoxShadow(color: Colors.black12, blurRadius: 2)],
             ),
             child: Stack(
               children: [

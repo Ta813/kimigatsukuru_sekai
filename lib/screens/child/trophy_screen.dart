@@ -160,7 +160,6 @@ class _TrophyScreenState extends State<TrophyScreen>
     IconData displayIcon = trophy.icon;
 
     return Card(
-      elevation: isUnlocked ? 4 : 0, // 未達成はペタッとさせて立体感をなくす
       // 🌟 未達成のものは薄暗いグレー（Colors.grey[200]）にする
       color: isUnlocked ? Colors.white : Colors.grey[200]!.withOpacity(0.8),
       shape: RoundedRectangleBorder(

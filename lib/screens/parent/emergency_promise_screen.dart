@@ -153,7 +153,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                 onPressed: () => Navigator.pop(ctx),
                 child: Text(l10n.cancel),
               ),
-              ElevatedButton(
+              FilledButton(
                 onPressed: () {
                   FirebaseAnalytics.instance.logEvent(
                     name: 'emegency_limit_reached_open_paywall',
@@ -306,7 +306,6 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                                 : 1.0,
                             child: Card(
                               margin: const EdgeInsets.only(bottom: 8.0),
-                              elevation: 1,
                               child: ListTile(
                                 leading: Text(
                                   promise['icon'] as String,
@@ -481,11 +480,11 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                               children: [
                                 BlinkingEffect(
                                   isBlinking: true,
-                                  child: ElevatedButton(
+                                  child: FilledButton(
                                     onPressed: () {
                                       _savePromise();
                                     },
-                                    style: ElevatedButton.styleFrom(
+                                    style: FilledButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                         vertical: 12,
                                       ),
@@ -506,7 +505,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                             )
                           : Opacity(
                               opacity: widget.isTutorial ? 0.4 : 1.0,
-                              child: ElevatedButton(
+                              child: FilledButton(
                                 onPressed: widget.isTutorial
                                     ? null
                                     : () {
@@ -515,7 +514,7 @@ class _EmergencyPromiseScreenState extends State<EmergencyPromiseScreen> {
                                         );
                                         _savePromise();
                                       },
-                                style: ElevatedButton.styleFrom(
+                                style: FilledButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 12,
                                   ),

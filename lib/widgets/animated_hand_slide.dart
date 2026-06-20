@@ -41,13 +41,6 @@ class _AnimatedHandSlideState extends State<AnimatedHandSlide>
         Icons.touch_app, // A finger icon
         color: Colors.white,
         size: 40,
-        shadows: [
-          Shadow(
-            color: Colors.black54,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
       ),
     );
   }

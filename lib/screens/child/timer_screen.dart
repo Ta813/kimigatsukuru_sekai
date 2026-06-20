@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/managers/tts_manager.dart';
@@ -14,7 +15,6 @@ import '../../managers/sfx_manager.dart';
 import '../../managers/bgm_manager.dart';
 import '../../widgets/ad_banner.dart';
 import '../../l10n/app_localizations.dart';
-import 'package:confetti/confetti.dart';
 import '../../widgets/blinking_effect.dart';
 import '../../widgets/animated_tap_finger.dart';
 import '../parent/child_name_settings_screen.dart'; // 名前設定画面
@@ -53,8 +53,6 @@ class _TimerScreenState extends State<TimerScreen>
   String? _equippedHeadgear;
   String? _equippedAccessory;
 
-  late ConfettiController _confettiController; // ★ 紙吹雪のコントローラーを宣言
-
   bool _isFinishedButtonPressed = false;
   bool _isCharacterSad = false;
   bool _isInteractionBusy = false;
@@ -87,10 +85,6 @@ class _TimerScreenState extends State<TimerScreen>
     _basePoints = widget.promise['points'] as int? ?? 0;
     _checkTutorial();
     _loadBoostMultiplier();
-
-    _confettiController = ConfettiController(
-      duration: const Duration(seconds: 6), // 6秒間だけ紙吹雪を出す
-    );
 
     // ★ アニメーションコントローラーを初期化
     _hintAnimationController = AnimationController(
@@ -186,7 +180,6 @@ class _TimerScreenState extends State<TimerScreen>
   void dispose() {
     _isDisposed = true; // ★ 破棄フラグを立てる
     _ttsManager.stop();
-    _confettiController.dispose();
     _hintAnimationController.dispose();
     // ★アプリの状態変化の監視を終了
     WidgetsBinding.instance.removeObserver(this);
@@ -660,124 +653,88 @@ class _TimerScreenState extends State<TimerScreen>
     //         ),
     //         BlinkingEffect(
     //           isBlinking: _isTutorial,
-    //           child: ElevatedButton(
+    //           child: FilledButton(
     //             onPressed: _isCompleting
     //                 ? null
     //                 : () async {
     //                     if (!mounted) return;
     //                     setState(() => _isCompleting = true);
-    final localizations = AppLocalizations.of(context);
-    final lang = localizations?.localeName ?? 'en';
-    final voiceDir = SfxManager.instance.getVoiceDir(lang);
-    // まず承認ダイアログを閉じる
-    // Navigator.of(dialogContext).pop();
 
-    // チュートリアルで「おわった！」ボタンを押したかチェック
-    final isTutorialStepShown = await SharedPrefsHelper.isTutorialStepShown(
-      SharedPrefsHelper.tutorialStepPromiseKey,
+    // 1. トレース（ストップウォッチ）を用意して、名前をつける
+    final Trace trace = FirebasePerformance.instance.newTrace(
+      'timer_finish_button_trace',
     );
-    if (!isTutorialStepShown) {
-      FirebaseAnalytics.instance.logEvent(
-        name: 'tutorial_tap_yes_finished_button',
+
+    // 2. 計測スタート！
+    await trace.start();
+
+    try {
+      final localizations = AppLocalizations.of(context);
+      final lang = localizations?.localeName ?? 'en';
+      final voiceDir = SfxManager.instance.getVoiceDir(lang);
+      // まず承認ダイアログを閉じる
+      // Navigator.of(dialogContext).pop();
+
+      // チュートリアルで「おわった！」ボタンを押したかチェック
+      final isTutorialStepShown = await SharedPrefsHelper.isTutorialStepShown(
+        SharedPrefsHelper.tutorialStepPromiseKey,
       );
-    }
-
-    // 次に、時間切れかどうかで処理を分岐
-    if (!_isTimeUp) {
-      _confettiController.play();
-      try {
-        SfxManager.instance.playTimerWinSound();
-      } catch (e) {
-        print('再生エラー: $e');
-      }
-      await Future.delayed(const Duration(seconds: 2));
-
-      // ◯◯がんばったね。
-      if (_childFullName != null && _childFullName!.isNotEmpty) {
-        await _speak('$_childFullName');
-        await Future.delayed(Duration(milliseconds: 1300 * _namesListCount));
+      if (!isTutorialStepShown) {
+        FirebaseAnalytics.instance.logEvent(
+          name: 'tutorial_tap_yes_finished_button',
+        );
       }
 
-      if (lang == 'ja') {
-        try {
-          SfxManager.instance.playTimerLoseSound();
-        } catch (e) {
-          print('再生エラー: $e');
+      // 次に、時間切れかどうかで処理を分岐
+      if (!_isTimeUp) {
+        if (lang == 'ja') {
+          try {
+            SfxManager.instance.playTimerLoseSound();
+          } catch (e) {
+            print('再生エラー: $e');
+          }
+        } else {
+          final List<String> soundsToPlay = [];
+          soundsToPlay.addAll(['se/$voiceDir/you_did_your_best.mp3']);
+          try {
+            SfxManager.instance.playSequentialSounds(soundsToPlay);
+          } catch (e) {
+            print('再生エラー: $e');
+          }
+        }
+        await Future.delayed(const Duration(seconds: 2));
+        // 時間内なら -> ルーレットへ
+        if (mounted) {
+          _showRouletteAndFinish();
         }
       } else {
-        final List<String> soundsToPlay = [];
-        soundsToPlay.addAll(['se/$voiceDir/you_did_your_best.mp3']);
-        try {
-          SfxManager.instance.playSequentialSounds(soundsToPlay);
-        } catch (e) {
-          print('再生エラー: $e');
+        if (lang == 'ja') {
+          try {
+            SfxManager.instance.playTimerLoseSound();
+          } catch (e) {
+            print('再生エラー: $e');
+          }
+        } else {
+          final String lang = AppLocalizations.of(context)!.localeName;
+          final String voiceDir = SfxManager.instance.getVoiceDir(lang);
+          final List<String> soundsToPlay = [];
+          soundsToPlay.addAll(['se/$voiceDir/you_did_your_best.mp3']);
+          try {
+            SfxManager.instance.playSequentialSounds(soundsToPlay);
+          } catch (e) {
+            print('再生エラー: $e');
+          }
+        }
+        await Future.delayed(const Duration(seconds: 2));
+
+        // 時間切れなら -> ポイント半分で終了
+        if (mounted) {
+          _finishPromise(pointMultiplier: 0.5, exp: 1);
         }
       }
-      await Future.delayed(const Duration(seconds: 1));
-
-      try {
-        SfxManager.instance.playTimerWinSound2();
-      } catch (e) {
-        print('再生エラー: $e');
-      }
-      await Future.delayed(const Duration(seconds: 4));
-      // 時間内なら -> ルーレットへ
-      if (mounted) {
-        _showRouletteAndFinish();
-      }
-    } else {
-      if (_childFullName != null && _childFullName!.isNotEmpty) {
-        await _speak('$_childFullName');
-        await Future.delayed(Duration(milliseconds: 1300 * _namesListCount));
-      }
-
-      if (lang == 'ja') {
-        try {
-          SfxManager.instance.playTimerLoseSound();
-        } catch (e) {
-          print('再生エラー: $e');
-        }
-      } else {
-        final String lang = AppLocalizations.of(context)!.localeName;
-        final String voiceDir = SfxManager.instance.getVoiceDir(lang);
-        final List<String> soundsToPlay = [];
-        soundsToPlay.addAll(['se/$voiceDir/you_did_your_best.mp3']);
-        try {
-          SfxManager.instance.playSequentialSounds(soundsToPlay);
-        } catch (e) {
-          print('再生エラー: $e');
-        }
-      }
-      await Future.delayed(const Duration(seconds: 2));
-
-      // 時間切れなら -> ポイント半分で終了
-      if (mounted) {
-        _finishPromise(pointMultiplier: 0.5, exp: 1);
-      }
+    } finally {
+      await trace.stop();
     }
-    //               },
-    //         style: ElevatedButton.styleFrom(
-    //           backgroundColor: const Color(0xFFFF7043), // オレンジ
-    //           foregroundColor: Colors.white,
-    //           side: const BorderSide(
-    //             color: Color(0xFFFFCA28),
-    //             width: 2,
-    //           ), // 黄色の輪郭
-    //           shape: RoundedRectangleBorder(
-    //             borderRadius: BorderRadius.circular(20),
-    //           ),
-    //           elevation: 4,
-    //         ),
-    //         child: Text(
-    //           AppLocalizations.of(context)!.yesFinished,
-    //           style: const TextStyle(fontWeight: FontWeight.bold),
-    //         ),
-    //       ),
-    //     ),
-    //   ],
-    // );
-    // },
-    // );
   }
 
   // ★ルーレットを表示して、その結果で終了処理を呼ぶメソッド
@@ -1168,7 +1125,7 @@ class _TimerScreenState extends State<TimerScreen>
                     children: [
                       BlinkingEffect(
                         isBlinking: _isTutorial && !_isFinishedButtonPressed,
-                        child: ElevatedButton(
+                        child: FilledButton(
                           // ★「おわった！」ボタンは、常に承認ダイアログを呼び出すだけ
                           onPressed: _isFinishedButtonPressed
                               ? null
@@ -1210,7 +1167,7 @@ class _TimerScreenState extends State<TimerScreen>
                                   _timer?.cancel();
                                   _showApprovalDialog();
                                 },
-                          style: ElevatedButton.styleFrom(
+                          style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFFFF7043),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(
@@ -1220,7 +1177,6 @@ class _TimerScreenState extends State<TimerScreen>
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
-                            elevation: 4,
                           ),
                           child: Text(
                             AppLocalizations.of(context)!.finished,
@@ -1254,12 +1210,6 @@ class _TimerScreenState extends State<TimerScreen>
                                   color: Colors.orange,
                                   width: 2,
                                 ),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    blurRadius: 4,
-                                    color: Colors.black26,
-                                  ),
-                                ],
                               ),
                               child: Text(
                                 AppLocalizations.of(
@@ -1286,7 +1236,11 @@ class _TimerScreenState extends State<TimerScreen>
                 bottom: 0,
                 child: Column(
                   children: [
-                    Image.asset(currentCharacterPath, height: 165),
+                    Image.asset(
+                      currentCharacterPath,
+                      height: 165,
+                      cacheWidth: 330,
+                    ),
                     Row(
                       children: [
                         // 応援マークボタン
@@ -1438,30 +1392,6 @@ class _TimerScreenState extends State<TimerScreen>
                   ],
                 ),
               ),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.topCenter, // 画面の上部中央から紙吹雪を出す
-              child: ConfettiWidget(
-                confettiController: _confettiController,
-                blastDirectionality: BlastDirectionality.explosive, // 全方向に爆発
-                shouldLoop: false, // 繰り返しはしない
-                numberOfParticles: 30, // パーティクルの数
-                gravity: 0.3, // 重力（ゆっくり落ちるように）
-                emissionFrequency: 0.05, // 発生頻度
-                colors: const [
-                  // 紙吹雪の色
-                  Colors.green,
-                  Colors.blue,
-                  Colors.pink,
-                  Colors.orange,
-                  Colors.purple,
-                  Colors.red,
-                  Colors.yellow,
-                  Colors.white,
-                  Colors.black,
-                ],
-              ),
-            ),
           ],
         ),
         // 画面下部にバナーを設置

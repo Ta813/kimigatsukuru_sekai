@@ -81,12 +81,11 @@ class WidgetActionSelectionDialog extends StatelessWidget {
     required String text,
     required VoidCallback onTap,
   }) {
-    return ElevatedButton(
+    return FilledButton(
       onPressed: onTap,
-      style: ElevatedButton.styleFrom(
+      style: FilledButton.styleFrom(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
-        elevation: 2,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),

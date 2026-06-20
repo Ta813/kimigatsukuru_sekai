@@ -113,11 +113,10 @@ class HelpMenuDialog extends StatelessWidget {
     required Color color,
     required String resultKey,
   }) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
+    return FilledButton(
+      style: FilledButton.styleFrom(
         backgroundColor: color,
         foregroundColor: Colors.white,
-        elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         minimumSize: const Size(0, 45), // 少し高さを確保

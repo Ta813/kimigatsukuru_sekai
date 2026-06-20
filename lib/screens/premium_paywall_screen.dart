@@ -282,9 +282,6 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
       decoration: BoxDecoration(
         color: Colors.redAccent,
         borderRadius: BorderRadius.circular(30),
-        boxShadow: const [
-          BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
-        ],
       ),
       child: Text(
         AppLocalizations.of(
@@ -337,6 +334,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                           Image.asset(
                             'assets/images/character_ouji.gif', // 💡 王子様の画像名に合わせてください
                             height: 60,
+                            cacheWidth: 120,
                           ),
                           const SizedBox(width: 6),
                           Text(
@@ -352,6 +350,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                           Image.asset(
                             'assets/images/character_hime.gif', // 💡 お姫様の画像名に合わせてください
                             height: 60,
+                            cacheWidth: 120,
                           ),
                         ],
                       ),
@@ -366,16 +365,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
               Expanded(
                 flex: 4,
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(-5, 0),
-                      ),
-                    ],
-                  ),
+                  decoration: BoxDecoration(color: Colors.white),
                   child: _buildRightSidePanel(l10n),
                 ),
               ),
@@ -418,6 +408,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                           Image.asset(
                             'assets/images/character_ouji.gif', // 💡 王子様の画像名に合わせてください
                             height: 60,
+                            cacheWidth: 120,
                           ),
                           const SizedBox(width: 12),
                           Text(
@@ -433,6 +424,7 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
                           Image.asset(
                             'assets/images/character_hime.gif', // 💡 お姫様の画像名に合わせてください
                             height: 60,
+                            cacheWidth: 120,
                           ),
                         ],
                       ),
@@ -471,13 +463,6 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           child: IconButton(
             icon: const Icon(Icons.close, color: Colors.black87),
@@ -612,18 +597,17 @@ class _PremiumPaywallScreenState extends State<PremiumPaywallScreen> {
 
               const SizedBox(height: 10),
 
-              ElevatedButton(
+              FilledButton(
                 onPressed: (_selectedPackage != null && !_isPurchasing)
                     ? _purchasePremium
                     : null,
-                style: ElevatedButton.styleFrom(
+                style: FilledButton.styleFrom(
                   backgroundColor: _primaryColor,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  elevation: 0,
                 ),
                 child: Text(
                   l10n.paywallContinue,

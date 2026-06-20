@@ -36,7 +36,11 @@ class _DraggableCharacterState extends State<DraggableCharacter> {
   Widget build(BuildContext context) {
     final Widget displayWidget =
         widget.customWidget ??
-        Image.asset(widget.imagePath!, height: widget.size);
+        Image.asset(
+          widget.imagePath!,
+          height: widget.size,
+          cacheWidth: widget.size.toInt() * 2,
+        );
 
     return Positioned(
       left: widget.position.dx,

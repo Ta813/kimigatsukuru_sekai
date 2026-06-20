@@ -163,7 +163,11 @@ class _RouletteDialogState extends State<RouletteDialog> {
               ? Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset('assets/images/slot_spinning.gif', height: 150),
+                    Image.asset(
+                      'assets/images/slot_spinning.gif',
+                      height: 150,
+                      cacheWidth: 300,
+                    ),
                     const SizedBox(height: 10),
                     Text.rich(
                       TextSpan(
@@ -206,6 +210,7 @@ class _RouletteDialogState extends State<RouletteDialog> {
                           ? 'assets/images/slot_win.png'
                           : 'assets/images/slot_lose.png',
                       height: 150,
+                      cacheWidth: 300,
                     ),
                     Text(
                       // 結果表示
@@ -258,9 +263,9 @@ class _RouletteDialogState extends State<RouletteDialog> {
           //       const SizedBox(height: 16),
           //       BlinkingEffect(
           //         isBlinking: widget.isTutorial,
-          //         child: ElevatedButton(
+          //         child: FilledButton(
           //           onPressed: _spin,
-          //           style: ElevatedButton.styleFrom(
+          //           style: FilledButton.styleFrom(
           //             backgroundColor: const Color(0xFFFF7043), // オレンジ
           //             foregroundColor: Colors.white,
           //             side: const BorderSide(
@@ -270,7 +275,6 @@ class _RouletteDialogState extends State<RouletteDialog> {
           //             shape: RoundedRectangleBorder(
           //               borderRadius: BorderRadius.circular(20),
           //             ),
-          //             elevation: 4,
           //           ),
           //           child: Text(
           //             AppLocalizations.of(context)!.rouletteSpin,
