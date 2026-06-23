@@ -20,6 +20,7 @@ enum CustomizeMode {
   sea, // 海モード
   sky, // 空モード
   space, // 宇宙モード
+  jungle, // ジャングルモード
 }
 
 class FurnitureCustomizeScreen extends StatefulWidget {
@@ -49,6 +50,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
   List<String> _equippedSkyLivings = [];
   List<String> _equippedSpaceItems = [];
   List<String> _equippedSpaceLivings = [];
+  List<String> _equippedJungleItems = [];
+  List<String> _equippedJungleLivings = [];
 
   @override
   void initState() {
@@ -72,6 +75,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     final skyLivings = await SharedPrefsHelper.loadEquippedSkyLivings();
     final spaceItems = await SharedPrefsHelper.loadEquippedSpaceItems();
     final spaceLivings = await SharedPrefsHelper.loadEquippedSpaceLivings();
+    final jungleItems = await SharedPrefsHelper.loadEquippedJungleItems();
+    final jungleLivings = await SharedPrefsHelper.loadEquippedJungleLivings();
 
     setState(() {
       _purchasedItemNames = purchased;
@@ -88,6 +93,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       _equippedSkyLivings = skyLivings;
       _equippedSpaceItems = spaceItems;
       _equippedSpaceLivings = spaceLivings;
+      _equippedJungleItems = jungleItems;
+      _equippedJungleLivings = jungleLivings;
     });
   }
 
@@ -149,6 +156,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       await SharedPrefsHelper.saveEquippedSpaceItems(selected);
     } else if (type == 'space_living') {
       await SharedPrefsHelper.saveEquippedSpaceLivings(selected);
+    } else if (type == 'jungle_item') {
+      await SharedPrefsHelper.saveEquippedJungleItems(selected);
+    } else if (type == 'jungle_living') {
+      await SharedPrefsHelper.saveEquippedJungleLivings(selected);
     }
   }
 
@@ -675,7 +686,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               'sky_living',
             ),
           ];
-        } else {
+        } else if (widget.mode == CustomizeMode.space) {
           // space
           final allSpaceItems = shopItems
               .where((item) => item.type == 'space_item')
@@ -706,6 +717,37 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               'space_living',
             ),
           ];
+        } else {
+          // ジャングル
+          final allJungleItems = shopItems
+              .where((item) => item.type == 'jungle_item')
+              .toList();
+          final allJungleLiving = shopItems
+              .where((item) => item.type == 'jungle_living')
+              .toList();
+
+          tabs = [
+            Tab(
+              text: AppLocalizations.of(context)!.jungleItems,
+              icon: const Icon(Icons.forest),
+            ),
+            Tab(
+              text: AppLocalizations.of(context)!.jungleCreatures,
+              icon: const FaIcon(FontAwesomeIcons.frog),
+            ),
+          ];
+          tabViews = [
+            _buildMultiSelectionGrid(
+              allJungleItems,
+              _equippedJungleItems,
+              'jungle_item',
+            ),
+            _buildMultiSelectionGrid(
+              allJungleLiving,
+              _equippedJungleLivings,
+              'jungle_living',
+            ),
+          ];
         }
 
         return DefaultTabController(
@@ -723,7 +765,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                     ? AppLocalizations.of(context)!.seaSettings
                     : widget.mode == CustomizeMode.sky
                     ? AppLocalizations.of(context)!.skySettings
-                    : AppLocalizations.of(context)!.spaceSettings,
+                    : widget.mode == CustomizeMode.space
+                    ? AppLocalizations.of(context)!.spaceSettings
+                    : AppLocalizations.of(context)!.jungleSettings,
                 style: const TextStyle(fontSize: 18),
               ),
               actions: _buildAppBarActions(), // 🌟 追加: 右上のポイント表示

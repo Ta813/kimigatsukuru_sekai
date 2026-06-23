@@ -2340,4 +2340,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tutorialPromptNote => '* आप \"मिशन\" स्क्रीन से किसी भी समय\nट्यूटोरियल शुरू कर सकते हैं।';
+
+  @override
+  String get jungleItems => 'जंगल की वस्तुएं';
+
+  @override
+  String get jungleCreatures => 'जंगल के जीव';
+
+  @override
+  String get jungleSettings => 'जंगल की सेटिंग';
 }

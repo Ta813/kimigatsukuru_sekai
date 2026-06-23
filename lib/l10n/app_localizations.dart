@@ -4548,6 +4548,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'* You can play the tutorial anytime\nfrom the \"Missions\" screen.'**
   String get tutorialPromptNote;
+
+  /// No description provided for @jungleItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Jungle Items'**
+  String get jungleItems;
+
+  /// No description provided for @jungleCreatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Jungle Creatures'**
+  String get jungleCreatures;
+
+  /// No description provided for @jungleSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Jungle Settings'**
+  String get jungleSettings;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

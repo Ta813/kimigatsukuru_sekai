@@ -2340,4 +2340,13 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get tutorialPromptNote => '* آپ \"مشن\" اسکرین سے کسی بھی وقت\nٹیوٹوریل شروع کر سکتے ہیں۔';
+
+  @override
+  String get jungleItems => 'جنگل کی چیزیں';
+
+  @override
+  String get jungleCreatures => 'جنگل کی مخلوقات';
+
+  @override
+  String get jungleSettings => 'جنگل کی ترتیبات';
 }

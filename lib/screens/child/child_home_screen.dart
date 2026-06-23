@@ -3046,7 +3046,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                 if (_showCustomizeBlinking)
                                   const Positioned(
                                     right: -10,
-                                    bottom: -10,
+                                    bottom: 20,
                                     child: AnimatedTapFinger(),
                                   ),
                               ],

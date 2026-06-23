@@ -2340,4 +2340,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tutorialPromptNote => '※チュートリアルは「ミッション」画面から\nいつでもおこなうことができます。';
+
+  @override
+  String get jungleItems => 'ジャングルのアイテム';
+
+  @override
+  String get jungleCreatures => 'ジャングルのいきもの';
+
+  @override
+  String get jungleSettings => 'ジャングルのせってい';
 }

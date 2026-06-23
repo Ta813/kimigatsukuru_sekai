@@ -2340,4 +2340,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tutorialPromptNote => '* يمكنك بدء البرنامج التعليمي في أي وقت\nمن شاشة \"المهام\".';
+
+  @override
+  String get jungleItems => 'عناصر الأدغال';
+
+  @override
+  String get jungleCreatures => 'مخلوقات الأدغال';
+
+  @override
+  String get jungleSettings => 'إعدادات الأدغال';
 }

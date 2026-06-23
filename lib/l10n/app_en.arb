@@ -1097,5 +1097,8 @@
   "nothingToDoRightNow": "Looks like there's nothing to do right now!",
   "tutorialPromptTitle": "Start the tutorial?",
   "tutorialPromptDesc": "We'll guide you through the basics!✨",
-  "tutorialPromptNote": "* You can play the tutorial anytime\nfrom the \"Missions\" screen."
+  "tutorialPromptNote": "* You can play the tutorial anytime\nfrom the \"Missions\" screen.",
+  "jungleItems": "Jungle Items",
+  "jungleCreatures": "Jungle Creatures",
+  "jungleSettings": "Jungle Settings"
 }

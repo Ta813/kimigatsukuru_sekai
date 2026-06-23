@@ -1051,5 +1051,8 @@
   "nothingToDoRightNow": "ऐसा लगता है अभी करने के लिए कुछ नहीं है!",
   "tutorialPromptTitle": "क्या आप ट्यूटोरियल शुरू करना चाहते हैं?",
   "tutorialPromptDesc": "हम आपको खेलने के मूल तरीके सिखाएंगे!✨",
-  "tutorialPromptNote": "* आप \"मिशन\" स्क्रीन से किसी भी समय\nट्यूटोरियल शुरू कर सकते हैं।"
+  "tutorialPromptNote": "* आप \"मिशन\" स्क्रीन से किसी भी समय\nट्यूटोरियल शुरू कर सकते हैं।",
+  "jungleItems": "जंगल की वस्तुएं",
+  "jungleCreatures": "जंगल के जीव",
+  "jungleSettings": "जंगल की सेटिंग"
 }

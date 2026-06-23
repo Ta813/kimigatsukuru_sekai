@@ -1098,5 +1098,8 @@
   "nothingToDoRightNow": "今はやることがないみたい！",
   "tutorialPromptTitle": "チュートリアルをはじめますか？",
   "tutorialPromptDesc": "基本的なあそびかたをごあんないします✨",
-  "tutorialPromptNote": "※チュートリアルは「ミッション」画面から\nいつでもおこなうことができます。"
+  "tutorialPromptNote": "※チュートリアルは「ミッション」画面から\nいつでもおこなうことができます。",
+  "jungleItems": "ジャングルのアイテム",
+  "jungleCreatures": "ジャングルのいきもの",
+  "jungleSettings": "ジャングルのせってい"
 }

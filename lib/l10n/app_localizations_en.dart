@@ -2340,4 +2340,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialPromptNote => '* You can play the tutorial anytime\nfrom the \"Missions\" screen.';
+
+  @override
+  String get jungleItems => 'Jungle Items';
+
+  @override
+  String get jungleCreatures => 'Jungle Creatures';
+
+  @override
+  String get jungleSettings => 'Jungle Settings';
 }

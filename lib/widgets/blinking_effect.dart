@@ -71,8 +71,8 @@ class _BlinkingEffectState extends State<BlinkingEffect>
       animation: _controller,
       builder: (context, child) {
         // 🌟 修正: 影を完全にやめて、ウィジェット自体を少しだけ拡大縮小させる
-        // 1.0（元のサイズ） 〜 1.05（5%拡大） の間をループする
-        final scale = 1.0 + (_controller.value * 0.2);
+        // 1.0（元のサイズ） 〜 1.5（50%拡大） の間をループする
+        final scale = 1.0 + (_controller.value * 0.5);
         return Transform.scale(scale: scale, child: child);
       },
       child: widget.child,

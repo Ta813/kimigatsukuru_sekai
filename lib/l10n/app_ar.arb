@@ -1097,5 +1097,8 @@
   "nothingToDoRightNow": "يبدو أنه لا يوجد شيء لفعله الآن!",
   "tutorialPromptTitle": "هل تريد بدء البرنامج التعليمي؟",
   "tutorialPromptDesc": "سنرشدك خلال أساسيات اللعب!✨",
-  "tutorialPromptNote": "* يمكنك بدء البرنامج التعليمي في أي وقت\nمن شاشة \"المهام\"."
+  "tutorialPromptNote": "* يمكنك بدء البرنامج التعليمي في أي وقت\nمن شاشة \"المهام\".",
+  "jungleItems": "عناصر الأدغال",
+  "jungleCreatures": "مخلوقات الأدغال",
+  "jungleSettings": "إعدادات الأدغال"
 }
