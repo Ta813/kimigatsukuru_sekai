@@ -5,12 +5,9 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as import_ui;
 
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kimigatsukuru_sekai/helpers/image_share_helper.dart';
 import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
@@ -34,7 +31,6 @@ import 'timer_screen.dart';
 import '../parent/parent_top_screen.dart';
 import '../../helpers/shared_prefs_helper.dart';
 import 'character_customize_screen.dart';
-import '../../managers/permission_manager.dart';
 import '../../managers/bgm_manager.dart';
 import '../../managers/sfx_manager.dart';
 import 'math_lock_dialog.dart';
@@ -50,7 +46,6 @@ import '../../widgets/blinking_effect.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../widgets/avatar_display.dart';
 import '../../widgets/animated_tap_finger.dart';
-import 'package:kimigatsukuru_sekai/managers/reward_ad_manager.dart';
 import 'package:home_widget/home_widget.dart'; // 🌟 追加
 import '../../widgets/widget_action_selection_dialog.dart'; // 🌟 追加
 import '../../helpers/widget_capture_helper.dart';
@@ -385,10 +380,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
           // 🌟 超重要: アニメーションが綺麗に終わるまで「2秒」待つ
           // _pointsAddedAnimationController の duration が 2000ms なので、
           // 星が飛び終わるのを待ってから重い処理に入ります。これによりカクつきを防ぎます！
-          await Future.delayed(const Duration(milliseconds: 2000));
+          //await Future.delayed(const Duration(milliseconds: 2000));
         }
-
-        await _initializeConsent();
       }
     });
 
@@ -604,100 +597,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _currentPointOverlay = null;
       }
     });
-  }
-
-  Future<void> _initializeConsent() async {
-    // 🌟 【修正1】RevenueCatの初期化を先に行う！
-    // (この後のUMPダイアログ等で「プレミアムかどうか」を正しく判定するため)
-    try {
-      await PurchaseManager.instance.init();
-    } catch (e) {
-      print("RevenueCat初期化エラー: $e");
-    }
-
-    if (PurchaseManager.instance.isPremium.value) {
-      _initializeSDKs();
-      return;
-    }
-    final connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
-      _initializeSDKs();
-      return;
-    }
-    await _runUMPFlow();
-    if (Platform.isIOS) {
-      try {
-        final status = await Permission.appTrackingTransparency.status;
-        if (status == PermissionStatus.denied ||
-            status == PermissionStatus.provisional) {
-          await Future.delayed(const Duration(milliseconds: 800));
-          await PermissionManager.instance.request(
-            Permission.appTrackingTransparency,
-          );
-        }
-      } catch (e) {}
-    }
-    _initializeSDKs();
-  }
-
-  Future<void> _runUMPFlow() async {
-    final completer = Completer<void>();
-    final params = ConsentRequestParameters();
-
-    ConsentInformation.instance.requestConsentInfoUpdate(
-      params,
-      () async {
-        if (await ConsentInformation.instance.isConsentFormAvailable()) {
-          ConsentForm.loadConsentForm(
-            (ConsentForm consentForm) async {
-              var status = await ConsentInformation.instance.getConsentStatus();
-              if (status == ConsentStatus.required) {
-                consentForm.show((FormError? formError) {
-                  completer.complete();
-                });
-              } else {
-                completer.complete();
-              }
-            },
-            (FormError formError) {
-              completer.complete();
-            },
-          );
-        } else {
-          completer.complete();
-        }
-      },
-      (FormError error) {
-        completer.complete();
-      },
-    );
-
-    return completer.future;
-  }
-
-  void _initializeSDKs() async {
-    try {
-      final facebookAppEvents = FacebookAppEvents();
-      if (Platform.isIOS) {
-        final status = await Permission.appTrackingTransparency.status;
-        await facebookAppEvents.setAdvertiserTracking(
-          enabled: status.isGranted,
-        );
-      } else {
-        await facebookAppEvents.setAdvertiserTracking(enabled: true);
-      }
-    } catch (e) {}
-
-    if (!PurchaseManager.instance.isPremium.value) {
-      try {
-        await MobileAds.instance.initialize();
-      } catch (e) {}
-    }
-
-    // 🌟 アプリ起動時にリワード広告をあらかじめ読み込んでおく
-    try {
-      RewardAdManager.instance.loadAd();
-    } catch (e) {}
   }
 
   void _scheduleMidnightRefresh() {

@@ -32,7 +32,7 @@ class RewardAdManager {
   }
 
   // 🌟 広告を裏側で読み込む（プリロード）
-  void loadAd() {
+  Future<void> loadAd() async {
     if (_isLoading || _rewardedAd != null) return;
 
     _isLoading = true;

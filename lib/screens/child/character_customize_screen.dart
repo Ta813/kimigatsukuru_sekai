@@ -40,7 +40,8 @@ class CharacterCustomizeScreen extends StatefulWidget {
       _CharacterCustomizeScreenState();
 }
 
-class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
+class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen>
+    with WidgetsBindingObserver {
   late CustomizeView _currentView;
 
   List<String> _purchasedItemNames = [];
@@ -93,6 +94,7 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen> {
     }
 
     // 🌟 2. 最初の画面が描画された直後にストップ！
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _renderTrace?.stop();
     });

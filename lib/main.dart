@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:kimigatsukuru_sekai/managers/tts_manager.dart';
-import 'firebase_options.dart'; // flutterfire configureで生成されたファイル
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'providers/locale_provider.dart';
-import 'package:audio_session/audio_session.dart';
-import 'managers/notification_manager.dart';
 import 'screens/splash_screen.dart';
 
 Future<void> main() async {
@@ -27,83 +19,10 @@ Future<void> main() async {
   final localeProvider = LocaleProvider();
   await localeProvider.init();
 
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-
-    if (kDebugMode) {
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
-    } else {
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
-
-      PlatformDispatcher.instance.onError = (error, stack) {
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-        return true;
-      };
-      FlutterError.onError = (errorDetails) {
-        FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-      };
-    }
-  } catch (e) {
-    print('Firebaseの初期化に失敗しました: $e');
-  }
-
-  // 3. その他裏側の処理（通知、音声、Facebook/AdMobの初期化）
-  _initializeBackgroundServices(localeProvider);
-
-  // 🌟 3. UIに最低限必要な準備が終わったら、まず爆速でアプリを起動(描画)します！
+  // 🌟 2. UIに最低限必要な準備が終わったら、まず爆速でアプリを起動(描画)します！
   runApp(
     ChangeNotifierProvider.value(value: localeProvider, child: const MyApp()),
   );
-}
-
-// ----------------------------------------------------
-// 🌟 画面の裏側で走らせる重い初期化処理をまとめたメソッド
-// ----------------------------------------------------
-Future<void> _initializeBackgroundServices(
-  LocaleProvider localeProvider,
-) async {
-  // ★ 追加: TTS（読み上げ機能）の初期化を先に行う！
-  try {
-    final lang = localeProvider.locale!.languageCode;
-    await TtsManager().initialize(lang);
-  } catch (e) {
-    print("TTS初期化エラー: $e");
-  }
-
-  // ① 音声セッションの初期化
-  try {
-    final session = await AudioSession.instance;
-    await session.configure(
-      const AudioSessionConfiguration(
-        avAudioSessionCategory: AVAudioSessionCategory.ambient,
-        avAudioSessionCategoryOptions:
-            AVAudioSessionCategoryOptions.mixWithOthers,
-        avAudioSessionMode: AVAudioSessionMode.defaultMode,
-        androidAudioAttributes: AndroidAudioAttributes(
-          contentType: AndroidAudioContentType.sonification,
-          usage: AndroidAudioUsage.game,
-        ),
-        androidAudioFocusGainType:
-            AndroidAudioFocusGainType.gainTransientMayDuck,
-      ),
-    );
-  } catch (e) {
-    print("AudioSessionの初期化エラー: $e");
-  }
-
-  // ② 通知の初期化とスケジュール登録
-  try {
-    await NotificationManager.instance.init();
-    await NotificationManager.instance.scheduleWeeklyMonday11AM();
-    await NotificationManager.instance
-        .rescheduleAllExistingPromises(); // ★追加: 古い通知の不具合を解消するため再スケジュール
-  } catch (e) {
-    print("通知マネージャーの初期化エラー: $e");
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -187,9 +106,6 @@ class MyApp extends StatelessWidget {
       ),
       // このアプリの「玄関」となる画面を指定します
       home: const SplashScreen(),
-      navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
-      ],
     );
   }
 }
