@@ -35,10 +35,22 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  double _progress = 0.0;
+
   @override
   void initState() {
     super.initState();
     _initializeAll();
+  }
+
+  // 🌟 プログレスバーの描画を確実に更新させるためのメソッド
+  Future<void> _updateProgress(double value) async {
+    if (!mounted) return;
+    setState(() {
+      _progress = value;
+    });
+    // 💡 これが魔法の1行！ 50ミリ秒だけUIスレッドに隙間を作り、画面のバーを再描画させる
+    await Future.delayed(const Duration(milliseconds: 50));
   }
 
   Future<void> _initializeAll() async {
@@ -69,6 +81,8 @@ class _SplashScreenState extends State<SplashScreen> {
     } catch (e) {
       print('Firebaseの初期化に失敗しました: $e');
     }
+    FirebaseAnalytics.instance.logEvent(name: 'splash_screen_start');
+    await _updateProgress(0.1);
 
     // 🌟 1. 画面の準備が始まった瞬間に計測スタート！
     final Trace renderTrace = FirebasePerformance.instance.newTrace(
@@ -88,23 +102,28 @@ class _SplashScreenState extends State<SplashScreen> {
       } finally {
         await revenueCatTrace.stop();
       }
+      await _updateProgress(0.3); // 30%
 
       // 初回起動かどうかの判定
       final isFirstLaunch = await SharedPrefsHelper.isFirstLaunch();
 
       if (isFirstLaunch) {
         // その他の裏側の処理（通知、音声）
-        await _initializeBackgroundServices();
+        await _initializeBackgroundServices(isFirstLaunch);
 
         // 広告とパーミッションの初期化（同時に走らせる）
-        await _initializeConsent();
+        await _initializeConsent(isFirstLaunch);
+        await _updateProgress(1.0); // 100%
+        await Future.delayed(const Duration(milliseconds: 500));
       } else {
         // 2回目以降の起動は待たない
         // その他の裏側の処理（通知、音声）
-        _initializeBackgroundServices();
+        _initializeBackgroundServices(isFirstLaunch);
 
         // 広告とパーミッションの初期化（同時に走らせる）
-        _initializeConsent();
+        _initializeConsent(isFirstLaunch);
+        await _updateProgress(1.0); // 100%
+        await Future.delayed(const Duration(milliseconds: 500));
       }
     } finally {
       // 3. 画面が完全に描画された直後に計測を停止！
@@ -133,6 +152,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
       await SharedPrefsHelper.setFirstLaunchCompleted();
 
+      FirebaseAnalytics.instance.logEvent(name: 'splash_screen_end');
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -148,6 +169,7 @@ class _SplashScreenState extends State<SplashScreen> {
       //   ),
       // );
     } else {
+      FirebaseAnalytics.instance.logEvent(name: 'splash_screen_end');
       // 🌟 2回目以降：いつものホーム画面へ
       Navigator.pushReplacement(
         context,
@@ -156,7 +178,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  Future<void> _initializeConsent() async {
+  Future<void> _initializeConsent(bool isFirstLaunch) async {
     if (PurchaseManager.instance.isPremium.value) {
       _initializeSDKs();
       return;
@@ -167,6 +189,9 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
     await _runUMPFlow();
+    if (isFirstLaunch) {
+      await _updateProgress(0.8);
+    }
     if (Platform.isIOS) {
       try {
         final status = await Permission.appTrackingTransparency.status;
@@ -178,6 +203,9 @@ class _SplashScreenState extends State<SplashScreen> {
           );
         }
       } catch (e) {}
+    }
+    if (isFirstLaunch) {
+      await _updateProgress(0.9);
     }
     _initializeSDKs();
   }
@@ -264,7 +292,7 @@ class _SplashScreenState extends State<SplashScreen> {
   // ----------------------------------------------------
   // 🌟 画面の裏側で走らせる重い初期化処理をまとめたメソッド
   // ----------------------------------------------------
-  Future<void> _initializeBackgroundServices() async {
+  Future<void> _initializeBackgroundServices(bool isFirstLaunch) async {
     // ★ 追加: TTS（読み上げ機能）の初期化を先に行う！
     final Trace ttsTrace = FirebasePerformance.instance.newTrace(
       'tts_init_trace',
@@ -279,7 +307,9 @@ class _SplashScreenState extends State<SplashScreen> {
     } finally {
       await ttsTrace.stop();
     }
-
+    if (isFirstLaunch) {
+      await _updateProgress(0.4);
+    }
     // ① 音声セッションの初期化
     final Trace audioSessionTrace = FirebasePerformance.instance.newTrace(
       'audio_session_init_trace',
@@ -306,6 +336,9 @@ class _SplashScreenState extends State<SplashScreen> {
     } finally {
       await audioSessionTrace.stop();
     }
+    if (isFirstLaunch) {
+      await _updateProgress(0.5);
+    }
 
     // ② 通知の初期化とスケジュール登録
     final Trace notificationTrace = FirebasePerformance.instance.newTrace(
@@ -322,6 +355,9 @@ class _SplashScreenState extends State<SplashScreen> {
     } finally {
       await notificationTrace.stop();
     }
+    if (isFirstLaunch) {
+      await _updateProgress(0.6);
+    }
   }
 
   @override
@@ -332,10 +368,33 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 💡 もしアプリのロゴ画像があれば、ここのコメントを外して表示できます
-            // Image.asset('assets/images/app_icon.png', width: 150),
-            // const SizedBox(height: 24),
-            const CircularProgressIndicator(color: Color(0xFFFF7043)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48.0),
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: LinearProgressIndicator(
+                      value: _progress, // 進捗を反映
+                      minHeight: 12,
+                      backgroundColor: Colors.white,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Color(0xFFFF7043),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${(_progress * 100).toInt()}%', // 「40%」のようなテキスト表示
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 24),
             // 🌟 修正: ローカライズ対応
             Row(
