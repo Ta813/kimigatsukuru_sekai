@@ -805,7 +805,7 @@ class SharedPrefsHelper {
   // ジャングルのアイテムの装備情報を保存
   static Future<void> saveEquippedJungleItems(List<String> items) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('equipped_space_items', items);
+    await prefs.setStringList('equipped_jungle_items', items);
   }
 
   // ジャングルのアイテムの装備情報を読み込み

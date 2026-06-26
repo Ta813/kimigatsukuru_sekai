@@ -64,11 +64,17 @@ class _SplashScreenState extends State<SplashScreen> {
           false,
         );
         await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
+        await FirebasePerformance.instance.setPerformanceCollectionEnabled(
+          false,
+        );
       } else {
         await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
           true,
         );
         await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+        await FirebasePerformance.instance.setPerformanceCollectionEnabled(
+          true,
+        );
 
         PlatformDispatcher.instance.onError = (error, stack) {
           FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);

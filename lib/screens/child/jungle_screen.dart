@@ -210,7 +210,16 @@ class _JungleScreenState extends State<JungleScreen> {
     if (itemPath.contains('avatar')) return 60.0;
     if (itemPath.contains('clothes_')) return 60.0;
     if (itemPath.contains('character')) return 60.0;
-    if (itemPath.contains('item')) return 100.0;
+    if (itemPath.contains('item_conpasu')) return 30.0;
+    if (itemPath.contains('item_gps')) return 30.0;
+    if (itemPath.contains('item_torakku')) return 110.0;
+    if (itemPath.contains('item_hanmokku')) return 100.0;
+    if (itemPath.contains('item_ta-pu')) return 110.0;
+    if (itemPath.contains('item')) return 50.0;
+    if (itemPath.contains('living_kaeru')) return 30.0;
+    if (itemPath.contains('living_kamereon')) return 30.0;
+    if (itemPath.contains('living_kirin')) return 100.0;
+    if (itemPath.contains('living_zou')) return 100.0;
     if (itemPath.contains('living')) return 60.0;
     // ... 他のアイテムのサイズ ...
     return 60.0;
@@ -298,7 +307,7 @@ class _JungleScreenState extends State<JungleScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // --- 背景画像 (宇宙) ---
+          // --- 背景画像 (ジャングル) ---
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -435,7 +444,7 @@ class _JungleScreenState extends State<JungleScreen> {
             key: _shareKey,
             child: Stack(
               children: [
-                // --- 背景画像 (宇宙) ---
+                // --- 背景画像 (ジャングル) ---
                 if (_showWatermarkForCapture)
                   Container(
                     decoration: const BoxDecoration(
