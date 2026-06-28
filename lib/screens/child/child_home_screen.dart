@@ -104,7 +104,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   bool _showCustomizeBlinking = false;
   late AnimationController _hintAnimationController;
   bool _hasUnclaimedMissions = true;
-  bool _showMissionBubble = false; // 🌟 追加：吹き出しを出すかどうかのフラグ
   bool _hasVisitedPointAddition = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -832,15 +831,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _showCustomizeBlinking = true;
       });
       return;
-    }
-
-    bool wasMissionStepShown = await SharedPrefsHelper.isTutorialStepShown(
-      'tutorial_step_mission',
-    );
-    if (!wasMissionStepShown && mounted) {
-      setState(() {
-        _showMissionBubble = true;
-      });
     }
   }
 
@@ -2092,7 +2082,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _showCustomizeBlinking ||
         _showParentSettingsBlinking ||
         _showEmergencyStartBlinking ||
-        _showMissionBubble ||
         _activeMissionTarget != null;
 
     final bool isAnyTutorialActive =
@@ -2100,7 +2089,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
         _showParentSettingsBlinking ||
         _showStartBlinking ||
         _showEmergencyStartBlinking ||
-        _showMissionBubble ||
         _activeMissionTarget != null;
 
     return DefaultTabController(
@@ -2791,148 +2779,65 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               alignment: Alignment.topRight,
                               children: [
                                 IgnorePointer(
-                                  ignoring:
-                                      isAnyTutorialBlinking &&
-                                      !_showMissionBubble,
+                                  ignoring: isAnyTutorialBlinking,
                                   child: Opacity(
-                                    opacity:
-                                        (isAnyTutorialBlinking &&
-                                            !_showMissionBubble)
-                                        ? 0.6
-                                        : 1.0,
-                                    child: BlinkingEffect(
-                                      isBlinking: _showMissionBubble,
-                                      child: _buildRoundMenuButton(
-                                        icon: Icons.assignment_turned_in,
-                                        label: AppLocalizations.of(
+                                    opacity: isAnyTutorialBlinking ? 0.6 : 1.0,
+                                    child: _buildRoundMenuButton(
+                                      icon: Icons.assignment_turned_in,
+                                      label: AppLocalizations.of(
+                                        context,
+                                      )!.missionScreenTitle,
+                                      iconColor: Colors.black,
+                                      backgroundColor: Colors.white, // 白
+                                      isMain: false,
+                                      onTap: () async {
+                                        try {
+                                          SfxManager.instance.playTapSound();
+                                        } catch (e) {}
+                                        FirebaseAnalytics.instance.logEvent(
+                                          name: 'start_child_home_mission',
+                                        );
+                                        if (!mounted) return;
+                                        Navigator.push(
                                           context,
-                                        )!.missionScreenTitle,
-                                        iconColor: Colors.black,
-                                        backgroundColor: Colors.white, // 白
-                                        isMain: false,
-                                        onTap: () async {
-                                          try {
-                                            SfxManager.instance.playTapSound();
-                                          } catch (e) {}
-                                          if (_showMissionBubble) {
-                                            FirebaseAnalytics.instance.logEvent(
-                                              name:
-                                                  'start_child_home_mission_tutorial',
-                                            );
-                                          } else {
-                                            FirebaseAnalytics.instance.logEvent(
-                                              name: 'start_child_home_mission',
-                                            );
-                                          }
-                                          final bool isTutorial =
-                                              _showMissionBubble;
-                                          if (!mounted) return;
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MissionScreen(
-                                                    isTutorialMode: isTutorial,
-                                                  ),
+                                          MaterialPageRoute(
+                                            builder: (context) => MissionScreen(
+                                              isTutorialMode: false,
                                             ),
-                                          ).then((result) async {
-                                            _loadAndDetermineDisplayPromise();
-                                            _checkUnclaimedMissions();
+                                          ),
+                                        ).then((result) async {
+                                          _loadAndDetermineDisplayPromise();
+                                          _checkUnclaimedMissions();
 
-                                            if (isTutorial) {
-                                              final claimedIds =
-                                                  await SharedPrefsHelper.loadClaimedMissionIds();
-                                              if (claimedIds.contains(
-                                                'mission_first_promise',
-                                              )) {
-                                                await SharedPrefsHelper.setTutorialStepShown(
-                                                  'tutorial_step_mission',
-                                                );
-                                                await SharedPrefsHelper.setMissionTutorialCompleted();
-                                                await SharedPrefsHelper.setChildTutorial(
-                                                  SharedPrefsHelper
-                                                      .tutorialPhaseFinish,
-                                                );
-                                                if (mounted) {
-                                                  await _showTutorialDialog(
-                                                    title: AppLocalizations.of(
-                                                      context,
-                                                    )!.tutorialFirstPromiseCompleteTitle,
-                                                    content: AppLocalizations.of(
-                                                      context,
-                                                    )!.tutorialFirstPromiseCompleteDesc,
-                                                    buttonText:
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!.gotIt,
-                                                  );
-                                                  setState(() {
-                                                    _showMissionBubble = false;
-                                                  });
-                                                }
-                                              }
-                                            } else {
-                                              // 🌟 追加: 「やってみる」でIDが返ってきたらターゲットにセットする！
-                                              if (result is String &&
-                                                  result.startsWith(
-                                                    'mission_',
-                                                  )) {
-                                                if (result ==
-                                                    'mission_first_promise') {
-                                                  SharedPrefsHelper.setChildTutorial(
-                                                    SharedPrefsHelper
-                                                        .tutorialPhaseStart,
-                                                  );
-                                                  _showChildTutorial();
-                                                } else if (result ==
-                                                    'mission_parent_setup') {
-                                                  SharedPrefsHelper.setParentTutorial(
-                                                    SharedPrefsHelper
-                                                        .tutorialPhaseStart,
-                                                  );
-                                                  _showParentTutorial();
-                                                } else {
-                                                  setState(() {
-                                                    _activeMissionTarget =
-                                                        result;
-                                                  });
-                                                }
-                                              }
-                                            }
-                                            int earnedPoints =
-                                                await LoginBonusManager()
-                                                    .checkLoginBonus(context);
-                                            await TrophyManager.checkAndShowTrophies(
-                                              context,
-                                            );
-                                            if (earnedPoints > 0 && mounted) {
-                                              try {
-                                                SfxManager.instance
-                                                    .playSuccessSound();
-                                              } catch (e) {}
-                                              _showHugePointAnimation(
-                                                earnedPoints,
+                                          // 🌟 追加: 「やってみる」でIDが返ってきたらターゲットにセットする！
+                                          if (result is String &&
+                                              result.startsWith('mission_')) {
+                                            if (result ==
+                                                'mission_first_promise') {
+                                              SharedPrefsHelper.setChildTutorial(
+                                                SharedPrefsHelper
+                                                    .tutorialPhaseStart,
                                               );
-
-                                              if (!_hasVisitedPointAddition) {
-                                                _animationController.forward(
-                                                  from: 0.0,
-                                                );
-                                              }
+                                              _showChildTutorial();
+                                            } else if (result ==
+                                                'mission_parent_setup') {
+                                              SharedPrefsHelper.setParentTutorial(
+                                                SharedPrefsHelper
+                                                    .tutorialPhaseStart,
+                                              );
+                                              _showParentTutorial();
+                                            } else {
+                                              setState(() {
+                                                _activeMissionTarget = result;
+                                              });
                                             }
-                                          });
-                                        },
-                                      ),
+                                          }
+                                        });
+                                      },
                                     ),
                                   ),
                                 ),
-                                if (_showMissionBubble)
-                                  const Positioned(
-                                    right: -10,
-                                    bottom: -10,
-                                    child: AnimatedTapFinger(),
-                                  )
-                                else if (_hasUnclaimedMissions)
+                                if (_hasUnclaimedMissions)
                                   Positioned(
                                     top: -4,
                                     right: 0,
@@ -3019,22 +2924,58 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                   const CharacterCustomizeScreen(),
                                             ),
                                           ).then((_) async {
-                                            setState(() {
-                                              _showCustomizeBlinking = false;
-                                            });
                                             if (isShown) {
-                                              FirebaseAnalytics.instance.logEvent(
-                                                name:
-                                                    'tutorial_tap_customize_back',
-                                              );
+                                              setState(() {
+                                                _showCustomizeBlinking = false;
+                                              });
                                               await SharedPrefsHelper.setTutorialStepShown(
                                                 SharedPrefsHelper
                                                     .tutorialStepCustomizeKey,
                                               );
-                                              if (!mounted) return;
-                                              setState(() {
-                                                _showMissionBubble = true;
-                                              });
+                                              await SharedPrefsHelper.setChildTutorial(
+                                                SharedPrefsHelper
+                                                    .tutorialPhaseFinish,
+                                              );
+                                              if (mounted) {
+                                                await _showTutorialDialog(
+                                                  title: AppLocalizations.of(
+                                                    context,
+                                                  )!.tutorialFirstPromiseCompleteTitle,
+                                                  content: AppLocalizations.of(
+                                                    context,
+                                                  )!.tutorialFirstPromiseCompleteDesc,
+                                                  buttonText:
+                                                      AppLocalizations.of(
+                                                        context,
+                                                      )!.gotIt,
+                                                );
+                                              }
+
+                                              FirebaseAnalytics.instance
+                                                  .logEvent(
+                                                    name: 'tutorial_finish',
+                                                  );
+                                              int earnedPoints =
+                                                  await LoginBonusManager()
+                                                      .checkLoginBonus(context);
+                                              await TrophyManager.checkAndShowTrophies(
+                                                context,
+                                              );
+                                              if (earnedPoints > 0 && mounted) {
+                                                try {
+                                                  SfxManager.instance
+                                                      .playSuccessSound();
+                                                } catch (e) {}
+                                                _showHugePointAnimation(
+                                                  earnedPoints,
+                                                );
+
+                                                if (!_hasVisitedPointAddition) {
+                                                  _animationController.forward(
+                                                    from: 0.0,
+                                                  );
+                                                }
+                                              }
                                             }
                                             await _loadAndDetermineDisplayPromise();
                                           });
@@ -3618,7 +3559,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                       !_showCustomizeBlinking &&
                       !_showParentSettingsBlinking &&
                       !_showStartBlinking &&
-                      !_showMissionBubble &&
                       !_isDrawingMode &&
                       !_showWatermarkForCapture)
                     Positioned(
@@ -3882,7 +3822,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 child: TutorialCharacterBubble(
                   text: AppLocalizations.of(context)!.tutorialCustomizeBubble,
                   currentStep: 2,
-                  totalSteps: 3,
+                  totalSteps: 2,
                 ),
               ),
             // 🌟 追加: やってみる！の誘導中の吹き出し
@@ -3894,8 +3834,6 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                 right: 80,
                 child: TutorialCharacterBubble(
                   text: _getMissionTargetBubbleText(_activeMissionTarget!),
-                  currentStep: 3,
-                  totalSteps: 3,
                 ),
               ),
             if (_showStartBlinking)
@@ -3911,16 +3849,8 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                     : TutorialCharacterBubble(
                         text: AppLocalizations.of(context)!.tutorialStartBubble,
                         currentStep: 1,
-                        totalSteps: 3,
+                        totalSteps: 2,
                       ),
-              ),
-            if (_showMissionBubble)
-              Positioned(
-                bottom: 80,
-                right: 80,
-                child: TutorialCharacterBubble(
-                  text: AppLocalizations.of(context)!.missionHintBubble,
-                ),
               ),
 
             // 🎨 おえかきモード中のボタン群

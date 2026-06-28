@@ -21,6 +21,7 @@ import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/reward_ad_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/tts_manager.dart';
 import 'package:kimigatsukuru_sekai/providers/locale_provider.dart';
+import 'package:kimigatsukuru_sekai/screens/initial_setup_coordinator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../helpers/shared_prefs_helper.dart';
 import '../l10n/app_localizations.dart'; // 🌟 追加: ローカライズ用のインポート
@@ -147,33 +148,13 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
 
     if (isFirstLaunch) {
-      // 🌟 修正: アバターを選択させる画面へ遷移する前に、タイマーをセット
-      await SharedPrefsHelper.recordFirstLaunchTime();
-
-      // スキップした場合はデフォルトアバターを保存してホームへ直行
-      await SharedPrefsHelper.saveEquippedCharacters([
-        'assets/images/character_usagi.gif',
-      ]);
-      await SharedPrefsHelper.addPurchasedItem('ウサギ');
-
-      await SharedPrefsHelper.setFirstLaunchCompleted();
-
-      FirebaseAnalytics.instance.logEvent(name: 'splash_screen_end');
-
+      //🌟 初回起動：初期設定画面（アバターウィザード）へ
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const ChildHomeScreen(isInitialSetup: true),
+          builder: (context) => const InitialSetupCoordinator(),
         ),
       );
-
-      // 🌟 初回起動：初期設定画面（アバターウィザード）へ
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const InitialSetupCoordinator(),
-      //   ),
-      // );
     } else {
       FirebaseAnalytics.instance.logEvent(name: 'splash_screen_end');
       // 🌟 2回目以降：いつものホーム画面へ

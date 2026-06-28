@@ -25,7 +25,7 @@ class InitialSetupCoordinator extends StatefulWidget {
 
 class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     with WidgetsBindingObserver, TickerProviderStateMixin {
-  bool _isCheckingResume = true; // 🌟 追加: 再開チェック中かどうか
+  bool _isCheckingResume = true; // 🌟 再開チェック中かどうか
 
   @override
   void initState() {
@@ -43,23 +43,21 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     final pattern = await SharedPrefsHelper.loadSetupPattern();
     final step = await SharedPrefsHelper.loadSetupStep();
 
-    if (pattern != null && step > 0) {
-      if (!mounted) return;
-      setState(() {
-        _isCheckingResume = false;
-      });
+    if (!mounted) return;
+    setState(() {
+      _isCheckingResume = false;
+    });
 
-      // 画面構築後に自動で再開
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        _runSetupLoop(pattern, step);
-      });
-    } else {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      setState(() {
-        _isCheckingResume = false;
-      });
-    }
+      if (pattern != null && step > 0) {
+        // 途中から再開
+        _runSetupLoop(pattern, step);
+      } else {
+        // 🌟 変更: 最初からループを開始する（Step 1からスタート）
+        _runSetupLoop('C', 1);
+      }
+    });
   }
 
   @override
@@ -72,17 +70,13 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      // ★ 自分が現在表示されている画面の場合のみ、BGM再生を行う
       if (ModalRoute.of(context)?.isCurrent ?? false) {
         _handleAppResumed();
       }
     }
-    // BGMの停止・再開はBgmManager自身が担当するため、ここでは行わない
   }
 
-  // アプリが前面に戻ってきた時の処理
   Future<void> _handleAppResumed() async {
-    // 保存されたBGMを再生
     _playSavedBgm();
   }
 
@@ -101,6 +95,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
 
   @override
   Widget build(BuildContext context) {
+    // 🌟 変更: ロード中以外は背景だけを表示。実際の画面は_runSetupLoopが上に被せて表示します。
     if (_isCheckingResume) {
       return const Scaffold(
         backgroundColor: Color(0xFFFFF3E0),
@@ -110,188 +105,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
       );
     }
 
-    // 🌟 変更: 最初に見せる画面を「新しいイントロ（4つのチカラ）」に変更
-    return _buildNewIntroScreen();
-  }
-
-  // ==============================================================
-  // 🌟 新しいイントロ画面（アプリの目的・効果を伝える）
-  // ==============================================================
-  Widget _buildNewIntroScreen() {
-    final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF3E0),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24.0,
-                  vertical: 0.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      l10n.setupNewIntroTitle,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        height: 1.4,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.setupNewIntroSubtitle,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.bold,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start, // 高さが違っても上揃えにする
-                      children: [
-                        Expanded(
-                          child: _buildPowerItem(
-                            icon: '🌟',
-                            title: l10n.setupNewIntroPower1Title,
-                            desc: l10n.setupNewIntroPower1Desc,
-                          ),
-                        ),
-                        const SizedBox(width: 12), // 列の間の隙間
-                        Expanded(
-                          child: _buildPowerItem(
-                            icon: '🚀',
-                            title: l10n.setupNewIntroPower2Title,
-                            desc: l10n.setupNewIntroPower2Desc,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12), // 段の間の隙間
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: _buildPowerItem(
-                            icon: '🤝',
-                            title: l10n.setupNewIntroPower3Title,
-                            desc: l10n.setupNewIntroPower3Desc,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildPowerItem(
-                            icon: '🌱',
-                            title: l10n.setupNewIntroPower4Title,
-                            desc: l10n.setupNewIntroPower4Desc,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // ボトムエリア（ボタン）
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-              ),
-              child: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  FilledButton(
-                    onPressed: () {
-                      try {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: 'setup_start',
-                        );
-                        SfxManager.instance.playTapSound();
-                      } catch (e) {}
-                      // 🌟 Pattern C のステップ1（やくそく設定）を開始！
-                      _runSetupLoop('C', 1);
-                    },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF7043),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      minimumSize: const Size(double.infinity, 60),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: Text(
-                      l10n.setupNewIntroStartButton,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const Positioned(
-                    right: 10,
-                    bottom: -10,
-                    child: AnimatedTapFinger(),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPowerItem({
-    required String icon,
-    required String title,
-    required String desc,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(icon, style: const TextStyle(fontSize: 32)),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  desc,
-                  style: const TextStyle(fontSize: 10, color: Colors.black54),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    return const Scaffold(backgroundColor: Color(0xFFFFF3E0));
   }
 
   // ==============================================================
@@ -302,8 +116,8 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     int step, {
     bool isBack = false,
   }) async {
-    // 🌟 変更: Pattern C のステップ数を 5 に変更（やくそく→旧イントロ→着せ替え→ドラッグ→完了）
-    int totalSteps = (pattern == 'C') ? 5 : 6;
+    // 🌟 変更: 全パターンのステップ数を 6 に統一
+    int totalSteps = 6;
 
     // 全ステップ完了した場合、ホーム画面へ遷移
     if (step > totalSteps) {
@@ -323,37 +137,50 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     await SharedPrefsHelper.saveSetupProgress(pattern, step);
     Widget? screen;
 
-    // ステップ番号に応じた画面を取得
+    FirebaseAnalytics.instance.logEvent(name: 'setup_step_$step');
+
+    // 🌟 変更: ご要望の順番に並び替え
     if (pattern == 'C') {
       switch (step) {
         case 1:
-          screen = RegularPromiseSettingsScreen(
-            isInitialSetup: true,
-            currentStep: step,
-            totalSteps: totalSteps,
-          );
-          break;
-        case 2:
-          // 🌟 ここに「旧イントロ画面（アバターの説明など）」を差し込む
+          // ① アバターを設定してね
           screen = AppIntroExplanationScreen(
             currentStep: step,
             totalSteps: totalSteps,
           );
           break;
-        case 3:
+        case 2:
+          // ② アバター設定
           screen = CharacterCustomizeScreen(
             isInitialSetup: true,
             currentStep: step,
             totalSteps: totalSteps,
           );
           break;
-        case 4:
+        case 3:
+          // ③ キャラクター移動説明
           screen = DraggableInstructionScreen(
             currentStep: step,
             totalSteps: totalSteps,
           );
           break;
+        case 4:
+          // ④ 4つの力（新イントロ画面）
+          screen = FourPowersIntroScreen(
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
         case 5:
+          // ⑤ やくそく設定
+          screen = RegularPromiseSettingsScreen(
+            isInitialSetup: true,
+            currentStep: step,
+            totalSteps: totalSteps,
+          );
+          break;
+        case 6:
+          // ⑥ 完了
           screen = SetupCompleteScreen(
             currentStep: step,
             totalSteps: totalSteps,
@@ -454,8 +281,13 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     proceed = await Navigator.push<dynamic>(
       context,
       PageRouteBuilder<dynamic>(
+        // 🌟 最初の画面を開くときはアニメーションなし（パッと表示）にする
+        transitionDuration: step == 1
+            ? Duration.zero
+            : const Duration(milliseconds: 300),
         pageBuilder: (c, a, sa) => screen!,
         transitionsBuilder: (c, a, sa, child) {
+          if (step == 1) return child;
           final offset = isBack
               ? const Offset(-1.0, 0.0)
               : const Offset(1.0, 0.0);
@@ -472,14 +304,15 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     // 画面から返ってきた結果によって処理を分岐
     if (proceed == true) {
       _runSetupLoop(pattern, step + 1, isBack: false); // 次のステップへ
+    } else if (proceed == 'skip_to_drag') {
+      // 🌟 修正: スキップの合図を最優先でキャッチしてStep 3へワープ！
+      _runSetupLoop(pattern, 3, isBack: false);
     } else {
-      // 戻るボタンが押された場合
+      // 戻るボタン（またはAndroidのスワイプ戻る）が押された場合
       if (step == 1) {
-        // ステップ1で戻った場合は、最初の新イントロ画面に戻る
         await SharedPrefsHelper.clearSetupProgress();
-      } else if (proceed == 'skip_to_drag') {
-        // 🌟 追加: スキップの合図を受け取ったら、Step 4（ドラッグ画面）にワープする
-        _runSetupLoop(pattern, 4, isBack: false);
+        // 🌟 修正: 端末のスワイプ操作等で画面を消してしまった場合も、真っ白を防ぐためにStep1を再描画する
+        _runSetupLoop(pattern, 1, isBack: true);
       } else {
         _runSetupLoop(pattern, step - 1, isBack: true); // 前のステップへ
       }
@@ -501,10 +334,13 @@ PreferredSizeWidget buildSetupAppBar(
   return AppBar(
     backgroundColor: Colors.white,
     toolbarHeight: 48,
-    leading: BackButton(
-      color: Colors.black54,
-      onPressed: () => Navigator.pop(context, false),
-    ),
+    // 🌟 変更: 最初の画面（Step 1）は戻るボタンを隠す安全対策！
+    leading: safeStep == 1
+        ? const SizedBox()
+        : BackButton(
+            color: Colors.black54,
+            onPressed: () => Navigator.pop(context, false),
+          ),
     titleSpacing: 0,
     title: Padding(
       padding: const EdgeInsets.only(right: 24.0),
@@ -554,7 +390,195 @@ PreferredSizeWidget buildSetupAppBar(
 }
 
 // ==============================================================
-// 🌟 旧イントロ画面（アプリの機能・世界観の説明画面として独立）
+// 🌟 4つの力（旧新イントロ画面） - Step 4用
+// ==============================================================
+class FourPowersIntroScreen extends StatelessWidget {
+  final int currentStep;
+  final int totalSteps;
+
+  const FourPowersIntroScreen({
+    super.key,
+    required this.currentStep,
+    required this.totalSteps,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFF3E0),
+      appBar: buildSetupAppBar(context, currentStep, totalSteps), // 🌟 追加
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 20.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      l10n.setupNewIntroTitle,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.setupNewIntroSubtitle,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: _buildPowerItem(
+                            icon: '🌟',
+                            title: l10n.setupNewIntroPower1Title,
+                            desc: l10n.setupNewIntroPower1Desc,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildPowerItem(
+                            icon: '🚀',
+                            title: l10n.setupNewIntroPower2Title,
+                            desc: l10n.setupNewIntroPower2Desc,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: _buildPowerItem(
+                            icon: '🤝',
+                            title: l10n.setupNewIntroPower3Title,
+                            desc: l10n.setupNewIntroPower3Desc,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildPowerItem(
+                            icon: '🌱',
+                            title: l10n.setupNewIntroPower4Title,
+                            desc: l10n.setupNewIntroPower4Desc,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // ボトムエリア（ボタン）
+            Container(
+              padding: const EdgeInsets.all(24.0),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  FilledButton(
+                    onPressed: () {
+                      try {
+                        SfxManager.instance.playTapSound();
+                      } catch (e) {}
+                      Navigator.pop(context, true); // 🌟 trueを返して次のStepへ！
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF7043),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
+                      minimumSize: const Size(double.infinity, 60),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: Text(
+                      l10n.setupOkButton, // 🌟 「OK」などのテキストに
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const Positioned(
+                    right: 10,
+                    bottom: -10,
+                    child: AnimatedTapFinger(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPowerItem({
+    required String icon,
+    required String title,
+    required String desc,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(icon, style: const TextStyle(fontSize: 32)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  desc,
+                  style: const TextStyle(fontSize: 10, color: Colors.black54),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ==============================================================
+// 🌟 旧イントロ画面（アバターを設定してね） - Step 1用
 // ==============================================================
 class AppIntroExplanationScreen extends StatefulWidget {
   final int currentStep;
@@ -621,21 +645,16 @@ class _AppIntroExplanationScreenState extends State<AppIntroExplanationScreen> {
                       try {
                         SfxManager.instance.playTapSound();
                       } catch (_) {}
-                      FirebaseAnalytics.instance.logEvent(
-                        name: 'setup_intro_skipped',
-                      );
 
-                      // スキップした場合はデフォルトアバターを保存してホームへ直行
+                      // スキップした場合はデフォルトアバターを保存
                       await SharedPrefsHelper.saveEquippedCharacters([
                         'assets/images/character_usagi.gif',
                       ]);
                       await SharedPrefsHelper.addPurchasedItem('ウサギ');
 
-                      await SharedPrefsHelper.setFirstLaunchCompleted();
-                      await SharedPrefsHelper.clearSetupProgress();
-
+                      // 🌟 修正: 途中でスキップしてもセットアップ完了扱いにはしない
                       if (!mounted) return;
-                      // 🌟 変更: ホーム画面へ直行せず、合図を返してループ管理側でStep 4へ飛ばす
+                      // 合図を返してループ管理側でStep 3へ飛ばす
                       Navigator.pop(context, 'skip_to_drag');
                     },
                     style: TextButton.styleFrom(
@@ -664,9 +683,6 @@ class _AppIntroExplanationScreenState extends State<AppIntroExplanationScreen> {
                       FilledButton(
                         onPressed: () {
                           try {
-                            FirebaseAnalytics.instance.logEvent(
-                              name: 'setup_explanation_next',
-                            );
                             SfxManager.instance.playTapSound();
                           } catch (e) {}
                           Navigator.pop(context, true); // 🌟 trueを返して次のステップへ！
@@ -731,7 +747,6 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
   late Animation<Offset> _fingerAnimation;
   late Animation<double> _fadeAnimation;
 
-  // 画面内で動かせるキャラクターの初期位置（画面サイズ確定後に設定）
   Offset? _avatarPos;
   Offset? _itemPos;
   Offset? _itemPos2;
@@ -749,15 +764,12 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
   @override
   void initState() {
     super.initState();
-    FirebaseAnalytics.instance.logEvent(name: 'setup_drag_instruction_show');
 
-    // 指を動かすアニメーション（2.5秒かけて繰り返す）
     _fingerController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2500),
     )..repeat();
 
-    // 指がスッと現れて、ドラッグし終わったらスッと消えるアニメーション
     _fadeAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 10),
       TweenSequenceItem(tween: ConstantTween(1.0), weight: 60),
@@ -778,7 +790,6 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
 
     if (!mounted) return;
 
-    // 画面サイズを取得
     final size = MediaQuery.of(context).size;
     final screenWidth = size.width;
     final screenHeight = size.height;
@@ -806,11 +817,11 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
       _equippedAccessory = accessory;
       _equippedCharacters = characters;
 
-      _characterPositionsMap = {}; // 一旦クリア
+      _characterPositionsMap = {};
       for (var charPath in _equippedCharacters) {
         _characterPositionsMap[charPath] =
             loadedPositions[charPath] ??
-            Offset(screenWidth * 0.65, screenHeight * 0.45); // 読み込んだ位置を保存
+            Offset(screenWidth * 0.65, screenHeight * 0.45);
       }
     });
   }
@@ -823,12 +834,10 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
       final w = size.width;
       final h = size.height;
 
-      // キャラクターを画面中央付近に配置
       _avatarPos = Offset(w * 0.25, h * 0.45);
       _itemPos = Offset(w * 0.75, h * 0.55);
       _itemPos2 = Offset(w * 0.05, h * 0.5);
 
-      // 指アニメーションを画面サイズに合わせて動的に設定
       _fingerAnimation =
           Tween<Offset>(
             begin: Offset(w * 0.25, h * 0.50),
@@ -855,19 +864,14 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
-      appBar: buildSetupAppBar(
-        context,
-        widget.currentStep,
-        widget.totalSteps,
-      ), // 🌟 追加
+      appBar: buildSetupAppBar(context, widget.currentStep, widget.totalSteps),
       body: SafeArea(
         child: Stack(
           children: [
-            // 背景のテキストと完了ボタン
             SizedBox.expand(
               child: Column(
                 children: [
-                  const SizedBox(height: 40), // アプリバーが追加されたので余白を少し調整
+                  const SizedBox(height: 40),
                   Text(
                     l10n.setupDraggableTitle,
                     textAlign: TextAlign.center,
@@ -898,7 +902,7 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                           try {
                             SfxManager.instance.playTapSound();
                           } catch (e) {}
-                          Navigator.pop(context, true); // 🌟 true を返すことで「次へ」進む
+                          Navigator.pop(context, true);
                         },
                         style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFFFF7043),
@@ -931,7 +935,6 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
               ),
             ),
 
-            // 実際に動かせるキャラクター（うさぎ等）
             if (_avatarPos != null)
               DraggableCharacter(
                 id: 'avatar_on_setup',
@@ -952,7 +955,6 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                 },
               ),
 
-            // 応援キャラクターの表示と操作
             ..._equippedCharacters
                 .where(
                   (charPath) => _characterPositionsMap.containsKey(charPath),
@@ -1001,7 +1003,6 @@ class _DraggableInstructionScreenState extends State<DraggableInstructionScreen>
                 },
               ),
 
-            // 「こうやって動かすんだよ」と教える動く指のアニメーション
             if (_positionsInitialized)
               AnimatedBuilder(
                 animation: _fingerController,
@@ -1051,7 +1052,6 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
   @override
   void initState() {
     super.initState();
-    FirebaseAnalytics.instance.logEvent(name: 'setup_rule_instruction_show');
   }
 
   @override
@@ -1061,7 +1061,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
       backgroundColor: const Color(0xFFFFF3E0),
       appBar: widget.currentStep != null && widget.totalSteps != null
           ? buildSetupAppBar(context, widget.currentStep, widget.totalSteps)
-          : null, // 🌟 追加
+          : null,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -1081,8 +1081,6 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-
-                // ルール1
                 _buildRuleItem(
                   icon: Icons.play_circle_fill,
                   iconColor: Colors.blueAccent,
@@ -1090,8 +1088,6 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                   text: l10n.setupRulesStep1,
                 ),
                 const SizedBox(height: 6),
-
-                // ルール2
                 _buildRuleItem(
                   icon: Icons.check_circle,
                   iconColor: Colors.green,
@@ -1099,8 +1095,6 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                   text: l10n.setupRulesStep2,
                 ),
                 const SizedBox(height: 6),
-
-                // ルール3
                 _buildRuleItem(
                   icon: Icons.store,
                   iconColor: Colors.pinkAccent,
@@ -1108,15 +1102,12 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                   text: l10n.setupRulesStep3,
                 ),
                 const SizedBox(height: 6),
-
-                // ルール4
                 _buildRuleItem(
                   icon: Icons.public,
                   iconColor: Colors.teal,
                   number: '4',
                   text: l10n.setupRulesStep4,
                 ),
-
                 const SizedBox(height: 6),
                 Stack(
                   clipBehavior: Clip.none,
@@ -1127,7 +1118,7 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
                         try {
                           SfxManager.instance.playTapSound();
                         } catch (_) {}
-                        Navigator.pop(context, true); // 🌟 true を返すことで「次へ」進む
+                        Navigator.pop(context, true);
                       },
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFFFF7043),
@@ -1177,7 +1168,6 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
       ),
       child: Row(
         children: [
-          // 数字のバッジ
           Container(
             width: 28,
             height: 28,
@@ -1197,10 +1187,8 @@ class _AppRulesInstructionScreenState extends State<AppRulesInstructionScreen> {
             ),
           ),
           const SizedBox(width: 16),
-          // アイコン
           Icon(icon, size: 32, color: iconColor),
           const SizedBox(width: 16),
-          // テキスト
           Expanded(
             child: Text(
               text,
@@ -1246,7 +1234,6 @@ class _SetupCompleteScreenState extends State<SetupCompleteScreen> {
   @override
   void initState() {
     super.initState();
-    FirebaseAnalytics.instance.logEvent(name: 'setup_drag_instruction_show');
     _loadItems();
   }
 
@@ -1273,16 +1260,11 @@ class _SetupCompleteScreenState extends State<SetupCompleteScreen> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
-      appBar: buildSetupAppBar(
-        context,
-        widget.currentStep,
-        widget.totalSteps,
-      ), // 🌟 追加
+      appBar: buildSetupAppBar(context, widget.currentStep, widget.totalSteps),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ※既存のプログレスバーはAppBarに移動したため削除しました
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -1327,7 +1309,7 @@ class _SetupCompleteScreenState extends State<SetupCompleteScreen> {
                     try {
                       SfxManager.instance.playTapSound();
                     } catch (_) {}
-                    Navigator.pop(context, true); // 🌟 true を返すことで「完了」へ進む
+                    Navigator.pop(context, true);
                   },
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFFFF7043),
@@ -1386,12 +1368,11 @@ class PassDeviceScreen extends StatelessWidget {
           : const Color(0xFFE3F2FD),
       appBar: currentStep == null
           ? null
-          : buildSetupAppBar(context, currentStep, totalSteps), // 🌟 追加
+          : buildSetupAppBar(context, currentStep, totalSteps),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ※既存のプログレスバーはAppBarに移動したため削除しました
             Icon(
               isToChild ? Icons.child_care : Icons.face_retouching_natural,
               size: 100,
@@ -1413,7 +1394,7 @@ class PassDeviceScreen extends StatelessWidget {
                     try {
                       SfxManager.instance.playTapSound();
                     } catch (e) {}
-                    Navigator.pop(context, true); // 🌟 true を返すことで「次へ」進む
+                    Navigator.pop(context, true);
                   },
                   style: FilledButton.styleFrom(
                     backgroundColor: isToChild
