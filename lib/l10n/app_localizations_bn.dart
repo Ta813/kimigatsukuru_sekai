@@ -2349,4 +2349,13 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get jungleSettings => 'জঙ্গলের সেটিংস';
+
+  @override
+  String get desertItems => 'মরুভূমির জিনিসপত্র';
+
+  @override
+  String get desertCreatures => 'মরুভূমির প্রাণী';
+
+  @override
+  String get desertSettings => 'মরুভূমির সেটিংস';
 }

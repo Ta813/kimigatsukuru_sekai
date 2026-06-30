@@ -2349,4 +2349,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get jungleSettings => 'ジャングルのせってい';
+
+  @override
+  String get desertItems => 'さばくのアイテム';
+
+  @override
+  String get desertCreatures => 'さばくのいきもの';
+
+  @override
+  String get desertSettings => 'さばくのせってい';
 }

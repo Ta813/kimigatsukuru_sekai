@@ -1100,5 +1100,8 @@
   "tutorialPromptNote": "* You can play the tutorial anytime\nfrom the \"Missions\" screen.",
   "jungleItems": "Jungle Items",
   "jungleCreatures": "Jungle Creatures",
-  "jungleSettings": "Jungle Settings"
+  "jungleSettings": "Jungle Settings",
+  "desertItems": "Desert Items",
+  "desertCreatures": "Desert Creatures",
+  "desertSettings": "Desert Settings"
 }

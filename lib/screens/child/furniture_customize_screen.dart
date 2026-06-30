@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/point_addition_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/custom_back_button.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -21,6 +22,7 @@ enum CustomizeMode {
   sky, // 空モード
   space, // 宇宙モード
   jungle, // ジャングルモード
+  desert, // 砂漠モード
 }
 
 class FurnitureCustomizeScreen extends StatefulWidget {
@@ -52,6 +54,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
   List<String> _equippedSpaceLivings = [];
   List<String> _equippedJungleItems = [];
   List<String> _equippedJungleLivings = [];
+  List<String> _equippedDesertItems = [];
+  List<String> _equippedDesertLivings = [];
 
   @override
   void initState() {
@@ -77,6 +81,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     final spaceLivings = await SharedPrefsHelper.loadEquippedSpaceLivings();
     final jungleItems = await SharedPrefsHelper.loadEquippedJungleItems();
     final jungleLivings = await SharedPrefsHelper.loadEquippedJungleLivings();
+    final desertItems = await SharedPrefsHelper.loadEquippedDesertItems();
+    final desertLivings = await SharedPrefsHelper.loadEquippedDesertLivings();
 
     setState(() {
       _purchasedItemNames = purchased;
@@ -95,6 +101,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       _equippedSpaceLivings = spaceLivings;
       _equippedJungleItems = jungleItems;
       _equippedJungleLivings = jungleLivings;
+      _equippedDesertItems = desertItems;
+      _equippedDesertLivings = desertLivings;
     });
   }
 
@@ -160,6 +168,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       await SharedPrefsHelper.saveEquippedJungleItems(selected);
     } else if (type == 'jungle_living') {
       await SharedPrefsHelper.saveEquippedJungleLivings(selected);
+    } else if (type == 'desert_item') {
+      await SharedPrefsHelper.saveEquippedDesertItems(selected);
+    } else if (type == 'desert_living') {
+      await SharedPrefsHelper.saveEquippedDesertLivings(selected);
     }
   }
 
@@ -717,7 +729,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               'space_living',
             ),
           ];
-        } else {
+        } else if (widget.mode == CustomizeMode.jungle) {
           // ジャングル
           final allJungleItems = shopItems
               .where((item) => item.type == 'jungle_item')
@@ -748,6 +760,37 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               'jungle_living',
             ),
           ];
+        } else {
+          // 砂漠
+          final allDesertItems = shopItems
+              .where((item) => item.type == 'desert_item')
+              .toList();
+          final allDesertLiving = shopItems
+              .where((item) => item.type == 'desert_living')
+              .toList();
+
+          tabs = [
+            Tab(
+              text: AppLocalizations.of(context)!.desertItems,
+              icon: const Icon(Icons.wb_sunny),
+            ),
+            Tab(
+              text: AppLocalizations.of(context)!.desertCreatures,
+              icon: const FaIcon(FontAwesomeIcons.cat),
+            ),
+          ];
+          tabViews = [
+            _buildMultiSelectionGrid(
+              allDesertItems,
+              _equippedDesertItems,
+              'desert_item',
+            ),
+            _buildMultiSelectionGrid(
+              allDesertLiving,
+              _equippedDesertLivings,
+              'desert_living',
+            ),
+          ];
         }
 
         return DefaultTabController(
@@ -767,7 +810,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                     ? AppLocalizations.of(context)!.skySettings
                     : widget.mode == CustomizeMode.space
                     ? AppLocalizations.of(context)!.spaceSettings
-                    : AppLocalizations.of(context)!.jungleSettings,
+                    : widget.mode == CustomizeMode.jungle
+                    ? AppLocalizations.of(context)!.jungleSettings
+                    : AppLocalizations.of(context)!.desertSettings,
                 style: const TextStyle(fontSize: 18),
               ),
               actions: _buildAppBarActions(), // 🌟 追加: 右上のポイント表示
@@ -796,6 +841,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               ),
             ),
             body: SafeArea(child: TabBarView(children: tabViews)),
+            // 画面下部にバナーを設置
+            bottomNavigationBar: const AdBanner(),
           ),
         );
       },

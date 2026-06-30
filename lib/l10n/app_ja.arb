@@ -1101,5 +1101,8 @@
   "tutorialPromptNote": "※チュートリアルは「ミッション」画面から\nいつでもおこなうことができます。",
   "jungleItems": "ジャングルのアイテム",
   "jungleCreatures": "ジャングルのいきもの",
-  "jungleSettings": "ジャングルのせってい"
+  "jungleSettings": "ジャングルのせってい",
+  "desertItems": "さばくのアイテム",
+  "desertCreatures": "さばくのいきもの",
+  "desertSettings": "さばくのせってい"
 }

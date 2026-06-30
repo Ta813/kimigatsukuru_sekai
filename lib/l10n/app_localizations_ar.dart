@@ -2349,4 +2349,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get jungleSettings => 'إعدادات الأدغال';
+
+  @override
+  String get desertItems => 'عناصر الصحراء';
+
+  @override
+  String get desertCreatures => 'مخلوقات الصحراء';
+
+  @override
+  String get desertSettings => 'إعدادات الصحراء';
 }

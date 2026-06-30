@@ -2349,4 +2349,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get jungleSettings => 'जंगल की सेटिंग';
+
+  @override
+  String get desertItems => 'रेगिस्तान की वस्तुएं';
+
+  @override
+  String get desertCreatures => 'रेगिस्तान के जीव';
+
+  @override
+  String get desertSettings => 'रेगिस्तान की सेटिंग';
 }

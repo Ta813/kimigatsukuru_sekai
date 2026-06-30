@@ -2349,4 +2349,13 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get jungleSettings => 'جنگل کی ترتیبات';
+
+  @override
+  String get desertItems => 'صحرا کی چیزیں';
+
+  @override
+  String get desertCreatures => 'صحرا کی مخلوقات';
+
+  @override
+  String get desertSettings => 'صحرا کی ترتیبات';
 }

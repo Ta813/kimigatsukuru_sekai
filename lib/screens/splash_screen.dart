@@ -146,6 +146,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final isFirstLaunch = await SharedPrefsHelper.isFirstLaunch();
 
     if (!mounted) return;
+    FirebaseAnalytics.instance.logEvent(name: 'splash_screen_end');
 
     if (isFirstLaunch) {
       //🌟 初回起動：初期設定画面（アバターウィザード）へ
@@ -156,7 +157,6 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     } else {
-      FirebaseAnalytics.instance.logEvent(name: 'splash_screen_end');
       // 🌟 2回目以降：いつものホーム画面へ
       Navigator.pushReplacement(
         context,

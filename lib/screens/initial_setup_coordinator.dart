@@ -116,8 +116,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     int step, {
     bool isBack = false,
   }) async {
-    // 🌟 変更: 全パターンのステップ数を 6 に統一
-    int totalSteps = 6;
+    int totalSteps = pattern == 'C' ? 5 : 6;
 
     // 全ステップ完了した場合、ホーム画面へ遷移
     if (step > totalSteps) {
@@ -143,13 +142,6 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     if (pattern == 'C') {
       switch (step) {
         case 1:
-          // ① アバターを設定してね
-          screen = AppIntroExplanationScreen(
-            currentStep: step,
-            totalSteps: totalSteps,
-          );
-          break;
-        case 2:
           // ② アバター設定
           screen = CharacterCustomizeScreen(
             isInitialSetup: true,
@@ -157,21 +149,21 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
             totalSteps: totalSteps,
           );
           break;
-        case 3:
+        case 2:
           // ③ キャラクター移動説明
           screen = DraggableInstructionScreen(
             currentStep: step,
             totalSteps: totalSteps,
           );
           break;
-        case 4:
+        case 3:
           // ④ 4つの力（新イントロ画面）
           screen = FourPowersIntroScreen(
             currentStep: step,
             totalSteps: totalSteps,
           );
           break;
-        case 5:
+        case 4:
           // ⑤ やくそく設定
           screen = RegularPromiseSettingsScreen(
             isInitialSetup: true,
@@ -179,7 +171,7 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
             totalSteps: totalSteps,
           );
           break;
-        case 6:
+        case 5:
           // ⑥ 完了
           screen = SetupCompleteScreen(
             currentStep: step,
@@ -305,8 +297,8 @@ class _InitialSetupCoordinatorState extends State<InitialSetupCoordinator>
     if (proceed == true) {
       _runSetupLoop(pattern, step + 1, isBack: false); // 次のステップへ
     } else if (proceed == 'skip_to_drag') {
-      // 🌟 修正: スキップの合図を最優先でキャッチしてStep 3へワープ！
-      _runSetupLoop(pattern, 3, isBack: false);
+      // 🌟 修正: スキップの合図を最優先でキャッチしてStep 2へワープ！
+      _runSetupLoop(pattern, 2, isBack: false);
     } else {
       // 戻るボタン（またはAndroidのスワイプ戻る）が押された場合
       if (step == 1) {

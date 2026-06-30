@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
+import 'package:kimigatsukuru_sekai/widgets/ad_banner.dart';
 import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/animated_tap_finger.dart';
@@ -1414,6 +1415,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen>
             ],
           ),
         ),
+        // 画面下部にバナーを設置
+        bottomNavigationBar: const AdBanner(),
       ),
     );
   }
@@ -1440,6 +1443,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen>
           'character',
         ),
       ),
+      // 画面下部にバナーを設置
+      bottomNavigationBar: const AdBanner(),
     );
   }
 
@@ -1486,6 +1491,8 @@ class _CharacterCustomizeScreenState extends State<CharacterCustomizeScreen>
             ],
           ),
         ),
+        // 画面下部にバナーを設置
+        bottomNavigationBar: const AdBanner(),
       ),
     );
   }

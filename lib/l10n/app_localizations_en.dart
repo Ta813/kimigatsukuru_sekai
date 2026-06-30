@@ -2349,4 +2349,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jungleSettings => 'Jungle Settings';
+
+  @override
+  String get desertItems => 'Desert Items';
+
+  @override
+  String get desertCreatures => 'Desert Creatures';
+
+  @override
+  String get desertSettings => 'Desert Settings';
 }

@@ -4566,6 +4566,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Jungle Settings'**
   String get jungleSettings;
+
+  /// No description provided for @desertItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Desert Items'**
+  String get desertItems;
+
+  /// No description provided for @desertCreatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Desert Creatures'**
+  String get desertCreatures;
+
+  /// No description provided for @desertSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Desert Settings'**
+  String get desertSettings;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

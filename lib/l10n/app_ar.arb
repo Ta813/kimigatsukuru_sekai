@@ -1100,5 +1100,8 @@
   "tutorialPromptNote": "* يمكنك بدء البرنامج التعليمي في أي وقت\nمن شاشة \"المهام\".",
   "jungleItems": "عناصر الأدغال",
   "jungleCreatures": "مخلوقات الأدغال",
-  "jungleSettings": "إعدادات الأدغال"
+  "jungleSettings": "إعدادات الأدغال",
+  "desertItems": "عناصر الصحراء",
+  "desertCreatures": "مخلوقات الصحراء",
+  "desertSettings": "إعدادات الصحراء"
 }

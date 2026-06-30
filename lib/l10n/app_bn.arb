@@ -1100,5 +1100,8 @@
   "tutorialPromptNote": "* আপনি \"মিশন\" স্ক্রিন থেকে যে কোনো সময়\nটিউটোরিয়াল খেলতে পারবেন।",
   "jungleItems": "জঙ্গলের জিনিসপত্র",
   "jungleCreatures": "জঙ্গলের প্রাণী",
-  "jungleSettings": "জঙ্গলের সেটিংস"
+  "jungleSettings": "জঙ্গলের সেটিংস",
+  "desertItems": "মরুভূমির জিনিসপত্র",
+  "desertCreatures": "মরুভূমির প্রাণী",
+  "desertSettings": "মরুভূমির সেটিংস"
 }

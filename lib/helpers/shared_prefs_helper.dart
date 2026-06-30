@@ -826,6 +826,30 @@ class SharedPrefsHelper {
     return prefs.getStringList('equipped_jungle_livings') ?? [];
   }
 
+  // 砂漠のアイテムの装備情報を保存
+  static Future<void> saveEquippedDesertItems(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_desert_items', items);
+  }
+
+  // 砂漠のアイテムの装備情報を読み込み
+  static Future<List<String>> loadEquippedDesertItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_desert_items') ?? [];
+  }
+
+  // 砂漠の生き物の装備情報を保存
+  static Future<void> saveEquippedDesertLivings(List<String> items) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('equipped_desert_livings', items);
+  }
+
+  // 砂漠の生き物の装備情報を読み込み
+  static Future<List<String>> loadEquippedDesertLivings() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('equipped_desert_livings') ?? [];
+  }
+
   // 特定の機能のガイドを表示したかどうかを確認する
   static Future<bool> isFeatureGuideShown(String featureKey) async {
     final prefs = await SharedPreferences.getInstance();
@@ -936,6 +960,7 @@ class SharedPrefsHelper {
   static const String _keyHasVisitedSky = 'has_visited_sky'; // 空
   static const String _keyHasVisitedSpace = 'has_visited_space'; // 宇宙
   static const String _keyHasVisitedJungle = 'has_visited_jungle'; // ジャングル
+  static const String _keyHasVisitedDesert = 'has_visited_desert'; // 砂漠
   static const String _keyHasVisitedPromiseBoard =
       'has_visited_promise_board'; // やくそくボード訪問フラグ
   static const String _keyCumulativePromiseCount =
@@ -1193,6 +1218,17 @@ class SharedPrefsHelper {
   static Future<void> setHasVisitedJungle(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_keyHasVisitedJungle, value);
+  }
+
+  // --- マップ訪問フラグの管理（砂漠） ---
+  static Future<bool> getHasVisitedDesert() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyHasVisitedDesert) ?? false;
+  }
+
+  static Future<void> setHasVisitedDesert(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyHasVisitedDesert, value);
   }
 
   // --- やくそくボード訪問フラグの管理 ---
