@@ -1692,4 +1692,21 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_keyWidgetBg);
   }
+
+  // ==========================================
+  // 🌟 追加：通知のオンオフ設定用キー
+  // ==========================================
+  static const String _keyNotificationsEnabled = 'notifications_enabled';
+
+  // 通知設定を保存
+  static Future<void> saveNotificationsEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyNotificationsEnabled, enabled);
+  }
+
+  // 通知設定を読み込む（デフォルトはtrue）
+  static Future<bool> loadNotificationsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyNotificationsEnabled) ?? true;
+  }
 }

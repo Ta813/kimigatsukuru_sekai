@@ -143,6 +143,15 @@ class NotificationManager {
       await _flutterLocalNotificationsPlugin.cancel(id: i);
     }
 
+    // ★設定で通知がオフになっている場合はここで終了（キャンセルだけされる）
+    final bool isEnabled = await SharedPrefsHelper.loadNotificationsEnabled();
+    if (!isEnabled) {
+      print(
+        "⚠️ NotificationManager: Notifications disabled by user. Cancelled all promise notifications.",
+      );
+      return;
+    }
+
     // ★翻訳データの読み込み
     final l10n = await _getL10n();
 
@@ -235,6 +244,18 @@ class NotificationManager {
 
   // 毎週月曜日の11時に通知をスケジュールするメソッド（既存）
   Future<void> scheduleWeeklyMonday11AM() async {
+    // 常に一度キャンセルする
+    await _flutterLocalNotificationsPlugin.cancel(id: 0);
+
+    // ★設定で通知がオフになっている場合はここで終了
+    final bool isEnabled = await SharedPrefsHelper.loadNotificationsEnabled();
+    if (!isEnabled) {
+      print(
+        "⚠️ NotificationManager: Notifications disabled by user. Cancelled weekly schedule.",
+      );
+      return;
+    }
+
     // ★翻訳データの読み込み
     final l10n = await _getL10n();
 

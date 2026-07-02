@@ -80,6 +80,14 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:exported="false"
             tools:replace="android:configChanges" />
+
+        <!-- 
+            Android 11など一部端末(OnePlus等)で発生する Glance の Trampoline Activity 関連のクラッシュ
+            (IllegalArgumentException: List adapter activity trampoline invoked without specifying target intent)
+            を防ぐため、未使用の Glance Trampoline Activity を Manifest から削除します
+        -->
+        <activity android:name="androidx.glance.appwidget.action.InvisibleActionTrampolineActivity" tools:node="remove" />
+        <activity android:name="androidx.glance.appwidget.action.ActionTrampolineActivity" tools:node="remove" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

@@ -59,11 +59,33 @@ class HomeWidgetProvider : HomeWidgetProvider() {
                 views.setImageViewResource(R.id.widget_background, R.drawable.widget_preview)
             }
 
-            val pendingIntent = HomeWidgetLaunchIntent.getActivity(
-                context,
-                MainActivity::class.java,
-                Uri.parse("kimiapp://open_action_dialog") 
-            )
+            // LaunchIntentを直接生成せず、Intentを明示的に作成してフラグを付与する
+            val intent = android.content.Intent(context, MainActivity::class.java).apply {
+                data = Uri.parse("kimiapp://open_action_dialog")
+                action = HomeWidgetLaunchIntent.HOME_WIDGET_LAUNCH_ACTION
+                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+
+            var pendingIntentFlags = android.app.PendingIntent.FLAG_UPDATE_CURRENT
+            if (android.os.Build.VERSION.SDK_INT >= 23) {
+                pendingIntentFlags = pendingIntentFlags or android.app.PendingIntent.FLAG_IMMUTABLE
+            }
+
+            val pendingIntent = if (android.os.Build.VERSION.SDK_INT < 34) {
+                android.app.PendingIntent.getActivity(context, 0, intent, pendingIntentFlags)
+            } else {
+                val options = android.app.ActivityOptions.makeBasic()
+                if (android.os.Build.VERSION.SDK_INT >= 35) {
+                    options.setPendingIntentCreatorBackgroundActivityStartMode(
+                        android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                    )
+                } else {
+                    options.pendingIntentBackgroundActivityStartMode = 
+                        android.app.ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                }
+                android.app.PendingIntent.getActivity(context, 0, intent, pendingIntentFlags, options.toBundle())
+            }
+
             views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
 
             appWidgetManager.updateAppWidget(widgetId, views)

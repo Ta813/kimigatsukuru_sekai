@@ -24,8 +24,27 @@ class MainActivity: FlutterFragmentActivity() {
             }
         }
         
-        isUsingSharedEngine = false
-        return null // nullを返すとFlutterActivity/Fragmentが新しいエンジンを作成する
+        // 🌟 修正: 暗黙的エンジン(null返し)は、Activity再生成時等に 
+        // "attached to by another activity" の AssertionError を引き起こすため、
+        // 明示的に FlutterEngine を作成・キャッシュして使い回す
+        isUsingSharedEngine = true 
+        val cache = io.flutter.embedding.engine.FlutterEngineCache.getInstance()
+        var cachedEngine = cache.get("my_cached_engine")
+        
+        if (cachedEngine != null && !isEngineHealthy(cachedEngine)) {
+            Log.w("MainActivity", "Cached engine is unhealthy. Destroying it.")
+            cachedEngine.destroy()
+            cache.remove("my_cached_engine")
+            cachedEngine = null
+        }
+        
+        if (cachedEngine == null) {
+            Log.d("MainActivity", "Creating new explicit engine for cache")
+            cachedEngine = FlutterEngine(context.applicationContext)
+            cache.put("my_cached_engine", cachedEngine)
+        }
+        
+        return cachedEngine
     }
 
     // エンジンが正常にネイティブと接続され、Dartを実行しているかを確認する

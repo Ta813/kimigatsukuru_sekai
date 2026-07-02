@@ -210,16 +210,13 @@ class _DesertScreenState extends State<DesertScreen> {
     if (itemPath.contains('avatar')) return 60.0;
     if (itemPath.contains('clothes_')) return 60.0;
     if (itemPath.contains('character')) return 60.0;
-    if (itemPath.contains('item_conpasu')) return 30.0;
-    if (itemPath.contains('item_gps')) return 30.0;
-    if (itemPath.contains('item_torakku')) return 110.0;
-    if (itemPath.contains('item_hanmokku')) return 100.0;
-    if (itemPath.contains('item_ta-pu')) return 110.0;
+    if (itemPath.contains('item_saboten')) return 90.0;
+    if (itemPath.contains('item_kuruma')) return 100.0;
+    if (itemPath.contains('item_piramiddo')) return 100.0;
+    if (itemPath.contains('item_sufinkusu')) return 100.0;
     if (itemPath.contains('item')) return 50.0;
-    if (itemPath.contains('living_kaeru')) return 30.0;
-    if (itemPath.contains('living_kamereon')) return 30.0;
-    if (itemPath.contains('living_kirin')) return 100.0;
-    if (itemPath.contains('living_zou')) return 100.0;
+    if (itemPath.contains('living_rakuda')) return 100.0;
+    if (itemPath.contains('living_tokage')) return 40.0;
     if (itemPath.contains('living')) return 60.0;
     // ... 他のアイテムのサイズ ...
     return 60.0;

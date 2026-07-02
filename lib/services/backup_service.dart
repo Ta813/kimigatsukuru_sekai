@@ -66,7 +66,7 @@ class BackupService {
         // インテントデータが欠落したり、アクティビティ生成に失敗するケースがある。
         if (Platform.isAndroid) {
           debugPrint("Applying transition delay for Android Google Sign-In...");
-          await Future.delayed(const Duration(milliseconds: 500));
+          await Future.delayed(const Duration(milliseconds: 1000));
         }
 
         try {

@@ -78,6 +78,9 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     // Kotlinの標準ライブラリ（念のため追加）
     implementation(kotlin("stdlib-jdk7"))
+    // Google Sign-In時のSignInHubActivity NPEクラッシュ (主にOnePlus等) を防ぐため、
+    // 最新の play-services-auth を強制してバグ修正を取り込む
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 }
 
 flutter {

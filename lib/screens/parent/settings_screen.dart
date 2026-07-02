@@ -15,6 +15,8 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'dart:io';
 import '../../services/backup_service.dart';
+import '../../managers/notification_manager.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -40,6 +42,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   BackupServiceKbn _linkedService = BackupServiceKbn.none; // ★ 連携状態を管理
   bool _isLoading = false; // ★ バックアップ/復元中のローディングフラグ
 
+  // ▼ 追加: 通知のオンオフ設定
+  bool _notificationsEnabled = true;
+
   // ▼ 追加: デバッグ用シミュレート日付
   DateTime? _simulatedDate;
 
@@ -56,6 +61,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final experience = await SharedPrefsHelper.loadExperience();
     // ▼ 追加: ポイントを読み込む
     final points = await SharedPrefsHelper.loadPoints();
+
+    // ▼ 追加: 通知設定を読み込む
+    final notificationsEnabled =
+        await SharedPrefsHelper.loadNotificationsEnabled();
 
     final service = await SharedPrefsHelper.loadBackupService();
 
@@ -81,6 +90,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         // ▼ 追加: 読み込んだポイントをセット
         _currentPoints = points;
         _pointsController.text = _currentPoints.toString();
+
+        // ▼ 追加: 通知設定をセット
+        _notificationsEnabled = notificationsEnabled;
 
         _linkedService = service;
         _simulatedDate = simDate;
@@ -367,6 +379,87 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ],
                     ),
+                  ),
+                  const Divider(),
+                  // ▼ 追加: 通知のオンオフ設定
+                  SwitchListTile(
+                    secondary: Icon(
+                      _notificationsEnabled
+                          ? Icons.notifications_active
+                          : Icons.notifications_off,
+                    ),
+                    title: Text(l10n.notificationRequestTitle),
+                    value: _notificationsEnabled,
+                    onChanged: (bool value) async {
+                      if (value) {
+                        // ---- オンにする ----
+                        // OS側の通知権限を確認・リクエスト
+                        final status = await Permission.notification.status;
+                        if (status.isGranted) {
+                          // 既に許可済み → そのままスケジュール再登録
+                          await SharedPrefsHelper.saveNotificationsEnabled(
+                            true,
+                          );
+                          setState(() => _notificationsEnabled = true);
+                          await NotificationManager.instance
+                              .rescheduleAllExistingPromises();
+                          await NotificationManager.instance
+                              .scheduleWeeklyMonday11AM();
+                        } else if (status.isDenied) {
+                          // 未許可 → ダイアログでリクエスト
+                          final result = await NotificationManager.instance
+                              .requestPermission();
+                          if (result) {
+                            await SharedPrefsHelper.saveNotificationsEnabled(
+                              true,
+                            );
+                            setState(() => _notificationsEnabled = true);
+                            await NotificationManager.instance
+                                .rescheduleAllExistingPromises();
+                            await NotificationManager.instance
+                                .scheduleWeeklyMonday11AM();
+                          }
+                          // 拒否された場合はトグルを変えない
+                        } else {
+                          // 永続的に拒否 or 制限あり → OS設定画面へ
+                          if (context.mounted) {
+                            await showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                icon: const Icon(
+                                  Icons.notifications_active,
+                                  size: 40,
+                                ),
+                                title: Text(l10n.notificationRequestTitle),
+                                content: Text(l10n.notificationRequestMessage),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: Text(l10n.cancelAction),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      Navigator.pop(ctx);
+                                      await openAppSettings();
+                                    },
+                                    child: Text(l10n.setAction),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        }
+                      } else {
+                        // ---- オフにする ----
+                        await SharedPrefsHelper.saveNotificationsEnabled(false);
+                        setState(() => _notificationsEnabled = false);
+                        // アプリ内の通知スケジュールをすべてキャンセル
+                        await NotificationManager.instance
+                            .scheduleAllRegularPromises([]);
+                        await NotificationManager.instance
+                            .scheduleWeeklyMonday11AM();
+                      }
+                    },
                   ),
                   const Divider(),
                   ListTile(
