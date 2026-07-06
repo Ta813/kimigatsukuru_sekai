@@ -1103,5 +1103,105 @@
   "jungleSettings": "إعدادات الأدغال",
   "desertItems": "عناصر الصحراء",
   "desertCreatures": "مخلوقات الصحراء",
-  "desertSettings": "إعدادات الصحراء"
+  "desertSettings": "إعدادات الصحراء",
+  "miniGame": "ميني-جيم",
+  "miniGameParkTitle": "حديقة الألعاب الصغيرة",
+  "worldRankingTitle": "🌍 ترتيب عالمي",
+  "worldRankingTooltip": "ترتيب عالمي",
+  "miniGameTicketsRemaining": "🎫 التذاكر المتبقية: {count}",
+  "@miniGameTicketsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGamePlayWithChar": "الشخصية لللعب معها",
+  "miniGameAvatar": "الصورة الرمزية",
+  "miniGameSupportChar": "شخصية دعم",
+  "miniGameChangeChar": "تغيير الشخصية",
+  "miniGameChooseChar": "مع من ستلعب؟",
+  "miniGameChooseGame": "أي لعبة تريد؟",
+  "miniGameDodge": "تجنب!",
+  "miniGameNextGame": "(اللعبة التالية)",
+  "miniGameChooseCourse": "اختر مساراً للتجنب!",
+  "miniGamePlayCountRemaining": "🎫 المتبقي:",
+  "miniGamePlayCountValue": "{count} لعبة",
+  "@miniGamePlayCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameLevelRequired": "Lv. {level}+",
+  "@miniGameLevelRequired": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScore": "🏆 أعلى نقطة: {score}",
+  "@miniGameHighScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameViewRanking": " عرض الترتيب",
+  "miniGameNoTicketMsg": "🛑 أتمم الوعود واحصل على تذاكر!",
+  "miniGameScoreLabel": "النقطة: {score}",
+  "@miniGameScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScoreLabel": "🥇 أعلى نقطة: {score}",
+  "@miniGameHighScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameStartButton": "ابدأ!",
+  "miniGameInstructions": "امسح يساراً أو يميناً للتجنب!",
+  "miniGamePlayAgain": "العب مرة أخرى",
+  "miniGameEndButton": "إنهاء",
+  "miniGameRankingTitle": "ترتيب {courseName}",
+  "@miniGameRankingTitle": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "miniGameRankingEmpty": "لا توجد بيانات بعد! جرب اللعب!",
+  "miniGameScoreDisplay": "{score} نقطة",
+  "@miniGameScoreDisplay": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "worldRankingEmpty": "ترتيب {courseName}\nلا يزال فارغاً!\nلديك فرصة أن تكون الأول!",
+  "@worldRankingEmpty": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "courseNameWorld": "العالم الافتراضي",
+  "courseNameIsland": "جزيرة كبيرة",
+  "courseNameSea": "بحر",
+  "courseNameSky": "سماء",
+  "courseNameSpace": "فضاء",
+  "courseNameJungle": "غابة",
+  "courseNameDesert": "صحراء"
 }

@@ -2358,4 +2358,133 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get desertSettings => 'إعدادات الصحراء';
+
+  @override
+  String get miniGame => 'ميني-جيم';
+
+  @override
+  String get miniGameParkTitle => 'حديقة الألعاب الصغيرة';
+
+  @override
+  String get worldRankingTitle => '🌍 ترتيب عالمي';
+
+  @override
+  String get worldRankingTooltip => 'ترتيب عالمي';
+
+  @override
+  String miniGameTicketsRemaining(int count) {
+    return '🎫 التذاكر المتبقية: $count';
+  }
+
+  @override
+  String get miniGamePlayWithChar => 'الشخصية لللعب معها';
+
+  @override
+  String get miniGameAvatar => 'الصورة الرمزية';
+
+  @override
+  String get miniGameSupportChar => 'شخصية دعم';
+
+  @override
+  String get miniGameChangeChar => 'تغيير الشخصية';
+
+  @override
+  String get miniGameChooseChar => 'مع من ستلعب؟';
+
+  @override
+  String get miniGameChooseGame => 'أي لعبة تريد؟';
+
+  @override
+  String get miniGameDodge => 'تجنب!';
+
+  @override
+  String get miniGameNextGame => '(اللعبة التالية)';
+
+  @override
+  String get miniGameChooseCourse => 'اختر مساراً للتجنب!';
+
+  @override
+  String get miniGamePlayCountRemaining => '🎫 المتبقي:';
+
+  @override
+  String miniGamePlayCountValue(int count) {
+    return '$count لعبة';
+  }
+
+  @override
+  String miniGameLevelRequired(int level) {
+    return 'Lv. $level+';
+  }
+
+  @override
+  String miniGameHighScore(int score) {
+    return '🏆 أعلى نقطة: $score';
+  }
+
+  @override
+  String get miniGameViewRanking => ' عرض الترتيب';
+
+  @override
+  String get miniGameNoTicketMsg => '🛑 أتمم الوعود واحصل على تذاكر!';
+
+  @override
+  String miniGameScoreLabel(int score) {
+    return 'النقطة: $score';
+  }
+
+  @override
+  String miniGameHighScoreLabel(int score) {
+    return '🥇 أعلى نقطة: $score';
+  }
+
+  @override
+  String get miniGameStartButton => 'ابدأ!';
+
+  @override
+  String get miniGameInstructions => 'امسح يساراً أو يميناً للتجنب!';
+
+  @override
+  String get miniGamePlayAgain => 'العب مرة أخرى';
+
+  @override
+  String get miniGameEndButton => 'إنهاء';
+
+  @override
+  String miniGameRankingTitle(String courseName) {
+    return 'ترتيب $courseName';
+  }
+
+  @override
+  String get miniGameRankingEmpty => 'لا توجد بيانات بعد! جرب اللعب!';
+
+  @override
+  String miniGameScoreDisplay(int score) {
+    return '$score نقطة';
+  }
+
+  @override
+  String worldRankingEmpty(String courseName) {
+    return 'ترتيب $courseName\nلا يزال فارغاً!\nلديك فرصة أن تكون الأول!';
+  }
+
+  @override
+  String get courseNameWorld => 'العالم الافتراضي';
+
+  @override
+  String get courseNameIsland => 'جزيرة كبيرة';
+
+  @override
+  String get courseNameSea => 'بحر';
+
+  @override
+  String get courseNameSky => 'سماء';
+
+  @override
+  String get courseNameSpace => 'فضاء';
+
+  @override
+  String get courseNameJungle => 'غابة';
+
+  @override
+  String get courseNameDesert => 'صحراء';
 }

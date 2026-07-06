@@ -4584,6 +4584,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Desert Settings'**
   String get desertSettings;
+
+  /// No description provided for @miniGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Mini-Game'**
+  String get miniGame;
+
+  /// No description provided for @miniGameParkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mini-Game Park'**
+  String get miniGameParkTitle;
+
+  /// No description provided for @worldRankingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'🌍 World Ranking'**
+  String get worldRankingTitle;
+
+  /// No description provided for @worldRankingTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'World Ranking'**
+  String get worldRankingTooltip;
+
+  /// No description provided for @miniGameTicketsRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'🎫 Tickets left: {count}'**
+  String miniGameTicketsRemaining(int count);
+
+  /// No description provided for @miniGamePlayWithChar.
+  ///
+  /// In en, this message translates to:
+  /// **'Character to Play With'**
+  String get miniGamePlayWithChar;
+
+  /// No description provided for @miniGameAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Avatar'**
+  String get miniGameAvatar;
+
+  /// No description provided for @miniGameSupportChar.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Char'**
+  String get miniGameSupportChar;
+
+  /// No description provided for @miniGameChangeChar.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Character'**
+  String get miniGameChangeChar;
+
+  /// No description provided for @miniGameChooseChar.
+  ///
+  /// In en, this message translates to:
+  /// **'Who will you play with?'**
+  String get miniGameChooseChar;
+
+  /// No description provided for @miniGameChooseGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Which game to play?'**
+  String get miniGameChooseGame;
+
+  /// No description provided for @miniGameDodge.
+  ///
+  /// In en, this message translates to:
+  /// **'Dodge!'**
+  String get miniGameDodge;
+
+  /// No description provided for @miniGameNextGame.
+  ///
+  /// In en, this message translates to:
+  /// **'(Next Game)'**
+  String get miniGameNextGame;
+
+  /// No description provided for @miniGameChooseCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a Course for Dodge!'**
+  String get miniGameChooseCourse;
+
+  /// No description provided for @miniGamePlayCountRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'🎫 Plays left:'**
+  String get miniGamePlayCountRemaining;
+
+  /// No description provided for @miniGamePlayCountValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} plays'**
+  String miniGamePlayCountValue(int count);
+
+  /// No description provided for @miniGameLevelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Lv. {level}+'**
+  String miniGameLevelRequired(int level);
+
+  /// No description provided for @miniGameHighScore.
+  ///
+  /// In en, this message translates to:
+  /// **'🏆 High Score: {score}'**
+  String miniGameHighScore(int score);
+
+  /// No description provided for @miniGameViewRanking.
+  ///
+  /// In en, this message translates to:
+  /// **' View Ranking'**
+  String get miniGameViewRanking;
+
+  /// No description provided for @miniGameNoTicketMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'🛑 Clear promises to get game tickets!'**
+  String get miniGameNoTicketMsg;
+
+  /// No description provided for @miniGameScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Score: {score}'**
+  String miniGameScoreLabel(int score);
+
+  /// No description provided for @miniGameHighScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'🥇 High Score: {score}'**
+  String miniGameHighScoreLabel(int score);
+
+  /// No description provided for @miniGameStartButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Start!'**
+  String get miniGameStartButton;
+
+  /// No description provided for @miniGameInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe left or right to dodge!'**
+  String get miniGameInstructions;
+
+  /// No description provided for @miniGamePlayAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Play Again'**
+  String get miniGamePlayAgain;
+
+  /// No description provided for @miniGameEndButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get miniGameEndButton;
+
+  /// No description provided for @miniGameRankingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{courseName} Ranking'**
+  String miniGameRankingTitle(String courseName);
+
+  /// No description provided for @miniGameRankingEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No data yet! Try playing!'**
+  String get miniGameRankingEmpty;
+
+  /// No description provided for @miniGameScoreDisplay.
+  ///
+  /// In en, this message translates to:
+  /// **'{score} pts'**
+  String miniGameScoreDisplay(int score);
+
+  /// No description provided for @worldRankingEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The world ranking for {courseName}\nis still empty!\nYou have a chance to be #1!'**
+  String worldRankingEmpty(String courseName);
+
+  /// No description provided for @courseNameWorld.
+  ///
+  /// In en, this message translates to:
+  /// **'Default World'**
+  String get courseNameWorld;
+
+  /// No description provided for @courseNameIsland.
+  ///
+  /// In en, this message translates to:
+  /// **'Big Island'**
+  String get courseNameIsland;
+
+  /// No description provided for @courseNameSea.
+  ///
+  /// In en, this message translates to:
+  /// **'Sea'**
+  String get courseNameSea;
+
+  /// No description provided for @courseNameSky.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky'**
+  String get courseNameSky;
+
+  /// No description provided for @courseNameSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Space'**
+  String get courseNameSpace;
+
+  /// No description provided for @courseNameJungle.
+  ///
+  /// In en, this message translates to:
+  /// **'Jungle'**
+  String get courseNameJungle;
+
+  /// No description provided for @courseNameDesert.
+  ///
+  /// In en, this message translates to:
+  /// **'Desert'**
+  String get courseNameDesert;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

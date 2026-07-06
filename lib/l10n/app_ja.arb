@@ -1104,5 +1104,105 @@
   "jungleSettings": "ジャングルのせってい",
   "desertItems": "さばくのアイテム",
   "desertCreatures": "さばくのいきもの",
-  "desertSettings": "さばくのせってい"
+  "desertSettings": "さばくのせってい",
+  "miniGame": "ミニゲーム",
+  "miniGameParkTitle": "ミニゲーム・パーク",
+  "worldRankingTitle": "🌍 世界ランキング",
+  "worldRankingTooltip": "世界ランキング",
+  "miniGameTicketsRemaining": "🎫 のこりチケット: {count} 枚",
+  "@miniGameTicketsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGamePlayWithChar": "いっしょに あそぶキャラクター",
+  "miniGameAvatar": "アバター",
+  "miniGameSupportChar": "応援キャラ",
+  "miniGameChangeChar": "キャラをかえる",
+  "miniGameChooseChar": "だれと あそぶ？",
+  "miniGameChooseGame": "どのゲームで あそぶ？",
+  "miniGameDodge": "よけろ！",
+  "miniGameNextGame": "（つぎのゲーム）",
+  "miniGameChooseCourse": "よけろ！のコースをえらぼう",
+  "miniGamePlayCountRemaining": "🎫 のこりあそべる回数:",
+  "miniGamePlayCountValue": "{count} 回",
+  "@miniGamePlayCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameLevelRequired": "Lv. {level} 以上",
+  "@miniGameLevelRequired": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScore": "🏆 ハイスコア: {score}",
+  "@miniGameHighScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameViewRanking": " ランキングをみる",
+  "miniGameNoTicketMsg": "🛑 やくそくをクリアして、ゲームチケットをゲットしよう！",
+  "miniGameScoreLabel": "スコア: {score}",
+  "@miniGameScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScoreLabel": "🥇 ハイスコア: {score}",
+  "@miniGameHighScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameStartButton": "スタート！",
+  "miniGameInstructions": "左右にスワイプして よけよう！",
+  "miniGamePlayAgain": "もう一回やる",
+  "miniGameEndButton": "おわる",
+  "miniGameRankingTitle": "{courseName} ランキング",
+  "@miniGameRankingTitle": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "miniGameRankingEmpty": "まだデータがないよ！あそんでみてね。",
+  "miniGameScoreDisplay": "{score} 点",
+  "@miniGameScoreDisplay": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "worldRankingEmpty": "{courseName} の\n世界ランキングはまだ空っぽだよ！\nキミが1位になるチャンス！",
+  "@worldRankingEmpty": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "courseNameWorld": "いつものせかい",
+  "courseNameIsland": "おおきなしま",
+  "courseNameSea": "うみ",
+  "courseNameSky": "そら",
+  "courseNameSpace": "うちゅう",
+  "courseNameJungle": "ジャングル",
+  "courseNameDesert": "さばく"
 }

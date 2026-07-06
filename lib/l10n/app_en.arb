@@ -1103,5 +1103,105 @@
   "jungleSettings": "Jungle Settings",
   "desertItems": "Desert Items",
   "desertCreatures": "Desert Creatures",
-  "desertSettings": "Desert Settings"
+  "desertSettings": "Desert Settings",
+  "miniGame": "Mini-Game",
+  "miniGameParkTitle": "Mini-Game Park",
+  "worldRankingTitle": "🌍 World Ranking",
+  "worldRankingTooltip": "World Ranking",
+  "miniGameTicketsRemaining": "🎫 Tickets left: {count}",
+  "@miniGameTicketsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGamePlayWithChar": "Character to Play With",
+  "miniGameAvatar": "Avatar",
+  "miniGameSupportChar": "Support Char",
+  "miniGameChangeChar": "Change Character",
+  "miniGameChooseChar": "Who will you play with?",
+  "miniGameChooseGame": "Which game to play?",
+  "miniGameDodge": "Dodge!",
+  "miniGameNextGame": "(Next Game)",
+  "miniGameChooseCourse": "Choose a Course for Dodge!",
+  "miniGamePlayCountRemaining": "🎫 Plays left:",
+  "miniGamePlayCountValue": "{count} plays",
+  "@miniGamePlayCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameLevelRequired": "Lv. {level}+",
+  "@miniGameLevelRequired": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScore": "🏆 High Score: {score}",
+  "@miniGameHighScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameViewRanking": " View Ranking",
+  "miniGameNoTicketMsg": "🛑 Clear promises to get game tickets!",
+  "miniGameScoreLabel": "Score: {score}",
+  "@miniGameScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScoreLabel": "🥇 High Score: {score}",
+  "@miniGameHighScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameStartButton": "Start!",
+  "miniGameInstructions": "Swipe left or right to dodge!",
+  "miniGamePlayAgain": "Play Again",
+  "miniGameEndButton": "Quit",
+  "miniGameRankingTitle": "{courseName} Ranking",
+  "@miniGameRankingTitle": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "miniGameRankingEmpty": "No data yet! Try playing!",
+  "miniGameScoreDisplay": "{score} pts",
+  "@miniGameScoreDisplay": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "worldRankingEmpty": "The world ranking for {courseName}\nis still empty!\nYou have a chance to be #1!",
+  "@worldRankingEmpty": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "courseNameWorld": "Default World",
+  "courseNameIsland": "Big Island",
+  "courseNameSea": "Sea",
+  "courseNameSky": "Sky",
+  "courseNameSpace": "Space",
+  "courseNameJungle": "Jungle",
+  "courseNameDesert": "Desert"
 }

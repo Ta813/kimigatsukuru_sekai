@@ -1057,5 +1057,105 @@
   "jungleSettings": "जंगल की सेटिंग",
   "desertItems": "रेगिस्तान की वस्तुएं",
   "desertCreatures": "रेगिस्तान के जीव",
-  "desertSettings": "रेगिस्तान की सेटिंग"
+  "desertSettings": "रेगिस्तान की सेटिंग",
+  "miniGame": "मिनी-गेम",
+  "miniGameParkTitle": "मिनी गेम पार्क",
+  "worldRankingTitle": "🌍 विश्व रैंकिंग",
+  "worldRankingTooltip": "विश्व रैंकिंग",
+  "miniGameTicketsRemaining": "🎫 बचे टिकट: {count}",
+  "@miniGameTicketsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGamePlayWithChar": "साथ खेलने वाला पात्र",
+  "miniGameAvatar": "अवतार",
+  "miniGameSupportChar": "सहायक पात्र",
+  "miniGameChangeChar": "पात्र बदलें",
+  "miniGameChooseChar": "किसके साथ खेलेंगे?",
+  "miniGameChooseGame": "कौन सा गेम खेलेंगे?",
+  "miniGameDodge": "बचाओ!",
+  "miniGameNextGame": "(अगला गेम)",
+  "miniGameChooseCourse": "बचाओ! के लिए कोर्स चुनें",
+  "miniGamePlayCountRemaining": "🎫 बचे खेल:",
+  "miniGamePlayCountValue": "{count} खेल",
+  "@miniGamePlayCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameLevelRequired": "Lv. {level}+",
+  "@miniGameLevelRequired": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScore": "🏆 उच्च स्कोर: {score}",
+  "@miniGameHighScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameViewRanking": " रैंकिंग देखें",
+  "miniGameNoTicketMsg": "🛑 वादे पूरे करें और गेम टिकट पाएं!",
+  "miniGameScoreLabel": "स्कोर: {score}",
+  "@miniGameScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScoreLabel": "🥇 उच्च स्कोर: {score}",
+  "@miniGameHighScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameStartButton": "शुरू!",
+  "miniGameInstructions": "बचने के लिए लेफ्ट-राइट स्वाइप करें!",
+  "miniGamePlayAgain": "फिर खेलें",
+  "miniGameEndButton": "খতম",
+  "miniGameRankingTitle": "{courseName} रैंकिंग",
+  "@miniGameRankingTitle": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "miniGameRankingEmpty": "अभी कोई डेटा नहीं! खेलने की कोशिश करें!",
+  "miniGameScoreDisplay": "{score} अंक",
+  "@miniGameScoreDisplay": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "worldRankingEmpty": "{courseName} की\nविश्व रैंकिंग अभी खाली है!\nआप #1 बनने का मौका पा सकते हैं!",
+  "@worldRankingEmpty": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "courseNameWorld": "सामान्य दुनिया",
+  "courseNameIsland": "बड़ा द्वीप",
+  "courseNameSea": "समुद्र",
+  "courseNameSky": "आकाश",
+  "courseNameSpace": "अंतरिक्ष",
+  "courseNameJungle": "जंगल",
+  "courseNameDesert": "रेगिस्तान"
 }

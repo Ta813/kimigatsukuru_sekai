@@ -1103,5 +1103,105 @@
   "jungleSettings": "جنگل کی ترتیبات",
   "desertItems": "صحرا کی چیزیں",
   "desertCreatures": "صحرا کی مخلوقات",
-  "desertSettings": "صحرا کی ترتیبات"
+  "desertSettings": "صحرا کی ترتیبات",
+  "miniGame": "منی گیم",
+  "miniGameParkTitle": "منی گیم پارک",
+  "worldRankingTitle": "🌍 ورلڈ رینکنگ",
+  "worldRankingTooltip": "ورلڈ رینکنگ",
+  "miniGameTicketsRemaining": "🎫 باقی ٹکٹ: {count}",
+  "@miniGameTicketsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGamePlayWithChar": "ساتھ کھیلنے والا کردار",
+  "miniGameAvatar": "اوتار",
+  "miniGameSupportChar": "مددگار کردار",
+  "miniGameChangeChar": "کردار بدلیں",
+  "miniGameChooseChar": "کس کے ساتھ کھیلیںگے?",
+  "miniGameChooseGame": "کون سا گیم کھیلیںگے?",
+  "miniGameDodge": "بچاؤ!",
+  "miniGameNextGame": "(اگلا گیم)",
+  "miniGameChooseCourse": "بچاؤ! کے لیے راستہ چنیں",
+  "miniGamePlayCountRemaining": "🎫 باقی کھیل:",
+  "miniGamePlayCountValue": "{count} کھیل",
+  "@miniGamePlayCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameLevelRequired": "Lv. {level}+",
+  "@miniGameLevelRequired": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScore": "🏆 سب سے زیادہ سکور: {score}",
+  "@miniGameHighScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameViewRanking": " رینکنگ دیکھیں",
+  "miniGameNoTicketMsg": "🛑 وعدے پورے کریں اور گیم ٹکٹ حاصل کریں!",
+  "miniGameScoreLabel": "سکور: {score}",
+  "@miniGameScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScoreLabel": "🥇 سب سے زیادہ سکور: {score}",
+  "@miniGameHighScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameStartButton": "شروع!",
+  "miniGameInstructions": "بچنے کے لیے بائیں-دائیں سوائپ کریں!",
+  "miniGamePlayAgain": "دوبارہ کھیلیں",
+  "miniGameEndButton": "ختم",
+  "miniGameRankingTitle": "{courseName} رینکنگ",
+  "@miniGameRankingTitle": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "miniGameRankingEmpty": "ابھی کوئی ڈیٹا نہیں! کھیلنے کی کوشش کریں!",
+  "miniGameScoreDisplay": "{score} پوائنٹ",
+  "@miniGameScoreDisplay": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "worldRankingEmpty": "{courseName} کی\nورلڈ رینکنگ ابھی خالی ہے!\nآپ #1 بننے کا موقع پا سکتے ہیں!",
+  "@worldRankingEmpty": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "courseNameWorld": "عام دنیا",
+  "courseNameIsland": "بڑا جزیرہ",
+  "courseNameSea": "سمندر",
+  "courseNameSky": "آسمان",
+  "courseNameSpace": "خلاء",
+  "courseNameJungle": "جنگل",
+  "courseNameDesert": "صحرا"
 }

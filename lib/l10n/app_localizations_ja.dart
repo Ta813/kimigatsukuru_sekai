@@ -2358,4 +2358,133 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get desertSettings => 'さばくのせってい';
+
+  @override
+  String get miniGame => 'ミニゲーム';
+
+  @override
+  String get miniGameParkTitle => 'ミニゲーム・パーク';
+
+  @override
+  String get worldRankingTitle => '🌍 世界ランキング';
+
+  @override
+  String get worldRankingTooltip => '世界ランキング';
+
+  @override
+  String miniGameTicketsRemaining(int count) {
+    return '🎫 のこりチケット: $count 枚';
+  }
+
+  @override
+  String get miniGamePlayWithChar => 'いっしょに あそぶキャラクター';
+
+  @override
+  String get miniGameAvatar => 'アバター';
+
+  @override
+  String get miniGameSupportChar => '応援キャラ';
+
+  @override
+  String get miniGameChangeChar => 'キャラをかえる';
+
+  @override
+  String get miniGameChooseChar => 'だれと あそぶ？';
+
+  @override
+  String get miniGameChooseGame => 'どのゲームで あそぶ？';
+
+  @override
+  String get miniGameDodge => 'よけろ！';
+
+  @override
+  String get miniGameNextGame => '（つぎのゲーム）';
+
+  @override
+  String get miniGameChooseCourse => 'よけろ！のコースをえらぼう';
+
+  @override
+  String get miniGamePlayCountRemaining => '🎫 のこりあそべる回数:';
+
+  @override
+  String miniGamePlayCountValue(int count) {
+    return '$count 回';
+  }
+
+  @override
+  String miniGameLevelRequired(int level) {
+    return 'Lv. $level 以上';
+  }
+
+  @override
+  String miniGameHighScore(int score) {
+    return '🏆 ハイスコア: $score';
+  }
+
+  @override
+  String get miniGameViewRanking => ' ランキングをみる';
+
+  @override
+  String get miniGameNoTicketMsg => '🛑 やくそくをクリアして、ゲームチケットをゲットしよう！';
+
+  @override
+  String miniGameScoreLabel(int score) {
+    return 'スコア: $score';
+  }
+
+  @override
+  String miniGameHighScoreLabel(int score) {
+    return '🥇 ハイスコア: $score';
+  }
+
+  @override
+  String get miniGameStartButton => 'スタート！';
+
+  @override
+  String get miniGameInstructions => '左右にスワイプして よけよう！';
+
+  @override
+  String get miniGamePlayAgain => 'もう一回やる';
+
+  @override
+  String get miniGameEndButton => 'おわる';
+
+  @override
+  String miniGameRankingTitle(String courseName) {
+    return '$courseName ランキング';
+  }
+
+  @override
+  String get miniGameRankingEmpty => 'まだデータがないよ！あそんでみてね。';
+
+  @override
+  String miniGameScoreDisplay(int score) {
+    return '$score 点';
+  }
+
+  @override
+  String worldRankingEmpty(String courseName) {
+    return '$courseName の\n世界ランキングはまだ空っぽだよ！\nキミが1位になるチャンス！';
+  }
+
+  @override
+  String get courseNameWorld => 'いつものせかい';
+
+  @override
+  String get courseNameIsland => 'おおきなしま';
+
+  @override
+  String get courseNameSea => 'うみ';
+
+  @override
+  String get courseNameSky => 'そら';
+
+  @override
+  String get courseNameSpace => 'うちゅう';
+
+  @override
+  String get courseNameJungle => 'ジャングル';
+
+  @override
+  String get courseNameDesert => 'さばく';
 }

@@ -113,6 +113,7 @@ class SfxManager {
   // --- 再生用メソッド群（そのまま） ---
   void playTapSound() => _playSound('se/ボタン.mp3');
   void playSuccessSound() => _playSound('se/ポイントが入る音.mp3');
+  void playGameOverSound() => _playSound('se/syogeru.mp3');
   void playStartSound() => _playSound('se/「スタート」.mp3');
 
   void playStartSoundLocalized(String locale) {

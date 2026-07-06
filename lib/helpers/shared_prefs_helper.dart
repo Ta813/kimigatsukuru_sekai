@@ -1709,4 +1709,76 @@ class SharedPrefsHelper {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_keyNotificationsEnabled) ?? true;
   }
+
+  static const _keyGameTickets = 'remaining_game_tickets';
+
+  // 🎫 残りのゲームチケット（プレイ可能回数）を取得する
+  static Future<int> getGameTickets() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_keyGameTickets) ?? 0; // 最初は0回
+  }
+
+  // 🎫 残りのゲームチケットを増減させて保存する
+  static Future<void> updateGameTickets(int delta) async {
+    final prefs = await SharedPreferences.getInstance();
+    int current = await getGameTickets();
+    int newValue = current + delta;
+    if (newValue < 0) newValue = 0; // マイナスにはならないようにガード
+    await prefs.setInt(_keyGameTickets, newValue);
+  }
+
+  static const _keyMiniGameCharacter = 'mini_game_character_path';
+
+  // ミニゲーム用のキャラ（アバターなら 'MY_AVATAR'、それ以外は画像パス）を取得
+  static Future<String> getMiniGameCharacter() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyMiniGameCharacter) ?? 'MY_AVATAR'; // デフォルトはアバター
+  }
+
+  static Future<void> saveMiniGameCharacter(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyMiniGameCharacter, path);
+  }
+
+  // 🏆 スコアを保存する（上位10位まで保持）
+  static Future<void> saveGameScore(String courseName, int newScore) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'ranking_$courseName';
+
+    // 現在のランキングを取得
+    List<String> currentRankingStr = prefs.getStringList(key) ?? [];
+    List<int> ranking = currentRankingStr.map((e) => int.parse(e)).toList();
+
+    // 新しいスコアを追加して降順ソート
+    ranking.add(newScore);
+    ranking.sort((a, b) => b.compareTo(a));
+
+    // 上位10個に絞る
+    if (ranking.length > 10) {
+      ranking = ranking.sublist(0, 10);
+    }
+
+    // 保存
+    await prefs.setStringList(key, ranking.map((e) => e.toString()).toList());
+
+    // 👑 ついでにハイスコア（1位）を単体でも保存しておくと取得が楽
+    final highKey = 'high_score_$courseName';
+    int currentHigh = prefs.getInt(highKey) ?? 0;
+    if (newScore > currentHigh) {
+      await prefs.setInt(highKey, newScore);
+    }
+  }
+
+  // 🥇 ハイスコア（1位）を取得
+  static Future<int> getHighScore(String courseName) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('high_score_$courseName') ?? 0;
+  }
+
+  // 📜 ランキングリストを取得
+  static Future<List<int>> getRanking(String courseName) async {
+    final prefs = await SharedPreferences.getInstance();
+    final list = prefs.getStringList('ranking_$courseName') ?? [];
+    return list.map((e) => int.parse(e)).toList();
+  }
 }

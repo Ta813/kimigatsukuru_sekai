@@ -1103,5 +1103,105 @@
   "jungleSettings": "জঙ্গলের সেটিংস",
   "desertItems": "মরুভূমির জিনিসপত্র",
   "desertCreatures": "মরুভূমির প্রাণী",
-  "desertSettings": "মরুভূমির সেটিংস"
+  "desertSettings": "মরুভূমির সেটিংস",
+  "miniGame": "মিনি-গেম",
+  "miniGameParkTitle": "মিনি গেম পার্ক",
+  "worldRankingTitle": "🌍 বিশ্ব র্যাংকিং",
+  "worldRankingTooltip": "বিশ্ব র্যাংকিং",
+  "miniGameTicketsRemaining": "🎫 বাকি টিকিট: {count}",
+  "@miniGameTicketsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGamePlayWithChar": "সাথে খেলবার চরিত্র",
+  "miniGameAvatar": "অবতার",
+  "miniGameSupportChar": "সহায়ক চরিত্র",
+  "miniGameChangeChar": "চরিত্র বদলান",
+  "miniGameChooseChar": "কার সাথে খেলবেন?",
+  "miniGameChooseGame": "কোন গেম খেলবেন?",
+  "miniGameDodge": "বাঁচো!",
+  "miniGameNextGame": "(পরের গেম)",
+  "miniGameChooseCourse": "বাঁচো! এর জন্য রাস্তা বেছুন",
+  "miniGamePlayCountRemaining": "🎫 বাকি খেলা:",
+  "miniGamePlayCountValue": "{count} বার",
+  "@miniGamePlayCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameLevelRequired": "Lv. {level}+",
+  "@miniGameLevelRequired": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScore": "🏆 সর্বোচ্চ স্কোর: {score}",
+  "@miniGameHighScore": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameViewRanking": " র্যাংকিং দেখুন",
+  "miniGameNoTicketMsg": "🛑 প্রতিশ্রুতি পূরণ করুন এবং গেম টিকিট পান!",
+  "miniGameScoreLabel": "স্কোর: {score}",
+  "@miniGameScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameHighScoreLabel": "🥇 সর্বোচ্চ স্কোর: {score}",
+  "@miniGameHighScoreLabel": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "miniGameStartButton": "শুরু!",
+  "miniGameInstructions": "বাঁচতে বাম-ডান সোয়াইপ করুন!",
+  "miniGamePlayAgain": "আবার খেলুন",
+  "miniGameEndButton": "শেষ",
+  "miniGameRankingTitle": "{courseName} র্যাংকিং",
+  "@miniGameRankingTitle": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "miniGameRankingEmpty": "এখনো কোনো তথ্য নেই! খেলার চেষ্টা করুন!",
+  "miniGameScoreDisplay": "{score} পয়েন্ট",
+  "@miniGameScoreDisplay": {
+    "placeholders": {
+      "score": {
+        "type": "int"
+      }
+    }
+  },
+  "worldRankingEmpty": "{courseName} এর\nবিশ্ব র্যাংকিং এখনো ফাঁকা!\nআপনি #1 হওয়ার সুযোগ পাবেন!",
+  "@worldRankingEmpty": {
+    "placeholders": {
+      "courseName": {
+        "type": "String"
+      }
+    }
+  },
+  "courseNameWorld": "সাধারণ বিশ্ব",
+  "courseNameIsland": "বড় দ্বীপ",
+  "courseNameSea": "সমুদ্র",
+  "courseNameSky": "আকাশ",
+  "courseNameSpace": "মহাকাশ",
+  "courseNameJungle": "জঙ্গল",
+  "courseNameDesert": "মরুভূমি"
 }

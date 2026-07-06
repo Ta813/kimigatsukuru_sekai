@@ -13,6 +13,7 @@ import 'package:kimigatsukuru_sekai/managers/app_update_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/notification_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
 import 'package:kimigatsukuru_sekai/managers/trophy_manager.dart';
+import 'package:kimigatsukuru_sekai/screens/child/mini_game_hub_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/child/trophy_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/initial_setup_coordinator.dart';
 import 'package:kimigatsukuru_sekai/screens/parent/emergency_promise_screen.dart';
@@ -1298,6 +1299,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (_displayPromise == null) return;
 
     final bool isEmergencyTutorial = _showEmergencyStartBlinking;
+    final bool isTutorial = _showStartBlinking;
 
     if (_showStartBlinking) {
       setState(() {
@@ -1364,6 +1366,11 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       }
 
       if (pointsAwarded != null && pointsAwarded > 0) {
+        //チュートリアルでない場合のみ、チケットを＋１する。
+        if (!isTutorial) {
+          await SharedPrefsHelper.updateGameTickets(1);
+        }
+
         if (!_isDisplayPromiseEmergency) {
           await SharedPrefsHelper.addCompletionRecord(
             _displayPromise!['title'],
@@ -2635,6 +2642,9 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                                 await trace.start();
 
                                                 try {
+                                                  await SharedPrefsHelper.updateGameTickets(
+                                                    1,
+                                                  );
                                                   try {
                                                     SfxManager.instance
                                                         .playSuccessSound();
@@ -3125,7 +3135,41 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               ),
                               const SizedBox(height: 12),
 
-                              // ③ あそびかた（ヘルプ）
+                              // ③ ミニゲーム
+                              IgnorePointer(
+                                ignoring: isAnyTutorialBlinking,
+                                child: Opacity(
+                                  opacity: (isAnyTutorialBlinking) ? 0.6 : 1.0,
+                                  child: _buildRoundMenuButton(
+                                    icon: Icons.sports_esports,
+                                    label: AppLocalizations.of(
+                                      context,
+                                    )!.miniGame,
+                                    iconColor: Colors.black,
+                                    backgroundColor: Colors.white, // 白
+                                    isMain: false, // 🌟 サブ機能なので小さく
+                                    onTap: () async {
+                                      FirebaseAnalytics.instance.logEvent(
+                                        name: 'start_home_minigame',
+                                      );
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              MiniGameHubScreen(
+                                                userLevel: _level,
+                                              ),
+                                        ),
+                                      );
+                                      try {
+                                        SfxManager.instance.playTapSound();
+                                      } catch (_) {}
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+
+                              // ④ あそびかた（ヘルプ）
                               IgnorePointer(
                                 ignoring: isAnyTutorialBlinking,
                                 child: Opacity(
