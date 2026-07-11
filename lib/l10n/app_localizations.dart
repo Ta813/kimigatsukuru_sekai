@@ -4585,6 +4585,24 @@ abstract class AppLocalizations {
   /// **'Desert Settings'**
   String get desertSettings;
 
+  /// No description provided for @snowItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow Items'**
+  String get snowItems;
+
+  /// No description provided for @snowCreatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow Creatures'**
+  String get snowCreatures;
+
+  /// No description provided for @snowSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow Settings'**
+  String get snowSettings;
+
   /// No description provided for @miniGame.
   ///
   /// In en, this message translates to:

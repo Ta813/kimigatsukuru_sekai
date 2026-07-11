@@ -2360,6 +2360,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get desertSettings => 'إعدادات الصحراء';
 
   @override
+  String get snowItems => 'عناصر الثلج';
+
+  @override
+  String get snowCreatures => 'مخلوقات الثلج';
+
+  @override
+  String get snowSettings => 'إعدادات الثلج';
+
+  @override
   String get miniGame => 'ميني-جيم';
 
   @override

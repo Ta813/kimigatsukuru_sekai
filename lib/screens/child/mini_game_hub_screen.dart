@@ -1,5 +1,6 @@
 // lib/screens/mini_game_hub_screen.dart
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kimigatsukuru_sekai/l10n/app_localizations.dart';
 import 'package:kimigatsukuru_sekai/screens/child/world_ranking_screen.dart';
@@ -72,6 +73,7 @@ class _MiniGameHubScreenState extends State<MiniGameHubScreen> {
             icon: const Icon(Icons.public, size: 28),
             tooltip: AppLocalizations.of(context)!.worldRankingTooltip,
             onPressed: () {
+              FirebaseAnalytics.instance.logEvent(name: 'world_ranking');
               try {
                 SfxManager.instance.playTapSound();
               } catch (_) {}
@@ -154,6 +156,9 @@ class _MiniGameHubScreenState extends State<MiniGameHubScreen> {
                         const SizedBox(height: 5),
                         ElevatedButton(
                           onPressed: () async {
+                            FirebaseAnalytics.instance.logEvent(
+                              name: 'mini_game_change_char',
+                            );
                             try {
                               SfxManager.instance.playTapSound();
                             } catch (_) {}
@@ -204,6 +209,9 @@ class _MiniGameHubScreenState extends State<MiniGameHubScreen> {
                   icon: Icons.directions_run,
                   color: Colors.blueAccent,
                   onTap: () async {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'mini_game_dodge',
+                    );
                     await Navigator.push(
                       context,
                       MaterialPageRoute(

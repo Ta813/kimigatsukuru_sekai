@@ -2360,6 +2360,15 @@ class AppLocalizationsBn extends AppLocalizations {
   String get desertSettings => 'মরুভূমির সেটিংস';
 
   @override
+  String get snowItems => 'তুষার দেশের জিনিসপত্র';
+
+  @override
+  String get snowCreatures => 'তুষার দেশের প্রাণী';
+
+  @override
+  String get snowSettings => 'তুষার দেশের সেটিংস';
+
+  @override
   String get miniGame => 'মিনি-গেম';
 
   @override

@@ -2360,6 +2360,15 @@ class AppLocalizationsHi extends AppLocalizations {
   String get desertSettings => 'रेगिस्तान की सेटिंग';
 
   @override
+  String get snowItems => 'बर्फ की वस्तुएं';
+
+  @override
+  String get snowCreatures => 'बर्फ के जीव';
+
+  @override
+  String get snowSettings => 'बर्फ की सेटिंग';
+
+  @override
   String get miniGame => 'मिनी-गेम';
 
   @override

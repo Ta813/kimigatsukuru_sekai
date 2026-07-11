@@ -2360,6 +2360,15 @@ class AppLocalizationsUr extends AppLocalizations {
   String get desertSettings => 'صحرا کی ترتیبات';
 
   @override
+  String get snowItems => 'برف کی چیزیں';
+
+  @override
+  String get snowCreatures => 'برف کی مخلوقات';
+
+  @override
+  String get snowSettings => 'برف کی ترتیبات';
+
+  @override
   String get miniGame => 'منی گیم';
 
   @override

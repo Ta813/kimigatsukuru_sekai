@@ -23,6 +23,7 @@ enum CustomizeMode {
   space, // 宇宙モード
   jungle, // ジャングルモード
   desert, // 砂漠モード
+  snow, // 雪国モード
 }
 
 class FurnitureCustomizeScreen extends StatefulWidget {
@@ -56,7 +57,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
   List<String> _equippedJungleLivings = [];
   List<String> _equippedDesertItems = [];
   List<String> _equippedDesertLivings = [];
-
+  List<String> _equippedSnowItems = [];
+  List<String> _equippedSnowLivings = [];
   @override
   void initState() {
     super.initState();
@@ -83,6 +85,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
     final jungleLivings = await SharedPrefsHelper.loadEquippedJungleLivings();
     final desertItems = await SharedPrefsHelper.loadEquippedDesertItems();
     final desertLivings = await SharedPrefsHelper.loadEquippedDesertLivings();
+    final snowItems = await SharedPrefsHelper.loadEquippedSnowItems();
+    final snowLivings = await SharedPrefsHelper.loadEquippedSnowLivings();
 
     setState(() {
       _purchasedItemNames = purchased;
@@ -103,6 +107,8 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       _equippedJungleLivings = jungleLivings;
       _equippedDesertItems = desertItems;
       _equippedDesertLivings = desertLivings;
+      _equippedSnowItems = snowItems;
+      _equippedSnowLivings = snowLivings;
     });
   }
 
@@ -172,6 +178,10 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
       await SharedPrefsHelper.saveEquippedDesertItems(selected);
     } else if (type == 'desert_living') {
       await SharedPrefsHelper.saveEquippedDesertLivings(selected);
+    } else if (type == 'snow_item') {
+      await SharedPrefsHelper.saveEquippedSnowItems(selected);
+    } else if (type == 'snow_living') {
+      await SharedPrefsHelper.saveEquippedSnowLivings(selected);
     }
   }
 
@@ -760,7 +770,7 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               'jungle_living',
             ),
           ];
-        } else {
+        } else if (widget.mode == CustomizeMode.desert) {
           // 砂漠
           final allDesertItems = shopItems
               .where((item) => item.type == 'desert_item')
@@ -791,6 +801,37 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
               'desert_living',
             ),
           ];
+        } else {
+          // 雪国
+          final allSnowItems = shopItems
+              .where((item) => item.type == 'snow_item')
+              .toList();
+          final allSnowLiving = shopItems
+              .where((item) => item.type == 'snow_living')
+              .toList();
+
+          tabs = [
+            Tab(
+              text: AppLocalizations.of(context)!.snowItems,
+              icon: const Icon(Icons.ac_unit),
+            ),
+            Tab(
+              text: AppLocalizations.of(context)!.snowCreatures,
+              icon: const FaIcon(FontAwesomeIcons.snowman),
+            ),
+          ];
+          tabViews = [
+            _buildMultiSelectionGrid(
+              allSnowItems,
+              _equippedSnowItems,
+              'snow_item',
+            ),
+            _buildMultiSelectionGrid(
+              allSnowLiving,
+              _equippedSnowLivings,
+              'snow_living',
+            ),
+          ];
         }
 
         return DefaultTabController(
@@ -812,7 +853,9 @@ class _FurnitureCustomizeScreenState extends State<FurnitureCustomizeScreen> {
                     ? AppLocalizations.of(context)!.spaceSettings
                     : widget.mode == CustomizeMode.jungle
                     ? AppLocalizations.of(context)!.jungleSettings
-                    : AppLocalizations.of(context)!.desertSettings,
+                    : widget.mode == CustomizeMode.desert
+                    ? AppLocalizations.of(context)!.desertSettings
+                    : AppLocalizations.of(context)!.snowSettings,
                 style: const TextStyle(fontSize: 18),
               ),
               actions: _buildAppBarActions(), // 🌟 追加: 右上のポイント表示

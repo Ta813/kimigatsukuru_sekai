@@ -2360,6 +2360,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get desertSettings => 'さばくのせってい';
 
   @override
+  String get snowItems => 'ゆきぐにのアイテム';
+
+  @override
+  String get snowCreatures => 'ゆきぐにのいきもの';
+
+  @override
+  String get snowSettings => 'ゆきぐにのせってい';
+
+  @override
   String get miniGame => 'ミニゲーム';
 
   @override

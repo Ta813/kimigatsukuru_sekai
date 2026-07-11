@@ -2360,6 +2360,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get desertSettings => 'Desert Settings';
 
   @override
+  String get snowItems => 'Snow Items';
+
+  @override
+  String get snowCreatures => 'Snow Creatures';
+
+  @override
+  String get snowSettings => 'Snow Settings';
+
+  @override
   String get miniGame => 'Mini-Game';
 
   @override

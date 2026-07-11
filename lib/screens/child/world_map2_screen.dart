@@ -3,11 +3,11 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:kimigatsukuru_sekai/managers/purchase_manager.dart';
 import 'package:kimigatsukuru_sekai/screens/child/desert_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/child/jungle_screen.dart';
+import 'package:kimigatsukuru_sekai/screens/child/snow_screen.dart';
 import 'package:kimigatsukuru_sekai/screens/premium_paywall_screen.dart';
 import '../../managers/sfx_manager.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/round_menu_button.dart';
-import '../../widgets/animated_placeholder_thumbnail.dart';
 
 class WorldMap2Screen extends StatefulWidget {
   final int currentLevel;
@@ -158,10 +158,53 @@ class _WorldMap2ScreenState extends State<WorldMap2Screen> {
               // 実装中のサムネイル (中央)
               Align(
                 alignment: Alignment.center,
-                child: AnimatedPlaceholderThumbnail(
-                  text: AppLocalizations.of(context)!.underConstruction,
-                  offsetY: 8,
-                  duration: const Duration(seconds: 2),
+                child: GestureDetector(
+                  onTap: () {
+                    FirebaseAnalytics.instance.logEvent(
+                      name: 'start_world_map_snow',
+                    );
+                    // ★ レベル40以上かチェック
+                    if (widget.currentLevel >= 50 || isPremium) {
+                      try {
+                        SfxManager.instance.playSuccessSound();
+                      } catch (e) {
+                        // エラーが発生した場合
+                        print('再生エラー: $e');
+                      }
+                      // ★ レベル40以上なら、DesertScreenに遷移
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SnowScreen(
+                            currentLevel: widget.currentLevel,
+                            currentPoints: widget.currentPoints,
+                            requiredExpForNextLevel:
+                                widget.requiredExpForNextLevel,
+                            experience: widget.experience,
+                            experienceFraction: widget.experienceFraction,
+                          ),
+                        ),
+                      );
+                    } else {
+                      // ★ レベルが足りない場合はメッセージを表示
+                      _showPremiumUpgradeDialog(50);
+                    }
+                  },
+                  child: Container(
+                    width: 300,
+                    height: 150,
+                    color: Colors.transparent,
+                    child: Align(
+                      // ★ サムネイル画像に変更
+                      child: _AnimatedMapThumbnail(
+                        imagePath: 'assets/images/snow_background.png',
+                        offsetY: 8,
+                        duration: const Duration(seconds: 2),
+                        isLocked: widget.currentLevel < 50 && !isPremium,
+                        requiredLevel: 50,
+                      ),
+                    ),
+                  ),
                 ),
               ),
 

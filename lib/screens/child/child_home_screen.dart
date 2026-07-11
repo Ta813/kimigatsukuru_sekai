@@ -84,6 +84,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
 
   // ポイント数の状態を管理するための変数
   int _points = 0;
+  int _gameTickets = 0;
 
   Map<String, dynamic>? _displayPromise; // 実際に下のバーに表示するやくそく
   bool _isDisplayPromiseEmergency = false; // 表示しているのが緊急かどうか
@@ -104,7 +105,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
   bool _isTutorialParentSettingsFocus = false;
   bool _showCustomizeBlinking = false;
   late AnimationController _hintAnimationController;
-  bool _hasUnclaimedMissions = true;
+  int _unclaimedMissionCount = 0;
   bool _hasVisitedPointAddition = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -1101,6 +1102,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     if (!mounted) return;
     final regular = await SharedPrefsHelper.loadRegularPromises(context);
     final emergency = await SharedPrefsHelper.loadEmergencyPromise();
+    final tickets = await SharedPrefsHelper.getGameTickets();
     var todaysCompletedTitles =
         await SharedPrefsHelper.loadTodaysCompletedPromiseTitles();
     var todaysSkippedTitles =
@@ -1200,6 +1202,7 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
       _hasEnteredHouse = entered;
       _hasVisitedPointAddition = hasVisitedPointAddition;
       _points = loadedPoints;
+      _gameTickets = tickets;
       _displayPromise = nextPromise;
       _isDisplayPromiseEmergency = isEmergency;
       _totalPromisesCount = regular.length;
@@ -1925,46 +1928,42 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
     final cumulativeLoginDays =
         await SharedPrefsHelper.loadCumulativeLoginDays();
 
-    bool hasUnclaimed = false;
+    int count = 0;
 
-    if (!claimedIds.contains('mission_enter_house')) hasUnclaimed = true;
-    if (!claimedIds.contains('mission_promise_board')) hasUnclaimed = true;
-    if (!claimedIds.contains('mission_bgm')) hasUnclaimed = true;
-    if (!claimedIds.contains('mission_world_map')) hasUnclaimed = true;
+    if (!claimedIds.contains('mission_enter_house')) ;
+    if (!claimedIds.contains('mission_promise_board')) ;
+    if (!claimedIds.contains('mission_bgm')) ;
+    if (!claimedIds.contains('mission_world_map')) ;
 
-    if (!claimedIds.contains('mission_big_island') && currentLevel >= 5)
-      hasUnclaimed = true;
-    if (!claimedIds.contains('mission_sea') && currentLevel >= 10)
-      hasUnclaimed = true;
-    if (!claimedIds.contains('mission_sky') && currentLevel >= 15)
-      hasUnclaimed = true;
-    if (!claimedIds.contains('mission_space') && currentLevel >= 20)
-      hasUnclaimed = true;
+    if (!claimedIds.contains('mission_big_island') && currentLevel >= 5) ;
+    if (!claimedIds.contains('mission_sea') && currentLevel >= 10) ;
+    if (!claimedIds.contains('mission_sky') && currentLevel >= 15) ;
+    if (!claimedIds.contains('mission_space') && currentLevel >= 20) ;
 
     for (int target in SharedPrefsHelper.loginTargets) {
       if (cumulativeLoginDays >= target &&
           !claimedIds.contains('mission_login_$target'))
-        hasUnclaimed = true;
+        count++;
     }
     for (int target in SharedPrefsHelper.shopTargets) {
       if (cumulativeShop >= target &&
           !claimedIds.contains('mission_shop_$target'))
-        hasUnclaimed = true;
+        count++;
     }
     for (int target in SharedPrefsHelper.levelTargets) {
       if (currentLevel >= target &&
           !claimedIds.contains('mission_level_$target'))
-        hasUnclaimed = true;
+        count++;
     }
     for (int target in SharedPrefsHelper.pointTargets) {
       if (cumulativePoints >= target &&
           !claimedIds.contains('mission_points_$target'))
-        hasUnclaimed = true;
+        count++;
     }
 
     if (mounted) {
       setState(() {
-        _hasUnclaimedMissions = hasUnclaimed;
+        _unclaimedMissionCount = count;
       });
     }
   }
@@ -2847,36 +2846,35 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                                     ),
                                   ),
                                 ),
-                                if (_hasUnclaimedMissions)
+                                if (_unclaimedMissionCount > 0)
                                   Positioned(
                                     top: -4,
                                     right: 0,
-                                    child: ScaleTransition(
-                                      scale: Tween<double>(begin: 1.0, end: 1.3)
-                                          .animate(
-                                            CurvedAnimation(
-                                              parent: _hintAnimationController,
-                                              curve: Curves.easeInOut,
-                                            ),
-                                          ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(6),
-                                        decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 2.0,
-                                          ),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4), // 🌟 調整
+                                      constraints: const BoxConstraints(
+                                        minWidth: 22,
+                                        minHeight: 22,
+                                      ), // 🌟 数字が大きくなっても丸をキープ
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(
+                                          11,
+                                        ), // 🌟 変更
+                                        border: Border.all(
+                                          color: Colors.white,
+                                          width: 2.0,
                                         ),
-                                        child: const Text(
-                                          '!',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        '$_unclaimedMissionCount', // 🌟 数字を表示
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
                                         ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),
@@ -3136,36 +3134,83 @@ class _ChildHomeScreenState extends State<ChildHomeScreen>
                               const SizedBox(height: 12),
 
                               // ③ ミニゲーム
-                              IgnorePointer(
-                                ignoring: isAnyTutorialBlinking,
-                                child: Opacity(
-                                  opacity: (isAnyTutorialBlinking) ? 0.6 : 1.0,
-                                  child: _buildRoundMenuButton(
-                                    icon: Icons.sports_esports,
-                                    label: AppLocalizations.of(
-                                      context,
-                                    )!.miniGame,
-                                    iconColor: Colors.black,
-                                    backgroundColor: Colors.white, // 白
-                                    isMain: false, // 🌟 サブ機能なので小さく
-                                    onTap: () async {
-                                      FirebaseAnalytics.instance.logEvent(
-                                        name: 'start_home_minigame',
-                                      );
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              MiniGameHubScreen(
-                                                userLevel: _level,
-                                              ),
-                                        ),
-                                      );
-                                      try {
-                                        SfxManager.instance.playTapSound();
-                                      } catch (_) {}
-                                    },
+                              Stack(
+                                clipBehavior: Clip.none,
+                                alignment: Alignment.topRight,
+                                children: [
+                                  IgnorePointer(
+                                    ignoring: isAnyTutorialBlinking,
+                                    child: Opacity(
+                                      opacity: (isAnyTutorialBlinking)
+                                          ? 0.6
+                                          : 1.0,
+                                      child: _buildRoundMenuButton(
+                                        icon: Icons.sports_esports,
+                                        label: AppLocalizations.of(
+                                          context,
+                                        )!.miniGame,
+                                        iconColor: Colors.black,
+                                        backgroundColor: Colors.white, // 白
+                                        isMain: false, // 🌟 サブ機能なので小さく
+                                        onTap: () async {
+                                          FirebaseAnalytics.instance.logEvent(
+                                            name: 'start_home_minigame',
+                                          );
+                                          try {
+                                            SfxManager.instance.playTapSound();
+                                          } catch (_) {}
+                                          Navigator.of(context)
+                                              .push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MiniGameHubScreen(
+                                                        userLevel: _level,
+                                                      ),
+                                                ),
+                                              )
+                                              .then((_) {
+                                                // 🌟 追加: ゲームを遊んで戻ってきたらチケット枚数を再確認してバッチを更新！
+                                                _loadAndDetermineDisplayPromise();
+                                              });
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  if (_gameTickets > 0)
+                                    Positioned(
+                                      top: -4,
+                                      right: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(
+                                          4,
+                                        ), // 🌟 調整
+                                        constraints: const BoxConstraints(
+                                          minWidth: 22,
+                                          minHeight: 22,
+                                        ), // 🌟 数字が大きくなっても丸をキープ
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius: BorderRadius.circular(
+                                            11,
+                                          ), // 🌟 変更
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2.0,
+                                          ),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          '$_gameTickets', // 🌟 数字を表示
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                               const SizedBox(height: 12),
 
