@@ -203,6 +203,7 @@ class _MiniGameHubScreenState extends State<MiniGameHubScreen> {
               mainAxisSpacing: 20,
               crossAxisSpacing: 20,
               children: [
+                //よけろ！
                 _buildGameTile(
                   context,
                   title: AppLocalizations.of(context)!.miniGameDodge,
@@ -212,22 +213,42 @@ class _MiniGameHubScreenState extends State<MiniGameHubScreen> {
                     FirebaseAnalytics.instance.logEvent(
                       name: 'mini_game_dodge',
                     );
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (_) {}
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) =>
-                            MiniGameCoordinator(userLevel: widget.userLevel),
+                        builder: (_) => MiniGameCoordinator(
+                          userLevel: widget.userLevel,
+                          gameType: 'dodge',
+                        ),
                       ),
                     );
                     _refreshData();
                   },
                 ),
+                // ジャンプ！
                 _buildGameTile(
                   context,
-                  title: AppLocalizations.of(context)!.miniGameNextGame,
-                  icon: Icons.lock,
-                  color: Colors.grey,
-                  onTap: null,
+                  title: 'ジャンプ！',
+                  icon: Icons.arrow_upward_rounded,
+                  color: Colors.greenAccent.shade700,
+                  onTap: () async {
+                    FirebaseAnalytics.instance.logEvent(name: 'mini_game_jump');
+                    try {
+                      SfxManager.instance.playTapSound();
+                    } catch (_) {}
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MiniGameCoordinator(
+                          userLevel: widget.userLevel,
+                          gameType: 'jump',
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

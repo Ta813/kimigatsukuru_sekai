@@ -15,6 +15,7 @@ import 'package:kimigatsukuru_sekai/widgets/avatar_display.dart';
 import 'package:kimigatsukuru_sekai/widgets/breathing_avatar.dart';
 import '../../managers/sfx_manager.dart';
 import '../../widgets/ad_banner.dart';
+import 'jump_game_screen.dart';
 
 // 🌟 コース（せかい）のデータ構造
 class GameCourse {
@@ -38,8 +39,13 @@ class GameCourse {
 // ==============================================================
 class MiniGameCoordinator extends StatefulWidget {
   final int userLevel;
+  final String gameType;
 
-  const MiniGameCoordinator({super.key, required this.userLevel});
+  const MiniGameCoordinator({
+    super.key,
+    required this.userLevel,
+    required this.gameType,
+  });
 
   @override
   State<MiniGameCoordinator> createState() => _MiniGameCoordinatorState();
@@ -142,8 +148,12 @@ class _MiniGameCoordinatorState extends State<MiniGameCoordinator> {
     final tickets = await SharedPrefsHelper.getGameTickets();
     Map<String, int> highscore = {};
     for (var course in courses) {
-      final score = await SharedPrefsHelper.getHighScore(course.name);
-      highscore[course.name] = score;
+      final String courseKey =
+          (widget.gameType == "dodge" || widget.gameType.isEmpty)
+          ? course.name
+          : '${course.name}_${widget.gameType}';
+      final score = await SharedPrefsHelper.getHighScore(courseKey);
+      highscore[courseKey] = score;
     }
     if (mounted) {
       setState(() {
@@ -237,7 +247,9 @@ class _MiniGameCoordinatorState extends State<MiniGameCoordinator> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF3E0),
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.miniGameChooseCourse),
+        title: widget.gameType == 'dodge'
+            ? Text(AppLocalizations.of(context)!.miniGameChooseCourse)
+            : Text('ジャンプ！のコースをえらぼう'),
         backgroundColor: const Color(0xFFFF7043),
         foregroundColor: Colors.white,
       ),
@@ -300,6 +312,11 @@ class _MiniGameCoordinatorState extends State<MiniGameCoordinator> {
                   final isPremium = PurchaseManager.instance.isPremium.value;
                   final isLevelLocked = widget.userLevel < course.requiredLevel;
 
+                  final String courseKey =
+                      (widget.gameType == "dodge" || widget.gameType.isEmpty)
+                      ? course.name
+                      : '${course.name}_${widget.gameType}';
+
                   // 🌟 チケットを持っていて、かつレベルが足りている場合のみプレイ可能
                   final isLevelOk = !isLevelLocked || isPremium;
                   final hasTicket = _tickets > 0;
@@ -335,12 +352,21 @@ class _MiniGameCoordinatorState extends State<MiniGameCoordinator> {
                       if (!context.mounted) return;
 
                       // ゲーム画面へ遷移し、終わって戻ってくるのを待つ（await）
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => GamePlayScreen(course: course),
-                        ),
-                      );
+                      if (widget.gameType == 'jump') {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => JumpGamePlayScreen(course: course),
+                          ),
+                        );
+                      } else {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => GamePlayScreen(course: course),
+                          ),
+                        );
+                      }
 
                       // 🌟 ゲームから戻ってきたら、減った後のチケット枚数を再読み込みして画面を更新！
                       _loadTickets();
@@ -429,7 +455,7 @@ class _MiniGameCoordinatorState extends State<MiniGameCoordinator> {
                                         AppLocalizations.of(
                                           context,
                                         )!.miniGameHighScore(
-                                          _highscore[course.name] ?? 0,
+                                          _highscore[courseKey] ?? 0,
                                         ),
                                         style: const TextStyle(
                                           color: Colors.white,

@@ -5,11 +5,43 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kimigatsukuru_sekai/l10n/app_localizations.dart';
 import 'package:kimigatsukuru_sekai/models/mini_game_name.dart';
 
-class WorldRankingScreen extends StatelessWidget {
+class MiniGameType {
+  final String id;
+  final String label;
+  final String icon;
+  final String keySuffix;
+
+  const MiniGameType({
+    required this.id,
+    required this.label,
+    required this.icon,
+    this.keySuffix = '',
+  });
+}
+
+class WorldRankingScreen extends StatefulWidget {
   const WorldRankingScreen({super.key});
 
   @override
+  State<WorldRankingScreen> createState() => _WorldRankingScreenState();
+}
+
+class _WorldRankingScreenState extends State<WorldRankingScreen> {
+  String _selectedGameId = 'dodge';
+
+  @override
   Widget build(BuildContext context) {
+    // 🌟 ミニゲーム一覧（将来ミニゲームが増えたらここに追記するだけでOK！）
+    final gameTypes = [
+      MiniGameType(
+        id: 'dodge',
+        label: AppLocalizations.of(context)!.miniGameDodge,
+        icon: '🏃‍♂️',
+        keySuffix: '',
+      ),
+      MiniGameType(id: 'jump', label: 'ジャンプ！', icon: '🪂', keySuffix: '_jump'),
+    ];
+
     // ランキングを表示したいコースのリスト
     final courses = ['いつものせかい', 'おおきなしま', 'うみ', 'そら', 'うちゅう', 'ジャングル', 'さばく'];
 
@@ -20,10 +52,11 @@ class WorldRankingScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             AppLocalizations.of(context)!.worldRankingTitle,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.blueAccent,
           foregroundColor: Colors.white,
+          elevation: 0,
           bottom: TabBar(
             isScrollable: true, // タブが多くてもスクロール可能に
             indicatorColor: Colors.orangeAccent,
@@ -38,20 +71,96 @@ class WorldRankingScreen extends StatelessWidget {
                 .toList(),
           ),
         ),
-        body: TabBarView(
-          children: courses.map((course) => _buildRankingList(course)).toList(),
+        body: Column(
+          children: [
+            // 🌟 ゲーム選択ボタンエリア（横スクロール可能で増えても安心）
+            Container(
+              color: Colors.blueAccent,
+              padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+              width: double.infinity,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: gameTypes.map((game) {
+                    final isSelected = _selectedGameId == game.id;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_selectedGameId != game.id) {
+                            setState(() {
+                              _selectedGameId = game.id;
+                            });
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isSelected
+                              ? Colors.orangeAccent
+                              : Colors.white,
+                          foregroundColor: isSelected
+                              ? Colors.white
+                              : Colors.black87,
+                          elevation: isSelected ? 4 : 1,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              game.icon,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              game.label,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                children: courses
+                    .map((course) => _buildRankingList(course, gameTypes))
+                    .toList(),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   // 🌟 コースごとのランキングリストをFirestoreからリアルタイム取得
-  Widget _buildRankingList(String courseName) {
+  Widget _buildRankingList(String courseName, List<MiniGameType> gameTypes) {
+    final currentGame = gameTypes.firstWhere(
+      (g) => g.id == _selectedGameId,
+      orElse: () => gameTypes.first,
+    );
+    final queryCourseKey = '$courseName${currentGame.keySuffix}';
+
     return StreamBuilder<QuerySnapshot>(
       // ⚠️ コスト爆発を防ぐため、必ず orderBy で高い順にし、limit で件数を絞る！
       stream: FirebaseFirestore.instance
           .collection('world_rankings')
-          .where('course', isEqualTo: courseName)
+          .where('course', isEqualTo: queryCourseKey)
           .orderBy('score', descending: true)
           .limit(30) // 上位30人まで
           .snapshots(),
